@@ -20,6 +20,18 @@ public class Rectangle {
 		return topLeft;
 	}
 
+	public Point getTopRight() {
+		return topLeft.move(Dir.EAST.asPoint().scale(width));
+	}
+
+	public Point getBottomLeft() {
+		return topLeft.move(Dir.SOUTH.asPoint().scale(height));
+	}
+
+	public Point getBottomRight() {
+		return getTopRight().move(Dir.SOUTH.asPoint().scale(height));
+	}
+
 	public float getWidth() {
 		return width;
 	}
@@ -37,7 +49,7 @@ public class Rectangle {
 
 	/**
 	 * @param p
-	 *            The point to test.
+	 *            The Point to test.
 	 * @return Whether the Point is within the Rectangle.
 	 */
 	public boolean contains(Point p) {
@@ -48,7 +60,47 @@ public class Rectangle {
 			return false;
 		if (y < topLeft.getY() || y >= topLeft.getY() + height)
 			return false;
-		
+
 		return true;
+	}
+
+	/**
+	 * 
+	 * @param r
+	 *            The Rectangle to test.
+	 * @return Whether the two Rectangles overlap.
+	 */
+	public boolean overlaps(Rectangle r) {
+		// The rectangles overlap if one rectangle's corner is within the other.
+		if (contains(r.getTopLeft()) || contains(r.getTopRight()))
+			return true;
+		if (contains(r.getBottomLeft()) || contains(r.getBottomRight()))
+			return true;
+		
+		if (r.contains(getTopLeft()) || r.contains(getTopRight()))
+			return true;
+		if (r.contains(getBottomLeft()) || r.contains(getBottomRight()))
+			return true;
+		
+		// Final case for this overlap:
+		//      ___
+		//     |   |
+		//  ___|___|___
+		// |   |   |   |
+		// |___|___|___|
+		//     |   |
+		//     |___|
+		if (getTopLeft().getX() < r.getTopLeft().getX()
+				&& getTopLeft().getY() > r.getTopLeft().getY()
+				&& getBottomRight().getX() > r.getBottomRight().getX()
+				&& getBottomRight().getY() < r.getBottomRight().getY())
+			return true;
+		if (r.getTopLeft().getX() < getTopLeft().getX()
+				&& r.getTopLeft().getY() > getTopLeft().getY()
+				&& r.getBottomRight().getX() > getBottomRight().getX()
+				&& r.getBottomRight().getY() < getBottomRight().getY())
+			return true;
+
+		return false;
 	}
 }

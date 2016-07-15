@@ -44,4 +44,12 @@ public class Collider {
 	public Point getTopLeft() {
 		return rect.getTopLeft();
 	}
+	
+	public float getWidth() {
+		return rect.getWidth();
+	}
+	
+	public float getHeight() {
+		return rect.getHeight();
+	}
 }

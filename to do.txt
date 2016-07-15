@@ -2,8 +2,10 @@
 ==  THINGS TO DO  ==
 ====================
 
-Have list of 'on screen' objects
+Test rectangle overlap method
 
 Movement with collision detection
+
+Have list of 'on screen' objects/solids
 
 Gravity

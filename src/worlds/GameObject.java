@@ -14,9 +14,9 @@ public abstract class GameObject {
 	// non-solids).
 	//
 	protected Point position;
-	Sprite sprite;
-	Collider collider;
-	InteractBox interactBox;
+	protected Sprite sprite;
+	protected Collider collider;
+	protected InteractBox interactBox;
 	World world;
 
 	/**
@@ -47,7 +47,7 @@ public abstract class GameObject {
 	}
 
 	// TODO
-	// Getters and setters
+	// Getters
 	//
 	public boolean isSolid() {
 		return collider != null;
@@ -56,6 +56,18 @@ public abstract class GameObject {
 	public boolean isInteractable() {
 		return interactBox != null;
 	}
+	
+	public World getWorld() {
+		return world;
+	}
+	
+	//
+	// Setters
+	//
+	public void setWorld(World world) {
+		this.world = world;
+	}
+	
 
 	// TODO
 	// onInteract functions

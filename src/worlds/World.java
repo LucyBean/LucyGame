@@ -17,11 +17,13 @@ public class World {
 	Camera camera;
 	List<ObjectLayer> layers;
 	List<Actor> actors;
+	List<GameObject> solids;
 
 	public World() throws SlickException {
 		camera = new Camera();
 		layers = new ArrayList<ObjectLayer>();
 		actors = new ArrayList<Actor>();
+		solids = new ArrayList<GameObject>();
 
 		for (@SuppressWarnings("unused")
 		WorldLayer l : WorldLayer.values()) {
@@ -71,9 +73,26 @@ public class World {
 	public void addObject(GameObject go, WorldLayer layer) {
 		layers.get(layer.ordinal()).add(go);
 		
+		// Adds the object to any extra lists.
 		if (go instanceof Actor) {
 			actors.add((Actor) go);
 		}
+		if (go.isSolid()) {
+			solids.add(go);
+		}
+		
+		go.setWorld(this);
+	}
+	
+	/**
+	 * Returns the solid objects that are currently on screen.
+	 * @return
+	 */
+	public List<GameObject> getOnScreenSolids() {
+		// TODO
+		// Currently returns all solid objects in the world.
+		// Modify to keep track of on screen objects.
+		return solids;
 	}
 
 	/**

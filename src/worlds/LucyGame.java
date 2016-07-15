@@ -8,25 +8,23 @@ import org.newdawn.slick.SlickException;
 
 public class LucyGame extends BasicGame {
 	World world;
-	
-	public LucyGame () {
+
+	public LucyGame() {
 		super("LucyGame");
 	}
-	
-	public static void main (String[] args) {
+
+	public static void main(String[] args) {
 		try {
 			AppGameContainer app = new AppGameContainer(new LucyGame());
 			app.setDisplayMode(GlobalOptions.WINDOW_WIDTH, GlobalOptions.WINDOW_HEIGHT, false);
 			app.start();
-		}
-		catch (SlickException se) {
+		} catch (SlickException se) {
 			se.printStackTrace();
 		}
 	}
 
 	@Override
-	public void render(GameContainer gc, Graphics g)
-			throws SlickException {
+	public void render(GameContainer gc, Graphics g) throws SlickException {
 		world.render(gc, g);
 	}
 
@@ -39,5 +37,5 @@ public class LucyGame extends BasicGame {
 	public void update(GameContainer gc, int delta) throws SlickException {
 		world.update(gc, delta);
 	}
-	
+
 }
