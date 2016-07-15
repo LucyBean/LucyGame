@@ -1,0 +1,9 @@
+====================
+==  THINGS TO DO  ==
+====================
+
+Have list of 'on screen' objects
+
+Movement with collision detection
+
+Gravity
