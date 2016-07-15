@@ -13,10 +13,10 @@ public abstract class GameObject {
 	// the top-left point of the collider (for solids) or image (for
 	// non-solids).
 	//
-	protected Point position;
-	protected Sprite sprite;
-	protected Collider collider;
-	protected InteractBox interactBox;
+	Point position;
+	Sprite sprite;
+	Collider collider;
+	InteractBox interactBox;
 	World world;
 
 	/**
@@ -61,11 +61,31 @@ public abstract class GameObject {
 		return world;
 	}
 	
+	public Sprite getSprite() {
+		return sprite;
+	}
+	
+	public Collider getCollider() {
+		return collider;
+	}
+	
+	public InteractBox getInteractBox() {
+		return interactBox;
+	}
+	
+	public Point getPosition() {
+		return position;
+	}
+	
 	//
 	// Setters
 	//
 	public void setWorld(World world) {
 		this.world = world;
+	}
+	
+	public void setPosition(Point position) {
+		this.position = position;
 	}
 	
 
@@ -83,28 +103,38 @@ public abstract class GameObject {
 
 		if (sprite != null) {
 			// Draw image
-			Point imageCoOrds = translateToWorldCoOrds(sprite.getOrigin(), camera);
+			Point imageCoOrds = translateToScreenCoOrds(sprite.getOrigin(), camera);
 			sprite.getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(), camera.getScale());
 		}
 		if (GlobalOptions.DRAW_COLLIDERS && collider != null) {
 			// Draw collider
-			Point colliderCoOrds = translateToWorldCoOrds(collider.getTopLeft(), camera);
+			Point colliderCoOrds = translateToScreenCoOrds(collider.getTopLeft(), camera);
 			collider.getImage().draw(colliderCoOrds.getX(), colliderCoOrds.getY(), camera.getScale());
 		}
 		if (GlobalOptions.DRAW_INTERACT_BOXES && interactBox != null) {
 			// Draw interact box
-			Point interactCoOrds = translateToWorldCoOrds(interactBox.getTopLeft(), camera);
+			Point interactCoOrds = translateToScreenCoOrds(interactBox.getTopLeft(), camera);
 			interactBox.getImage().draw(interactCoOrds.getX(), interactCoOrds.getY(), camera.getScale());
 		}
 	}
-
+	
 	/**
 	 * Translates a point from object co-ords to world co-ords.
 	 * 
 	 * @param point
 	 * @return
 	 */
-	private Point translateToWorldCoOrds(Point point, Camera camera) {
-		return position.move(point).move(camera.getLocation().neg()).scale(camera.getScale());
+	protected Point translateToWorldCoOrds(Point point) {
+		return position.move(point);
+	}
+
+	/**
+	 * Translates a point from object co-ords to camera co-ords.
+	 * 
+	 * @param point
+	 * @return
+	 */
+	protected Point translateToScreenCoOrds(Point point, Camera camera) {
+		return translateToWorldCoOrds(point).move(camera.getLocation().neg()).scale(camera.getScale());
 	}
 }

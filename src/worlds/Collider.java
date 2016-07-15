@@ -45,11 +45,32 @@ public class Collider {
 		return rect.getTopLeft();
 	}
 	
+	public Point getTopRight() {
+		return rect.getTopRight();
+	}
+	
+	public Point getBottomLeft() {
+		return rect.getBottomLeft();
+	}
+	
+	public Point getBottomRight() {
+		return rect.getBottomRight();
+	}
+	
 	public float getWidth() {
 		return rect.getWidth();
 	}
 	
 	public float getHeight() {
 		return rect.getHeight();
+	}
+	
+	public Rectangle getRectangle() {
+		return rect;
+	}
+	
+	@Override
+	public String toString() {
+		return rect.toString();
 	}
 }

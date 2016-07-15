@@ -25,6 +25,7 @@ public class RectangleTest {
 			}
 		}
 		
+		System.out.println("\n\n--Corner test--");
 		Point[] corners = new Point[4];
 		corners[0] = r.getTopLeft();	// (10,10)
 		corners[1] = r.getTopRight();	// (20,10)
@@ -32,12 +33,13 @@ public class RectangleTest {
 		corners[3] = r.getBottomRight();// (20,20)
 		
 		for (int i = 0; i < corners.length; i++) {
-			System.out.println(corners[i]);
+			boolean b = r.contains(corners[i]);
+			System.out.println(corners[i] + " is contained? " + b);
 		}
 		
-		System.out.println("\n\n--Rectangle overlap test--");;
+		System.out.println("\n\n--Rectangle overlap test--");
 		
-		Rectangle[] rects = new Rectangle[7];
+		Rectangle[] rects = new Rectangle[8];
 		rects[0] = new Rectangle(new Point(5,5), 15, 15);
 		rects[1] = new Rectangle(new Point(25,5), 15, 15);
 		rects[2] = new Rectangle(new Point(5,25), 15, 15);
@@ -45,6 +47,7 @@ public class RectangleTest {
 		rects[4] = new Rectangle(new Point(15,15), 15, 15);
 		rects[5] = new Rectangle(new Point(60,70), 30, 10);
 		rects[6] = new Rectangle(new Point(70,60), 10, 30);
+		rects[7] = new Rectangle(new Point(80,60), 10, 30);
 		
 		System.out.println("0,1 expected false: " + rects[0].overlaps(rects[1]) + " " + rects[1].overlaps(rects[0]));
 		System.out.println("0,4 expected true: " + rects[0].overlaps(rects[4]) + " " + rects[4].overlaps(rects[0]));
@@ -53,5 +56,8 @@ public class RectangleTest {
 		System.out.println("3,4 expected true: " + rects[3].overlaps(rects[4]) + " " + rects[4].overlaps(rects[3]));
 		System.out.println("5,6 expected true: " + rects[5].overlaps(rects[6]) + " " + rects[6].overlaps(rects[5]));
 		System.out.println("1,5 expected false: " + rects[1].overlaps(rects[5]) + " " + rects[5].overlaps(rects[1]));
+		System.out.println("6,7 expected false: " + rects[6].overlaps(rects[7]) + " " + rects[7].overlaps(rects[6]));
+		
+		rects[6].overlaps(rects[7]);
 	}
 }

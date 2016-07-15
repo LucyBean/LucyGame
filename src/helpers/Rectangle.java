@@ -71,25 +71,41 @@ public class Rectangle {
 	 * @return Whether the two Rectangles overlap.
 	 */
 	public boolean overlaps(Rectangle r) {
-		// The rectangles overlap if one rectangle's corner is within the other.
-		if (contains(r.getTopLeft()) || contains(r.getTopRight()))
-			return true;
-		if (contains(r.getBottomLeft()) || contains(r.getBottomRight()))
-			return true;
-		
-		if (r.contains(getTopLeft()) || r.contains(getTopRight()))
-			return true;
-		if (r.contains(getBottomLeft()) || r.contains(getBottomRight()))
-			return true;
-		
+		// The rectangles overlap if one rectangle's corner is within the other. When the point is
+		// on the boundary it will not be counted as contained.
+
+		// Check if this.bottom-edge and r.top-edge overlap
+		if (getBottomLeft().getY() != r.getTopLeft().getY()) {
+			// Check if this.right-edge and r.left-edge overlap
+			if (getTopRight().getX() != r.getTopLeft().getX())
+				if (contains(r.getTopLeft()) || r.contains(getBottomLeft()))
+					return true;
+			// Check if this.left-edge and r.right-edge overlap
+			if (getTopLeft().getX() != r.getTopRight().getX())
+				if (contains(r.getTopRight()) || r.contains(getBottomLeft()))
+					return true;
+		}
+
+		// Check if this.top-edge and r.bottom-edge overlap
+		if (getTopLeft().getY() != r.getBottomLeft().getY()) {
+			// Check if this.right-edge and r.left-edge overlap
+			if (getTopRight().getX() != r.getTopLeft().getX())
+				if (contains(r.getBottomLeft()) || r.contains(getTopRight()))
+					return true;
+			// Check if this.left-edge and r.right-edge overlap
+			if (getTopLeft().getX() != r.getTopRight().getX())
+				if (r.contains(getTopLeft()) || contains(r.getBottomRight()))
+					return true;
+		}
+
 		// Final case for this overlap:
-		//      ___
-		//     |   |
-		//  ___|___|___
-		// |   |   |   |
+		// ___
+		// | |
+		// ___|___|___
+		// | | | |
 		// |___|___|___|
-		//     |   |
-		//     |___|
+		// | |
+		// |___|
 		if (getTopLeft().getX() < r.getTopLeft().getX()
 				&& getTopLeft().getY() > r.getTopLeft().getY()
 				&& getBottomRight().getX() > r.getBottomRight().getX()
@@ -102,5 +118,19 @@ public class Rectangle {
 			return true;
 
 		return false;
+	}
+
+	/**
+	 * Translates the rectangle according to an offset.
+	 * 
+	 * @param offset
+	 */
+	public Rectangle translate(Point offset) {
+		return new Rectangle(topLeft.move(offset), width, height);
+	}
+
+	@Override
+	public String toString() {
+		return "[" + topLeft + " " + width + " " + height + "]";
 	}
 }
