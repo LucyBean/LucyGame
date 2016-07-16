@@ -81,7 +81,7 @@ public class WorldLibrary {
 				@Override
 				public void init() throws SlickException {
 					GameObject mover = new Actor(new Point(80, 300), SpriteLibrary.PLAYER, new Collider(Point.ZERO, 40, 80), null) {
-						float speed = 10.0f;
+						float speed = 3.0f;
 						@Override
 						public void act(GameContainer gc, int delta) {
 							Input input = gc.getInput();
@@ -110,7 +110,7 @@ public class WorldLibrary {
 						addObject(GameObjectLibrary.WALL(new Point(600, 50 + 50*i)), WorldLayer.WORLD);
 					}
 					
-					for (int i = 0; i < 10; i++) {
+					for (int i = 0; i < 1; i++) {
 						Random r = new Random();
 						Point position = new Point(r.nextFloat()*550 + 50, r.nextFloat()*400 + 50);
 						GameObject go = new Static(position, null, new Collider(Point.ZERO, 20, 20), null);

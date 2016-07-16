@@ -100,17 +100,13 @@ public class Rectangle {
 					return true;
 		}
 
-		// Checks for '+' overlap
-		if (getTopLeft().getX() < r.getTopLeft().getX()
-				&& getTopLeft().getY() > r.getTopLeft().getY()
-				&& getBottomRight().getX() > r.getBottomRight().getX()
-				&& getBottomRight().getY() < r.getBottomRight().getY())
-			return true;
-		if (r.getTopLeft().getX() < getTopLeft().getX()
-				&& r.getTopLeft().getY() > getTopLeft().getY()
-				&& r.getBottomRight().getX() > getBottomRight().getX()
-				&& r.getBottomRight().getY() < getBottomRight().getY())
-			return true;
+		// Checks for '+' and 'T' overlap
+		if (getTopLeft().getY() <= r.getTopLeft().getY() && getBottomLeft().getY() >= r.getBottomLeft().getY())
+			if (getTopLeft().getX() >= r.getTopLeft().getX() && getTopRight().getX() <= r.getTopRight().getX())
+				return true;
+		if (r.getTopLeft().getY() <= getTopLeft().getY() && r.getBottomLeft().getY() >= getBottomLeft().getY())
+			if (r.getTopLeft().getX() >= getTopLeft().getX() && r.getTopRight().getX() <= getTopRight().getX())
+				return true;
 
 		return false;
 	}

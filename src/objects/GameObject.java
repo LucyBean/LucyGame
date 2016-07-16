@@ -152,4 +152,9 @@ public abstract class GameObject {
 		return translateToWorldCoOrds(rect).translate(camera.getLocation().neg()).scaleAboutOrigin(
 				camera.getScale());
 	}
+	
+	@Override
+	public String toString() {
+		return "[" + getClass().getName() + " at " + position;
+	}
 }
