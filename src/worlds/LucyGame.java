@@ -6,6 +6,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import objectLibs.WorldLibrary;
+
 public class LucyGame extends BasicGame {
 	World world;
 
@@ -30,7 +32,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
-		world = new World();
+		world = WorldLibrary.getColliderWorld();
 	}
 
 	@Override

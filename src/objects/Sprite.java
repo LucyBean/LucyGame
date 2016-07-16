@@ -1,8 +1,9 @@
-package worlds;
+package objects;
 
 import org.newdawn.slick.Image;
 
 import helpers.Point;
+import helpers.Rectangle;
 
 /**
  * Sprite class for displaying objects on the world. Can handle static images or
@@ -12,8 +13,8 @@ import helpers.Point;
  *
  */
 public class Sprite {
-	Point origin;
 	Image[] image;
+	Rectangle boundingRectangle;
 
 	/**
 	 * Creates a new Sprite object.
@@ -28,7 +29,7 @@ public class Sprite {
 	public Sprite(Image img, Point origin) {
 		image = new Image[1];
 		image[0] = img;
-		this.origin = origin;
+		boundingRectangle = new Rectangle(origin, img.getWidth(), img.getHeight());
 	}
 
 	public Sprite(Image img) {
@@ -36,10 +37,20 @@ public class Sprite {
 	}
 
 	public Point getOrigin() {
-		return origin;
+		return boundingRectangle.getTopLeft();
 	}
 	
 	public Image getImage() {
 		return image[0];
+	}
+	
+	public Rectangle getBoundingRectangle() {
+		return boundingRectangle;
+	}
+	
+	// TODO
+	// Make this check if the Image is visible.
+	public boolean isVisible() {
+		return true;
 	}
 }

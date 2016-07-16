@@ -2,10 +2,15 @@
 ==  THINGS TO DO  ==
 ====================
 
-Test rectangle overlap method
-
 Movement with collision detection
+There are some bugs???
 
 Have list of 'on screen' objects/solids
 
 Gravity
+
+Creating and importing worlds using that map creator tool
+
+Animations
+
+Input with key/mouse listener classes

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import objects.GameObject;
+
 public class ObjectLayer {
 	List<GameObject> objects;
 	boolean visible = true;

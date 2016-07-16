@@ -1,12 +1,13 @@
-package worlds;
+package objects;
 
 import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
+import objectLibs.SpriteLibrary;
 
 public class Collider {
-	Image image;
+	Sprite sprite;
 	Rectangle rect;
 
 	/**
@@ -34,11 +35,11 @@ public class Collider {
 	}
 
 	public Image getImage() {
-		if (image == null) {
-			image = ImageLibrary.makeColliderImage(rect);
+		if (sprite == null) {
+			sprite = SpriteLibrary.makeColliderImage(rect);
 		}
 
-		return image;
+		return sprite.getImage();
 	}
 
 	public Point getTopLeft() {

@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
-import helpers.Point;
+import objects.Actor;
+import objects.GameObject;
 
 public class World {
 	Camera camera;
@@ -19,47 +19,41 @@ public class World {
 	List<Actor> actors;
 	List<GameObject> solids;
 
-	public World() throws SlickException {
-		camera = new Camera();
-		layers = new ArrayList<ObjectLayer>();
-		actors = new ArrayList<Actor>();
-		solids = new ArrayList<GameObject>();
+	public World() {
+		reset();
+	}
+	
+	/**
+	 * Sets the world to its initial state.
+	 */
+	private void reset() {
+		try {
+			camera = new Camera();
+			layers = new ArrayList<ObjectLayer>();
+			actors = new ArrayList<Actor>();
+			solids = new ArrayList<GameObject>();
 
-		for (@SuppressWarnings("unused")
-		WorldLayer l : WorldLayer.values()) {
-			layers.add(new ObjectLayer());
+			for (@SuppressWarnings("unused")
+			WorldLayer l : WorldLayer.values()) {
+				layers.add(new ObjectLayer());
+			}
+
+			init();
 		}
-
-		createDemoWorld();
+		catch (SlickException se) {
+			System.err.println("Unable to initialise or reset world.");
+			se.printStackTrace();
+		}
 	}
 
-	public void createDemoWorld() throws SlickException {
-		GameObject background = new Static(Point.ZERO, new Sprite(new Image("data/Desert.jpg")));
-		addObject(background, WorldLayer.BACKGROUND);
+	/**
+	 * Called when the World is constructed. Override this when creating a new World to add initial
+	 * objects.
+	 * 
+	 * @throws SlickException
+	 */
+	public void init() throws SlickException {
 
-		GameObject player = new Actor(new Point(40, 50), new Sprite(ImageLibrary.PLAYER_IMAGE), new Collider(Point.ZERO, 40, 80), null) {
-			public void update(GameContainer gc, int delta) {
-				Input input = gc.getInput();
-				
-				if (input.isKeyDown(Input.KEY_COMMA)) {
-					move(Dir.NORTH, 1);
-				}
-				if (input.isKeyDown(Input.KEY_O)) {
-					move(Dir.SOUTH, 1);
-				}
-				if (input.isKeyDown(Input.KEY_A)) {
-					move(Dir.WEST, 1);
-				}
-				if (input.isKeyDown(Input.KEY_E)) {
-					move(Dir.EAST, 1);
-				}
-			}
-		};
-		addObject(player, WorldLayer.PLAYER);
-		
-		for (int i = 0; i < 10; i++) {
-			addObject(GameObjectLibrary.WALL(new Point(200 + 50*i, 200)), WorldLayer.WORLD);
-		}
 	}
 
 	/**
@@ -72,7 +66,7 @@ public class World {
 	 */
 	public void addObject(GameObject go, WorldLayer layer) {
 		layers.get(layer.ordinal()).add(go);
-		
+
 		// Adds the object to any extra lists.
 		if (go instanceof Actor) {
 			actors.add((Actor) go);
@@ -80,12 +74,13 @@ public class World {
 		if (go.isSolid()) {
 			solids.add(go);
 		}
-		
+
 		go.setWorld(this);
 	}
-	
+
 	/**
 	 * Returns the solid objects that are currently on screen.
+	 * 
 	 * @return
 	 */
 	public List<GameObject> getOnScreenSolids() {
@@ -94,13 +89,16 @@ public class World {
 		// Modify to keep track of on screen objects.
 		return solids;
 	}
+	
+	public Camera getCamera() {
+		return camera;
+	}
 
 	/**
 	 * Renders the world.
 	 * 
 	 * @param gc
-	 *            GameContainer object, passed from a Slick2D BasicGame render
-	 *            method
+	 *            GameContainer object, passed from a Slick2D BasicGame render method
 	 * @param g
 	 *            Graphics object, passed from a Slick2D BasicGame render method
 	 */
@@ -124,22 +122,27 @@ public class World {
 
 		// Move the camera around the world.
 		if (input.isKeyDown(Input.KEY_T)) {
-			camera.move(Dir.SOUTH, camera.getSpeed()*delta);
+			camera.move(Dir.SOUTH, camera.getSpeed() * delta);
 		}
 		if (input.isKeyDown(Input.KEY_C)) {
-			camera.move(Dir.NORTH, camera.getSpeed()*delta);
+			camera.move(Dir.NORTH, camera.getSpeed() * delta);
 		}
 		if (input.isKeyDown(Input.KEY_H)) {
-			camera.move(Dir.WEST, camera.getSpeed()*delta);
+			camera.move(Dir.WEST, camera.getSpeed() * delta);
 		}
 		if (input.isKeyDown(Input.KEY_N)) {
-			camera.move(Dir.EAST, camera.getSpeed()*delta);
+			camera.move(Dir.EAST, camera.getSpeed() * delta);
 		}
 		if (input.isKeyDown(Input.KEY_R)) {
 			camera.zoomIn();
 		}
 		if (input.isKeyDown(Input.KEY_G)) {
 			camera.zoomOut();
+		}
+		
+		// Reset on D
+		if (input.isKeyDown(Input.KEY_D)) {
+			reset();
 		}
 
 		// Propagate updates to actors

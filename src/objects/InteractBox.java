@@ -1,12 +1,13 @@
-package worlds;
+package objects;
 
 import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
+import objectLibs.SpriteLibrary;
 
 public class InteractBox {
-	Image image;
+	Sprite sprite;
 	Rectangle rect;
 
 	/**
@@ -34,11 +35,11 @@ public class InteractBox {
 	}
 
 	public Image getImage() {
-		if (image == null) {
-			image = ImageLibrary.makeInteractBoxImage(rect);
+		if (sprite == null) {
+			sprite = SpriteLibrary.makeInteractBoxImage(rect);
 		}
 
-		return image;
+		return sprite.getImage();
 	}
 
 	public Point getTopLeft() {

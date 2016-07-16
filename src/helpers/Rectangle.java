@@ -2,13 +2,14 @@ package helpers;
 
 import org.newdawn.slick.Image;
 
-import worlds.ImageLibrary;
+import objectLibs.SpriteLibrary;
+import objects.Sprite;
 
 public class Rectangle {
 	Point topLeft;
 	float width;
 	float height;
-	Image image;
+	Sprite sprite;
 
 	public Rectangle(Point topLeft, float width, float height) {
 		this.topLeft = topLeft;
@@ -41,10 +42,10 @@ public class Rectangle {
 	}
 
 	public Image getImage() {
-		if (image == null) {
-			image = ImageLibrary.makeColliderImage(this);
+		if (sprite == null) {
+			sprite = SpriteLibrary.makeColliderImage(this);
 		}
-		return image;
+		return sprite.getImage();
 	}
 
 	/**
@@ -65,6 +66,7 @@ public class Rectangle {
 	}
 
 	/**
+	 * Detects whether two Rectangles overlap. Shared boundaries will NOT count as an overlap.
 	 * 
 	 * @param r
 	 *            The Rectangle to test.
@@ -98,14 +100,7 @@ public class Rectangle {
 					return true;
 		}
 
-		// Final case for this overlap:
-		// ___
-		// | |
-		// ___|___|___
-		// | | | |
-		// |___|___|___|
-		// | |
-		// |___|
+		// Checks for '+' overlap
 		if (getTopLeft().getX() < r.getTopLeft().getX()
 				&& getTopLeft().getY() > r.getTopLeft().getY()
 				&& getBottomRight().getX() > r.getBottomRight().getX()
@@ -127,6 +122,16 @@ public class Rectangle {
 	 */
 	public Rectangle translate(Point offset) {
 		return new Rectangle(topLeft.move(offset), width, height);
+	}
+
+	/**
+	 * Scales the rectangle about the origin. This will affect the origin AND width/height.
+	 * 
+	 * @param scale
+	 * @return
+	 */
+	public Rectangle scaleAboutOrigin(float scale) {
+		return new Rectangle(topLeft.scale(scale), width*scale, height*scale);
 	}
 
 	@Override

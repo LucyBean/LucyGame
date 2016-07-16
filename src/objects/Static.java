@@ -1,4 +1,4 @@
-package worlds;
+package objects;
 
 import helpers.Point;
 
