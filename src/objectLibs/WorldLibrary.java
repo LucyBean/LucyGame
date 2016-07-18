@@ -27,7 +27,12 @@ public class WorldLibrary {
 				@Override
 				public void init() throws SlickException {
 					GameObject background = new Static(Point.ZERO,
-							new Sprite(new Image("data/Desert.jpg")));
+							new Sprite(new Image("data/Desert.jpg"))) {
+								@Override
+								protected void resetStaticState() {
+									
+								}
+					};
 					addObject(background, WorldLayer.BACKGROUND);
 
 					GameObject player = new Player(new Point(40, 50));
@@ -80,7 +85,16 @@ public class WorldLibrary {
 						Point position = new Point(r.nextFloat() * 550 + 50,
 								r.nextFloat() * 400 + 50);
 						GameObject go = new Static(position, null, new Collider(Point.ZERO, 20, 20),
-								new InteractBox(new Point(20,0), 20, 20));
+								new InteractBox(new Point(20,0), 20, 20)) {
+									@Override
+									protected void resetStaticState() {
+										
+									}
+									
+									public void interactedBy(Actor a) {
+										disable();
+									}
+						};
 						addObject(go, WorldLayer.WORLD);
 					}
 				}

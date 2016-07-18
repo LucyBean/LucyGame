@@ -13,4 +13,9 @@ public class Button extends Actor {
 	public void onClick() {
 		System.out.println("Button has been clicked!");
 	}
+
+	@Override
+	protected void resetActorState() {
+		
+	}
 }

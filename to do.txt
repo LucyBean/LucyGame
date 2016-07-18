@@ -1,10 +1,8 @@
 ====================
 ==  THINGS TO DO  ==
-====================
+====================]
 
 Interactions
-
-Have list of 'on screen' objects/solids
 
 Gravity
 

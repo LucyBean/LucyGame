@@ -1,5 +1,7 @@
 package objects;
 
+import objects.InvalidObjectStateException;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -22,6 +24,8 @@ public abstract class GameObject {
 	Collider collider;
 	InteractBox interactBox;
 	World world;
+	
+	boolean enabled = true;
 
 	/**
 	 * Creates a new GameObject. Origin points for sprite, collider, and interact box should be set
@@ -47,6 +51,8 @@ public abstract class GameObject {
 	public GameObject(Point origin, Sprite sprite) {
 		this(origin, sprite, null, null);
 	}
+	
+	protected abstract void resetState();
 
 	// TODO
 	// Getters
@@ -78,6 +84,10 @@ public abstract class GameObject {
 	public Point getPosition() {
 		return position;
 	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
 
 	//
 	// Setters
@@ -89,18 +99,39 @@ public abstract class GameObject {
 	public void setPosition(Point position) {
 		this.position = position;
 	}
+	
+	/**
+	 * Enables the object, causing it to to be rendered. Enabled Actors will receive updates.
+	 */
+	public void enable() {
+		enabled = true;
+		getWorld().addToActiveLists(this);
+		resetState();
+	}
+	
+	/**
+	 * Disables the object, preventing it from being rendered. Disabled Actors will not receive updates.
+	 */
+	public void disable() {
+		enabled = false;
+		getWorld().removeFromActiveLists(this);
+	}
 
 	// TODO
 	// Interaction and reactions
 	//
-	public void interactedhBy(Actor go) {
+	public void interactedBy(Actor a) {
 		
 	}
 
 	//
 	// Render
 	//
-	public void render(GameContainer gc, Graphics g, Camera camera) {
+	public void render(GameContainer gc, Graphics g, Camera camera) throws InvalidObjectStateException {
+		// The object should be enabled when it is acting
+		if (!isEnabled()) {
+			throw new InvalidObjectStateException("Attempted to render " + this + " but it is disabled.");
+		}
 		// Image will be drawn at co-ords:
 		// (object origin + image topLeft - camera position)*scale
 

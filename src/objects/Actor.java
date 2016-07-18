@@ -12,19 +12,31 @@ import helpers.Point;
 import helpers.Rectangle;
 import worlds.GlobalOptions;
 
-public class Actor extends GameObject {
-	boolean clickedInLastFrame = false;
-	boolean clickedInThisFrame = false;
+public abstract class Actor extends GameObject {
+	boolean clickedInLastFrame;
+	boolean clickedInThisFrame;
 	List<GameObject> activeInteractables;
 
 	public Actor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, sprite, collider, interactBox);
-		activeInteractables = new ArrayList<GameObject>();
+		resetState();
 	}
 
 	public Actor(Point origin, Sprite sprite) {
 		this(origin, sprite, null, null);
 	}
+	
+	protected final void resetState() {
+		clickedInLastFrame = false;
+		clickedInThisFrame = false;
+		activeInteractables = new ArrayList<GameObject>();
+		resetActorState();
+	}
+	
+	/**
+	 * This should be used to set any initial state. This is called when the Actor is constructed and reset.
+	 */
+	protected abstract void resetActorState();
 
 	// TODO
 	// Move, with collision checking
@@ -65,7 +77,7 @@ public class Actor extends GameObject {
 		// Check each solid's collider to see whether it overlaps with the wholeArea.
 		// activeSolids will contain a list of solids that must be considered for collision
 		// checking.
-		List<GameObject> solids = getWorld().getAllSolids();
+		List<GameObject> solids = getWorld().getActiveSolids();
 		List<GameObject> activeSolids = new ArrayList<GameObject>();
 		Iterator<GameObject> si = solids.iterator();
 		while (si.hasNext()) {
@@ -186,7 +198,11 @@ public class Actor extends GameObject {
 	// TODO
 	// Update
 	//
-	final public void update(GameContainer gc, int delta) {
+	final public void update(GameContainer gc, int delta) throws InvalidObjectStateException {
+		if (!isEnabled()) {
+			throw new InvalidObjectStateException("Tried to update " + this + " but it is disabled.");
+		}
+		
 		clickedInThisFrame = false;
 
 		Input input = gc.getInput();
@@ -221,7 +237,7 @@ public class Actor extends GameObject {
 			Iterator<GameObject> aii = activeInteractables.iterator();
 			while (aii.hasNext()) {
 				GameObject go = aii.next();
-				go.interactedhBy(this);
+				go.interactedBy(this);
 				if (GlobalOptions.DEBUG) {
 					System.out.println(this + " interacted with " + go);
 				}

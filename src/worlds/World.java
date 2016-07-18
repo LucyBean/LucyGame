@@ -12,12 +12,15 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import objects.Actor;
 import objects.GameObject;
+import objects.InvalidObjectStateException;
 
 public class World {
 	Camera camera;
 	List<ObjectLayer> layers;
 	List<Actor> actors;
+	List<Actor> activeActors;
 	List<GameObject> solids;
+	List<GameObject> activeSolids;
 	List<GameObject> interactables;
 
 	public World() {
@@ -32,7 +35,9 @@ public class World {
 			camera = new Camera();
 			layers = new ArrayList<ObjectLayer>();
 			actors = new ArrayList<Actor>();
+			activeActors = new ArrayList<Actor>();
 			solids = new ArrayList<GameObject>();
+			activeSolids = new ArrayList<GameObject>();
 			interactables = new ArrayList<GameObject>();
 
 			for (@SuppressWarnings("unused")
@@ -72,6 +77,7 @@ public class World {
 		if (go instanceof Actor) {
 			actors.add((Actor) go);
 		}
+		
 		if (go.isSolid()) {
 			solids.add(go);
 		}
@@ -79,19 +85,22 @@ public class World {
 			interactables.add(go);
 		}
 
+		if (go.isEnabled()) {
+			addToActiveLists(go);
+		}
+
 		go.setWorld(this);
 	}
 
 	/**
-	 * Returns all solid objects in the world.
+	 * Returns all active solid objects in the world.
 	 * 
 	 * @return
 	 */
-	public List<GameObject> getAllSolids() {
-		// TODO
+	public List<GameObject> getActiveSolids() {
 		// Currently returns all solid objects in the world.
 		// Modify to keep track of on screen objects.
-		return solids;
+		return activeSolids;
 	}
 
 	/**
@@ -111,6 +120,36 @@ public class World {
 	}
 
 	/**
+	 * Removes this GameObject from all active lists. The GameObject will no longer be updated or
+	 * rendered.
+	 * 
+	 * @param go
+	 */
+	public void removeFromActiveLists(GameObject go) {
+		if (go instanceof Actor) {
+			activeActors.remove((Actor) go);
+		}
+		if (go.isSolid()) {
+			activeSolids.remove(go);
+		}
+	}
+
+	/**
+	 * Adds this GameObject to all applicable active lists. The GameObject will now be updated and
+	 * rendered.
+	 * 
+	 * @param go
+	 */
+	public void addToActiveLists(GameObject go) {
+		if (go instanceof Actor) {
+			activeActors.add((Actor) go);
+		}
+		if (go.isSolid()) {
+			activeSolids.add(go);
+		}
+	}
+
+	/**
 	 * Renders the world.
 	 * 
 	 * @param gc
@@ -127,7 +166,14 @@ public class World {
 
 				while (oli.hasNext()) {
 					GameObject go = oli.next();
-					go.render(gc, g, camera);
+					if (go.isEnabled()) {
+						try {
+							go.render(gc, g, camera);
+						} catch (InvalidObjectStateException iose) {
+							System.err.println(iose.getMessage());
+							iose.printStackTrace();
+						}
+					}
 				}
 			}
 		}
@@ -162,10 +208,15 @@ public class World {
 		}
 
 		// Propagate updates to actors
-		Iterator<Actor> ai = actors.iterator();
+		Iterator<Actor> ai = activeActors.iterator();
 		while (ai.hasNext()) {
-			Actor a = ai.next();
-			a.update(gc, delta);
+			try {
+				Actor a = ai.next();
+				a.update(gc, delta);
+			} catch (InvalidObjectStateException iose) {
+				System.err.println(iose.getMessage());
+				iose.printStackTrace();
+			}
 		}
 	}
 }
