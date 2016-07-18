@@ -18,11 +18,12 @@ public class World {
 	List<ObjectLayer> layers;
 	List<Actor> actors;
 	List<GameObject> solids;
+	List<GameObject> interactables;
 
 	public World() {
 		reset();
 	}
-	
+
 	/**
 	 * Sets the world to its initial state.
 	 */
@@ -32,6 +33,7 @@ public class World {
 			layers = new ArrayList<ObjectLayer>();
 			actors = new ArrayList<Actor>();
 			solids = new ArrayList<GameObject>();
+			interactables = new ArrayList<GameObject>();
 
 			for (@SuppressWarnings("unused")
 			WorldLayer l : WorldLayer.values()) {
@@ -39,8 +41,7 @@ public class World {
 			}
 
 			init();
-		}
-		catch (SlickException se) {
+		} catch (SlickException se) {
 			System.err.println("Unable to initialise or reset world.");
 			se.printStackTrace();
 		}
@@ -74,22 +75,37 @@ public class World {
 		if (go.isSolid()) {
 			solids.add(go);
 		}
+		if (go.isInteractable()) {
+			interactables.add(go);
+		}
 
 		go.setWorld(this);
 	}
 
 	/**
-	 * Returns the solid objects that are currently on screen.
+	 * Returns all solid objects in the world.
 	 * 
 	 * @return
 	 */
-	public List<GameObject> getOnScreenSolids() {
+	public List<GameObject> getAllSolids() {
 		// TODO
 		// Currently returns all solid objects in the world.
 		// Modify to keep track of on screen objects.
 		return solids;
 	}
-	
+
+	/**
+	 * Returns all interactable objects in the world.
+	 * 
+	 * @return
+	 */
+	public List<GameObject> getAllInteractables() {
+		// TODO
+		// Currently returns all interactables in the world.
+		// Modify to keep track of on screen objects.
+		return interactables;
+	}
+
 	public Camera getCamera() {
 		return camera;
 	}
@@ -139,7 +155,7 @@ public class World {
 		if (input.isKeyDown(Input.KEY_G)) {
 			camera.zoomOut();
 		}
-		
+
 		// Reset on D
 		if (input.isKeyDown(Input.KEY_D)) {
 			reset();

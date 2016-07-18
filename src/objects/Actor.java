@@ -10,13 +10,16 @@ import org.newdawn.slick.Input;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
+import worlds.GlobalOptions;
 
 public class Actor extends GameObject {
 	boolean clickedInLastFrame = false;
 	boolean clickedInThisFrame = false;
-	
+	List<GameObject> activeInteractables;
+
 	public Actor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, sprite, collider, interactBox);
+		activeInteractables = new ArrayList<GameObject>();
 	}
 
 	public Actor(Point origin, Sprite sprite) {
@@ -28,13 +31,13 @@ public class Actor extends GameObject {
 	//
 	public void move(Dir d, float amount) {
 		// Calculate the whole area through which the Actor moves excluding its original box
-		Rectangle wholeArea;
-		
+		Rectangle moveArea;
+
 		Point origin;
 		// move the origin for NORTH and WEST
 		if (d == Dir.NORTH || d == Dir.WEST) {
 			origin = getCollider().getTopLeft().move(d, amount);
-		} 
+		}
 		// set origin to bottom left for SOUTH
 		else if (d == Dir.SOUTH) {
 			origin = getCollider().getBottomLeft();
@@ -45,7 +48,7 @@ public class Actor extends GameObject {
 		}
 		// Translate the origin from object to world co-ords
 		origin = translateToWorldCoOrds(origin);
-		
+
 		float width;
 		float height;
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
@@ -55,13 +58,14 @@ public class Actor extends GameObject {
 			width = amount;
 			height = getCollider().getHeight();
 		}
-		
-		wholeArea = new Rectangle(origin, width, height);
+
+		moveArea = new Rectangle(origin, width, height);
 
 		// Find all solid objects to check
 		// Check each solid's collider to see whether it overlaps with the wholeArea.
-		// activeSolids will contain a list of solids that must be considered for collision checking.
-		List<GameObject> solids = getWorld().getOnScreenSolids();
+		// activeSolids will contain a list of solids that must be considered for collision
+		// checking.
+		List<GameObject> solids = getWorld().getAllSolids();
 		List<GameObject> activeSolids = new ArrayList<GameObject>();
 		Iterator<GameObject> si = solids.iterator();
 		while (si.hasNext()) {
@@ -72,7 +76,7 @@ public class Actor extends GameObject {
 				// Translate to world co-ords.
 				Rectangle rectWorld = rectRel.translate(go.getPosition());
 				// If the collider overlaps with wholeArea, add to activeSolids list.
-				if (rectWorld.overlaps(wholeArea)) {
+				if (rectWorld.overlaps(moveArea)) {
 					activeSolids.add(go);
 				}
 			}
@@ -88,8 +92,7 @@ public class Actor extends GameObject {
 			Iterator<GameObject> asi = activeSolids.iterator();
 			GameObject go;
 			switch (d) {
-				case NORTH:
-				{
+				case NORTH: {
 					go = asi.next();
 					float maxSouth = go.getCollider().getBottomLeft().move(go.getPosition()).getY();
 					while (asi.hasNext()) {
@@ -102,11 +105,10 @@ public class Actor extends GameObject {
 					}
 					toMove = getPosition().getY() - maxSouth;
 					break;
-					
+
 				}
-				
-				case SOUTH:
-				{
+
+				case SOUTH: {
 					go = asi.next();
 					float maxNorth = go.getCollider().getTopLeft().move(go.getPosition()).getY();
 					while (asi.hasNext()) {
@@ -120,9 +122,8 @@ public class Actor extends GameObject {
 					toMove = maxNorth - getPosition().getY() - getCollider().getHeight();
 					break;
 				}
-				
-				case EAST:
-				{
+
+				case EAST: {
 					go = asi.next();
 					float maxWest = go.getCollider().getTopLeft().move(go.getPosition()).getX();
 					while (asi.hasNext()) {
@@ -136,9 +137,8 @@ public class Actor extends GameObject {
 					toMove = maxWest - getPosition().getX() - getCollider().getWidth();
 					break;
 				}
-					
-				case WEST:
-				{
+
+				case WEST: {
 					go = asi.next();
 					float maxEast = go.getCollider().getTopRight().move(go.getPosition()).getX();
 					while (asi.hasNext()) {
@@ -153,8 +153,26 @@ public class Actor extends GameObject {
 					break;
 				}
 			}
-			
+
 			position = position.move(d, toMove);
+		}
+
+		// Check for any interactables that are at the Actor's current position
+		Rectangle thisArea = getCollider().getRectangle().translate(getPosition());
+		List<GameObject> interactables = getWorld().getAllInteractables();
+		Iterator<GameObject> ii = interactables.iterator();
+		while (ii.hasNext()) {
+			GameObject go = ii.next();
+			if (go != this) {
+				// Get interaction rectangle in relative co-ordinates
+				Rectangle rectRel = go.getInteractBox().getRectangle();
+				// Translate to world co-ords.
+				Rectangle rectWorld = rectRel.translate(go.getPosition());
+				// If the interaction overlaps with wholeArea, add to activeInteractables list.
+				if (rectWorld.overlaps(thisArea)) {
+					activeInteractables.add(go);
+				}
+			}
 		}
 	}
 
@@ -168,36 +186,54 @@ public class Actor extends GameObject {
 	// TODO
 	// Update
 	//
-	final public void update(GameContainer gc, int delta) {clickedInThisFrame = false;
-	
-	Input input = gc.getInput();
-	if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-		Point mouseLocation = new Point(input.getMouseX(), input.getMouseY());
-		Rectangle boundingRectangle = translateToScreenCoOrds(
-				getSprite().getBoundingRectangle(), getWorld().getCamera());
-		if (boundingRectangle.contains(mouseLocation)) {
-			clickedInThisFrame = true;
-			onMouseDown();
+	final public void update(GameContainer gc, int delta) {
+		clickedInThisFrame = false;
+
+		Input input = gc.getInput();
+		if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+			Point mouseLocation = new Point(input.getMouseX(), input.getMouseY());
+			Rectangle boundingRectangle = translateToScreenCoOrds(
+					getSprite().getBoundingRectangle(), getWorld().getCamera());
+			if (boundingRectangle.contains(mouseLocation)) {
+				clickedInThisFrame = true;
+				onMouseDown();
+			}
 		}
-	}
-	
-	if (clickedInThisFrame && !clickedInLastFrame) {
-		onClick();
-	}
-	
-	clickedInLastFrame = clickedInThisFrame;
+
+		if (clickedInThisFrame && !clickedInLastFrame) {
+			onClick();
+		}
+
+		clickedInLastFrame = clickedInThisFrame;
 		act(gc, delta);
 	}
-	
+
 	public void act(GameContainer gc, int delta) {
-		
+
 	}
-	
+
+	public void interactWithAll() {
+		if (activeInteractables.isEmpty()) {
+			if (GlobalOptions.DEBUG) {
+				System.out.println(this + " interacted with nothing.");
+			}
+		} else {
+			Iterator<GameObject> aii = activeInteractables.iterator();
+			while (aii.hasNext()) {
+				GameObject go = aii.next();
+				go.interactedhBy(this);
+				if (GlobalOptions.DEBUG) {
+					System.out.println(this + " interacted with " + go);
+				}
+			}
+		}
+	}
+
 	public void onMouseDown() {
-		
+
 	}
-	
+
 	public void onClick() {
-		
+
 	}
 }

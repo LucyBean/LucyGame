@@ -91,8 +91,11 @@ public abstract class GameObject {
 	}
 
 	// TODO
-	// onInteract functions
+	// Interaction and reactions
 	//
+	public void interactedhBy(Actor go) {
+		
+	}
 
 	//
 	// Render

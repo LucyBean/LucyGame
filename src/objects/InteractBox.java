@@ -6,10 +6,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
 
-public class InteractBox {
-	Sprite sprite;
-	Rectangle rect;
-
+public class InteractBox extends GOAttachment {
 	/**
 	 * Creates a new InteractBox to be attached to a GameObject.
 	 * 
@@ -22,7 +19,7 @@ public class InteractBox {
 	 *            Height of the InteractBox.
 	 */
 	public InteractBox(Point topLeft, float width, float height) {
-		rect = new Rectangle(topLeft, width, height);
+		super(topLeft, width, height);
 	}
 
 	/**
@@ -31,7 +28,7 @@ public class InteractBox {
 	 * @param rect
 	 */
 	public InteractBox(Rectangle rect) {
-		this.rect = rect;
+		super(rect);
 	}
 
 	public Image getImage() {
@@ -40,9 +37,5 @@ public class InteractBox {
 		}
 
 		return sprite.getImage();
-	}
-
-	public Point getTopLeft() {
-		return rect.getTopLeft();
 	}
 }

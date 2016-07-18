@@ -2,8 +2,7 @@
 ==  THINGS TO DO  ==
 ====================
 
-Movement with collision detection
-There are some bugs???
+Interactions
 
 Have list of 'on screen' objects/solids
 
@@ -12,5 +11,3 @@ Gravity
 Creating and importing worlds using that map creator tool
 
 Animations
-
-Input with key/mouse listener classes

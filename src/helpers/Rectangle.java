@@ -101,11 +101,15 @@ public class Rectangle {
 		}
 
 		// Checks for '+' and 'T' overlap
-		if (getTopLeft().getY() <= r.getTopLeft().getY() && getBottomLeft().getY() >= r.getBottomLeft().getY())
-			if (getTopLeft().getX() >= r.getTopLeft().getX() && getTopRight().getX() <= r.getTopRight().getX())
+		if (getTopLeft().getY() <= r.getTopLeft().getY()
+				&& getBottomLeft().getY() >= r.getBottomLeft().getY())
+			if (getTopLeft().getX() >= r.getTopLeft().getX()
+					&& getTopRight().getX() <= r.getTopRight().getX())
 				return true;
-		if (r.getTopLeft().getY() <= getTopLeft().getY() && r.getBottomLeft().getY() >= getBottomLeft().getY())
-			if (r.getTopLeft().getX() >= getTopLeft().getX() && r.getTopRight().getX() <= getTopRight().getX())
+		if (r.getTopLeft().getY() <= getTopLeft().getY()
+				&& r.getBottomLeft().getY() >= getBottomLeft().getY())
+			if (r.getTopLeft().getX() >= getTopLeft().getX()
+					&& r.getTopRight().getX() <= getTopRight().getX())
 				return true;
 
 		return false;
@@ -127,7 +131,7 @@ public class Rectangle {
 	 * @return
 	 */
 	public Rectangle scaleAboutOrigin(float scale) {
-		return new Rectangle(topLeft.scale(scale), width*scale, height*scale);
+		return new Rectangle(topLeft.scale(scale), width * scale, height * scale);
 	}
 
 	@Override
