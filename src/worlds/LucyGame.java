@@ -6,7 +6,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import worldLibrary.HiddenObjectDemoWorld;
+import worldLibrary.CameraObjectLoadingDemo;
 
 public class LucyGame extends BasicGame {
 	World world;
@@ -32,7 +32,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
-		world = new HiddenObjectDemoWorld();
+		world = new CameraObjectLoadingDemo();
 	}
 
 	@Override

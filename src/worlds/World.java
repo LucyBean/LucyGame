@@ -10,6 +10,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
+import helpers.Point;
+import objectLibrary.Wall;
 import objects.Actor;
 import objects.GameObject;
 import objects.InvalidObjectStateException;
@@ -217,6 +219,20 @@ public class World {
 				System.err.println(iose.getMessage());
 				iose.printStackTrace();
 			}
+		}
+	}
+	
+	//
+	// Some helpful world creator tools
+	//
+	protected void drawWallBorder() {
+		for (int i = 0; i < 13; i++) {
+			addObject(new Wall(new Point(0 + 50 * i, 0)), WorldLayer.WORLD);
+			addObject(new Wall(new Point(0 + 50 * i, 450)), WorldLayer.WORLD);
+		}
+		for (int i = 0; i < 8; i++) {
+			addObject(new Wall(new Point(0, 50 + 50 * i)), WorldLayer.WORLD);
+			addObject(new Wall(new Point(600, 50 + 50 * i)), WorldLayer.WORLD);
 		}
 	}
 }

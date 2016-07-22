@@ -10,6 +10,10 @@ public abstract class Static extends GameObject {
 	public Static(Point origin, Sprite sprite) {
 		this(origin, sprite, null, null);
 	}
+	
+	public Static(Point origin) {
+		this(origin, null, null, null);
+	}
 
 	@Override
 	protected final void resetState() {

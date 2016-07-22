@@ -15,6 +15,7 @@ public abstract class Actor extends GameObject {
 	boolean clickedInLastFrame;
 	boolean clickedInThisFrame;
 	List<GameObject> activeInteractables;
+	Dir lastDirectionMoved;
 
 	public Actor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, sprite, collider, interactBox);
@@ -22,6 +23,10 @@ public abstract class Actor extends GameObject {
 
 	public Actor(Point origin, Sprite sprite) {
 		this(origin, sprite, null, null);
+	}
+	
+	public Actor(Point origin) {
+		this(origin, null, null, null);
 	}
 
 	protected final void resetState() {
@@ -36,6 +41,26 @@ public abstract class Actor extends GameObject {
 	 * and reset.
 	 */
 	protected abstract void resetActorState();
+	
+	//
+	// Getters
+	//
+	public Dir getLastDirectionMoved() {
+		return lastDirectionMoved;
+	}
+
+	// TODO
+	// Move, with collision checking
+	//
+	public void move(Dir d, float amount) {
+		if (collider == null) {
+			setPosition(position.move(d,amount));
+		} else {
+			Point newPos = findNewPosition(d, amount);
+			setPosition(newPos);
+		}
+		lastDirectionMoved = d;
+	}
 
 	/**
 	 * Calculates the rectangle through which the object will move, assuming there are no
@@ -204,9 +229,11 @@ public abstract class Actor extends GameObject {
 
 		return nowActive;
 	}
-	
+
 	/**
-	 * Returns the list (a - b) (i.e. all elements in a that are not in b). This will not modify the original lists.
+	 * Returns the list (a - b) (i.e. all elements in a that are not in b). This will not modify the
+	 * original lists.
+	 * 
 	 * @param <T>
 	 * @param a
 	 * @param b
@@ -241,15 +268,6 @@ public abstract class Actor extends GameObject {
 		}
 
 		activeInteractables = nowActive;
-	}
-
-	// TODO
-	// Move, with collision checking
-	//
-	public void move(Dir d, float amount) {
-		Point newPos = findNewPosition(d, amount);
-		setPosition(newPos);
-		checkForInteractions();
 	}
 
 	// TODO
@@ -295,6 +313,7 @@ public abstract class Actor extends GameObject {
 
 		clickedInLastFrame = clickedInThisFrame;
 		act(gc, delta);
+		checkForInteractions();
 	}
 
 	public void act(GameContainer gc, int delta) {

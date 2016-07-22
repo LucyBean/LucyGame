@@ -52,6 +52,10 @@ public abstract class GameObject {
 	public GameObject(Point origin, Sprite sprite) {
 		this(origin, sprite, null, null);
 	}
+	
+	public GameObject(Point origin) {
+		this(origin, null, null, null);
+	}
 
 	/**
 	 * Resets an object to its initial state.
@@ -106,6 +110,10 @@ public abstract class GameObject {
 
 	public void setPosition(Point position) {
 		this.position = position;
+	}
+	
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
 	}
 
 	/**
