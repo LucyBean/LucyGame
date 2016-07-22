@@ -3,9 +3,12 @@
 ====================]
 
 Interactions
+	Allow an object to check if it is currently overlapping a certain object?
 
 Gravity
 
 Creating and importing worlds using that map creator tool
+
+Map sector object loading
 
 Animations

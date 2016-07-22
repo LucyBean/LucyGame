@@ -160,6 +160,7 @@ public abstract class GameObject {
 	//
 	// Render
 	//
+	@SuppressWarnings("unused")
 	public void render(GameContainer gc, Graphics g, Camera camera)
 			throws InvalidObjectStateException {
 		// The object should be enabled when it is acting

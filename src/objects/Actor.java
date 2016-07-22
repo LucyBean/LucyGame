@@ -23,26 +23,32 @@ public abstract class Actor extends GameObject {
 	public Actor(Point origin, Sprite sprite) {
 		this(origin, sprite, null, null);
 	}
-	
+
 	protected final void resetState() {
 		clickedInLastFrame = false;
 		clickedInThisFrame = false;
 		activeInteractables = new ArrayList<GameObject>();
 		resetActorState();
 	}
-	
+
 	/**
-	 * This should be used to set any initial state. This is called when the Actor is constructed and reset.
+	 * This should be used to set any initial state. This is called when the Actor is constructed
+	 * and reset.
 	 */
 	protected abstract void resetActorState();
 
-	// TODO
-	// Move, with collision checking
-	//
-	public void move(Dir d, float amount) {
+	/**
+	 * Calculates the rectangle through which the object will move, assuming there are no
+	 * collisions.
+	 * 
+	 * @param d
+	 *            Direction in which to move.
+	 * @param amount
+	 *            Amount by which to move.
+	 * @return The area through which the Actor moves, assuming no collisions
+	 */
+	private Rectangle calculateMoveArea(Dir d, float amount) {
 		// Calculate the whole area through which the Actor moves excluding its original box
-		Rectangle moveArea;
-
 		Point origin;
 		// move the origin for NORTH and WEST
 		if (d == Dir.NORTH || d == Dir.WEST) {
@@ -69,8 +75,16 @@ public abstract class Actor extends GameObject {
 			height = getCollider().getHeight();
 		}
 
-		moveArea = new Rectangle(origin, width, height);
+		return new Rectangle(origin, width, height);
+	}
 
+	/**
+	 * Checks for collisions to determine the new position of the object.
+	 * 
+	 * @return The object's new position
+	 */
+	private Point findNewPosition(Dir d, float amount) {
+		Rectangle moveArea = calculateMoveArea(d, amount);
 		// Find all solid objects to check
 		// Check each solid's collider to see whether it overlaps with the wholeArea.
 		// activeSolids will contain a list of solids that must be considered for collision
@@ -94,7 +108,7 @@ public abstract class Actor extends GameObject {
 
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
-			setPosition(getPosition().move(d.asPoint().scale(amount)));
+			return getPosition().move(d.asPoint().scale(amount));
 		}
 		// Else move to edge of the d.neg()-most point
 		else {
@@ -164,9 +178,11 @@ public abstract class Actor extends GameObject {
 				}
 			}
 
-			position = position.move(d, toMove);
+			return position.move(d, toMove);
 		}
+	}
 
+	private List<GameObject> findInteractablesHere() {
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(getPosition());
 		List<GameObject> interactables = getWorld().getAllInteractables();
@@ -185,31 +201,55 @@ public abstract class Actor extends GameObject {
 				}
 			}
 		}
+
+		return nowActive;
+	}
+	
+	/**
+	 * Returns the list (a - b) (i.e. all elements in a that are not in b). This will not modify the original lists.
+	 * @param <T>
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private <T> List<T> subtract(List<T> a, List<T> b) {
+		List<T> toReturn = new ArrayList<T>(a);
+		toReturn.removeAll(b);
+		return toReturn;
+	}
+
+	private void checkForInteractions() {
+		List<GameObject> nowActive = findInteractablesHere();
 		List<GameObject> prevActive = activeInteractables;
 		// Figure out the objects that are newly active/inactive
 		// activeInteractables is the list of interactables active last iteration
 		// nowActive is the list of interactables active this iteration
-		// newlyActive = nowActive - prevActive
-		List<GameObject> newlyActive = new ArrayList<GameObject>(nowActive);
-		newlyActive.removeAll(prevActive);
-		// newlyInactive = prevActive - nowActive
-		List<GameObject> newlyInactive = new ArrayList<GameObject>(prevActive);
-		newlyInactive.removeAll(nowActive);
-		
+		List<GameObject> newlyActive = subtract(nowActive, prevActive);
+		List<GameObject> newlyInactive = subtract(prevActive, nowActive);
+
 		// Call overlapStart and overlapEnd on these newly active/inactive objects
-		ii = newlyActive.iterator();
+		Iterator<GameObject> ii = newlyActive.iterator();
 		while (ii.hasNext()) {
 			GameObject go = ii.next();
 			go.overlapStart(this);
 		}
-		
+
 		ii = newlyInactive.iterator();
 		while (ii.hasNext()) {
 			GameObject go = ii.next();
 			go.overlapEnd(this);
 		}
-		
+
 		activeInteractables = nowActive;
+	}
+
+	// TODO
+	// Move, with collision checking
+	//
+	public void move(Dir d, float amount) {
+		Point newPos = findNewPosition(d, amount);
+		setPosition(newPos);
+		checkForInteractions();
 	}
 
 	// TODO
@@ -232,9 +272,10 @@ public abstract class Actor extends GameObject {
 	//
 	final public void update(GameContainer gc, int delta) throws InvalidObjectStateException {
 		if (!isEnabled()) {
-			throw new InvalidObjectStateException("Tried to update " + this + " but it is disabled.");
+			throw new InvalidObjectStateException(
+					"Tried to update " + this + " but it is disabled.");
 		}
-		
+
 		clickedInThisFrame = false;
 
 		Input input = gc.getInput();
