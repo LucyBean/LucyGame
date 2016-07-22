@@ -11,7 +11,15 @@ public class Rectangle {
 	float height;
 	Sprite sprite;
 
+	/**
+	 * Creates a new Rectangle object.
+	 * @param topLeft The position of the top-left point
+	 * @param width The width of the rectangle. Set to zero if negative.
+	 * @param height The height of the rectangle. Set to zero if negative.
+	 */
 	public Rectangle(Point topLeft, float width, float height) {
+		width = Math.max(width, 0);
+		height = Math.max(height, 0);
 		this.topLeft = topLeft;
 		this.width = width;
 		this.height = height;

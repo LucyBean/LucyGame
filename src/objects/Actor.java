@@ -53,8 +53,8 @@ public abstract class Actor extends GameObject {
 	// Move, with collision checking
 	//
 	public void move(Dir d, float amount) {
-		if (collider == null) {
-			setPosition(position.move(d,amount));
+		if (getCollider() == null) {
+			setPosition(getPosition().move(d,amount));
 		} else {
 			Point newPos = findNewPosition(d, amount);
 			setPosition(newPos);
@@ -73,6 +73,12 @@ public abstract class Actor extends GameObject {
 	 * @return The area through which the Actor moves, assuming no collisions
 	 */
 	private Rectangle calculateMoveArea(Dir d, float amount) {
+		// Reverse the direction if moving a negative amount
+		if (amount < 0) {
+			d = d.neg();
+			amount = -amount;
+		}
+		
 		// Calculate the whole area through which the Actor moves excluding its original box
 		Point origin;
 		// move the origin for NORTH and WEST
@@ -102,20 +108,10 @@ public abstract class Actor extends GameObject {
 
 		return new Rectangle(origin, width, height);
 	}
-
-	/**
-	 * Checks for collisions to determine the new position of the object.
-	 * 
-	 * @return The object's new position
-	 */
-	private Point findNewPosition(Dir d, float amount) {
-		Rectangle moveArea = calculateMoveArea(d, amount);
-		// Find all solid objects to check
-		// Check each solid's collider to see whether it overlaps with the wholeArea.
-		// activeSolids will contain a list of solids that must be considered for collision
-		// checking.
+	
+	protected List<GameObject> getCollidingSolids(Rectangle rect) {
 		List<GameObject> solids = getWorld().getActiveSolids();
-		List<GameObject> activeSolids = new ArrayList<GameObject>();
+		List<GameObject> collidingSolids = new ArrayList<GameObject>();
 		Iterator<GameObject> si = solids.iterator();
 		while (si.hasNext()) {
 			GameObject go = si.next();
@@ -125,11 +121,28 @@ public abstract class Actor extends GameObject {
 				// Translate to world co-ords.
 				Rectangle rectWorld = rectRel.translate(go.getPosition());
 				// If the collider overlaps with wholeArea, add to activeSolids list.
-				if (rectWorld.overlaps(moveArea)) {
-					activeSolids.add(go);
+				if (rectWorld.overlaps(rect)) {
+					collidingSolids.add(go);
 				}
 			}
 		}
+		
+		return collidingSolids;
+	}
+
+	/**
+	 * Checks for collisions to determine the new position of the object.
+	 * 
+	 * @return The object's new position
+	 */
+	private Point findNewPosition(Dir d, float amount) {
+		// flip direction and amount if amount is negative
+		if (amount < 0) {
+			d = d.neg();
+			amount = -amount;
+		}
+		Rectangle moveArea = calculateMoveArea(d, amount);
+		List<GameObject> activeSolids = getCollidingSolids(moveArea);
 
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
@@ -203,11 +216,14 @@ public abstract class Actor extends GameObject {
 				}
 			}
 
-			return position.move(d, toMove);
+			return getPosition().move(d, toMove);
 		}
 	}
 
 	private List<GameObject> findInteractablesHere() {
+		if (getCollider() == null) {
+			return new ArrayList<GameObject>();
+		}
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(getPosition());
 		List<GameObject> interactables = getWorld().getAllInteractables();
@@ -316,9 +332,7 @@ public abstract class Actor extends GameObject {
 		checkForInteractions();
 	}
 
-	public void act(GameContainer gc, int delta) {
-
-	}
+	public abstract void act(GameContainer gc, int delta);
 
 	public void interactWithAll() {
 		if (activeInteractables.isEmpty()) {

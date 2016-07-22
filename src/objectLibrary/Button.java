@@ -1,5 +1,7 @@
 package objectLibrary;
 
+import org.newdawn.slick.GameContainer;
+
 import helpers.Point;
 import objectLibs.SpriteLibrary;
 import objects.Actor;
@@ -16,6 +18,12 @@ public class Button extends Actor {
 
 	@Override
 	protected void resetActorState() {
+		
+	}
+
+	@Override
+	public void act(GameContainer gc, int delta) {
+		// TODO Auto-generated method stub
 		
 	}
 }

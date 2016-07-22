@@ -3,12 +3,12 @@
 ====================]
 
 Interactions
-	Allow an object to check if it is currently overlapping a certain object?
-
-Gravity
+	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
 
 Creating and importing worlds using that map creator tool
 
 Map sector object loading
+
+Platformer moves
 
 Animations

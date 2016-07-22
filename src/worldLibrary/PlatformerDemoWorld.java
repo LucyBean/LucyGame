@@ -4,7 +4,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
-import objectLibrary.Player;
+import objectLibrary.GravityPlayer;
 import objectLibrary.Wall;
 import objects.GameObject;
 import objects.Sprite;
@@ -24,11 +24,18 @@ public class PlatformerDemoWorld extends World {
 		};
 		addObject(background, WorldLayer.BACKGROUND);
 
-		GameObject player = new Player(new Point(40, 50));
-		addObject(player, WorldLayer.PLAYER);
+		GameObject gravityPlayer = new GravityPlayer(new Point(80, 50));
+		addObject(gravityPlayer, WorldLayer.PLAYER);
 
+		// Add some walls
 		for (int i = 0; i < 10; i++) {
-			addObject(new Wall(new Point(200 + 50 * i, 200)), WorldLayer.WORLD);
+			addObject(new Wall(new Point(30 + 50*i, 350)), WorldLayer.WORLD);
+		}
+		for (int i = 0; i < 5; i++) {
+			addObject(new Wall(new Point(530, 350 - 50*i)), WorldLayer.WORLD);
+		}
+		for (int i = 0; i < 5; i++) {
+			addObject(new Wall(new Point(280 + 50*i, 150)), WorldLayer.WORLD);
 		}
 	}
 }

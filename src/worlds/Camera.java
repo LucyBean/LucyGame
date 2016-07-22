@@ -15,6 +15,7 @@ public class Camera {
 	
 	public final float MAX_SCALE = 3.0f;
 	public final float MIN_SCALE = 0.3f;
+	public final float SCALE_RATE = 0.01f;
 	
 	public Point getLocation() {
 		return location;
@@ -33,10 +34,10 @@ public class Camera {
 	}
 	
 	public void zoomIn() {
-		scale = Math.min(scale + 0.05f, MAX_SCALE);
+		scale = Math.min(scale + SCALE_RATE, MAX_SCALE);
 	}
 	
 	public void zoomOut() {
-		scale = Math.max(scale - 0.05f, MIN_SCALE);
+		scale = Math.max(scale - SCALE_RATE, MIN_SCALE);
 	}
 }

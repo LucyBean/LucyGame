@@ -39,7 +39,7 @@ public class RectangleTest {
 		
 		System.out.println("\n\n--Rectangle overlap test--");
 		
-		Rectangle[] rects = new Rectangle[9];
+		Rectangle[] rects = new Rectangle[10];
 		rects[0] = new Rectangle(new Point(5,5), 15, 15);
 		rects[1] = new Rectangle(new Point(25,5), 15, 15);
 		rects[2] = new Rectangle(new Point(5,25), 15, 15);
@@ -49,6 +49,7 @@ public class RectangleTest {
 		rects[6] = new Rectangle(new Point(70,60), 10, 30);
 		rects[7] = new Rectangle(new Point(80,60), 10, 30);
 		rects[8] = new Rectangle(new Point(50,70), 30, 10);
+		rects[9] = new Rectangle(new Point(50,70), 30, 0);
 		
 		// Corner contain overlaps
 		System.out.println("0,1 expected false: " + rects[0].overlaps(rects[1]) + " " + rects[1].overlaps(rects[0]));
@@ -65,6 +66,9 @@ public class RectangleTest {
 		
 		// T overlap
 		System.out.println("6,8 expected true: " + rects[6].overlaps(rects[8]) + " " + rects[8].overlaps(rects[6]));
+		
+		// Line overlap
+		System.out.println("8,9 expected true: " + rects[8].overlaps(rects[9]) + " " + rects[9].overlaps(rects[8]));
 		
 	}
 }

@@ -17,11 +17,11 @@ public abstract class GameObject {
 	// the top-left point of the collider (for solids) or image (for
 	// non-solids).
 	//
-	Point position;
-	Sprite sprite;
-	Collider collider;
-	InteractBox interactBox;
-	World world;
+	private Point position;
+	private Sprite sprite;
+	private Collider collider;
+	private InteractBox interactBox;
+	private World world;
 
 	boolean enabled = true;
 	boolean visible = true;

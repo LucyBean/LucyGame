@@ -1,5 +1,7 @@
 package objectLibrary;
 
+import org.newdawn.slick.GameContainer;
+
 import helpers.Point;
 import objectLibs.SpriteLibrary;
 import objects.Actor;
@@ -27,5 +29,11 @@ public class HiddenSquare extends Actor {
 		if (a instanceof Player) {
 			setVisibility(false);
 		}
+	}
+
+	@Override
+	public void act(GameContainer gc, int delta) {
+		// TODO Auto-generated method stub
+		
 	}
 }
