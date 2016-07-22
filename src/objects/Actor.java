@@ -10,7 +10,6 @@ import org.newdawn.slick.Input;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
-import worlds.GlobalOptions;
 
 public abstract class Actor extends GameObject {
 	boolean clickedInLastFrame;
@@ -230,17 +229,11 @@ public abstract class Actor extends GameObject {
 
 	public void interactWithAll() {
 		if (activeInteractables.isEmpty()) {
-			if (GlobalOptions.DEBUG) {
-				System.out.println(this + " interacted with nothing.");
-			}
 		} else {
 			Iterator<GameObject> aii = activeInteractables.iterator();
 			while (aii.hasNext()) {
 				GameObject go = aii.next();
 				go.interactedBy(this);
-				if (GlobalOptions.DEBUG) {
-					System.out.println(this + " interacted with " + go);
-				}
 			}
 		}
 	}
