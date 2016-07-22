@@ -18,7 +18,6 @@ public abstract class Actor extends GameObject {
 
 	public Actor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, sprite, collider, interactBox);
-		resetState();
 	}
 
 	public Actor(Point origin, Sprite sprite) {
@@ -171,6 +170,7 @@ public abstract class Actor extends GameObject {
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(getPosition());
 		List<GameObject> interactables = getWorld().getAllInteractables();
+		List<GameObject> nowActive = new ArrayList<GameObject>();
 		Iterator<GameObject> ii = interactables.iterator();
 		while (ii.hasNext()) {
 			GameObject go = ii.next();
@@ -181,18 +181,51 @@ public abstract class Actor extends GameObject {
 				Rectangle rectWorld = rectRel.translate(go.getPosition());
 				// If the interaction overlaps with wholeArea, add to activeInteractables list.
 				if (rectWorld.overlaps(thisArea)) {
-					activeInteractables.add(go);
+					nowActive.add(go);
 				}
 			}
 		}
+		List<GameObject> prevActive = activeInteractables;
+		// Figure out the objects that are newly active/inactive
+		// activeInteractables is the list of interactables active last iteration
+		// nowActive is the list of interactables active this iteration
+		// newlyActive = nowActive - prevActive
+		List<GameObject> newlyActive = new ArrayList<GameObject>(nowActive);
+		newlyActive.removeAll(prevActive);
+		// newlyInactive = prevActive - nowActive
+		List<GameObject> newlyInactive = new ArrayList<GameObject>(prevActive);
+		newlyInactive.removeAll(nowActive);
+		
+		// Call overlapStart and overlapEnd on these newly active/inactive objects
+		ii = newlyActive.iterator();
+		while (ii.hasNext()) {
+			GameObject go = ii.next();
+			go.overlapStart(this);
+		}
+		
+		ii = newlyInactive.iterator();
+		while (ii.hasNext()) {
+			GameObject go = ii.next();
+			go.overlapEnd(this);
+		}
+		
+		activeInteractables = nowActive;
 	}
 
 	// TODO
 	// Event reactions
 	//
 	/*
-	 * added to world on created on collision on interact
+	 * added to world, on created, on collision, on interact
 	 */
+
+	public void onMouseDown() {
+
+	}
+
+	public void onClick() {
+
+	}
 
 	// TODO
 	// Update
@@ -236,13 +269,5 @@ public abstract class Actor extends GameObject {
 				go.interactedBy(this);
 			}
 		}
-	}
-
-	public void onMouseDown() {
-
-	}
-
-	public void onClick() {
-
 	}
 }

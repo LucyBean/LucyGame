@@ -47,10 +47,4 @@ public class Sprite {
 	public Rectangle getBoundingRectangle() {
 		return boundingRectangle;
 	}
-	
-	// TODO
-	// Make this check if the Image is visible.
-	public boolean isVisible() {
-		return true;
-	}
 }
