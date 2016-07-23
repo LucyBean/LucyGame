@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import helpers.Point;
 import helpers.Rectangle;
 import objects.Sprite;
+import worlds.GlobalOptions;
 
 /**
  * Class for holding and loading image sprites.
@@ -16,6 +17,8 @@ import objects.Sprite;
  *
  */
 public class SpriteLibrary {
+	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
+
 	public static Sprite createRectangle(Rectangle r, Color fill, Color border) {
 		try {
 			int width = (int) r.getWidth();
@@ -23,10 +26,10 @@ public class SpriteLibrary {
 			Image img = new Image(width, height);
 			Graphics g = img.getGraphics();
 			g.setColor(fill);
-			g.fillRect(0, 0, width-1, height-1);
+			g.fillRect(0, 0, width - 1, height - 1);
 			g.setColor(border);
-			g.drawRect(0, 0, width-1, height-1);
-			g.drawRect(1, 1, width-3, height-3);
+			g.drawRect(0, 0, width - 1, height - 1);
+			g.drawRect(1, 1, width - 3, height - 3);
 			g.flush();
 
 			return new Sprite(img);
@@ -36,7 +39,7 @@ public class SpriteLibrary {
 			return null;
 		}
 	}
-	
+
 	public static Sprite createRectangle(Rectangle r, Color fill) {
 		return createRectangle(r, fill, fill.darker(0.5f));
 	}
@@ -66,9 +69,13 @@ public class SpriteLibrary {
 		border.a = 220;
 		return createRectangle(interactBox, fill, border);
 	}
-	
-	public final static Sprite WALL = createRectangle(new Rectangle(Point.ZERO, 50, 50), new Color(240, 240, 40));
-	public final static Sprite PLAYER = createRectangle(new Rectangle(Point.ZERO, 40, 80), new Color(240, 40, 240));
-	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 100, 40), new Color(230, 130, 230));
-	public final static Sprite HIDDEN_SQUARE = createRectangle(new Rectangle(Point.ZERO, 60, 60), new Color(190, 60, 190));
+
+	public final static Sprite WALL = createRectangle(
+			new Rectangle(Point.ZERO, GRID_SIZE, GRID_SIZE), new Color(240, 240, 40));
+	public final static Sprite PLAYER = createRectangle(new Rectangle(Point.ZERO, 40, 80),
+			new Color(240, 40, 240));
+	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 100, 40),
+			new Color(230, 130, 230));
+	public final static Sprite HIDDEN_SQUARE = createRectangle(new Rectangle(Point.ZERO, 60, 60),
+			new Color(190, 60, 190));
 }

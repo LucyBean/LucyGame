@@ -17,7 +17,7 @@ public class HiddenObjectDemoWorld extends World {
 		GameObject mover = new Player(new Point(80, 300));
 		addObject(mover, WorldLayer.PLAYER);
 
-		drawWallBorder();
+		drawWallBorder(16,12);
 		
 		for (int i = 0; i < 10; i++) {
 			Random r = new Random();

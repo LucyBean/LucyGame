@@ -17,13 +17,13 @@ import objects.GameObject;
 import objects.InvalidObjectStateException;
 
 public class World {
-	Camera camera;
-	List<ObjectLayer> layers;
-	List<Actor> actors;
-	List<Actor> activeActors;
-	List<GameObject> solids;
-	List<GameObject> activeSolids;
-	List<GameObject> interactables;
+	private Camera camera;
+	private List<ObjectLayer> layers;
+	private List<Actor> actors;
+	private List<Actor> activeActors;
+	private List<GameObject> solids;
+	private List<GameObject> activeSolids;
+	private List<GameObject> interactables;
 
 	public World() {
 		reset();
@@ -79,7 +79,7 @@ public class World {
 		if (go instanceof Actor) {
 			actors.add((Actor) go);
 		}
-		
+
 		if (go.isSolid()) {
 			solids.add(go);
 		}
@@ -221,18 +221,38 @@ public class World {
 			}
 		}
 	}
-	
+
 	//
 	// Some helpful world creator tools
 	//
+	protected void drawWall(Point start, Dir d, int length) {
+		final int GRID_SIZE = GlobalOptions.GRID_SIZE;
+		final int x_step = (int) d.asPoint().getX();
+		final int y_step = (int) d.asPoint().getY();
+		for (int i = 0; i < length; i++) {
+			addObject(new Wall(new Point(start.getX() + i * x_step * GRID_SIZE,
+					start.getY() + i * y_step * GRID_SIZE)), WorldLayer.WORLD);
+		}
+	}
+
+	/**
+	 * Draws a wall border around the world.
+	 * 
+	 * @param width
+	 *            Number of wall blocks along x.
+	 * @param height
+	 *            Number of wall blocks along y.
+	 */
+	protected void drawWallBorder(int width, int height) {
+		final int GRID_SIZE = GlobalOptions.GRID_SIZE;
+		drawWall(Point.ZERO, Dir.EAST, width);
+		drawWall(new Point(0, GRID_SIZE * (height - 1)), Dir.EAST, width);
+		drawWall(new Point(0, GRID_SIZE), Dir.SOUTH, height-2);
+		drawWall(new Point(GRID_SIZE * (width-1), GRID_SIZE), Dir.SOUTH, height-2);
+	}
+
 	protected void drawWallBorder() {
-		for (int i = 0; i < 13; i++) {
-			addObject(new Wall(new Point(0 + 50 * i, 0)), WorldLayer.WORLD);
-			addObject(new Wall(new Point(0 + 50 * i, 450)), WorldLayer.WORLD);
-		}
-		for (int i = 0; i < 8; i++) {
-			addObject(new Wall(new Point(0, 50 + 50 * i)), WorldLayer.WORLD);
-			addObject(new Wall(new Point(600, 50 + 50 * i)), WorldLayer.WORLD);
-		}
+		drawWallBorder(GlobalOptions.WINDOW_WIDTH / GlobalOptions.GRID_SIZE,
+				GlobalOptions.WINDOW_HEIGHT / GlobalOptions.GRID_SIZE);
 	}
 }

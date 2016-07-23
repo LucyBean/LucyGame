@@ -8,4 +8,6 @@ public class GlobalOptions {
 	
 	public final static int WINDOW_WIDTH = 640;
 	public final static int WINDOW_HEIGHT = 480;
+	
+	public final static int GRID_SIZE = 32;
 }
