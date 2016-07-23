@@ -11,10 +11,10 @@ import objects.GravityActor;
 
 public class GravityPlayer extends GravityActor {
 	float speed;
-	float jumpStrength = 1.2f;
+	float jumpStrength = 0.014f;
 
 	public GravityPlayer(Point origin) {
-		super(origin, SpriteLibrary.PLAYER, new Collider(Point.ZERO, 40, 80), null);
+		super(origin, SpriteLibrary.PLAYER, new Collider(Point.ZERO, 1, 2), null);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class GravityPlayer extends GravityActor {
 
 	@Override
 	protected void resetGravityActorState() {
-		speed = 0.3f;
+		speed = 0.01f;
 	}
 
 }

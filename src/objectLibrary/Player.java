@@ -13,7 +13,7 @@ public class Player extends Actor {
 	float speed;
 	
 	public Player(Point origin) {
-		super(origin, SpriteLibrary.PLAYER, new Collider(Point.ZERO, 40, 80), null);
+		super(origin, SpriteLibrary.PLAYER, new Collider(Point.ZERO, 1, 2), null);
 	}
 	
 	@Override
@@ -37,6 +37,6 @@ public class Player extends Actor {
 	}
 	@Override
 	protected void resetActorState() {
-		speed = 0.3f;
+		speed = 0.01f;
 	}
 }

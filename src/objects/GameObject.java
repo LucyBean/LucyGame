@@ -223,12 +223,12 @@ public abstract class GameObject {
 	 */
 	protected Point translateToScreenCoOrds(Point point, Camera camera) {
 		return translateToWorldCoOrds(point).move(camera.getLocation().neg()).scale(
-				camera.getScale());
+				camera.getScale()*GlobalOptions.GRID_SIZE);
 	}
 
 	protected Rectangle translateToScreenCoOrds(Rectangle rect, Camera camera) {
 		return translateToWorldCoOrds(rect).translate(camera.getLocation().neg()).scaleAboutOrigin(
-				camera.getScale());
+				camera.getScale()*GlobalOptions.GRID_SIZE);
 	}
 
 	@Override

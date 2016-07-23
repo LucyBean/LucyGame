@@ -32,7 +32,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
-		world = new PlatformerDemoWorld();
+		world = new MapImportingDemo();
 	}
 
 	@Override

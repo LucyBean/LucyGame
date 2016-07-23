@@ -25,11 +25,11 @@ public class CameraObjectLoadingDemo extends World {
 
 	@Override
 	public void init() throws SlickException {
-		cb = new CameraBox(new Point(110, 110));
+		cb = new CameraBox(new Point(2.5f, 2.5f));
 		addObject(cb, WorldLayer.PLAYER);
 
 		buildSectors(WORLD_WIDTH, WORLD_HEIGHT);
-		
+
 		// Manually activate the initial sectors
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -43,7 +43,7 @@ public class CameraObjectLoadingDemo extends World {
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				// Create
-				WorldSector ws = new WorldSector(new Point(x * 100, y * 100), x, y);
+				WorldSector ws = new WorldSector(new Point(x * 3, y * 3), x, y);
 				sectorMap[x][y] = ws;
 				addObject(ws, WorldLayer.WORLD);
 			}
@@ -65,7 +65,7 @@ public class CameraObjectLoadingDemo extends World {
 		if (playerDirection == null) {
 			return;
 		}
-		
+
 		// if moving EAST or WEST, load due-, SOUTH-, and NORTH- sectors too
 		Point[] toLoad = new Point[3];
 		if (playerDirection == Dir.EAST || playerDirection == Dir.WEST) {
@@ -78,10 +78,10 @@ public class CameraObjectLoadingDemo extends World {
 		else {
 			int newY = sectorY + (int) playerDirection.asPoint().getY();
 			toLoad[0] = new Point(sectorX, newY); // due
-			toLoad[1] = new Point(sectorX-1, newY); // west
-			toLoad[2] = new Point(sectorX+1, newY); // east
+			toLoad[1] = new Point(sectorX - 1, newY); // west
+			toLoad[2] = new Point(sectorX + 1, newY); // east
 		}
-		
+
 		for (int i = 0; i < toLoad.length; i++) {
 			if (toLoad[i] != null) {
 				int x = (int) toLoad[i].getX();
@@ -92,10 +92,10 @@ public class CameraObjectLoadingDemo extends World {
 			}
 		}
 	}
-	
+
 	/**
-	 * Unloads sectors for a player object travelling in playerDirection who has just
-	 * left the sector at sectorX sectorY
+	 * Unloads sectors for a player object travelling in playerDirection who has just left the
+	 * sector at sectorX sectorY
 	 * 
 	 * @param playerDirection
 	 * @param sectorX
@@ -105,7 +105,7 @@ public class CameraObjectLoadingDemo extends World {
 		if (playerDirection == null) {
 			return;
 		}
-		
+
 		// if moving EAST or WEST, load due-, SOUTH-, and NORTH- sectors too
 		Point[] toUnload = new Point[3];
 		if (playerDirection == Dir.EAST || playerDirection == Dir.WEST) {
@@ -118,10 +118,10 @@ public class CameraObjectLoadingDemo extends World {
 		else {
 			int newY = sectorY - (int) playerDirection.asPoint().getY();
 			toUnload[0] = new Point(sectorX, newY); // due
-			toUnload[1] = new Point(sectorX-1, newY); // west
-			toUnload[2] = new Point(sectorX+1, newY); // east
+			toUnload[1] = new Point(sectorX - 1, newY); // west
+			toUnload[2] = new Point(sectorX + 1, newY); // east
 		}
-		
+
 		for (int i = 0; i < toUnload.length; i++) {
 			if (toUnload[i] != null) {
 				int x = (int) toUnload[i].getX();
@@ -143,18 +143,18 @@ public class CameraObjectLoadingDemo extends World {
 }
 
 class CameraBox extends Actor {
-	static Sprite sprite = SpriteLibrary.createRectangle(new Rectangle(Point.ZERO, 60, 40),
+	static Sprite sprite = SpriteLibrary.createRectangle(new Rectangle(Point.ZERO, 2, 1),
 			new Color(190, 80, 190));
 	float speed;
 
 	public CameraBox(Point origin) {
-		super(origin, sprite, new Collider(Point.ZERO, 60, 40), null);
+		super(origin, sprite, new Collider(Point.ZERO, 2, 1), null);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void resetActorState() {
-		speed = 0.2f;
+		speed = 0.008f;
 	}
 
 	@Override
@@ -176,10 +176,9 @@ class CameraBox extends Actor {
 }
 
 class WorldSector extends Static {
-	static Rectangle spriteRect = new Rectangle(Point.ZERO, 100, 100);
+	static Rectangle spriteRect = new Rectangle(Point.ZERO, 3, 3);
 	static Sprite active = SpriteLibrary.createRectangle(spriteRect, new Color(100, 240, 100));
-	static Sprite inactive = SpriteLibrary.createRectangle(new Rectangle(Point.ZERO, 100, 100),
-			new Color(240, 100, 100));
+	static Sprite inactive = SpriteLibrary.createRectangle(spriteRect, new Color(240, 100, 100));
 
 	boolean activeSector;
 	final WorldSector[] neighbours;
@@ -187,7 +186,7 @@ class WorldSector extends Static {
 	final int y;
 
 	public WorldSector(Point origin, int x, int y) {
-		super(origin, null, null, new InteractBox(Point.ZERO, 100, 100));
+		super(origin, null, null, new InteractBox(Point.ZERO, 3, 3));
 		neighbours = new WorldSector[Dir.values().length];
 		this.x = x;
 		this.y = y;

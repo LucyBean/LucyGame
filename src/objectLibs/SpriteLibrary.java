@@ -21,8 +21,8 @@ public class SpriteLibrary {
 
 	public static Sprite createRectangle(Rectangle r, Color fill, Color border) {
 		try {
-			int width = (int) r.getWidth();
-			int height = (int) r.getHeight();
+			int width = (int) r.getWidth() * GRID_SIZE;
+			int height = (int) r.getHeight() * GRID_SIZE;
 			Image img = new Image(width, height);
 			Graphics g = img.getGraphics();
 			g.setColor(fill);
@@ -71,11 +71,11 @@ public class SpriteLibrary {
 	}
 
 	public final static Sprite WALL = createRectangle(
-			new Rectangle(Point.ZERO, GRID_SIZE, GRID_SIZE), new Color(240, 240, 40));
-	public final static Sprite PLAYER = createRectangle(new Rectangle(Point.ZERO, 40, 80),
+			new Rectangle(Point.ZERO, 1, 1), new Color(240, 240, 40));
+	public final static Sprite PLAYER = createRectangle(new Rectangle(Point.ZERO, 1, 2),
 			new Color(240, 40, 240));
-	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 100, 40),
+	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 2, 1),
 			new Color(230, 130, 230));
-	public final static Sprite HIDDEN_SQUARE = createRectangle(new Rectangle(Point.ZERO, 60, 60),
+	public final static Sprite HIDDEN_SQUARE = createRectangle(new Rectangle(Point.ZERO, 2, 2),
 			new Color(190, 60, 190));
 }

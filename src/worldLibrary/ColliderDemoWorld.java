@@ -24,7 +24,7 @@ public class ColliderDemoWorld extends World {
 
 		for (int i = 0; i < 10; i++) {
 			Random r = new Random();
-			Point position = new Point(r.nextFloat() * 500+50, r.nextFloat() * 400 + 50);
+			Point position = new Point(r.nextFloat() * 18+1, r.nextFloat() * 13+1);
 			GameObject go = new ColliderBox(position);
 			addObject(go, WorldLayer.WORLD);
 		}
@@ -33,8 +33,8 @@ public class ColliderDemoWorld extends World {
 
 class ColliderBox extends Static {
 	public ColliderBox(Point origin) {
-		super(origin, null, new Collider(Point.ZERO, 20, 20),
-				new InteractBox(new Point(20, 0), 20, 20));
+		super(origin, null, new Collider(Point.ZERO, 0.5f, 0.5f),
+				new InteractBox(new Point(0.5f, 0), 0.5f, 0.5f));
 	}
 
 	@Override

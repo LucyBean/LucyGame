@@ -9,7 +9,7 @@ import helpers.Point;
 import helpers.Rectangle;
 
 public abstract class GravityActor extends Actor {
-	final static float GRAVITY = 0.003f;
+	final static float GRAVITY = 0.00003f;
 	float vSpeed;
 
 	public GravityActor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -39,9 +39,9 @@ public abstract class GravityActor extends Actor {
 
 		// Check a very narrow rectangle at the bottom of the actor for any solid objects.
 		Collider c = getCollider();
-		Rectangle bottomEdge = new Rectangle(c.getBottomLeft(), c.getWidth(), 0.5f).translate(
+		Rectangle bottomEdge = new Rectangle(c.getBottomLeft(), c.getWidth(), 0.001f).translate(
 				getPosition());
-		bottomEdge = bottomEdge.translate(new Point(0, 0.5f));
+		bottomEdge = bottomEdge.translate(new Point(0, 0.001f));
 
 		// See if it collides with any objects
 		List<GameObject> collidingSolids = getCollidingSolids(bottomEdge);
@@ -60,9 +60,9 @@ public abstract class GravityActor extends Actor {
 
 		// Check a very narrow rectangle at the top of the actor for any solid objects.
 		Collider c = getCollider();
-		Rectangle topEdge = new Rectangle(c.getTopLeft(), c.getWidth(), 0.5f).translate(
+		Rectangle topEdge = new Rectangle(c.getTopLeft(), c.getWidth(), 0.001f).translate(
 				getPosition());
-		topEdge = topEdge.translate(new Point(0, -0.5f));
+		topEdge = topEdge.translate(new Point(0, -0.001f));
 
 		// See if it collides with any objects
 		List<GameObject> collidingSolids = getCollidingSolids(topEdge);

@@ -226,12 +226,11 @@ public class World {
 	// Some helpful world creator tools
 	//
 	protected void drawWall(Point start, Dir d, int length) {
-		final int GRID_SIZE = GlobalOptions.GRID_SIZE;
 		final int x_step = (int) d.asPoint().getX();
 		final int y_step = (int) d.asPoint().getY();
 		for (int i = 0; i < length; i++) {
-			addObject(new Wall(new Point(start.getX() + i * x_step * GRID_SIZE,
-					start.getY() + i * y_step * GRID_SIZE)), WorldLayer.WORLD);
+			addObject(new Wall(new Point(start.getX() + i * x_step,
+					start.getY() + i * y_step)), WorldLayer.WORLD);
 		}
 	}
 
@@ -244,11 +243,10 @@ public class World {
 	 *            Number of wall blocks along y.
 	 */
 	protected void drawWallBorder(int width, int height) {
-		final int GRID_SIZE = GlobalOptions.GRID_SIZE;
 		drawWall(Point.ZERO, Dir.EAST, width);
-		drawWall(new Point(0, GRID_SIZE * (height - 1)), Dir.EAST, width);
-		drawWall(new Point(0, GRID_SIZE), Dir.SOUTH, height-2);
-		drawWall(new Point(GRID_SIZE * (width-1), GRID_SIZE), Dir.SOUTH, height-2);
+		drawWall(new Point(0, height - 1), Dir.EAST, width);
+		drawWall(new Point(0, 1), Dir.SOUTH, height-2);
+		drawWall(new Point(width-1, 1), Dir.SOUTH, height-2);
 	}
 
 	protected void drawWallBorder() {

@@ -6,11 +6,9 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.GravityPlayer;
-import objectLibrary.Wall;
 import objects.GameObject;
 import objects.Sprite;
 import objects.Static;
-import worlds.GlobalOptions;
 import worlds.World;
 import worlds.WorldLayer;
 
@@ -25,11 +23,11 @@ public class PlatformerDemoWorld extends World {
 		};
 		addObject(background, WorldLayer.BACKGROUND);
 
-		GameObject gravityPlayer = new GravityPlayer(new Point(80, 50));
+		GameObject gravityPlayer = new GravityPlayer(new Point(3, 2));
 		addObject(gravityPlayer, WorldLayer.PLAYER);
 
 		// Add some walls
-		drawWall(new Point(32, 384), Dir.EAST, 10);
-		drawWall(new Point(352, 288), Dir.EAST, 3);
+		drawWall(new Point(2, 10), Dir.EAST, 10);
+		drawWall(new Point(11, 9), Dir.EAST, 3);
 	}
 }

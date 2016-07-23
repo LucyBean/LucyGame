@@ -9,7 +9,7 @@ import objects.InteractBox;
 
 public class HiddenSquare extends Actor {
 	public HiddenSquare(Point origin) {
-		super(origin, SpriteLibrary.HIDDEN_SQUARE, null, new InteractBox(Point.ZERO,60,60));
+		super(origin, SpriteLibrary.HIDDEN_SQUARE, null, new InteractBox(Point.ZERO,2,2));
 	}
 
 	@Override

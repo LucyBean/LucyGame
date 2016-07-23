@@ -11,7 +11,7 @@ import helpers.*;
 public class Camera {
 	Point location = new Point(0, 0);
 	float scale = 1.0f;
-	float speed = 0.2f;
+	float speed = 0.02f;
 	
 	public final float MAX_SCALE = 3.0f;
 	public final float MIN_SCALE = 0.3f;
