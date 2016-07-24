@@ -11,7 +11,7 @@ import objects.GravityActor;
 
 public class GravityPlayer extends GravityActor {
 	float speed;
-	float jumpStrength = 0.014f;
+	float jumpStrength = 0.03f;
 
 	public GravityPlayer(Point origin) {
 		super(origin, SpriteLibrary.PLAYER, new Collider(Point.ZERO, 1, 2), null);

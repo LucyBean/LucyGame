@@ -12,6 +12,7 @@ import worlds.World;
 import worlds.WorldLayer;
 
 public class HiddenObjectDemoWorld extends World {
+
 	@Override
 	public void init() throws SlickException {
 		GameObject mover = new Player(new Point(2, 2));

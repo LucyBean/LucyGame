@@ -15,6 +15,7 @@ import worlds.World;
 import worlds.WorldLayer;
 
 public class ColliderDemoWorld extends World {
+
 	@Override
 	public void init() throws SlickException {
 		GameObject mover = new Player(new Point(80, 300));

@@ -10,6 +10,7 @@ import worlds.World;
 import worlds.WorldLayer;
 
 public class MapImportingDemo extends World {
+
 	@Override
 	public void init() throws SlickException {
 		buildMap(new TiledMap("data/exampleMap.tmx"));

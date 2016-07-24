@@ -9,7 +9,7 @@ import helpers.Point;
 import helpers.Rectangle;
 
 public abstract class GravityActor extends Actor {
-	final static float GRAVITY = 0.00003f;
+	final static float GRAVITY = 0.0001f;
 	float vSpeed;
 
 	public GravityActor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {

@@ -8,6 +8,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.gui.TextField;
 
 import helpers.Dir;
 import helpers.Point;
@@ -229,8 +230,8 @@ public class World {
 		final int x_step = (int) d.asPoint().getX();
 		final int y_step = (int) d.asPoint().getY();
 		for (int i = 0; i < length; i++) {
-			addObject(new Wall(new Point(start.getX() + i * x_step,
-					start.getY() + i * y_step)), WorldLayer.WORLD);
+			addObject(new Wall(new Point(start.getX() + i * x_step, start.getY() + i * y_step)),
+					WorldLayer.WORLD);
 		}
 	}
 
@@ -245,8 +246,8 @@ public class World {
 	protected void drawWallBorder(int width, int height) {
 		drawWall(Point.ZERO, Dir.EAST, width);
 		drawWall(new Point(0, height - 1), Dir.EAST, width);
-		drawWall(new Point(0, 1), Dir.SOUTH, height-2);
-		drawWall(new Point(width-1, 1), Dir.SOUTH, height-2);
+		drawWall(new Point(0, 1), Dir.SOUTH, height - 2);
+		drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2);
 	}
 
 	protected void drawWallBorder() {

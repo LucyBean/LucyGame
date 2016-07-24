@@ -2,10 +2,14 @@
 ==  THINGS TO DO  ==
 ====================]
 
+Status window that can be used to display an object's status in game
+
 Interactions
 	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
 
-Creating and importing worlds using that map creator tool
+Camera following
+
+Creating other types of map objects (especially linked objects, like keys and switches)
 
 Map sector object loading
 
