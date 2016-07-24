@@ -95,7 +95,7 @@ public abstract class Actor extends GameObject {
 			origin = getCollider().getTopRight();
 		}
 		// Translate the origin from object to world co-ords
-		origin = translateToWorldCoOrds(origin);
+		origin = objectToWorldCoOrds(origin);
 
 		float width;
 		float height;
@@ -316,7 +316,7 @@ public abstract class Actor extends GameObject {
 		Input input = gc.getInput();
 		if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 			Point mouseLocation = new Point(input.getMouseX(), input.getMouseY());
-			Rectangle boundingRectangle = translateToScreenCoOrds(
+			Rectangle boundingRectangle = objectToScreenCoOrds(
 					getSprite().getBoundingRectangle(), getWorld().getCamera());
 			if (boundingRectangle.contains(mouseLocation)) {
 				clickedInThisFrame = true;

@@ -29,12 +29,14 @@ public abstract class GameObject {
 	boolean visible = true;
 
 	/**
-	 * Creates a new GameObject. Origin points for sprite, collider, and interact box should be set
-	 * in object co-ords (i.e. relative to the GameObject's origin point).
+	 * Creates a new GameObject. Origin points for sprite, collider, and
+	 * interact box should be set in object co-ords (i.e. relative to the
+	 * GameObject's origin point).
 	 * 
 	 * @param origin
-	 *            Top-left point of object in world co-ordinates. Should be set to top-left of
-	 *            collider for solids or top-left of sprite for non-solids.
+	 *            Top-left point of object in world co-ordinates. Should be set
+	 *            to top-left of collider for solids or top-left of sprite for
+	 *            non-solids.
 	 * @param sprite
 	 *            The image drawn in the world to represent the object.
 	 * @param collider
@@ -42,7 +44,8 @@ public abstract class GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public GameObject(Point origin, WorldLayer layer, Sprite sprite, Collider collider, InteractBox interactBox) {
+	public GameObject(Point origin, WorldLayer layer, Sprite sprite,
+			Collider collider, InteractBox interactBox) {
 		this.position = origin;
 		this.sprite = sprite;
 		this.collider = collider;
@@ -99,7 +102,7 @@ public abstract class GameObject {
 	public Point getPosition() {
 		return position;
 	}
-	
+
 	public WorldLayer getLayer() {
 		return layer;
 	}
@@ -124,7 +127,8 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * Enables the object, causing it to to be rendered. Enabled Actors will receive updates.
+	 * Enables the object, causing it to to be rendered. Enabled Actors will
+	 * receive updates.
 	 */
 	public void enable() {
 		enabled = true;
@@ -133,8 +137,8 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * Disables the object, preventing it from being rendered. Disabled Actors will not receive
-	 * updates.
+	 * Disables the object, preventing it from being rendered. Disabled Actors
+	 * will not receive updates.
 	 */
 	public void disable() {
 		enabled = false;
@@ -153,8 +157,8 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * This is called on an object when the Actor a starts overlapping it. Override this to react to
-	 * "on entry" events.
+	 * This is called on an object when the Actor a starts overlapping it.
+	 * Override this to react to "on entry" events.
 	 * 
 	 * @param a
 	 *            The Actor that has started overlapping this.
@@ -163,8 +167,8 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * This is called on an object when the Actor a stops overlapping it. Override this to react to
-	 * "on exit" events.
+	 * This is called on an object when the Actor a stops overlapping it.
+	 * Override this to react to "on exit" events.
 	 * 
 	 * @param a
 	 *            The Actor that has stopped overlapping this.
@@ -178,6 +182,10 @@ public abstract class GameObject {
 	@SuppressWarnings("unused")
 	public void render(GameContainer gc, Graphics g, Camera camera)
 			throws InvalidObjectStateException {
+		float scale = camera.getScale();
+		if (getLayer() == WorldLayer.INTERFACE) {
+			scale = 1.0f;
+		}
 		// The object should be enabled when it is acting
 		if (!isEnabled()) {
 			throw new InvalidObjectStateException(
@@ -188,23 +196,28 @@ public abstract class GameObject {
 
 		if (sprite != null && visible) {
 			// Draw image
-			Point imageCoOrds = translateToScreenCoOrds(sprite.getOrigin(), camera);
-			sprite.getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(), camera.getScale());
+			Point imageCoOrds = objectToScreenCoOrds(sprite.getOrigin(),
+					camera);
+			sprite.getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
+					scale);
 		}
 		if (collider != null) {
 			if (GlobalOptions.DRAW_ALL_COLLIDERS
-					|| GlobalOptions.DRAW_INVIS_OBJ_COLLIDERS && (sprite == null || !visible)) {
+					|| GlobalOptions.DRAW_INVIS_OBJ_COLLIDERS
+							&& (sprite == null || !visible)) {
 				// Draw collider
-				Point colliderCoOrds = translateToScreenCoOrds(collider.getTopLeft(), camera);
-				collider.getImage().draw(colliderCoOrds.getX(), colliderCoOrds.getY(),
-						camera.getScale());
+				Point colliderCoOrds = objectToScreenCoOrds(
+						collider.getTopLeft(), camera);
+				collider.getImage().draw(colliderCoOrds.getX(),
+						colliderCoOrds.getY(), scale);
 			}
 		}
 		if (GlobalOptions.DRAW_INTERACT_BOXES && interactBox != null) {
 			// Draw interact box
-			Point interactCoOrds = translateToScreenCoOrds(interactBox.getTopLeft(), camera);
-			interactBox.getImage().draw(interactCoOrds.getX(), interactCoOrds.getY(),
-					camera.getScale());
+			Point interactCoOrds = objectToScreenCoOrds(
+					interactBox.getTopLeft(), camera);
+			interactBox.getImage().draw(interactCoOrds.getX(),
+					interactCoOrds.getY(), scale);
 		}
 	}
 
@@ -214,11 +227,11 @@ public abstract class GameObject {
 	 * @param point
 	 * @return
 	 */
-	protected Point translateToWorldCoOrds(Point point) {
+	protected Point objectToWorldCoOrds(Point point) {
 		return point.move(position);
 	}
 
-	protected Rectangle translateToWorldCoOrds(Rectangle rect) {
+	protected Rectangle objectToWorldCoOrds(Rectangle rect) {
 		return rect.translate(position);
 	}
 
@@ -228,14 +241,29 @@ public abstract class GameObject {
 	 * @param point
 	 * @return
 	 */
-	protected Point translateToScreenCoOrds(Point point, Camera camera) {
-		return translateToWorldCoOrds(point).move(camera.getLocation().neg()).scale(
-				camera.getScale() * GlobalOptions.GRID_SIZE);
+	protected Point objectToScreenCoOrds(Point point, Camera camera) {
+		WorldLayer layer = getLayer();
+		// do not translate interface layer objects
+		if (layer == WorldLayer.INTERFACE) {
+			return objectToWorldCoOrds(point);
+		} else {
+			return objectToWorldCoOrds(point).move(camera.getLocation().scale(
+					layer.getParallaxX(), layer.getParallaxY()).neg()).scale(
+							camera.getScale() * GlobalOptions.GRID_SIZE);
+		}
 	}
-
-	protected Rectangle translateToScreenCoOrds(Rectangle rect, Camera camera) {
-		return translateToWorldCoOrds(rect).translate(camera.getLocation().neg()).scaleAboutOrigin(
-				camera.getScale() * GlobalOptions.GRID_SIZE);
+	
+	protected Rectangle objectToScreenCoOrds(Rectangle rect, Camera camera) {
+		Point origin = objectToScreenCoOrds(rect.getTopLeft(), camera);
+		if (getLayer() == WorldLayer.INTERFACE) {
+			return new Rectangle(origin, rect.getWidth(), rect.getHeight());
+		} else {
+			float width = rect.getWidth() * camera.getScale()
+					* GlobalOptions.GRID_SIZE;
+			float height = rect.getHeight() * camera.getScale()
+					* GlobalOptions.GRID_SIZE;
+			return new Rectangle(origin, width, height);
+		}
 	}
 
 	@Override

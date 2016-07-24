@@ -65,6 +65,10 @@ public class Point {
 		return new Point(s*x, s*y);
 	}
 	
+	public Point scale(float sx, float sy) {
+		return new Point(sx*x, sy*y);
+	}
+	
 	public void setX(float x) {
 		this.x = x;
 	}
