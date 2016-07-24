@@ -19,22 +19,24 @@ public class ColliderDemoWorld extends World {
 	@Override
 	public void init() throws SlickException {
 		GameObject mover = new Player(new Point(80, 300));
-		addObject(mover, WorldLayer.PLAYER);
+		addObject(mover);
 
 		drawWallBorder();
 
 		for (int i = 0; i < 10; i++) {
 			Random r = new Random();
-			Point position = new Point(r.nextFloat() * 18+1, r.nextFloat() * 13+1);
+			Point position = new Point(r.nextFloat() * 18 + 1,
+					r.nextFloat() * 13 + 1);
 			GameObject go = new ColliderBox(position);
-			addObject(go, WorldLayer.WORLD);
+			addObject(go);
 		}
 	}
 }
 
 class ColliderBox extends Static {
 	public ColliderBox(Point origin) {
-		super(origin, null, new Collider(Point.ZERO, 0.5f, 0.5f),
+		super(origin, WorldLayer.WORLD, null,
+				new Collider(Point.ZERO, 0.5f, 0.5f),
 				new InteractBox(new Point(0.5f, 0), 0.5f, 0.5f));
 	}
 

@@ -8,23 +8,25 @@ import helpers.Point;
 import objectLibs.SpriteLibrary;
 import objects.Collider;
 import objects.GravityActor;
+import worlds.WorldLayer;
 
 public class GravityPlayer extends GravityActor {
 	float speed;
 	float jumpStrength = 0.03f;
 
 	public GravityPlayer(Point origin) {
-		super(origin, SpriteLibrary.PLAYER, new Collider(Point.ZERO, 1, 2), null);
+		super(origin, WorldLayer.PLAYER, SpriteLibrary.PLAYER,
+				new Collider(Point.ZERO, 1, 2), null);
 	}
 
 	@Override
 	public void gravityAct(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		if (input.isKeyDown(Input.KEY_A)) {
-			move(Dir.WEST, speed*delta);
+			move(Dir.WEST, speed * delta);
 		}
 		if (input.isKeyDown(Input.KEY_E)) {
-			move(Dir.EAST, speed*delta);
+			move(Dir.EAST, speed * delta);
 		}
 		if (input.isKeyDown(Input.KEY_SPACE)) {
 			jump(jumpStrength);

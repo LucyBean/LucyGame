@@ -8,6 +8,7 @@ import helpers.Rectangle;
 import worlds.Camera;
 import worlds.GlobalOptions;
 import worlds.World;
+import worlds.WorldLayer;
 
 public abstract class GameObject {
 	//
@@ -22,6 +23,7 @@ public abstract class GameObject {
 	private Collider collider;
 	private InteractBox interactBox;
 	private World world;
+	private WorldLayer layer;
 
 	boolean enabled = true;
 	boolean visible = true;
@@ -40,21 +42,22 @@ public abstract class GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public GameObject(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
+	public GameObject(Point origin, WorldLayer layer, Sprite sprite, Collider collider, InteractBox interactBox) {
 		this.position = origin;
 		this.sprite = sprite;
 		this.collider = collider;
 		this.interactBox = interactBox;
+		this.layer = layer;
 
 		reset();
 	}
 
-	public GameObject(Point origin, Sprite sprite) {
-		this(origin, sprite, null, null);
+	public GameObject(Point origin, WorldLayer layer, Sprite sprite) {
+		this(origin, layer, sprite, null, null);
 	}
-	
-	public GameObject(Point origin) {
-		this(origin, null, null, null);
+
+	public GameObject(Point origin, WorldLayer layer) {
+		this(origin, layer, null, null, null);
 	}
 
 	/**
@@ -96,6 +99,10 @@ public abstract class GameObject {
 	public Point getPosition() {
 		return position;
 	}
+	
+	public WorldLayer getLayer() {
+		return layer;
+	}
 
 	public boolean isEnabled() {
 		return enabled;
@@ -111,7 +118,7 @@ public abstract class GameObject {
 	public void setPosition(Point position) {
 		this.position = position;
 	}
-	
+
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
@@ -223,12 +230,12 @@ public abstract class GameObject {
 	 */
 	protected Point translateToScreenCoOrds(Point point, Camera camera) {
 		return translateToWorldCoOrds(point).move(camera.getLocation().neg()).scale(
-				camera.getScale()*GlobalOptions.GRID_SIZE);
+				camera.getScale() * GlobalOptions.GRID_SIZE);
 	}
 
 	protected Rectangle translateToScreenCoOrds(Rectangle rect, Camera camera) {
 		return translateToWorldCoOrds(rect).translate(camera.getLocation().neg()).scaleAboutOrigin(
-				camera.getScale()*GlobalOptions.GRID_SIZE);
+				camera.getScale() * GlobalOptions.GRID_SIZE);
 	}
 
 	@Override

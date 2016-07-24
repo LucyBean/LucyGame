@@ -1,4 +1,4 @@
-package objects;
+package objectLibrary;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -6,11 +6,14 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
+import objects.Sprite;
+import objects.Static;
+import worlds.WorldLayer;
 
 public class TextBox extends Static {
 
 	public TextBox(Point origin, int width, int height) {
-		super(origin);
+		super(origin, WorldLayer.INTERFACE);
 		Image img;
 		try {
 			img = new Image(width, height);

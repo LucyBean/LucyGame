@@ -8,7 +8,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.gui.TextField;
 
 import helpers.Dir;
 import helpers.Point;
@@ -56,8 +55,8 @@ public class World {
 	}
 
 	/**
-	 * Called when the World is constructed. Override this when creating a new World to add initial
-	 * objects.
+	 * Called when the World is constructed. Override this when creating a new
+	 * World to add initial objects.
 	 * 
 	 * @throws SlickException
 	 */
@@ -73,7 +72,8 @@ public class World {
 	 * @param layer
 	 *            The WorldLayer for the object.
 	 */
-	public void addObject(GameObject go, WorldLayer layer) {
+	public void addObject(GameObject go) {
+		WorldLayer layer = go.getLayer();
 		layers.get(layer.ordinal()).add(go);
 
 		// Adds the object to any extra lists.
@@ -123,8 +123,8 @@ public class World {
 	}
 
 	/**
-	 * Removes this GameObject from all active lists. The GameObject will no longer be updated or
-	 * rendered.
+	 * Removes this GameObject from all active lists. The GameObject will no
+	 * longer be updated or rendered.
 	 * 
 	 * @param go
 	 */
@@ -138,8 +138,8 @@ public class World {
 	}
 
 	/**
-	 * Adds this GameObject to all applicable active lists. The GameObject will now be updated and
-	 * rendered.
+	 * Adds this GameObject to all applicable active lists. The GameObject will
+	 * now be updated and rendered.
 	 * 
 	 * @param go
 	 */
@@ -156,7 +156,8 @@ public class World {
 	 * Renders the world.
 	 * 
 	 * @param gc
-	 *            GameContainer object, passed from a Slick2D BasicGame render method
+	 *            GameContainer object, passed from a Slick2D BasicGame render
+	 *            method
 	 * @param g
 	 *            Graphics object, passed from a Slick2D BasicGame render method
 	 */
@@ -230,8 +231,8 @@ public class World {
 		final int x_step = (int) d.asPoint().getX();
 		final int y_step = (int) d.asPoint().getY();
 		for (int i = 0; i < length; i++) {
-			addObject(new Wall(new Point(start.getX() + i * x_step, start.getY() + i * y_step)),
-					WorldLayer.WORLD);
+			addObject(new Wall(new Point(start.getX() + i * x_step,
+					start.getY() + i * y_step)));
 		}
 	}
 

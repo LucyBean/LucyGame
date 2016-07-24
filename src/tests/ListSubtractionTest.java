@@ -5,13 +5,13 @@ import java.util.List;
 
 public class ListSubtractionTest {
 	public static void main(String[] args) {
-		List<B> prevList = new ArrayList<B>();
-		List<B> nowList = new ArrayList<B>();
+		List<Y> prevList = new ArrayList<Y>();
+		List<Y> nowList = new ArrayList<Y>();
 		
-		B b1 = new B("Angela");
-		B b2 = new B("Barbara");
-		B b3 = new B("Celia");
-		B b4 = new B("Davina");
+		Y b1 = new Y("Angela");
+		Y b2 = new Y("Barbara");
+		Y b3 = new Y("Celia");
+		Y b4 = new Y("Davina");
 		
 		prevList.add(b1);
 		prevList.add(b2);
@@ -24,20 +24,20 @@ public class ListSubtractionTest {
 		System.out.println(prevList);
 		System.out.println(nowList);
 		
-		List<B> removed = new ArrayList<B>(prevList);
+		List<Y> removed = new ArrayList<Y>(prevList);
 		removed.removeAll(nowList);
 		System.out.println("removed" + removed);
 		
-		List<B> newItems = new ArrayList<B>(nowList);
+		List<Y> newItems = new ArrayList<Y>(nowList);
 		newItems.removeAll(prevList);
 		System.out.println("new: " + newItems);
 	}
 }
 
-class B {
+class Y {
 	String name;
 	
-	public B (String name) {
+	public Y (String name) {
 		this.name = name;
 	}
 	

@@ -26,7 +26,7 @@ public class CameraObjectLoadingDemo extends World {
 	@Override
 	public void init() throws SlickException {
 		cb = new CameraBox(new Point(2.5f, 2.5f));
-		addObject(cb, WorldLayer.PLAYER);
+		addObject(cb);
 
 		buildSectors(WORLD_WIDTH, WORLD_HEIGHT);
 
@@ -45,14 +45,14 @@ public class CameraObjectLoadingDemo extends World {
 				// Create
 				WorldSector ws = new WorldSector(new Point(x * 3, y * 3), x, y);
 				sectorMap[x][y] = ws;
-				addObject(ws, WorldLayer.WORLD);
+				addObject(ws);
 			}
 		}
 	}
 
 	/**
-	 * Loads the required sectors for a player object travelling in playerDirection who has just
-	 * entered the sector at sectorX sectorY
+	 * Loads the required sectors for a player object travelling in
+	 * playerDirection who has just entered the sector at sectorX sectorY
 	 * 
 	 * @param playerDirection
 	 *            The direction that the player is moving.
@@ -94,8 +94,8 @@ public class CameraObjectLoadingDemo extends World {
 	}
 
 	/**
-	 * Unloads sectors for a player object travelling in playerDirection who has just left the
-	 * sector at sectorX sectorY
+	 * Unloads sectors for a player object travelling in playerDirection who has
+	 * just left the sector at sectorX sectorY
 	 * 
 	 * @param playerDirection
 	 * @param sectorX
@@ -143,12 +143,13 @@ public class CameraObjectLoadingDemo extends World {
 }
 
 class CameraBox extends Actor {
-	static Sprite sprite = SpriteLibrary.createRectangle(new Rectangle(Point.ZERO, 2, 1),
-			new Color(190, 80, 190));
+	static Sprite sprite = SpriteLibrary.createRectangle(
+			new Rectangle(Point.ZERO, 2, 1), new Color(190, 80, 190));
 	float speed;
 
 	public CameraBox(Point origin) {
-		super(origin, sprite, new Collider(Point.ZERO, 2, 1), null);
+		super(origin, WorldLayer.PLAYER, sprite, new Collider(Point.ZERO, 2, 1),
+				null);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -177,8 +178,10 @@ class CameraBox extends Actor {
 
 class WorldSector extends Static {
 	static Rectangle spriteRect = new Rectangle(Point.ZERO, 3, 3);
-	static Sprite active = SpriteLibrary.createRectangle(spriteRect, new Color(100, 240, 100));
-	static Sprite inactive = SpriteLibrary.createRectangle(spriteRect, new Color(240, 100, 100));
+	static Sprite active = SpriteLibrary.createRectangle(spriteRect,
+			new Color(100, 240, 100));
+	static Sprite inactive = SpriteLibrary.createRectangle(spriteRect,
+			new Color(240, 100, 100));
 
 	boolean activeSector;
 	final WorldSector[] neighbours;
@@ -186,7 +189,8 @@ class WorldSector extends Static {
 	final int y;
 
 	public WorldSector(Point origin, int x, int y) {
-		super(origin, null, null, new InteractBox(Point.ZERO, 3, 3));
+		super(origin, WorldLayer.WORLD, null, null,
+				new InteractBox(Point.ZERO, 3, 3));
 		neighbours = new WorldSector[Dir.values().length];
 		this.x = x;
 		this.y = y;

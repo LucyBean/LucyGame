@@ -7,7 +7,6 @@ import helpers.Point;
 import objectLibrary.GravityPlayer;
 import objectLibrary.Wall;
 import worlds.World;
-import worlds.WorldLayer;
 
 public class MapImportingDemo extends World {
 
@@ -24,10 +23,10 @@ public class MapImportingDemo extends World {
 				int id = Integer.parseInt(s);
 
 				if (id == 1) {
-					addObject(new Wall(new Point(x, y)), WorldLayer.WORLD);
+					addObject(new Wall(new Point(x, y)));
 				}
 				if (id == 2) {
-					addObject(new GravityPlayer(new Point(x, y)), WorldLayer.PLAYER);
+					addObject(new GravityPlayer(new Point(x, y)));
 				}
 			}
 		}

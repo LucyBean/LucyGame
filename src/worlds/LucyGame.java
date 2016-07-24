@@ -5,13 +5,11 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.gui.TextField;
 
-import worldLibrary.*;
+import worldLibrary.PlatformerDemoWorld;
 
 public class LucyGame extends BasicGame {
 	World world;
-	TextField helloWorld;
 
 	public LucyGame() {
 		super("LucyGame");
@@ -30,7 +28,6 @@ public class LucyGame extends BasicGame {
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		world.render(gc, g);
-		helloWorld.render(gc, g);
 	}
 
 	@Override

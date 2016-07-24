@@ -10,6 +10,7 @@ import org.newdawn.slick.Input;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
+import worlds.WorldLayer;
 
 public abstract class Actor extends GameObject {
 	boolean clickedInLastFrame;
@@ -17,16 +18,16 @@ public abstract class Actor extends GameObject {
 	List<GameObject> activeInteractables;
 	Dir lastDirectionMoved;
 
-	public Actor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
-		super(origin, sprite, collider, interactBox);
+	public Actor(Point origin, WorldLayer layer, Sprite sprite, Collider collider, InteractBox interactBox) {
+		super(origin, layer, sprite, collider, interactBox);
 	}
 
-	public Actor(Point origin, Sprite sprite) {
-		this(origin, sprite, null, null);
+	public Actor(Point origin, WorldLayer layer, Sprite sprite) {
+		this(origin, layer, sprite, null, null);
 	}
 	
-	public Actor(Point origin) {
-		this(origin, null, null, null);
+	public Actor(Point origin, WorldLayer layer) {
+		this(origin, layer, null, null, null);
 	}
 
 	protected final void resetState() {

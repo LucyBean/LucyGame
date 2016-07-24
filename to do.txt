@@ -4,6 +4,8 @@
 
 Status window that can be used to display an object's status in game
 
+Document and redo all grid and co-ordinates. Currently they are a mess.
+
 Interactions
 	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
 

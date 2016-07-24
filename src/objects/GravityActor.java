@@ -7,13 +7,15 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
+import worlds.WorldLayer;
 
 public abstract class GravityActor extends Actor {
 	final static float GRAVITY = 0.0001f;
 	float vSpeed;
 
-	public GravityActor(Point origin, Sprite sprite, Collider collider, InteractBox interactBox) {
-		super(origin, sprite, collider, interactBox);
+	public GravityActor(Point origin, WorldLayer layer, Sprite sprite, Collider collider,
+			InteractBox interactBox) {
+		super(origin, layer, sprite, collider, interactBox);
 	}
 
 	@Override

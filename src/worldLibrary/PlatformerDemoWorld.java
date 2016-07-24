@@ -6,30 +6,36 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.GravityPlayer;
-import objectLibrary.Wall;
+import objectLibrary.TextBox;
 import objects.GameObject;
 import objects.Sprite;
 import objects.Static;
-import objects.TextBox;
 import worlds.World;
 import worlds.WorldLayer;
 
+/**
+ * A demo of a basic platform game.
+ * 
+ * @author Lucy
+ *
+ */
 public class PlatformerDemoWorld extends World {
 	@Override
 	public void init() throws SlickException {
-		GameObject background = new Static(Point.ZERO, new Sprite(new Image("data/Desert.jpg"))) {
+		GameObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
+				new Sprite(new Image("data/Desert.jpg"))) {
 			@Override
 			protected void resetStaticState() {
 
 			}
 		};
-		addObject(background, WorldLayer.BACKGROUND);
+		addObject(background);
 
 		GameObject gravityPlayer = new GravityPlayer(new Point(3, 2));
-		addObject(gravityPlayer, WorldLayer.PLAYER);
-		
-		GameObject statusBox = new TextBox(new Point(440,100), 200, 100);
-		addObject(statusBox, WorldLayer.INTERFACE);
+		addObject(gravityPlayer);
+
+		GameObject statusBox = new TextBox(new Point(440, 100), 200, 100);
+		addObject(statusBox);
 
 		// Add some walls
 		drawWall(new Point(2, 10), Dir.EAST, 10);
