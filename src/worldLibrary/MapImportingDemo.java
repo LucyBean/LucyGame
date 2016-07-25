@@ -7,9 +7,14 @@ import helpers.Point;
 import objectLibrary.GravityPlayer;
 import objectLibrary.Wall;
 import objects.GameObject;
+import worlds.LucyGame;
 import worlds.World;
 
 public class MapImportingDemo extends World {
+
+	public MapImportingDemo(LucyGame game) {
+		super(game);
+	}
 
 	@Override
 	public void init() throws SlickException {

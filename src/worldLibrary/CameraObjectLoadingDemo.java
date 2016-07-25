@@ -14,6 +14,7 @@ import objects.Collider;
 import objects.InteractBox;
 import objects.Sprite;
 import objects.Static;
+import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
 
@@ -22,6 +23,10 @@ public class CameraObjectLoadingDemo extends World {
 	WorldSector[][] sectorMap;
 	final int WORLD_WIDTH = 10;
 	final int WORLD_HEIGHT = 10;
+
+	public CameraObjectLoadingDemo(LucyGame game) {
+		super(game);
+	}
 
 	@Override
 	public void init() throws SlickException {

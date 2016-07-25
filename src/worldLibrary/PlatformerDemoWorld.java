@@ -10,6 +10,7 @@ import objectLibrary.TextBox;
 import objects.GameObject;
 import objects.Sprite;
 import objects.Static;
+import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
 
@@ -20,6 +21,10 @@ import worlds.WorldLayer;
  *
  */
 public class PlatformerDemoWorld extends World {
+	public PlatformerDemoWorld(LucyGame game) {
+		super(game);
+	}
+
 	@Override
 	public void init() throws SlickException {
 		GameObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,

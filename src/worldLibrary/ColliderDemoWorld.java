@@ -11,10 +11,15 @@ import objects.Collider;
 import objects.GameObject;
 import objects.InteractBox;
 import objects.Static;
+import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
 
 public class ColliderDemoWorld extends World {
+
+	public ColliderDemoWorld(LucyGame game) {
+		super(game);
+	}
 
 	@Override
 	public void init() throws SlickException {

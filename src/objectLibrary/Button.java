@@ -1,31 +1,33 @@
 package objectLibrary;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import helpers.Point;
+import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
 import objects.Actor;
 import objects.Sprite;
 import worlds.WorldLayer;
 
 public class Button extends Actor {
-	public Button(Point origin) {
-		super(origin, WorldLayer.INTERFACE, SpriteLibrary.BUTTON);
+	public Button(Rectangle button) {
+		super(button.getTopLeft(), WorldLayer.INTERFACE, SpriteLibrary.createRectangle(button,
+				new Color(230, 130, 230)));
 	}
 
 	public void setText(String s) {
 		try {
-			Image img = SpriteLibrary.BUTTON.getImage();
-			Image newImg = img.copy();
-			Graphics g = newImg.getGraphics();
+			Image img = getSprite().getImage();
+			Graphics g = img.getGraphics();
 			float w = g.getFont().getWidth(s);
+			float h = g.getFont().getHeight(s);
 			// draw the string at (imgWidth - w)/2
-			g.drawString(s, (newImg.getWidth()-w)/2, 5);
+			g.drawString(s, (img.getWidth()-w)/2, (img.getHeight()-h)/2);
 			g.flush();
-			setSprite(new Sprite(newImg));
+			setSprite(new Sprite(img));
 		} catch (SlickException se) {
 			System.err.println("Tried to add text " + s + " to button and failed");
 			se.printStackTrace();

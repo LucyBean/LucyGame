@@ -24,6 +24,10 @@ public class LucyGame extends BasicGame {
 			se.printStackTrace();
 		}
 	}
+	
+	public void setNewWorld(World world) {
+		this.world = world;
+	}
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -32,7 +36,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-			world = new ButtonDemoWorld();
+			setNewWorld(new ButtonDemoWorld(this));
 	}
 
 	@Override

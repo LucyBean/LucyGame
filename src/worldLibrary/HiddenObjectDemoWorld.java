@@ -8,9 +8,14 @@ import helpers.Point;
 import objectLibrary.HiddenSquare;
 import objectLibrary.Player;
 import objects.GameObject;
+import worlds.LucyGame;
 import worlds.World;
 
 public class HiddenObjectDemoWorld extends World {
+
+	public HiddenObjectDemoWorld(LucyGame game) {
+		super(game);
+	}
 
 	@Override
 	public void init() throws SlickException {

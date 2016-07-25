@@ -24,8 +24,10 @@ public class World {
 	private List<GameObject> solids;
 	private List<GameObject> activeSolids;
 	private List<GameObject> interactables;
+	private final LucyGame game;
 
-	public World() {
+	public World(LucyGame game) {
+		this.game = game;
 		reset();
 	}
 
@@ -120,11 +122,15 @@ public class World {
 		// Modify to keep track of on screen objects.
 		return interactables;
 	}
-	
+
 	public Camera getCamera() {
 		return camera;
 	}
 	
+	protected LucyGame getGame() {
+		return game;
+	}
+
 	//
 	// Setters
 	//
@@ -232,8 +238,12 @@ public class World {
 				iose.printStackTrace();
 			}
 		}
-		
+
 		camera.update(gc, delta);
+	}
+
+	public void setNewWorld(World world) {
+		game.setNewWorld(world);
 	}
 
 	//
