@@ -2,7 +2,12 @@
 ==  THINGS TO DO  ==
 ====================]
 
-Status window that can be used to display an object's status in game
+Status window that can be used to display an object's status in game.
+	Allow one to click on an object to view the status.
+	Adding a label to a button. Find the width of a string?
+
+Camera following
+	Bound the camera to a rectangle
 
 Document and redo all grid and co-ordinates. Currently they are a mess.
 

@@ -6,7 +6,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import worldLibrary.PlatformerDemoWorld;
+import worldLibrary.ButtonDemoWorld;
 
 public class LucyGame extends BasicGame {
 	World world;
@@ -32,7 +32,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-			world = new PlatformerDemoWorld();
+			world = new ButtonDemoWorld();
 	}
 
 	@Override

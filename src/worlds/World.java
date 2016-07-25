@@ -95,6 +95,9 @@ public class World {
 		go.setWorld(this);
 	}
 
+	//
+	// Getters
+	//
 	/**
 	 * Returns all active solid objects in the world.
 	 * 
@@ -117,9 +120,16 @@ public class World {
 		// Modify to keep track of on screen objects.
 		return interactables;
 	}
-
+	
 	public Camera getCamera() {
 		return camera;
+	}
+	
+	//
+	// Setters
+	//
+	public void setCameraTarget(GameObject go) {
+		camera.setTarget(go);
 	}
 
 	/**
@@ -222,6 +232,8 @@ public class World {
 				iose.printStackTrace();
 			}
 		}
+		
+		camera.update(gc, delta);
 	}
 
 	//
@@ -252,7 +264,7 @@ public class World {
 	}
 
 	protected void drawWallBorder() {
-		drawWallBorder(GlobalOptions.WINDOW_WIDTH / GlobalOptions.GRID_SIZE,
-				GlobalOptions.WINDOW_HEIGHT / GlobalOptions.GRID_SIZE);
+		drawWallBorder(GlobalOptions.WINDOW_WIDTH_GRID,
+				GlobalOptions.WINDOW_HEIGHT_GRID);
 	}
 }

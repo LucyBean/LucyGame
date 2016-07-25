@@ -74,7 +74,7 @@ public class SpriteLibrary {
 			new Rectangle(Point.ZERO, 1, 1), new Color(240, 240, 40));
 	public final static Sprite PLAYER = createRectangle(new Rectangle(Point.ZERO, 1, 2),
 			new Color(240, 40, 240));
-	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 2, 1),
+	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 4, 1),
 			new Color(230, 130, 230));
 	public final static Sprite HIDDEN_SQUARE = createRectangle(new Rectangle(Point.ZERO, 2, 2),
 			new Color(190, 60, 190));

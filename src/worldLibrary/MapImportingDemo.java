@@ -6,6 +6,7 @@ import org.newdawn.slick.tiled.TiledMap;
 import helpers.Point;
 import objectLibrary.GravityPlayer;
 import objectLibrary.Wall;
+import objects.GameObject;
 import worlds.World;
 
 public class MapImportingDemo extends World {
@@ -26,7 +27,9 @@ public class MapImportingDemo extends World {
 					addObject(new Wall(new Point(x, y)));
 				}
 				if (id == 2) {
-					addObject(new GravityPlayer(new Point(x, y)));
+					GameObject gp = new GravityPlayer(new Point(x, y));
+					addObject(gp);
+					setCameraTarget(gp);
 				}
 			}
 		}

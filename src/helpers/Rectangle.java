@@ -13,9 +13,13 @@ public class Rectangle {
 
 	/**
 	 * Creates a new Rectangle object.
-	 * @param topLeft The position of the top-left point
-	 * @param width The width of the rectangle. Set to zero if negative.
-	 * @param height The height of the rectangle. Set to zero if negative.
+	 * 
+	 * @param topLeft
+	 *            The position of the top-left point
+	 * @param width
+	 *            The width of the rectangle. Set to zero if negative.
+	 * @param height
+	 *            The height of the rectangle. Set to zero if negative.
 	 */
 	public Rectangle(Point topLeft, float width, float height) {
 		width = Math.max(width, 0);
@@ -74,14 +78,16 @@ public class Rectangle {
 	}
 
 	/**
-	 * Detects whether two Rectangles overlap. Shared boundaries will NOT count as an overlap.
+	 * Detects whether two Rectangles overlap. Shared boundaries will NOT count
+	 * as an overlap.
 	 * 
 	 * @param r
 	 *            The Rectangle to test.
 	 * @return Whether the two Rectangles overlap.
 	 */
 	public boolean overlaps(Rectangle r) {
-		// The rectangles overlap if one rectangle's corner is within the other. When the point is
+		// The rectangles overlap if one rectangle's corner is within the other.
+		// When the point is
 		// on the boundary it will not be counted as contained.
 
 		// Check if this.bottom-edge and r.top-edge overlap
@@ -124,6 +130,23 @@ public class Rectangle {
 	}
 
 	/**
+	 * Detects whether this rectangle COMPLETELY contains another rectangle r.
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public boolean contains(Rectangle r) {
+		if (r.getTopLeft().getX() >= getTopLeft().getX()
+				&& r.getTopRight().getX() <= getTopRight().getX()
+				&& r.getTopLeft().getY() >= getTopLeft().getY()
+				&& r.getBottomLeft().getY() <= getBottomLeft().getY()) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
 	 * Translates the rectangle according to an offset.
 	 * 
 	 * @param offset
@@ -133,13 +156,15 @@ public class Rectangle {
 	}
 
 	/**
-	 * Scales the rectangle about the origin. This will affect the origin AND width/height.
+	 * Scales the rectangle about the origin. This will affect the origin AND
+	 * width/height.
 	 * 
 	 * @param scale
 	 * @return
 	 */
 	public Rectangle scaleAboutOrigin(float scale) {
-		return new Rectangle(topLeft.scale(scale), width * scale, height * scale);
+		return new Rectangle(topLeft.scale(scale), width * scale,
+				height * scale);
 	}
 
 	@Override

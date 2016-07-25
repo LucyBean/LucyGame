@@ -227,11 +227,11 @@ public abstract class GameObject {
 	 * @param point
 	 * @return
 	 */
-	protected Point objectToWorldCoOrds(Point point) {
+	public Point objectToWorldCoOrds(Point point) {
 		return point.move(position);
 	}
 
-	protected Rectangle objectToWorldCoOrds(Rectangle rect) {
+	public Rectangle objectToWorldCoOrds(Rectangle rect) {
 		return rect.translate(position);
 	}
 
@@ -241,7 +241,7 @@ public abstract class GameObject {
 	 * @param point
 	 * @return
 	 */
-	protected Point objectToScreenCoOrds(Point point, Camera camera) {
+	public Point objectToScreenCoOrds(Point point, Camera camera) {
 		WorldLayer layer = getLayer();
 		// do not translate interface layer objects
 		if (layer == WorldLayer.INTERFACE) {
@@ -253,7 +253,7 @@ public abstract class GameObject {
 		}
 	}
 	
-	protected Rectangle objectToScreenCoOrds(Rectangle rect, Camera camera) {
+	public Rectangle objectToScreenCoOrds(Rectangle rect, Camera camera) {
 		Point origin = objectToScreenCoOrds(rect.getTopLeft(), camera);
 		if (getLayer() == WorldLayer.INTERFACE) {
 			return new Rectangle(origin, rect.getWidth(), rect.getHeight());
