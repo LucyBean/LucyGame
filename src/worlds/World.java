@@ -11,12 +11,10 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibrary.Button;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.GameObject;
 import objects.InvalidObjectStateException;
-import worldLibrary.MenuDemoWorld;
 
 public class World {
 	private Camera camera;

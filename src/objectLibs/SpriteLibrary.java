@@ -19,10 +19,19 @@ import worlds.GlobalOptions;
 public class SpriteLibrary {
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
-	public static Sprite createRectangle(Rectangle r, Color fill, Color border) {
+	/**
+	 * Creates a new rectangular sprite of the given colour.
+	 * @param r 
+	 * @param scale 
+	 * @param fill
+	 * @param border
+	 * @return
+	 */
+	public static Sprite createRectangle(Rectangle r, int scale, Color fill,
+			Color border) {
 		try {
-			int width = (int) r.getWidth() * GRID_SIZE;
-			int height = (int) r.getHeight() * GRID_SIZE;
+			int width = (int) r.getWidth() * scale;
+			int height = (int) r.getHeight() * scale;
 			Image img = new Image(width, height);
 			Graphics g = img.getGraphics();
 			g.setColor(fill);
@@ -40,8 +49,8 @@ public class SpriteLibrary {
 		}
 	}
 
-	public static Sprite createRectangle(Rectangle r, Color fill) {
-		return createRectangle(r, fill, fill.darker(0.5f));
+	public static Sprite createRectangle(Rectangle r, int scale, Color fill) {
+		return createRectangle(r, scale, fill, fill.darker(0.5f));
 	}
 
 	/**
@@ -54,7 +63,7 @@ public class SpriteLibrary {
 		Color fill = new Color(50, 135, 220, 130);
 		Color border = fill.darker(0.5f);
 		border.a = 220;
-		return createRectangle(collider, fill, border);
+		return createRectangle(collider, GRID_SIZE, fill, border);
 	}
 
 	/**
@@ -67,15 +76,18 @@ public class SpriteLibrary {
 		Color fill = new Color(50, 220, 135, 130);
 		Color border = fill.darker(0.5f);
 		border.a = 220;
-		return createRectangle(interactBox, fill, border);
+		return createRectangle(interactBox, GRID_SIZE, fill, border);
 	}
 
 	public final static Sprite WALL = createRectangle(
-			new Rectangle(Point.ZERO, 1, 1), new Color(240, 240, 40));
-	public final static Sprite PLAYER = createRectangle(new Rectangle(Point.ZERO, 1, 2),
+			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
+			new Color(240, 240, 40));
+	public final static Sprite PLAYER = createRectangle(
+			new Rectangle(Point.ZERO, 1, 2), GRID_SIZE,
 			new Color(240, 40, 240));
-	public final static Sprite BUTTON = createRectangle(new Rectangle(Point.ZERO, 6, 1),
-			new Color(230, 130, 230));
-	public final static Sprite HIDDEN_SQUARE = createRectangle(new Rectangle(Point.ZERO, 2, 2),
+	public final static Sprite BUTTON = createRectangle(
+			new Rectangle(Point.ZERO, 6, 1), 1, new Color(230, 130, 230));
+	public final static Sprite HIDDEN_SQUARE = createRectangle(
+			new Rectangle(Point.ZERO, 2, 2), GRID_SIZE,
 			new Color(190, 60, 190));
 }

@@ -16,7 +16,7 @@ import objects.GameObject;
 public class Camera {
 	Point location = new Point(0, 0);
 	float scale = 1.0f;
-	float speed = 0.2f;
+	float speed = 0.01f;
 	boolean following = true;
 
 	final float MAX_SCALE = 3.0f;

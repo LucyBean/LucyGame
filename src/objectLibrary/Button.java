@@ -14,7 +14,7 @@ import worlds.WorldLayer;
 
 public class Button extends Actor {
 	public Button(Rectangle button) {
-		super(button.getTopLeft(), WorldLayer.INTERFACE, SpriteLibrary.createRectangle(button,
+		super(button.getTopLeft(), WorldLayer.INTERFACE, SpriteLibrary.createRectangle(button, 1,
 				new Color(230, 130, 230)));
 	}
 

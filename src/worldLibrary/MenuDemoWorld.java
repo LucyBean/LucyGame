@@ -39,7 +39,7 @@ class WorldLoaderButton extends Button {
 	World world;
 
 	public WorldLoaderButton(Point origin, World world, String name) {
-		super(new Rectangle(origin, 18, 1));
+		super(new Rectangle(origin, 400, 32));
 		this.world = world;
 		setText(name);
 	}

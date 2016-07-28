@@ -6,7 +6,6 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.GravityPlayer;
-import objectLibrary.TextBox;
 import objects.GameObject;
 import objects.Sprite;
 import objects.Static;
@@ -38,9 +37,6 @@ public class PlatformerDemoWorld extends World {
 
 		GameObject gravityPlayer = new GravityPlayer(new Point(3, 2));
 		addObject(gravityPlayer);
-
-		GameObject statusBox = new TextBox(new Point(440, 100), 200, 100);
-		addObject(statusBox);
 
 		// Add some walls
 		drawWall(new Point(2, 10), Dir.EAST, 10);

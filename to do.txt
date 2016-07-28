@@ -8,6 +8,8 @@ Status window that can be used to display an object's status in game.
 
 Camera following
 	Bound the camera to a rectangle
+	
+Collapse wall to a single collider?
 
 Document and redo all grid and co-ordinates. Currently they are a mess.
 

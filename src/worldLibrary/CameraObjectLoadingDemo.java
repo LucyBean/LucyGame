@@ -149,7 +149,7 @@ public class CameraObjectLoadingDemo extends World {
 
 class CameraBox extends Actor {
 	static Sprite sprite = SpriteLibrary.createRectangle(
-			new Rectangle(Point.ZERO, 2, 1), new Color(190, 80, 190));
+			new Rectangle(Point.ZERO, 2, 1), 32, new Color(190, 80, 190));
 	float speed;
 
 	public CameraBox(Point origin) {
@@ -183,9 +183,9 @@ class CameraBox extends Actor {
 
 class WorldSector extends Static {
 	static Rectangle spriteRect = new Rectangle(Point.ZERO, 3, 3);
-	static Sprite active = SpriteLibrary.createRectangle(spriteRect,
+	static Sprite active = SpriteLibrary.createRectangle(spriteRect, 32,
 			new Color(100, 240, 100));
-	static Sprite inactive = SpriteLibrary.createRectangle(spriteRect,
+	static Sprite inactive = SpriteLibrary.createRectangle(spriteRect, 32,
 			new Color(240, 100, 100));
 
 	boolean activeSector;
