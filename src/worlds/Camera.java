@@ -5,7 +5,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
-import objects.GameObject;
+import objects.WorldObject;
 
 /**
  * Camera class for storing information about the camera.
@@ -32,7 +32,7 @@ public class Camera {
 			WINDOW_WIDTH - SCROLL_RECTANGLE_WIDTH * 2,
 			WINDOW_HEIGHT - SCROLL_RECTANGLE_WIDTH * 2);
 
-	GameObject target;
+	WorldObject target;
 
 	public void update(GameContainer gc, int delta) {
 		// Do nothing if there is no target or set to not following
@@ -102,7 +102,7 @@ public class Camera {
 	/**
 	 * Sets the target for the camera to follow.
 	 */
-	public void setTarget(GameObject t) {
+	public void setTarget(WorldObject t) {
 		target = t;
 	}
 	

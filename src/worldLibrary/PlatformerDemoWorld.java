@@ -8,7 +8,7 @@ import helpers.Point;
 import objectLibrary.GravityPlayer;
 import objectLibrary.StatusWindow;
 import objects.Actor;
-import objects.GameObject;
+import objects.WorldObject;
 import objects.Sprite;
 import objects.Static;
 import worlds.LucyGame;
@@ -28,7 +28,7 @@ public class PlatformerDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-		GameObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
+		WorldObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
 				new Sprite(new Image("data/Desert.jpg"))) {
 			@Override
 			protected void resetStaticState() {

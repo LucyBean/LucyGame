@@ -6,14 +6,13 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
+import objects.InterfaceElement;
 import objects.Sprite;
-import objects.Static;
-import worlds.WorldLayer;
 
-public class TextBox extends Static {
+public class TextBox extends InterfaceElement {
 
 	public TextBox(Point origin, int width, int height) {
-		super(origin, WorldLayer.INTERFACE);
+		super(origin, null);
 		Image img;
 		try {
 			img = new Image(width, height);
@@ -35,8 +34,8 @@ public class TextBox extends Static {
 	}
 
 	@Override
-	protected void resetStaticState() {
-
+	public void onClick(int button) {
+		
 	}
 
 }

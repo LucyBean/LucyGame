@@ -3,7 +3,7 @@ package objects;
 import helpers.Point;
 import worlds.WorldLayer;
 
-public abstract class Static extends GameObject {
+public abstract class Static extends WorldObject {
 	public Static(Point origin, WorldLayer layer, Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, sprite, collider, interactBox);
 	}

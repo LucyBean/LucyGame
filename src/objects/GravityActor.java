@@ -46,7 +46,7 @@ public abstract class GravityActor extends Actor {
 		bottomEdge = bottomEdge.translate(new Point(0, 0.001f));
 
 		// See if it collides with any objects
-		List<GameObject> collidingSolids = getCollidingSolids(bottomEdge);
+		List<WorldObject> collidingSolids = getCollidingSolids(bottomEdge);
 		return !collidingSolids.isEmpty();
 	}
 
@@ -67,7 +67,7 @@ public abstract class GravityActor extends Actor {
 		topEdge = topEdge.translate(new Point(0, -0.001f));
 
 		// See if it collides with any objects
-		List<GameObject> collidingSolids = getCollidingSolids(topEdge);
+		List<WorldObject> collidingSolids = getCollidingSolids(topEdge);
 		return !collidingSolids.isEmpty();
 	}
 

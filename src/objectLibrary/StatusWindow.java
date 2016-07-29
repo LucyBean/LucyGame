@@ -10,30 +10,25 @@ import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
 import objects.Actor;
+import objects.InterfaceElement;
 import objects.Sprite;
-import worlds.WorldLayer;
 
-public class StatusWindow extends Actor {
+public class StatusWindow extends InterfaceElement {
 	static Sprite sprite = SpriteLibrary.createRectangle(
 			new Rectangle(Point.ZERO, 300, 200), 1,
 			new Color(200, 170, 210, 100));
+	Actor watching;
 
 	public StatusWindow(Point origin) {
-		super(origin, WorldLayer.INTERFACE, sprite);
+		super(origin, sprite);
 		// TODO Auto-generated constructor stub
 	}
 
-	Actor watching;
-
 	@Override
-	protected void resetActorState() {
-		watching = null;
-	}
-
-	@Override
-	public void act(GameContainer gc, int delta) {
+	public void update(GameContainer gc, int delta) {
 		updateStatus();
 	}
+	
 
 	/**
 	 * Sets the StatusWindow to watch the Actor a. The status of a will be
@@ -68,6 +63,11 @@ public class StatusWindow extends Actor {
 					+ " and failed");
 			se.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onClick(int button) {
+		
 	}
 
 }

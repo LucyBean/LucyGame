@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import helpers.Point;
 import objectLibrary.HiddenSquare;
 import objectLibrary.Player;
-import objects.GameObject;
+import objects.WorldObject;
 import worlds.LucyGame;
 import worlds.World;
 
@@ -19,7 +19,7 @@ public class HiddenObjectDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-		GameObject mover = new Player(new Point(2, 2));
+		WorldObject mover = new Player(new Point(2, 2));
 		addObject(mover);
 
 		drawWallBorder();
@@ -28,7 +28,7 @@ public class HiddenObjectDemoWorld extends World {
 			Random r = new Random();
 			Point position = new Point(r.nextFloat() * 17 + 1,
 					r.nextFloat() * 12 + 1);
-			GameObject go = new HiddenSquare(position);
+			WorldObject go = new HiddenSquare(position);
 			addObject(go);
 		}
 	}

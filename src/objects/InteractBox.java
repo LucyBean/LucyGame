@@ -6,7 +6,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
 
-public class InteractBox extends GOAttachment {
+public class InteractBox extends WOAttachment {
 	/**
 	 * Creates a new InteractBox to be attached to a GameObject.
 	 * 

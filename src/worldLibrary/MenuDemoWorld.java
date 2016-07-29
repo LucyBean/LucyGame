@@ -45,7 +45,7 @@ class WorldLoaderButton extends Button {
 	}
 
 	@Override
-	public void onClick() {
+	public void onClick(int button) {
 		getWorld().setNewWorld(world);
 	}
 }

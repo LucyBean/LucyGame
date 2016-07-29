@@ -6,7 +6,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
 
-public class Collider extends GOAttachment {
+public class Collider extends WOAttachment {
 	/**
 	 * Creates a new Collider object.
 	 * 

@@ -8,7 +8,7 @@ import helpers.Point;
 import objectLibrary.Player;
 import objects.Actor;
 import objects.Collider;
-import objects.GameObject;
+import objects.WorldObject;
 import objects.InteractBox;
 import objects.Static;
 import worlds.LucyGame;
@@ -23,7 +23,7 @@ public class ColliderDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-		GameObject mover = new Player(new Point(3, 10));
+		WorldObject mover = new Player(new Point(3, 10));
 		addObject(mover);
 
 		drawWallBorder();
@@ -32,7 +32,7 @@ public class ColliderDemoWorld extends World {
 			Random r = new Random();
 			Point position = new Point(r.nextFloat() * 18 + 1,
 					r.nextFloat() * 13 + 1);
-			GameObject go = new ColliderBox(position);
+			WorldObject go = new ColliderBox(position);
 			addObject(go);
 		}
 	}

@@ -5,15 +5,15 @@ import org.newdawn.slick.Image;
 import helpers.Point;
 import helpers.Rectangle;
 
-public abstract class GOAttachment {
+public abstract class WOAttachment {
 	Sprite sprite;
 	Rectangle rect;
 	
-	public GOAttachment(Point topLeft, float width, float height) {
+	public WOAttachment(Point topLeft, float width, float height) {
 		rect = new Rectangle(topLeft, width, height);
 	}
 	
-	public GOAttachment(Rectangle rect) {
+	public WOAttachment(Rectangle rect) {
 		this.rect = rect;
 	}
 

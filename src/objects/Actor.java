@@ -12,10 +12,10 @@ import helpers.Point;
 import helpers.Rectangle;
 import worlds.WorldLayer;
 
-public abstract class Actor extends GameObject {
+public abstract class Actor extends WorldObject {
 	boolean clickedInLastFrame;
 	boolean clickedInThisFrame;
-	List<GameObject> activeInteractables;
+	List<WorldObject> activeInteractables;
 	Dir lastDirectionMoved;
 
 	public Actor(Point origin, WorldLayer layer, Sprite sprite,
@@ -34,7 +34,7 @@ public abstract class Actor extends GameObject {
 	protected final void resetState() {
 		clickedInLastFrame = false;
 		clickedInThisFrame = false;
-		activeInteractables = new ArrayList<GameObject>();
+		activeInteractables = new ArrayList<WorldObject>();
 		resetActorState();
 	}
 
@@ -112,12 +112,12 @@ public abstract class Actor extends GameObject {
 		return new Rectangle(origin, width, height);
 	}
 
-	protected List<GameObject> getCollidingSolids(Rectangle rect) {
-		List<GameObject> solids = getWorld().getActiveSolids();
-		List<GameObject> collidingSolids = new ArrayList<GameObject>();
-		Iterator<GameObject> si = solids.iterator();
+	protected List<WorldObject> getCollidingSolids(Rectangle rect) {
+		List<WorldObject> solids = getWorld().getActiveSolids();
+		List<WorldObject> collidingSolids = new ArrayList<WorldObject>();
+		Iterator<WorldObject> si = solids.iterator();
 		while (si.hasNext()) {
-			GameObject go = si.next();
+			WorldObject go = si.next();
 			if (go != this) {
 				// Get collider rectangle in relative co-ordinates
 				Rectangle rectRel = go.getCollider().getRectangle();
@@ -146,7 +146,7 @@ public abstract class Actor extends GameObject {
 			amount = -amount;
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
-		List<GameObject> activeSolids = getCollidingSolids(moveArea);
+		List<WorldObject> activeSolids = getCollidingSolids(moveArea);
 
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
@@ -155,8 +155,8 @@ public abstract class Actor extends GameObject {
 		// Else move to edge of the d.neg()-most point
 		else {
 			float toMove = 0.0f;
-			Iterator<GameObject> asi = activeSolids.iterator();
-			GameObject go;
+			Iterator<WorldObject> asi = activeSolids.iterator();
+			WorldObject go;
 			switch (d) {
 				case NORTH: {
 					go = asi.next();
@@ -234,18 +234,18 @@ public abstract class Actor extends GameObject {
 		}
 	}
 
-	private List<GameObject> findInteractablesHere() {
+	private List<WorldObject> findInteractablesHere() {
 		if (getCollider() == null) {
-			return new ArrayList<GameObject>();
+			return new ArrayList<WorldObject>();
 		}
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(
 				getPosition());
-		List<GameObject> interactables = getWorld().getAllInteractables();
-		List<GameObject> nowActive = new ArrayList<GameObject>();
-		Iterator<GameObject> ii = interactables.iterator();
+		List<WorldObject> interactables = getWorld().getAllInteractables();
+		List<WorldObject> nowActive = new ArrayList<WorldObject>();
+		Iterator<WorldObject> ii = interactables.iterator();
 		while (ii.hasNext()) {
-			GameObject go = ii.next();
+			WorldObject go = ii.next();
 			if (go != this) {
 				// Get interaction rectangle in relative co-ordinates
 				Rectangle rectRel = go.getInteractBox().getRectangle();
@@ -278,26 +278,26 @@ public abstract class Actor extends GameObject {
 	}
 
 	private void checkForInteractions() {
-		List<GameObject> nowActive = findInteractablesHere();
-		List<GameObject> prevActive = activeInteractables;
+		List<WorldObject> nowActive = findInteractablesHere();
+		List<WorldObject> prevActive = activeInteractables;
 		// Figure out the objects that are newly active/inactive
 		// activeInteractables is the list of interactables active last
 		// iteration
 		// nowActive is the list of interactables active this iteration
-		List<GameObject> newlyActive = subtract(nowActive, prevActive);
-		List<GameObject> newlyInactive = subtract(prevActive, nowActive);
+		List<WorldObject> newlyActive = subtract(nowActive, prevActive);
+		List<WorldObject> newlyInactive = subtract(prevActive, nowActive);
 
 		// Call overlapStart and overlapEnd on these newly active/inactive
 		// objects
-		Iterator<GameObject> ii = newlyActive.iterator();
+		Iterator<WorldObject> ii = newlyActive.iterator();
 		while (ii.hasNext()) {
-			GameObject go = ii.next();
+			WorldObject go = ii.next();
 			go.overlapStart(this);
 		}
 
 		ii = newlyInactive.iterator();
 		while (ii.hasNext()) {
-			GameObject go = ii.next();
+			WorldObject go = ii.next();
 			go.overlapEnd(this);
 		}
 
@@ -322,37 +322,33 @@ public abstract class Actor extends GameObject {
 	// TODO
 	// Update
 	//
-	final public void update(GameContainer gc, int delta)
-			throws InvalidObjectStateException {
-		if (!isEnabled()) {
-			throw new InvalidObjectStateException(
-					"Tried to update " + this + " but it is disabled.");
-		}
+	final public void update(GameContainer gc, int delta) {
+		if (isEnabled()) {
+			clickedInThisFrame = false;
 
-		clickedInThisFrame = false;
-
-		if (getSprite() != null) {
-			Input input = gc.getInput();
-			if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-				Point mouseLocation = new Point(input.getMouseX(),
-						input.getMouseY());
-				Rectangle boundingRectangle = objectToScreenCoOrds(
-						getSprite().getBoundingRectangle(),
-						getWorld().getCamera());
-				if (boundingRectangle.contains(mouseLocation)) {
-					clickedInThisFrame = true;
-					onMouseDown();
+			if (getSprite() != null) {
+				Input input = gc.getInput();
+				if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+					Point mouseLocation = new Point(input.getMouseX(),
+							input.getMouseY());
+					Rectangle boundingRectangle = objectToScreenCoOrds(
+							getSprite().getBoundingRectangle(),
+							getWorld().getCamera());
+					if (boundingRectangle.contains(mouseLocation)) {
+						clickedInThisFrame = true;
+						onMouseDown();
+					}
 				}
 			}
-		}
 
-		if (clickedInThisFrame && !clickedInLastFrame) {
-			onClick();
-		}
+			if (clickedInThisFrame && !clickedInLastFrame) {
+				onClick();
+			}
 
-		clickedInLastFrame = clickedInThisFrame;
-		act(gc, delta);
-		checkForInteractions();
+			clickedInLastFrame = clickedInThisFrame;
+			act(gc, delta);
+			checkForInteractions();
+		}
 	}
 
 	public abstract void act(GameContainer gc, int delta);
@@ -360,9 +356,9 @@ public abstract class Actor extends GameObject {
 	public void interactWithAll() {
 		if (activeInteractables.isEmpty()) {
 		} else {
-			Iterator<GameObject> aii = activeInteractables.iterator();
+			Iterator<WorldObject> aii = activeInteractables.iterator();
 			while (aii.hasNext()) {
-				GameObject go = aii.next();
+				WorldObject go = aii.next();
 				go.interactedBy(this);
 			}
 		}

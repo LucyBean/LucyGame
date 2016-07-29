@@ -1,29 +1,30 @@
 package worlds;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.Wall;
 import objects.Actor;
-import objects.GameObject;
-import objects.InvalidObjectStateException;
+import objects.InterfaceElement;
+import objects.WorldObject;
 
-public class World {
+public class World implements MouseListener {
 	private Camera camera;
 	private List<ObjectLayer> layers;
+	private GameInterface gameInterface;
 	private List<Actor> actors;
 	private List<Actor> activeActors;
-	private List<GameObject> solids;
-	private List<GameObject> activeSolids;
-	private List<GameObject> interactables;
+	private List<WorldObject> solids;
+	private List<WorldObject> activeSolids;
+	private List<WorldObject> interactables;
 	private final LucyGame game;
 
 	public World(LucyGame game) {
@@ -38,11 +39,12 @@ public class World {
 		try {
 			camera = new Camera();
 			layers = new ArrayList<ObjectLayer>();
+			gameInterface = new GameInterface();
 			actors = new ArrayList<Actor>();
 			activeActors = new ArrayList<Actor>();
-			solids = new ArrayList<GameObject>();
-			activeSolids = new ArrayList<GameObject>();
-			interactables = new ArrayList<GameObject>();
+			solids = new ArrayList<WorldObject>();
+			activeSolids = new ArrayList<WorldObject>();
+			interactables = new ArrayList<WorldObject>();
 
 			for (@SuppressWarnings("unused")
 			WorldLayer l : WorldLayer.values()) {
@@ -74,7 +76,7 @@ public class World {
 	 * @param layer
 	 *            The WorldLayer for the object.
 	 */
-	public void addObject(GameObject go) {
+	public void addObject(WorldObject go) {
 		WorldLayer layer = go.getLayer();
 		layers.get(layer.ordinal()).add(go);
 
@@ -96,6 +98,11 @@ public class World {
 
 		go.setWorld(this);
 	}
+	
+	public void addObject(InterfaceElement ie) {
+		gameInterface.add(ie);
+		ie.setWorld(this);
+	}
 
 	//
 	// Getters
@@ -105,7 +112,7 @@ public class World {
 	 * 
 	 * @return
 	 */
-	public List<GameObject> getActiveSolids() {
+	public List<WorldObject> getActiveSolids() {
 		// Currently returns all solid objects in the world.
 		// Modify to keep track of on screen objects.
 		return activeSolids;
@@ -116,7 +123,7 @@ public class World {
 	 * 
 	 * @return
 	 */
-	public List<GameObject> getAllInteractables() {
+	public List<WorldObject> getAllInteractables() {
 		// TODO
 		// Currently returns all interactables in the world.
 		// Modify to keep track of on screen objects.
@@ -126,7 +133,7 @@ public class World {
 	public Camera getCamera() {
 		return camera;
 	}
-	
+
 	protected LucyGame getGame() {
 		return game;
 	}
@@ -134,7 +141,7 @@ public class World {
 	//
 	// Setters
 	//
-	public void setCameraTarget(GameObject go) {
+	public void setCameraTarget(WorldObject go) {
 		camera.setTarget(go);
 	}
 
@@ -144,7 +151,7 @@ public class World {
 	 * 
 	 * @param go
 	 */
-	public void removeFromActiveLists(GameObject go) {
+	public void removeFromActiveLists(WorldObject go) {
 		if (go instanceof Actor) {
 			activeActors.remove((Actor) go);
 		}
@@ -159,7 +166,7 @@ public class World {
 	 * 
 	 * @param go
 	 */
-	public void addToActiveLists(GameObject go) {
+	public void addToActiveLists(WorldObject go) {
 		if (go instanceof Actor) {
 			activeActors.add((Actor) go);
 		}
@@ -182,21 +189,11 @@ public class World {
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
-				Iterator<GameObject> oli = ol.iterator();
-
-				while (oli.hasNext()) {
-					GameObject go = oli.next();
-					if (go.isEnabled()) {
-						try {
-							go.render(gc, g, camera);
-						} catch (InvalidObjectStateException iose) {
-							System.err.println(iose.getMessage());
-							iose.printStackTrace();
-						}
-					}
-				}
+				ol.render(gc, g, getCamera());
 			}
 		}
+		
+		gameInterface.render(gc, g, camera);
 	}
 
 	public void update(GameContainer gc, int delta) {
@@ -225,18 +222,6 @@ public class World {
 		// Reset on D
 		if (input.isKeyDown(Input.KEY_D)) {
 			reset();
-		}
-
-		// Propagate updates to actors
-		Iterator<Actor> ai = activeActors.iterator();
-		while (ai.hasNext()) {
-			try {
-				Actor a = ai.next();
-				a.update(gc, delta);
-			} catch (InvalidObjectStateException iose) {
-				System.err.println(iose.getMessage());
-				iose.printStackTrace();
-			}
 		}
 
 		camera.update(gc, delta);
@@ -276,5 +261,51 @@ public class World {
 	protected void drawWallBorder() {
 		drawWallBorder(GlobalOptions.WINDOW_WIDTH_GRID,
 				GlobalOptions.WINDOW_HEIGHT_GRID);
+	}
+
+	@Override
+	public void mousePressed(int button, int x, int y) {
+		gameInterface.mousePressed(button, new Point(x,y));
+	}
+
+	//
+	// MouseListener methods
+	//
+	@Override
+	public void inputEnded() {
+	}
+
+	@Override
+	public void inputStarted() {
+	}
+
+	@Override
+	public boolean isAcceptingInput() {
+		return false;
+	}
+
+	@Override
+	public void setInput(Input arg0) {
+	}
+
+	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+	}
+
+	@Override
+	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
+	}
+
+	@Override
+	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
+	}
+
+	@Override
+	public void mouseReleased(int arg0, int arg1, int arg2) {
+
+	}
+
+	@Override
+	public void mouseWheelMoved(int arg0) {
 	}
 }

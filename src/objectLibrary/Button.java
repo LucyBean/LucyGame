@@ -8,13 +8,12 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
-import objects.Actor;
+import objects.InterfaceElement;
 import objects.Sprite;
-import worlds.WorldLayer;
 
-public class Button extends Actor {
+public class Button extends InterfaceElement {
 	public Button(Rectangle button) {
-		super(button.getTopLeft(), WorldLayer.INTERFACE, SpriteLibrary.createRectangle(button, 1,
+		super(button.getTopLeft(), SpriteLibrary.createRectangle(button, 1,
 				new Color(230, 130, 230)));
 	}
 
@@ -25,27 +24,24 @@ public class Button extends Actor {
 			float w = g.getFont().getWidth(s);
 			float h = g.getFont().getHeight(s);
 			// draw the string at (imgWidth - w)/2
-			g.drawString(s, (img.getWidth()-w)/2, (img.getHeight()-h)/2);
+			g.drawString(s, (img.getWidth() - w) / 2,
+					(img.getHeight() - h) / 2);
 			g.flush();
 			setSprite(new Sprite(img));
 		} catch (SlickException se) {
-			System.err.println("Tried to add text " + s + " to button and failed");
+			System.err.println(
+					"Tried to add text " + s + " to button and failed");
 			se.printStackTrace();
 		}
 	}
 
 	@Override
-	public void onClick() {
+	public void onClick(int button) {
 		System.out.println("Button has been clicked!");
 	}
 
 	@Override
-	protected void resetActorState() {
-
-	}
-
-	@Override
-	public void act(GameContainer gc, int delta) {
+	public void update(GameContainer gc, int delta) {
 		// TODO Auto-generated method stub
 
 	}

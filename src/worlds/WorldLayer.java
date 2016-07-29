@@ -1,7 +1,7 @@
 package worlds;
 
 public enum WorldLayer {
-	BACKGROUND(0.25f, 0.25f), WORLD, PLAYER, INTERFACE;
+	BACKGROUND(0.25f, 0.25f), WORLD, PLAYER;
 
 	float parX;
 	float parY;
