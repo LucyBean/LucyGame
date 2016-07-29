@@ -14,9 +14,12 @@ import objects.Sprite;
 import worlds.WorldLayer;
 
 public class StatusWindow extends Actor {
+	static Sprite sprite = SpriteLibrary.createRectangle(
+			new Rectangle(Point.ZERO, 300, 200), 1,
+			new Color(200, 170, 210, 100));
+
 	public StatusWindow(Point origin) {
-		super(origin, WorldLayer.INTERFACE, SpriteLibrary.createRectangle(
-				new Rectangle(origin, 300, 300), 1, new Color(230, 130, 230)));
+		super(origin, WorldLayer.INTERFACE, sprite);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -55,7 +58,8 @@ public class StatusWindow extends Actor {
 		try {
 			Image img = getSprite().getImage();
 			Graphics g = img.getGraphics();
-			// draw the string at (imgWidth - w)/2
+			g.clear();
+			g.setColor(Color.black);
 			g.drawString(s, 5, 5);
 			g.flush();
 			setSprite(new Sprite(img));

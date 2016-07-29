@@ -53,21 +53,21 @@ public class Camera {
 				// x
 				if (tsc.getTopLeft().getX() < SCROLL_RECTANGLE_WIDTH) {
 					float amount = SCROLL_RECTANGLE_WIDTH - tsc.getTopLeft().getX();
-					move(Dir.WEST, amount, speed);
+					move(Dir.WEST, amount, speed*delta);
 				} else if (tsc.getTopRight().getX() > WINDOW_WIDTH
 						- SCROLL_RECTANGLE_WIDTH) {
 					float amount = tsc.getTopRight().getX() - (WINDOW_WIDTH - SCROLL_RECTANGLE_WIDTH);
-					move(Dir.EAST, amount, speed);
+					move(Dir.EAST, amount, speed*delta);
 				}
 
 				// y
 				if (tsc.getTopLeft().getY() < SCROLL_RECTANGLE_WIDTH) {
 					float amount = SCROLL_RECTANGLE_WIDTH - tsc.getTopLeft().getY();
-					move(Dir.NORTH, amount, speed);
+					move(Dir.NORTH, amount, speed*delta);
 				} else if (tsc.getBottomLeft().getY() > WINDOW_HEIGHT
 						- SCROLL_RECTANGLE_WIDTH) {
 					float amount = tsc.getBottomLeft().getY() - (WINDOW_HEIGHT - SCROLL_RECTANGLE_WIDTH);
-					move(Dir.SOUTH, amount, speed);
+					move(Dir.SOUTH, amount, speed*delta);
 				}
 			}
 		}
