@@ -6,7 +6,6 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.GravityPlayer;
-import objectLibrary.StatusWindow;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.Sprite;
@@ -15,7 +14,6 @@ import objects.WorldObject;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
-import worlds.WorldState;
 
 /**
  * A demo of a basic platform game.
@@ -41,10 +39,6 @@ public class PlatformerDemoWorld extends World {
 
 		Actor gravityPlayer = new GravityPlayer(new Point(3, 2));
 		addObject(gravityPlayer);
-
-		StatusWindow sw = new StatusWindow(new Point(340, 0));
-		sw.setWatching(gravityPlayer);
-		addObject(sw, WorldState.PLAYING);
 
 		// Add some walls
 		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 10));

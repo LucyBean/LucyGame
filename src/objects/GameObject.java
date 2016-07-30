@@ -4,13 +4,13 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import helpers.Rectangle;
-import worlds.Camera;
 import worlds.World;
 
 public abstract class GameObject {
 	private Point position;
 	private Sprite sprite;
 	private World world;
+	private final CoOrdTranslator cot;
 
 	private boolean enabled = true;
 	private boolean visible = true;
@@ -18,6 +18,7 @@ public abstract class GameObject {
 	public GameObject(Point position, Sprite sprite) {
 		this.position = position;
 		this.sprite = sprite;
+		cot = new CoOrdTranslator(this);
 	}
 
 	//
@@ -33,6 +34,10 @@ public abstract class GameObject {
 
 	public Point getPosition() {
 		return position;
+	}
+	
+	public CoOrdTranslator getCoOrdTranslator() {
+		return cot;
 	}
 
 	/**
@@ -100,38 +105,18 @@ public abstract class GameObject {
 	 * @param g
 	 * @param camera
 	 */
-	final public void render(Camera camera) {
+	final public void render() {
 		if (isEnabled()) {
-			draw(camera);
+			draw();
 		}
 	}
 
 	/**
 	 * This method will be called by render if the GameObject is enabled.
-	 * 
-	 * @param gc
-	 * @param g
-	 * @param camera
 	 */
-	protected void draw(Camera camera) {
-		draw(camera, 1, 1);
-	}
-
-	protected void draw(Camera camera, int tileX, int tileY) {
+	protected void draw() {
 		if (isVisible() && sprite != null) {
-			// Draw image
-			Point imageCoOrds = objectToScreenCoOrds(sprite.getOrigin(),
-					camera);
-			Rectangle imageRect = sprite.getBoundingRectangle();
-			Rectangle offset = objectToScreenCoOrds(imageRect, camera);
-			for (int y = 0; y < tileY; y++) {
-				for (int x = 0; x < tileX; x++) {
-					sprite.getImage().draw(
-							imageCoOrds.getX() + offset.getWidth() * x,
-							imageCoOrds.getY() + offset.getHeight() * y,
-							getDrawScale(camera));
-				}
-			}
+			sprite.draw(cot);
 		}
 	}
 
@@ -146,13 +131,6 @@ public abstract class GameObject {
 
 	}
 
-	public abstract Point objectToScreenCoOrds(Point point, Camera camera);
-
-	public abstract Rectangle objectToScreenCoOrds(Rectangle rect,
-			Camera camera);
-
-	protected abstract float getDrawScale(Camera camera);
-
 	/**
 	 * Gives this GameObject's Sprite's bounding rectangle in screen
 	 * co-ordinates.
@@ -161,10 +139,10 @@ public abstract class GameObject {
 	 *            The current Camera.
 	 * @return The Sprite's bounding rectangle in screen co-ordinates.
 	 */
-	public Rectangle getSpriteRectangleScreenCoOrds(Camera camera) {
+	public Rectangle getSpriteRectangleScreenCoOrds() {
 		if (sprite != null) {
-			Rectangle r = objectToScreenCoOrds(
-					getSprite().getBoundingRectangle(), camera);
+			Rectangle r = getCoOrdTranslator().objectToScreenCoOrds(
+					getSprite().getBoundingRectangle());
 			return r;
 		} else {
 			return null;

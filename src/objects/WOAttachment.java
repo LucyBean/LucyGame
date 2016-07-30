@@ -1,7 +1,5 @@
 package objects;
 
-import org.newdawn.slick.Image;
-
 import helpers.Point;
 import helpers.Rectangle;
 
@@ -17,7 +15,11 @@ public abstract class WOAttachment {
 		this.rect = rect;
 	}
 
-	public abstract Image getImage();
+	protected abstract Sprite getSprite();
+	
+	public void draw(CoOrdTranslator cot) {
+		getSprite().draw(cot);
+	}
 
 	public Point getTopLeft() {
 		return rect.getTopLeft();

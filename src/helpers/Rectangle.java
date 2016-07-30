@@ -1,8 +1,5 @@
 package helpers;
 
-import org.newdawn.slick.Image;
-
-import objectLibs.SpriteLibrary;
 import objects.Sprite;
 
 public class Rectangle {
@@ -51,13 +48,6 @@ public class Rectangle {
 
 	public float getHeight() {
 		return height;
-	}
-
-	public Image getImage() {
-		if (sprite == null) {
-			sprite = SpriteLibrary.makeColliderImage(this);
-		}
-		return sprite.getImage();
 	}
 
 	/**
@@ -165,6 +155,19 @@ public class Rectangle {
 	public Rectangle scaleAboutOrigin(float scale) {
 		return new Rectangle(topLeft.scale(scale), width * scale,
 				height * scale);
+	}
+	
+	/**
+	 * Scales the width and height of the Rectangle without affecting the origin.
+	 * @param scale
+	 * @return
+	 */
+	public Rectangle scale(float scaleX, float scaleY) {
+		return new Rectangle(topLeft, width* scaleX, height * scaleY);
+	}
+	
+	public Rectangle scale(float scale) {
+		return scale(scale, scale);
 	}
 
 	@Override

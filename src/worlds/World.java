@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import gameInterface.GameInterface;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
@@ -122,6 +123,21 @@ public class World {
 		m.add(selectWatchedObject);
 
 		addObject(m, WorldState.MENU);
+	}
+
+	protected void enableStatusWindow() {
+		gameInterface.enableStatusWindow();
+	}
+
+	/**
+	 * Sets the in-game StatusWindow to display the status of the given
+	 * WorldObject.
+	 * 
+	 * @param a
+	 *            The WorldObject whose status should be displayed.
+	 */
+	public void setWatchTarget(WorldObject a) {
+		gameInterface.setWatchTarget(a);
 	}
 
 	/**
@@ -283,7 +299,7 @@ public class World {
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
-				ol.render(getCamera());
+				ol.render();
 			}
 		}
 
@@ -343,32 +359,33 @@ public class World {
 	}
 
 	public void mousePressed(int button, int x, int y) {
-		Point clickPoint = new Point(x,y);
-		
+		Point clickPoint = new Point(x, y);
+
 		if (worldState == WorldState.WATCH_SELECT) {
 			watchSelectMousePressed(button, clickPoint);
 		}
-		
+
 		gameInterface.mousePressed(button, clickPoint, getState());
-		
+
 	}
-	
+
 	// TODO: Make this iterate in reverse order.
 	private void watchSelectMousePressed(int button, Point p) {
 		// For each world object, check whether it was clicked by the mouse
 		Iterator<ObjectLayer<WorldObject>> iol = layers.iterator();
 		WorldObject clicked = null;
-		
-		while(iol.hasNext()) {
+
+		while (iol.hasNext()) {
 			ObjectLayer<WorldObject> olwo = iol.next();
-			WorldObject wo = olwo.findClickedObject(p, getCamera());
+			WorldObject wo = olwo.findClickedObject(p);
 			if (wo != null) {
 				clicked = wo;
 			}
 		}
-		
+
 		if (clicked != null) {
 			System.out.println(clicked + " was clicked!");
+			setWatchTarget(clicked);
 			stopWatchSelect();
 		}
 	}

@@ -31,8 +31,8 @@ public class SpriteLibrary {
 	public static Sprite createRectangle(Rectangle r, int scale, Color fill,
 			Color border) {
 		try {
-			int width = (int) r.getWidth() * scale;
-			int height = (int) r.getHeight() * scale;
+			int width = (int) (r.getWidth() * scale);
+			int height = (int) (r.getHeight() * scale);
 			Image img = new Image(width, height);
 			Graphics g = img.getGraphics();
 			g.setColor(fill);

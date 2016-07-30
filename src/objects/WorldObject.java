@@ -1,8 +1,6 @@
 package objects;
 
 import helpers.Point;
-import helpers.Rectangle;
-import worlds.Camera;
 import worlds.GlobalOptions;
 import worlds.WorldLayer;
 
@@ -133,98 +131,23 @@ public abstract class WorldObject extends GameObject {
 	//
 	// Render
 	//
+	@SuppressWarnings("unused")
 	@Override
-	public void draw(Camera camera) {
-		// Draws the sprite
-		draw(camera, 1, 1);
-
-	}
-	
-	@Override
-	public void draw(Camera camera, int tileX, int tileY) {
+	public void draw() {
 		// Draw the sprite
-		super.draw(camera, tileX, tileY);
-		
+		super.draw();
+
 		// Draws collider and interact boxes
-		drawCollider(camera);
-		drawInteractBox(camera);
-	}
-	
-	/**
-	 * Draws the Collider for this object if it is set to be shown.
-	 * @param camera
-	 */
-	final protected void drawCollider(Camera camera) {
-		if (collider != null) {
+		if (getCollider() != null) {
 			if (GlobalOptions.DRAW_ALL_COLLIDERS
 					|| GlobalOptions.DRAW_INVIS_OBJ_COLLIDERS
-							&& (getSprite() == null || !isVisible())) {
-				// Draw collider
-				Point colliderCoOrds = objectToScreenCoOrds(
-						collider.getTopLeft(), camera);
-				collider.getImage().draw(colliderCoOrds.getX(),
-						colliderCoOrds.getY(), getDrawScale(camera));
+					&& (getSprite() == null || !isVisible())) {
+				getCollider().draw(getCoOrdTranslator());
 			}
 		}
-	}
-	
-	/**
-	 * Draws the InteractBox for this object if it is set to be shown.
-	 * @param camera
-	 */
-	@SuppressWarnings("unused")
-	final protected void drawInteractBox(Camera camera) {
-		if (GlobalOptions.DRAW_INTERACT_BOXES && interactBox != null) {
-			// Draw interact box
-			Point interactCoOrds = objectToScreenCoOrds(
-					interactBox.getTopLeft(), camera);
-			interactBox.getImage().draw(interactCoOrds.getX(),
-					interactCoOrds.getY(), getDrawScale(camera));
+		if (interactBox != null && GlobalOptions.DRAW_INTERACT_BOXES) {
+			getInteractBox().draw(getCoOrdTranslator());
 		}
-	}
-
-	/**
-	 * Translates a point from object co-ords to world co-ords.
-	 * 
-	 * @param point
-	 * @return
-	 */
-	public Point objectToWorldCoOrds(Point point) {
-		return point.move(getPosition());
-	}
-
-	public Rectangle objectToWorldCoOrds(Rectangle rect) {
-		return rect.translate(getPosition());
-	}
-
-	/**
-	 * Translates a point from object co-ords to camera co-ords.
-	 * 
-	 * @param point
-	 * @return
-	 */
-	@Override
-	public Point objectToScreenCoOrds(Point point, Camera camera) {
-		WorldLayer layer = getLayer();
-		// do not translate interface layer objects
-		return objectToWorldCoOrds(point).move(camera.getLocation().scale(
-				layer.getParallaxX(), layer.getParallaxY()).neg()).scale(
-						camera.getScale() * GlobalOptions.GRID_SIZE);
-	}
-
-	@Override
-	public Rectangle objectToScreenCoOrds(Rectangle rect, Camera camera) {
-		Point origin = objectToScreenCoOrds(rect.getTopLeft(), camera);
-		float width = rect.getWidth() * camera.getScale()
-				* GlobalOptions.GRID_SIZE;
-		float height = rect.getHeight() * camera.getScale()
-				* GlobalOptions.GRID_SIZE;
-		return new Rectangle(origin, width, height);
-	}
-
-	@Override
-	public float getDrawScale(Camera camera) {
-		return camera.getScale();
 	}
 
 	@Override

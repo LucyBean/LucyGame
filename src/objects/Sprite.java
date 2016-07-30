@@ -15,6 +15,7 @@ import helpers.Rectangle;
 public class Sprite {
 	Image[] image;
 	Rectangle boundingRectangle;
+	Rectangle imageBoundingRectangle;
 	int tileX;
 	int tileY;
 
@@ -42,13 +43,17 @@ public class Sprite {
 	 *            Size of the image grid compared to the object co-ordinate
 	 *            grid. Use 1 for interface objects and GRID_SIZE for world
 	 *            objects.
+	 * @param attachment
+	 *            The GameObject to which the Sprite is attached. This is
+	 *            required for drawing.
 	 */
 	public Sprite(Image img, Point origin, int tileX, int tileY, int gridSize) {
 		image = new Image[1];
 		image[0] = img;
-		boundingRectangle = new Rectangle(origin,
+		imageBoundingRectangle = new Rectangle(origin,
 				((float) img.getWidth()) / gridSize,
 				((float) img.getHeight()) / gridSize);
+		boundingRectangle = imageBoundingRectangle.scale(tileX, tileY);
 		this.tileX = tileX;
 		this.tileY = tileY;
 	}
@@ -60,21 +65,22 @@ public class Sprite {
 	public Point getOrigin() {
 		return boundingRectangle.getTopLeft();
 	}
-	
+
 	public Image getImage() {
 		return image[0];
 	}
 
-//	public void draw(Point position, float scale) {
-//		for (int y = 0; y < tileY; y++) {
-//			for (int x = 0; x < tileX; x++) {
-//				getImage().draw(
-//						imageCoOrds.getX() + offset.getWidth() * x,
-//						imageCoOrds.getY() + offset.getHeight() * y,
-//						getDrawScale(camera));
-//			}
-//		}
-//	}
+	public void draw(CoOrdTranslator cot) {
+		Point imageCoOrds = cot.objectToScreenCoOrds(getOrigin());
+		Rectangle offset = cot.objectToScreenCoOrds(imageBoundingRectangle);
+		for (int y = 0; y < tileY; y++) {
+			for (int x = 0; x < tileX; x++) {
+				getImage().draw(imageCoOrds.getX() + offset.getWidth() * x,
+						imageCoOrds.getY() + offset.getHeight() * y,
+						cot.getDrawScale());
+			}
+		} 
+	}
 
 	public Rectangle getBoundingRectangle() {
 		return boundingRectangle;

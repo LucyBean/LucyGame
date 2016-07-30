@@ -5,7 +5,6 @@ import java.util.Iterator;
 import helpers.Dir;
 import helpers.Point;
 import objects.InterfaceElement;
-import worlds.Camera;
 import worlds.GlobalOptions;
 import worlds.ObjectLayer;
 import worlds.World;
@@ -53,7 +52,7 @@ public class Menu extends InterfaceElement {
 	}
 
 	@Override
-	protected void draw(Camera camera) {
-		menuButtons.render(camera);
+	protected void draw() {
+		menuButtons.render();
 	}
 }

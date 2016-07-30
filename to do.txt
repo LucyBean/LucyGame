@@ -2,8 +2,9 @@
 ==  THINGS TO DO  ==
 ====================
 
+Make InterfaceElements use a two-layer Sprite, one for background, one for text.
+
 Build the game interface
-	Status window allow one to click on an object to view the status.
 	Build a more flexible Menu system. Allow sub menus.
 	Add a debug sub-menu that can modify options. Save options?
 	

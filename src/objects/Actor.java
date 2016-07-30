@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Input;
 
 import helpers.Dir;
 import helpers.Point;
@@ -13,8 +12,6 @@ import helpers.Rectangle;
 import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {
-	boolean clickedInLastFrame;
-	boolean clickedInThisFrame;
 	List<WorldObject> activeInteractables;
 	Dir lastDirectionMoved;
 
@@ -32,8 +29,6 @@ public abstract class Actor extends WorldObject {
 	}
 
 	protected final void resetState() {
-		clickedInLastFrame = false;
-		clickedInThisFrame = false;
 		activeInteractables = new ArrayList<WorldObject>();
 		resetActorState();
 	}
@@ -97,7 +92,7 @@ public abstract class Actor extends WorldObject {
 			origin = getCollider().getTopRight();
 		}
 		// Translate the origin from object to world co-ords
-		origin = objectToWorldCoOrds(origin);
+		origin = getCoOrdTranslator().objectToWorldCoOrds(origin);
 
 		float width;
 		float height;
@@ -324,28 +319,6 @@ public abstract class Actor extends WorldObject {
 	//
 	final public void update(GameContainer gc, int delta) {
 		if (isEnabled()) {
-			clickedInThisFrame = false;
-
-			if (getSprite() != null) {
-				Input input = gc.getInput();
-				if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-					Point mouseLocation = new Point(input.getMouseX(),
-							input.getMouseY());
-					Rectangle boundingRectangle = objectToScreenCoOrds(
-							getSprite().getBoundingRectangle(),
-							getWorld().getCamera());
-					if (boundingRectangle.contains(mouseLocation)) {
-						clickedInThisFrame = true;
-						onMouseDown();
-					}
-				}
-			}
-
-			if (clickedInThisFrame && !clickedInLastFrame) {
-				onClick();
-			}
-
-			clickedInLastFrame = clickedInThisFrame;
 			act(gc, delta);
 			checkForInteractions();
 		}

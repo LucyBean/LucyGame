@@ -54,5 +54,4 @@ class ColliderBox extends Static {
 	public void interactedBy(Actor a) {
 		disable();
 	}
-
 }

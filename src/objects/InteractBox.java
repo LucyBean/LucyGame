@@ -1,7 +1,5 @@
 package objects;
 
-import org.newdawn.slick.Image;
-
 import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
@@ -31,11 +29,12 @@ public class InteractBox extends WOAttachment {
 		super(rect);
 	}
 
-	public Image getImage() {
+	@Override
+	public Sprite getSprite() {
 		if (sprite == null) {
 			sprite = SpriteLibrary.makeInteractBoxImage(rect);
 		}
 
-		return sprite.getImage();
+		return sprite;
 	}
 }

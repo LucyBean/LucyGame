@@ -43,7 +43,6 @@ public class Button extends InterfaceElement {
 
 	@Override
 	public void update(GameContainer gc, int delta) {
-		// TODO Auto-generated method stub
-
+		
 	}
 }

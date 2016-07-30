@@ -1,4 +1,4 @@
-package objectLibrary;
+package gameInterface;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -9,15 +9,15 @@ import org.newdawn.slick.SlickException;
 import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteLibrary;
-import objects.Actor;
 import objects.InterfaceElement;
 import objects.Sprite;
+import objects.WorldObject;
 
-public class StatusWindow extends InterfaceElement {
+class StatusWindow extends InterfaceElement {
 	static Sprite sprite = SpriteLibrary.createRectangle(
-			new Rectangle(Point.ZERO, 300, 200), 1,
+			new Rectangle(Point.ZERO, 200, 200), 1,
 			new Color(200, 170, 210, 100));
-	Actor watching;
+	WorldObject watching;
 
 	public StatusWindow(Point origin) {
 		super(origin, sprite);
@@ -36,7 +36,7 @@ public class StatusWindow extends InterfaceElement {
 	 * 
 	 * @param a
 	 */
-	public void setWatching(Actor a) {
+	public void setWatching(WorldObject a) {
 		watching = a;
 	}
 

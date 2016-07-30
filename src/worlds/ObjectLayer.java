@@ -36,11 +36,11 @@ public class ObjectLayer<T extends GameObject> {
 	 * @param camera
 	 *            The current world camera.
 	 */
-	public void render(Camera camera) {
+	public void render() {
 		Iterator<T> oli = objects.iterator();
 		while (oli.hasNext()) {
 			GameObject go = oli.next();
-			go.render(camera);
+			go.render();
 		}
 	}
 
@@ -75,12 +75,12 @@ public class ObjectLayer<T extends GameObject> {
 	 *            The current position of the Camera.
 	 * @return The first object in the layer (if any) which contains the point.
 	 */
-	public T findClickedObject(Point p, Camera c) {
+	public T findClickedObject(Point p) {
 		Iterator<T> io = objects.iterator();
 
 		while (io.hasNext()) {
 			T wo = io.next();
-			Rectangle r = wo.getSpriteRectangleScreenCoOrds(c);
+			Rectangle r = wo.getSpriteRectangleScreenCoOrds();
 			if (r != null && r.contains(p)) {
 				return wo;
 			}
