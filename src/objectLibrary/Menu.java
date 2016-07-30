@@ -2,9 +2,6 @@ package objectLibrary;
 
 import java.util.Iterator;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-
 import helpers.Dir;
 import helpers.Point;
 import objects.InterfaceElement;
@@ -56,7 +53,7 @@ public class Menu extends InterfaceElement {
 	}
 
 	@Override
-	protected void draw(GameContainer gc, Graphics g, Camera camera) {
-		menuButtons.render(gc, g, camera);
+	protected void draw(Camera camera) {
+		menuButtons.render(camera);
 	}
 }

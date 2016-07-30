@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 
 import objects.GameObject;
 
@@ -35,11 +34,11 @@ public class ObjectLayer<T extends GameObject> {
 	 * @param camera
 	 *            The current world camera.
 	 */
-	public void render(GameContainer gc, Graphics g, Camera camera) {
+	public void render(Camera camera) {
 		Iterator<T> oli = objects.iterator();
 		while (oli.hasNext()) {
 			GameObject go = oli.next();
-			go.render(gc, g, camera);
+			go.render(camera);
 		}
 	}
 

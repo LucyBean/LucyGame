@@ -257,11 +257,11 @@ public class World implements MouseListener {
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
-				ol.render(gc, g, getCamera());
+				ol.render(getCamera());
 			}
 		}
 
-		gameInterface.render(gc, g, getState());
+		gameInterface.render(getState());
 	}
 
 	public void update(GameContainer gc, int delta) {
@@ -309,12 +309,25 @@ public class World implements MouseListener {
 	// Some helpful world creator tools
 	//
 	protected void drawWall(Point start, Dir d, int length) {
-		final int x_step = (int) d.asPoint().getX();
-		final int y_step = (int) d.asPoint().getY();
-		for (int i = 0; i < length; i++) {
-			addObject(new Wall(new Point(start.getX() + i * x_step,
-					start.getY() + i * y_step)));
+		Wall w;
+		switch(d) {
+			case SOUTH:
+				w = new Wall(start, 1, length);
+				break;
+			case EAST:
+				w = new Wall(start, length, 1);
+				break;
+			case NORTH:
+				w = new Wall(start.move(Dir.NORTH, length-1), 1, length);
+				break;
+			case WEST:
+				w = new Wall(start.move(Dir.WEST, length-1), 1, length);
+				break;
+			default:
+				w = null;
 		}
+		
+		addObject(w);
 	}
 
 	/**

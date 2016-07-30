@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 
 import helpers.Point;
 import objects.InterfaceElement;
@@ -38,15 +37,13 @@ public class GameInterface {
 	}
 
 	/**
-	 * Renders all the objects on this layer.
+	 * Renders the required interface for the current WorldState.
 	 * 
-	 * @param gc
-	 *            GameContainer object to use.
-	 * @param g
-	 *            Graphics object.
+	 * @param state
+	 *            The WorldState for which the interface should be rendered.
 	 */
-	public void render(GameContainer gc, Graphics g, WorldState state) {
-		interfaces.get(state.ordinal()).render(gc, g, null);
+	public void render(WorldState state) {
+		interfaces.get(state.ordinal()).render(null);
 	}
 
 	/**
@@ -58,6 +55,6 @@ public class GameInterface {
 	 *            Time difference.
 	 */
 	public void update(GameContainer gc, int delta, WorldState state) {
-		interfaces.get(state.ordinal()).update(gc,delta);
+		interfaces.get(state.ordinal()).update(gc, delta);
 	}
 }

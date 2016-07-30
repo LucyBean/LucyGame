@@ -1,7 +1,6 @@
 package objects;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -101,9 +100,9 @@ public abstract class GameObject {
 	 * @param g
 	 * @param camera
 	 */
-	final public void render(GameContainer gc, Graphics g, Camera camera) {
+	final public void render(Camera camera) {
 		if (isEnabled()) {
-			draw(gc, g, camera);
+			draw(camera);
 		}
 	}
 
@@ -114,7 +113,7 @@ public abstract class GameObject {
 	 * @param g
 	 * @param camera
 	 */
-	protected void draw(GameContainer gc, Graphics g, Camera camera) {
+	protected void draw(Camera camera) {
 		if (isVisible() && sprite != null) {
 			// Draw image
 			Point imageCoOrds = objectToScreenCoOrds(sprite.getOrigin(),

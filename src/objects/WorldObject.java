@@ -1,8 +1,5 @@
 package objects;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-
 import helpers.Point;
 import helpers.Rectangle;
 import worlds.Camera;
@@ -136,11 +133,21 @@ public abstract class WorldObject extends GameObject {
 	//
 	// Render
 	//
-	@SuppressWarnings("unused")
 	@Override
-	public void draw(GameContainer gc, Graphics g, Camera camera) {
-		super.draw(gc, g, camera);
+	public void draw(Camera camera) {
+		// Draws the sprite
+		super.draw(camera);
 
+		// Draws collider and interact boxes
+		drawCollider(camera);
+		drawInteractBox(camera);
+	}
+	
+	/**
+	 * Draws the Collider for this object if it is set to be shown.
+	 * @param camera
+	 */
+	final protected void drawCollider(Camera camera) {
 		if (collider != null) {
 			if (GlobalOptions.DRAW_ALL_COLLIDERS
 					|| GlobalOptions.DRAW_INVIS_OBJ_COLLIDERS
@@ -152,6 +159,14 @@ public abstract class WorldObject extends GameObject {
 						colliderCoOrds.getY(), getDrawScale(camera));
 			}
 		}
+	}
+	
+	/**
+	 * Draws the InteractBox for this object if it is set to be shown.
+	 * @param camera
+	 */
+	@SuppressWarnings("unused")
+	final protected void drawInteractBox(Camera camera) {
 		if (GlobalOptions.DRAW_INTERACT_BOXES && interactBox != null) {
 			// Draw interact box
 			Point interactCoOrds = objectToScreenCoOrds(

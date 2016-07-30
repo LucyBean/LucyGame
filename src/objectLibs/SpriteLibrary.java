@@ -21,8 +21,9 @@ public class SpriteLibrary {
 
 	/**
 	 * Creates a new rectangular sprite of the given colour.
-	 * @param r 
-	 * @param scale 
+	 * 
+	 * @param r
+	 * @param scale
 	 * @param fill
 	 * @param border
 	 * @return
@@ -77,6 +78,39 @@ public class SpriteLibrary {
 		Color border = fill.darker(0.5f);
 		border.a = 220;
 		return createRectangle(interactBox, GRID_SIZE, fill, border);
+	}
+
+	public static Sprite drawWall(int width, int height) {
+		try {
+			Color fill = new Color(240, 240, 40);
+			Color border = fill.darker(0.5f);
+			
+			int imgW = width * GRID_SIZE;
+			int imgH = height * GRID_SIZE;
+
+			Image img = new Image(imgW, imgH);
+			Graphics g = img.getGraphics();
+			g.setColor(fill);
+			g.fillRect(0, 0, imgW - 1, imgH - 1);
+
+			g.setColor(border);
+			// Draw the outside border
+			g.drawRect(0, 0, imgW - 1, imgH - 1);
+			g.drawRect(1, 1, imgW - 3, imgH - 3);
+			// Draw middle borders
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
+					g.drawRect(x * GRID_SIZE, y * GRID_SIZE,
+							(x + 1) * GRID_SIZE - 1, (y + 1) * GRID_SIZE - 1);
+				}
+			}
+			g.flush();
+			return new Sprite(img);
+		} catch (SlickException se) {
+			System.err.println("Unable to draw wall ");
+			se.printStackTrace();
+			return null;
+		}
 	}
 
 	public final static Sprite WALL = createRectangle(

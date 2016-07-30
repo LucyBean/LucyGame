@@ -1,23 +1,18 @@
 ====================
 ==  THINGS TO DO  ==
-====================]
+====================
+	
+Collapse wall to a single Static
+	Draw the wall along its entire length by replicating the image.
 
 Build the game interface
-	Build a menu object
-
-Status window allow one to click on an object to view the status.
+	Status window allow one to click on an object to view the status.
 
 Camera following
 	Make the camera following less choppy.
-	
-Collapse wall to a single Static
-
-Document and redo all grid and co-ordinates. Currently they are a mess.
 
 Interactions
 	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
-
-Camera following
 
 Creating other types of map objects (especially linked objects, like keys and switches)
 

@@ -29,7 +29,7 @@ public class MapImportingDemo extends World {
 				int id = Integer.parseInt(s);
 
 				if (id == 1) {
-					addObject(new Wall(new Point(x, y)));
+					addObject(new Wall(new Point(x, y), 1, 1));
 				}
 				if (id == 2) {
 					WorldObject gp = new GravityPlayer(new Point(x, y));
