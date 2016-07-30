@@ -1,12 +1,15 @@
 ====================
 ==  THINGS TO DO  ==
 ====================
-	
-Collapse wall to a single Static
-	Draw the wall along its entire length by replicating the image.
 
 Build the game interface
 	Status window allow one to click on an object to view the status.
+	Build a more flexible Menu system. Allow sub menus.
+	Add a debug sub-menu that can modify options. Save options?
+	
+Make collider drawing more efficient
+	Currently allocating buffer for every collider image drawn which is
+	pretty slow. Change it to tile the collider image?
 
 Camera following
 	Make the camera following less choppy.

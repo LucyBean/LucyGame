@@ -6,7 +6,6 @@ import java.util.List;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
@@ -20,7 +19,7 @@ import objects.Actor;
 import objects.InterfaceElement;
 import objects.WorldObject;
 
-public class World implements MouseListener {
+public class World {
 	private Camera camera;
 	private List<ObjectLayer<WorldObject>> layers;
 	private GameInterface gameInterface;
@@ -96,7 +95,7 @@ public class World implements MouseListener {
 		Menu m = new Menu();
 		m.add(new MenuButton("Hello!"));
 		m.add(new MenuButton("World!"));
-		MenuButton backToMainMenu = new MenuButton("Main menu"){
+		MenuButton backToMainMenu = new MenuButton("Main menu") {
 			@Override
 			public void onClick(int button) {
 				getWorld().getGame().loadMainMenu();
@@ -266,34 +265,24 @@ public class World implements MouseListener {
 
 	public void update(GameContainer gc, int delta) {
 		Input input = gc.getInput();
-
-		// Move the camera around the world.
-		if (input.isKeyDown(Input.KEY_T)) {
-			camera.move(Dir.SOUTH, camera.getSpeed() * delta);
-		}
-		if (input.isKeyDown(Input.KEY_C)) {
-			camera.move(Dir.NORTH, camera.getSpeed() * delta);
-		}
-		if (input.isKeyDown(Input.KEY_H)) {
-			camera.move(Dir.WEST, camera.getSpeed() * delta);
-		}
-		if (input.isKeyDown(Input.KEY_N)) {
-			camera.move(Dir.EAST, camera.getSpeed() * delta);
-		}
-		if (input.isKeyDown(Input.KEY_R)) {
-			camera.zoomIn();
-		}
-		if (input.isKeyDown(Input.KEY_G)) {
-			camera.zoomOut();
-		}
+		
+		camera.update(gc, delta);
+		gameInterface.update(gc, delta, getState());
 
 		// Reset on D
 		if (input.isKeyDown(Input.KEY_D)) {
 			reset();
 		}
+		
+		switch (worldState) {
+			case PLAYING:
+				playingUpdate(gc, delta);
+				break;
+			case MENU:
+		}
+	}
 
-		camera.update(gc, delta);
-
+	private void playingUpdate(GameContainer gc, int delta) {
 		// Update all GameObjects
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
@@ -301,34 +290,26 @@ public class World implements MouseListener {
 				ol.update(gc, delta);
 			}
 		}
-
-		gameInterface.update(gc, delta, getState());
+	}
+	
+	public void keyPressed(int keycode) {
+		switch (worldState) {
+			case PLAYING:
+				if (keycode == Input.KEY_ESCAPE) {
+					openMenu();
+				}
+				break;
+			case MENU:
+				if (keycode == Input.KEY_ESCAPE) {
+					closeMenu();
+				}
+		}
 	}
 
 	//
 	// Some helpful world creator tools
 	//
-	protected void drawWall(Point start, Dir d, int length) {
-		Wall w;
-		switch(d) {
-			case SOUTH:
-				w = new Wall(start, 1, length);
-				break;
-			case EAST:
-				w = new Wall(start, length, 1);
-				break;
-			case NORTH:
-				w = new Wall(start.move(Dir.NORTH, length-1), 1, length);
-				break;
-			case WEST:
-				w = new Wall(start.move(Dir.WEST, length-1), 1, length);
-				break;
-			default:
-				w = null;
-		}
-		
-		addObject(w);
-	}
+	
 
 	/**
 	 * Draws a wall border around the world.
@@ -339,10 +320,10 @@ public class World implements MouseListener {
 	 *            Number of wall blocks along y.
 	 */
 	protected void drawWallBorder(int width, int height) {
-		drawWall(Point.ZERO, Dir.EAST, width);
-		drawWall(new Point(0, height - 1), Dir.EAST, width);
-		drawWall(new Point(0, 1), Dir.SOUTH, height - 2);
-		drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2);
+		addObject(Wall.drawWall(Point.ZERO, Dir.EAST, width));
+		addObject(Wall.drawWall(new Point(0, height - 1), Dir.EAST, width));
+		addObject(Wall.drawWall(new Point(0, 1), Dir.SOUTH, height - 2));
+		addObject(Wall.drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2));
 	}
 
 	protected void drawWallBorder() {
@@ -350,49 +331,7 @@ public class World implements MouseListener {
 				GlobalOptions.WINDOW_HEIGHT_GRID);
 	}
 
-	@Override
 	public void mousePressed(int button, int x, int y) {
 		gameInterface.mousePressed(button, new Point(x, y), getState());
-	}
-
-	//
-	// MouseListener methods
-	//
-	@Override
-	public void inputEnded() {
-	}
-
-	@Override
-	public void inputStarted() {
-	}
-
-	@Override
-	public boolean isAcceptingInput() {
-		return false;
-	}
-
-	@Override
-	public void setInput(Input arg0) {
-	}
-
-	@Override
-	public void mouseClicked(int button, int x, int y, int clickCount) {
-	}
-
-	@Override
-	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
-	}
-
-	@Override
-	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
-	}
-
-	@Override
-	public void mouseReleased(int arg0, int arg1, int arg2) {
-
-	}
-
-	@Override
-	public void mouseWheelMoved(int arg0) {
 	}
 }

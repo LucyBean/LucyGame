@@ -7,6 +7,7 @@ import helpers.Dir;
 import helpers.Point;
 import objectLibrary.GravityPlayer;
 import objectLibrary.StatusWindow;
+import objectLibrary.Wall;
 import objects.Actor;
 import objects.Sprite;
 import objects.Static;
@@ -46,7 +47,7 @@ public class PlatformerDemoWorld extends World {
 		addObject(sw, WorldState.PLAYING);
 
 		// Add some walls
-		drawWall(new Point(2, 10), Dir.EAST, 10);
-		drawWall(new Point(11, 9), Dir.EAST, 3);
+		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 10));
+		addObject(Wall.drawWall(new Point(11, 9), Dir.EAST, 3));
 	}
 }

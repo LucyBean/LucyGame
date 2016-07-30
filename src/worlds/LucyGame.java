@@ -45,6 +45,11 @@ public class LucyGame extends BasicGame {
 		world.mousePressed(button, x, y);
 	}
 	
+	@Override
+	public void keyPressed(int keycode, char c) {
+		world.keyPressed(keycode);
+	}
+	
 	public void loadMainMenu() {
 		world = worldLoader.getMainMenu();
 	}

@@ -1,6 +1,7 @@
 package worlds;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 
 import helpers.Dir;
 import helpers.Point;
@@ -35,9 +36,22 @@ public class Camera {
 	WorldObject target;
 
 	public void update(GameContainer gc, int delta) {
-		// Do nothing if there is no target or set to not following
+		Input input = gc.getInput();
+		// Manula control if there is no target or set to not following
 		if (target == null || !following) {
-			return;
+			// Move the camera around the world.
+			if (input.isKeyDown(Input.KEY_T)) {
+				move(Dir.SOUTH, getSpeed() * delta);
+			}
+			if (input.isKeyDown(Input.KEY_C)) {
+				move(Dir.NORTH, getSpeed() * delta);
+			}
+			if (input.isKeyDown(Input.KEY_H)) {
+				move(Dir.WEST, getSpeed() * delta);
+			}
+			if (input.isKeyDown(Input.KEY_N)) {
+				move(Dir.EAST, getSpeed() * delta);
+			}
 		} else {
 			// Get position of target on screen
 			// tsc = target in screen co-ordinates
@@ -52,24 +66,37 @@ public class Camera {
 				// determine direction
 				// x
 				if (tsc.getTopLeft().getX() < SCROLL_RECTANGLE_WIDTH) {
-					float amount = SCROLL_RECTANGLE_WIDTH - tsc.getTopLeft().getX();
-					move(Dir.WEST, amount, speed*delta);
+					float amount = SCROLL_RECTANGLE_WIDTH
+							- tsc.getTopLeft().getX();
+					move(Dir.WEST, amount, speed * delta);
 				} else if (tsc.getTopRight().getX() > WINDOW_WIDTH
 						- SCROLL_RECTANGLE_WIDTH) {
-					float amount = tsc.getTopRight().getX() - (WINDOW_WIDTH - SCROLL_RECTANGLE_WIDTH);
-					move(Dir.EAST, amount, speed*delta);
+					float amount = tsc.getTopRight().getX()
+							- (WINDOW_WIDTH - SCROLL_RECTANGLE_WIDTH);
+					move(Dir.EAST, amount, speed * delta);
 				}
 
 				// y
 				if (tsc.getTopLeft().getY() < SCROLL_RECTANGLE_WIDTH) {
-					float amount = SCROLL_RECTANGLE_WIDTH - tsc.getTopLeft().getY();
-					move(Dir.NORTH, amount, speed*delta);
+					float amount = SCROLL_RECTANGLE_WIDTH
+							- tsc.getTopLeft().getY();
+					move(Dir.NORTH, amount, speed * delta);
 				} else if (tsc.getBottomLeft().getY() > WINDOW_HEIGHT
 						- SCROLL_RECTANGLE_WIDTH) {
-					float amount = tsc.getBottomLeft().getY() - (WINDOW_HEIGHT - SCROLL_RECTANGLE_WIDTH);
-					move(Dir.SOUTH, amount, speed*delta);
+					float amount = tsc.getBottomLeft().getY()
+							- (WINDOW_HEIGHT - SCROLL_RECTANGLE_WIDTH);
+					move(Dir.SOUTH, amount, speed * delta);
 				}
 			}
+		}
+
+		// Zooming
+
+		if (input.isKeyDown(Input.KEY_R)) {
+			zoomIn();
+		}
+		if (input.isKeyDown(Input.KEY_G)) {
+			zoomOut();
 		}
 	}
 
@@ -105,14 +132,14 @@ public class Camera {
 	public void setTarget(WorldObject t) {
 		target = t;
 	}
-	
+
 	/**
 	 * Sets the camera to follow its current target.
 	 */
 	public void startFollowing() {
 		following = true;
 	}
-	
+
 	/**
 	 * Sets the camera to stop following its current target.
 	 */

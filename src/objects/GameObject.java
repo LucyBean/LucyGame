@@ -117,7 +117,7 @@ public abstract class GameObject {
 	protected void draw(Camera camera) {
 		draw(camera, 1, 1);
 	}
-	
+
 	protected void draw(Camera camera, int tileX, int tileY) {
 		if (isVisible() && sprite != null) {
 			// Draw image
@@ -155,4 +155,21 @@ public abstract class GameObject {
 			Camera camera);
 
 	protected abstract float getDrawScale(Camera camera);
+
+	/**
+	 * Gives this GameObject's Sprite's bounding rectangle in screen
+	 * co-ordinates.
+	 * 
+	 * @param camera
+	 *            The current Camera.
+	 * @return The Sprite's bounding rectangle in screen co-ordinates. 
+	 */
+	public Rectangle getSpriteRectangleScreenCoOrds(Camera camera) {
+		if (sprite != null) {
+			return objectToScreenCoOrds(getSprite().getBoundingRectangle(),
+					camera);
+		} else {
+			return null;
+		}
+	}
 }
