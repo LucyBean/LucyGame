@@ -27,6 +27,7 @@ public class World implements MouseListener {
 	private List<WorldObject> solids;
 	private List<WorldObject> activeSolids;
 	private List<WorldObject> interactables;
+	private WorldState worldState;
 	private final LucyGame game;
 	private final String name;
 
@@ -49,6 +50,7 @@ public class World implements MouseListener {
 			solids = new ArrayList<WorldObject>();
 			activeSolids = new ArrayList<WorldObject>();
 			interactables = new ArrayList<WorldObject>();
+			worldState = WorldState.PLAYING;
 
 			for (@SuppressWarnings("unused")
 			WorldLayer l : WorldLayer.values()) {
@@ -57,14 +59,26 @@ public class World implements MouseListener {
 
 			init();
 			
-			Button menuButton = new Button(new Rectangle(new Point(200,0),100,32)){
+			
+			
+			Button openMenuButton = new Button(new Rectangle(new Point(200,0),100,32)){
 				@Override
 				public void onClick(int button) {
-					getWorld().getGame().loadMainMenu();
+					getWorld().openMenu();
 				}
 			};
-			menuButton.setText("Main menu");
-			addObject(menuButton);
+			openMenuButton.setText("Open menu");
+			addObject(openMenuButton, WorldState.PLAYING);
+			
+			Button closeMenuButton = new Button(new Rectangle(new Point(300,0),100,32)) {
+				@Override
+				public void onClick(int button) {
+					getWorld().closeMenu();
+				}
+			};
+			closeMenuButton.setText("Close menu");
+			addObject(closeMenuButton, WorldState.MENU);
+			
 		} catch (SlickException se) {
 			System.err.println("Unable to initialise or reset world.");
 			se.printStackTrace();
@@ -112,8 +126,8 @@ public class World implements MouseListener {
 		go.setWorld(this);
 	}
 
-	public void addObject(InterfaceElement ie) {
-		gameInterface.add(ie);
+	public void addObject(InterfaceElement ie, WorldState state) {
+		gameInterface.add(ie, state);
 		ie.setWorld(this);
 	}
 
@@ -129,6 +143,10 @@ public class World implements MouseListener {
 		// Currently returns all solid objects in the world.
 		// Modify to keep track of on screen objects.
 		return activeSolids;
+	}
+	
+	public WorldState getState() {
+		return worldState;
 	}
 
 	/**
@@ -191,6 +209,17 @@ public class World implements MouseListener {
 			activeSolids.add(go);
 		}
 	}
+	
+	//
+	// State transitions
+	//
+	public void openMenu() {
+		worldState = WorldState.MENU;
+	}
+	
+	public void closeMenu() {
+		worldState = WorldState.PLAYING;
+	}
 
 	/**
 	 * Renders the world.
@@ -210,7 +239,7 @@ public class World implements MouseListener {
 			}
 		}
 
-		gameInterface.render(gc, g);
+		gameInterface.render(gc, g, getState());
 	}
 
 	public void update(GameContainer gc, int delta) {
@@ -251,7 +280,7 @@ public class World implements MouseListener {
 			}
 		}
 
-		gameInterface.update(gc, delta);
+		gameInterface.update(gc, delta, getState());
 	}
 
 	//
@@ -288,7 +317,7 @@ public class World implements MouseListener {
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
-		gameInterface.mousePressed(button, new Point(x, y));
+		gameInterface.mousePressed(button, new Point(x, y), getState());
 	}
 
 	//

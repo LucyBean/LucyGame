@@ -14,6 +14,7 @@ import objects.WorldObject;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
+import worlds.WorldState;
 
 /**
  * A demo of a basic platform game.
@@ -42,7 +43,7 @@ public class PlatformerDemoWorld extends World {
 
 		StatusWindow sw = new StatusWindow(new Point(340, 0));
 		sw.setWatching(gravityPlayer);
-		addObject(sw);
+		addObject(sw, WorldState.PLAYING);
 
 		// Add some walls
 		drawWall(new Point(2, 10), Dir.EAST, 10);

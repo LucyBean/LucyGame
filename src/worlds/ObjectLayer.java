@@ -8,6 +8,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 import objects.GameObject;
+import objects.InterfaceElement;
 
 public class ObjectLayer {
 	List<GameObject> objects;
@@ -58,5 +59,9 @@ public class ObjectLayer {
 			GameObject go = oli.next();
 			go.update(gc, delta);
 		}
+	}
+
+	public Iterator<GameObject> iterator() {
+		return objects.iterator();
 	}
 }
