@@ -1,6 +1,7 @@
 package worlds;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
@@ -92,6 +93,16 @@ public class World {
 		closeMenuButton.setText("Close menu");
 		addObject(closeMenuButton, WorldState.MENU);
 
+		Button clickToStopSelect = new Button(
+				new Rectangle(new Point(150, 0), 340, 32)) {
+			@Override
+			public void onClick(int button) {
+				getWorld().stopWatchSelect();
+			}
+		};
+		clickToStopSelect.setText("Click here to stop selecting");
+		addObject(clickToStopSelect, WorldState.WATCH_SELECT);
+
 		Menu m = new Menu();
 		m.add(new MenuButton("Hello!"));
 		m.add(new MenuButton("World!"));
@@ -102,6 +113,13 @@ public class World {
 			}
 		};
 		m.add(backToMainMenu);
+		MenuButton selectWatchedObject = new MenuButton("Select watch object") {
+			@Override
+			public void onClick(int button) {
+				getWorld().startWatchSelect();
+			}
+		};
+		m.add(selectWatchedObject);
 
 		addObject(m, WorldState.MENU);
 	}
@@ -234,12 +252,21 @@ public class World {
 	//
 	// State transitions
 	//
+	// TODO: Make these check for validity.
 	public void openMenu() {
 		worldState = WorldState.MENU;
 	}
 
 	public void closeMenu() {
 		worldState = WorldState.PLAYING;
+	}
+
+	public void startWatchSelect() {
+		worldState = WorldState.WATCH_SELECT;
+	}
+
+	public void stopWatchSelect() {
+		worldState = WorldState.MENU;
 	}
 
 	/**
@@ -265,7 +292,7 @@ public class World {
 
 	public void update(GameContainer gc, int delta) {
 		Input input = gc.getInput();
-		
+
 		camera.update(gc, delta);
 		gameInterface.update(gc, delta, getState());
 
@@ -273,12 +300,15 @@ public class World {
 		if (input.isKeyDown(Input.KEY_D)) {
 			reset();
 		}
-		
+
 		switch (worldState) {
 			case PLAYING:
 				playingUpdate(gc, delta);
 				break;
 			case MENU:
+				break;
+			case WATCH_SELECT:
+				break;
 		}
 	}
 
@@ -291,7 +321,7 @@ public class World {
 			}
 		}
 	}
-	
+
 	public void keyPressed(int keycode) {
 		switch (worldState) {
 			case PLAYING:
@@ -303,13 +333,49 @@ public class World {
 				if (keycode == Input.KEY_ESCAPE) {
 					closeMenu();
 				}
+				break;
+			case WATCH_SELECT:
+				if (keycode == Input.KEY_ESCAPE) {
+					stopWatchSelect();
+				}
+				break;
+		}
+	}
+
+	public void mousePressed(int button, int x, int y) {
+		Point clickPoint = new Point(x,y);
+		
+		if (worldState == WorldState.WATCH_SELECT) {
+			watchSelectMousePressed(button, clickPoint);
+		}
+		
+		gameInterface.mousePressed(button, clickPoint, getState());
+		
+	}
+	
+	// TODO: Make this iterate in reverse order.
+	private void watchSelectMousePressed(int button, Point p) {
+		// For each world object, check whether it was clicked by the mouse
+		Iterator<ObjectLayer<WorldObject>> iol = layers.iterator();
+		WorldObject clicked = null;
+		
+		while(iol.hasNext()) {
+			ObjectLayer<WorldObject> olwo = iol.next();
+			WorldObject wo = olwo.findClickedObject(p, getCamera());
+			if (wo != null) {
+				clicked = wo;
+			}
+		}
+		
+		if (clicked != null) {
+			System.out.println(clicked + " was clicked!");
+			stopWatchSelect();
 		}
 	}
 
 	//
 	// Some helpful world creator tools
 	//
-	
 
 	/**
 	 * Draws a wall border around the world.
@@ -323,7 +389,8 @@ public class World {
 		addObject(Wall.drawWall(Point.ZERO, Dir.EAST, width));
 		addObject(Wall.drawWall(new Point(0, height - 1), Dir.EAST, width));
 		addObject(Wall.drawWall(new Point(0, 1), Dir.SOUTH, height - 2));
-		addObject(Wall.drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2));
+		addObject(
+				Wall.drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2));
 	}
 
 	protected void drawWallBorder() {
@@ -331,7 +398,4 @@ public class World {
 				GlobalOptions.WINDOW_HEIGHT_GRID);
 	}
 
-	public void mousePressed(int button, int x, int y) {
-		gameInterface.mousePressed(button, new Point(x, y), getState());
-	}
 }

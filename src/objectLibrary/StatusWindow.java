@@ -57,7 +57,7 @@ public class StatusWindow extends InterfaceElement {
 			g.setColor(Color.black);
 			g.drawString(s, 5, 5);
 			g.flush();
-			setSprite(new Sprite(img));
+			setSprite(new Sprite(img,1));
 		} catch (SlickException se) {
 			System.err.println("Tried to add update status for " + watching
 					+ " and failed");

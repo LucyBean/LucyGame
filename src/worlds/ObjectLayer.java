@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 
+import helpers.Point;
+import helpers.Rectangle;
 import objects.GameObject;
 
 public class ObjectLayer<T extends GameObject> {
@@ -61,5 +63,29 @@ public class ObjectLayer<T extends GameObject> {
 
 	public Iterator<T> iterator() {
 		return objects.iterator();
+	}
+
+	/**
+	 * Finds the object, if any, on this layer which contains the point p in
+	 * screen co-ordinates.
+	 * 
+	 * @param p
+	 *            The point to be checked given in screen co-ordinates.
+	 * @param c
+	 *            The current position of the Camera.
+	 * @return The first object in the layer (if any) which contains the point.
+	 */
+	public T findClickedObject(Point p, Camera c) {
+		Iterator<T> io = objects.iterator();
+
+		while (io.hasNext()) {
+			T wo = io.next();
+			Rectangle r = wo.getSpriteRectangleScreenCoOrds(c);
+			if (r != null && r.contains(p)) {
+				return wo;
+			}
+		}
+
+		return null;
 	}
 }

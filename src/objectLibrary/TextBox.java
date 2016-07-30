@@ -26,7 +26,7 @@ public class TextBox extends InterfaceElement {
 			g.drawRect(0, 0, width - 1, height - 1);
 			g.drawRect(1, 1, width - 3, height - 3);
 			g.flush();
-			setSprite(new Sprite(img));
+			setSprite(new Sprite(img,1));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

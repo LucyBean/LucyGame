@@ -28,7 +28,7 @@ public class Button extends InterfaceElement {
 			g.drawString(s, (img.getWidth() - w) / 2,
 					(img.getHeight() - h) / 2);
 			g.flush();
-			setSprite(new Sprite(img));
+			setSprite(new Sprite(img,1));
 		} catch (SlickException se) {
 			System.err.println(
 					"Tried to add text " + s + " to button and failed");

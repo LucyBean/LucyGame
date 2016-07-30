@@ -31,7 +31,7 @@ public class PlatformerDemoWorld extends World {
 	@Override
 	public void init() throws SlickException {
 		WorldObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
-				new Sprite(new Image("data/Desert.jpg"))) {
+				new Sprite(new Image("data/Desert.jpg"),1)) {
 			@Override
 			protected void resetStaticState() {
 

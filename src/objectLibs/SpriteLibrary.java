@@ -42,7 +42,7 @@ public class SpriteLibrary {
 			g.drawRect(1, 1, width - 3, height - 3);
 			g.flush();
 
-			return new Sprite(img);
+			return new Sprite(img, scale);
 		} catch (SlickException se) {
 			System.err.println("Unable to draw rectangle " + r);
 			se.printStackTrace();
@@ -105,7 +105,7 @@ public class SpriteLibrary {
 				}
 			}
 			g.flush();
-			return new Sprite(img);
+			return new Sprite(img, GRID_SIZE);
 		} catch (SlickException se) {
 			System.err.println("Unable to draw wall ");
 			se.printStackTrace();
