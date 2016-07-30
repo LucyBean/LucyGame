@@ -1,6 +1,7 @@
 package objects;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -20,6 +21,17 @@ public abstract class InterfaceElement extends GameObject {
 	@Override
 	public Rectangle objectToScreenCoOrds(Rectangle rect, Camera camera) {
 		return rect.translate(getPosition());
+	}
+	
+	/**
+	 * Renders the InterfaceElement.
+	 * @param gc
+	 * @param g
+	 */
+	public void render(GameContainer gc, Graphics g) {
+		// InterfaceElements are not affected by the position of the camera
+		// so a camera argument is not required.
+		super.render(gc, g, null);
 	}
 
 	/**

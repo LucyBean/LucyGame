@@ -210,7 +210,7 @@ public class World implements MouseListener {
 			}
 		}
 
-		gameInterface.render(gc, g, camera);
+		gameInterface.render(gc, g);
 	}
 
 	public void update(GameContainer gc, int delta) {

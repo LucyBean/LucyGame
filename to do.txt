@@ -2,9 +2,9 @@
 ==  THINGS TO DO  ==
 ====================]
 
-Status window allow one to click on an object to view the status.
-	
 Build the game interface
+
+Status window allow one to click on an object to view the status.
 
 Camera following
 	Make the camera following less choppy.
