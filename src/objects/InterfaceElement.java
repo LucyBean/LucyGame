@@ -22,9 +22,10 @@ public abstract class InterfaceElement extends GameObject {
 	public Rectangle objectToScreenCoOrds(Rectangle rect, Camera camera) {
 		return rect.translate(getPosition());
 	}
-	
+
 	/**
 	 * Renders the InterfaceElement.
+	 * 
 	 * @param gc
 	 * @param g
 	 */
@@ -62,10 +63,13 @@ public abstract class InterfaceElement extends GameObject {
 	}
 
 	public void mousePressed(int button, Point clickPoint) {
-		Rectangle rect = getSprite().getBoundingRectangle();
-		rect = objectToScreenCoOrds(rect, null);
-		if (rect.contains(clickPoint)) {
-			onClick(button);
+		Sprite sprite = getSprite();
+		if (sprite != null) {
+			Rectangle rect = sprite.getBoundingRectangle();
+			rect = objectToScreenCoOrds(rect, null);
+			if (rect.contains(clickPoint)) {
+				onClick(button);
+			}
 		}
 	}
 

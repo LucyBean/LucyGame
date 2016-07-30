@@ -8,29 +8,31 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 import helpers.Point;
-import objects.GameObject;
 import objects.InterfaceElement;
 
 public class GameInterface {
-	List<ObjectLayer> interfaces;
+	List<ObjectLayer<InterfaceElement>> interfaces;
+	World world;
 
-	public GameInterface() {
-		interfaces = new ArrayList<ObjectLayer>();
+	public GameInterface(World world) {
+		interfaces = new ArrayList<ObjectLayer<InterfaceElement>>();
 		for (int i = 0; i < WorldState.values().length; i++) {
-			interfaces.add(new ObjectLayer());
+			interfaces.add(new ObjectLayer<InterfaceElement>());
 		}
+		this.world = world;
 	}
 
 	public void add(InterfaceElement ie, WorldState state) {
 		interfaces.get(state.ordinal()).add(ie);
+		ie.setWorld(world);
 	}
 
 	public void mousePressed(int button, Point clickPoint, WorldState state) {
-		Iterator<GameObject> oli = interfaces.get(
+		Iterator<InterfaceElement> oli = interfaces.get(
 				state.ordinal()).iterator();
 
 		while (oli.hasNext()) {
-			InterfaceElement go = (InterfaceElement) oli.next();
+			InterfaceElement go = oli.next();
 			go.mousePressed(button, clickPoint);
 		}
 	}

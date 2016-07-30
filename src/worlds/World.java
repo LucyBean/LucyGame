@@ -13,6 +13,8 @@ import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
 import objectLibrary.Button;
+import objectLibrary.Menu;
+import objectLibrary.MenuButton;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.InterfaceElement;
@@ -20,7 +22,7 @@ import objects.WorldObject;
 
 public class World implements MouseListener {
 	private Camera camera;
-	private List<ObjectLayer> layers;
+	private List<ObjectLayer<WorldObject>> layers;
 	private GameInterface gameInterface;
 	private List<Actor> actors;
 	private List<Actor> activeActors;
@@ -43,8 +45,8 @@ public class World implements MouseListener {
 	private void reset() {
 		try {
 			camera = new Camera();
-			layers = new ArrayList<ObjectLayer>();
-			gameInterface = new GameInterface();
+			layers = new ArrayList<ObjectLayer<WorldObject>>();
+			gameInterface = new GameInterface(this);
 			actors = new ArrayList<Actor>();
 			activeActors = new ArrayList<Actor>();
 			solids = new ArrayList<WorldObject>();
@@ -54,35 +56,55 @@ public class World implements MouseListener {
 
 			for (@SuppressWarnings("unused")
 			WorldLayer l : WorldLayer.values()) {
-				layers.add(new ObjectLayer());
+				layers.add(new ObjectLayer<WorldObject>());
 			}
 
 			init();
-			
-			
-			
-			Button openMenuButton = new Button(new Rectangle(new Point(200,0),100,32)){
-				@Override
-				public void onClick(int button) {
-					getWorld().openMenu();
-				}
-			};
-			openMenuButton.setText("Open menu");
-			addObject(openMenuButton, WorldState.PLAYING);
-			
-			Button closeMenuButton = new Button(new Rectangle(new Point(300,0),100,32)) {
-				@Override
-				public void onClick(int button) {
-					getWorld().closeMenu();
-				}
-			};
-			closeMenuButton.setText("Close menu");
-			addObject(closeMenuButton, WorldState.MENU);
-			
+			buildGameInterface();
+
 		} catch (SlickException se) {
 			System.err.println("Unable to initialise or reset world.");
 			se.printStackTrace();
 		}
+	}
+
+	/**
+	 * Builds the default interface for a World. Override this to implement a
+	 * different interface for that World.
+	 */
+	protected void buildGameInterface() {
+		Button openMenuButton = new Button(
+				new Rectangle(new Point(200, 0), 100, 32)) {
+			@Override
+			public void onClick(int button) {
+				getWorld().openMenu();
+			}
+		};
+		openMenuButton.setText("Open menu");
+		addObject(openMenuButton, WorldState.PLAYING);
+
+		Button closeMenuButton = new Button(
+				new Rectangle(new Point(300, 0), 100, 32)) {
+			@Override
+			public void onClick(int button) {
+				getWorld().closeMenu();
+			}
+		};
+		closeMenuButton.setText("Close menu");
+		addObject(closeMenuButton, WorldState.MENU);
+
+		Menu m = new Menu();
+		m.add(new MenuButton("Hello!"));
+		m.add(new MenuButton("World!"));
+		MenuButton backToMainMenu = new MenuButton("Main menu"){
+			@Override
+			public void onClick(int button) {
+				getWorld().getGame().loadMainMenu();
+			}
+		};
+		m.add(backToMainMenu);
+
+		addObject(m, WorldState.MENU);
 	}
 
 	/**
@@ -144,7 +166,7 @@ public class World implements MouseListener {
 		// Modify to keep track of on screen objects.
 		return activeSolids;
 	}
-	
+
 	public WorldState getState() {
 		return worldState;
 	}
@@ -209,14 +231,14 @@ public class World implements MouseListener {
 			activeSolids.add(go);
 		}
 	}
-	
+
 	//
 	// State transitions
 	//
 	public void openMenu() {
 		worldState = WorldState.MENU;
 	}
-	
+
 	public void closeMenu() {
 		worldState = WorldState.PLAYING;
 	}
@@ -233,7 +255,7 @@ public class World implements MouseListener {
 	public void render(GameContainer gc, Graphics g) {
 		// Renders all objects in layer order if the layer is visible.
 		for (WorldLayer l : WorldLayer.values()) {
-			ObjectLayer ol = layers.get(l.ordinal());
+			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
 				ol.render(gc, g, getCamera());
 			}
@@ -271,10 +293,10 @@ public class World implements MouseListener {
 		}
 
 		camera.update(gc, delta);
-		
+
 		// Update all GameObjects
 		for (WorldLayer l : WorldLayer.values()) {
-			ObjectLayer ol = layers.get(l.ordinal());
+			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
 				ol.update(gc, delta);
 			}

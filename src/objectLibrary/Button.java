@@ -23,7 +23,8 @@ public class Button extends InterfaceElement {
 			Graphics g = img.getGraphics();
 			float w = g.getFont().getWidth(s);
 			float h = g.getFont().getHeight(s);
-			// draw the string at (imgWidth - w)/2
+			// draw the string centered
+			g.setColor(Color.black);
 			g.drawString(s, (img.getWidth() - w) / 2,
 					(img.getHeight() - h) / 2);
 			g.flush();

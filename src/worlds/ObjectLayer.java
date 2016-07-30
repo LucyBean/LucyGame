@@ -8,17 +8,16 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 import objects.GameObject;
-import objects.InterfaceElement;
 
-public class ObjectLayer {
-	List<GameObject> objects;
+public class ObjectLayer<T extends GameObject> {
+	List<T> objects;
 	boolean visible = true;
 
 	public ObjectLayer() {
-		objects = new ArrayList<GameObject>();
+		objects = new ArrayList<T>();
 	}
 
-	public void add(GameObject go) {
+	public void add(T go) {
 		objects.add(go);
 	}
 
@@ -37,7 +36,7 @@ public class ObjectLayer {
 	 *            The current world camera.
 	 */
 	public void render(GameContainer gc, Graphics g, Camera camera) {
-		Iterator<GameObject> oli = objects.iterator();
+		Iterator<T> oli = objects.iterator();
 		while (oli.hasNext()) {
 			GameObject go = oli.next();
 			go.render(gc, g, camera);
@@ -54,14 +53,14 @@ public class ObjectLayer {
 	 */
 	public void update(GameContainer gc, int delta) {
 		// Propagate updates to all objects
-		Iterator<GameObject> oli = objects.iterator();
+		Iterator<T> oli = objects.iterator();
 		while (oli.hasNext()) {
 			GameObject go = oli.next();
 			go.update(gc, delta);
 		}
 	}
 
-	public Iterator<GameObject> iterator() {
+	public Iterator<T> iterator() {
 		return objects.iterator();
 	}
 }

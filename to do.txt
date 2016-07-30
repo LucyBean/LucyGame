@@ -3,6 +3,7 @@
 ====================]
 
 Build the game interface
+	Build a menu object
 
 Status window allow one to click on an object to view the status.
 
