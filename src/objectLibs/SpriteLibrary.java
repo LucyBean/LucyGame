@@ -82,36 +82,7 @@ public class SpriteLibrary {
 	}
 
 	public static Sprite drawWall(int width, int height) {
-		try {
-			Color fill = new Color(240, 240, 40);
-			Color border = fill.darker(0.5f);
-			
-			int imgW = width * GRID_SIZE;
-			int imgH = height * GRID_SIZE;
-
-			Image img = new Image(imgW, imgH);
-			Graphics g = img.getGraphics();
-			g.setColor(fill);
-			g.fillRect(0, 0, imgW - 1, imgH - 1);
-
-			g.setColor(border);
-			// Draw the outside border
-			g.drawRect(0, 0, imgW - 1, imgH - 1);
-			g.drawRect(1, 1, imgW - 3, imgH - 3);
-			// Draw middle borders
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					g.drawRect(x * GRID_SIZE, y * GRID_SIZE,
-							(x + 1) * GRID_SIZE - 1, (y + 1) * GRID_SIZE - 1);
-				}
-			}
-			g.flush();
-			return new Sprite(img, GRID_SIZE);
-		} catch (SlickException se) {
-			System.err.println("Unable to draw wall ");
-			se.printStackTrace();
-			return null;
-		}
+		return new Sprite(WALL.getImage(), Point.ZERO, width, height, GRID_SIZE);
 	}
 	
 	public static Sprite interfaceElement(int width, int height, Color c, String text) {
@@ -137,4 +108,7 @@ public class SpriteLibrary {
 	public final static Sprite HIDDEN_SQUARE = createRectangle(
 			new Rectangle(Point.ZERO, 2, 2), GRID_SIZE,
 			new Color(190, 60, 190));
+	public final static Sprite COLLIDER = createRectangle(
+			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
+			new Color(50, 135, 220, 130));
 }
