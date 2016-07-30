@@ -136,8 +136,15 @@ public abstract class WorldObject extends GameObject {
 	@Override
 	public void draw(Camera camera) {
 		// Draws the sprite
-		super.draw(camera);
+		draw(camera, 1, 1);
 
+	}
+	
+	@Override
+	public void draw(Camera camera, int tileX, int tileY) {
+		// Draw the sprite
+		super.draw(camera, tileX, tileY);
+		
 		// Draws collider and interact boxes
 		drawCollider(camera);
 		drawInteractBox(camera);

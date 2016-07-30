@@ -5,6 +5,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Point;
 import helpers.Rectangle;
 import worlds.Camera;
+import worlds.GlobalOptions;
 import worlds.World;
 
 public abstract class GameObject {
@@ -114,12 +115,26 @@ public abstract class GameObject {
 	 * @param camera
 	 */
 	protected void draw(Camera camera) {
+		draw(camera, 1, 1);
+	}
+	
+	protected void draw(Camera camera, int tileX, int tileY) {
 		if (isVisible() && sprite != null) {
 			// Draw image
 			Point imageCoOrds = objectToScreenCoOrds(sprite.getOrigin(),
 					camera);
-			sprite.getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
-					getDrawScale(camera));
+			Rectangle imageRect = sprite.getBoundingRectangle();
+			Rectangle offset = objectToScreenCoOrds(
+					imageRect.scaleAboutOrigin(1.0f / GlobalOptions.GRID_SIZE),
+					camera);
+			for (int y = 0; y < tileY; y++) {
+				for (int x = 0; x < tileX; x++) {
+					sprite.getImage().draw(
+							imageCoOrds.getX() + offset.getWidth() * x,
+							imageCoOrds.getY() + offset.getHeight() * y,
+							getDrawScale(camera));
+				}
+			}
 		}
 	}
 
