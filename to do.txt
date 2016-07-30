@@ -3,6 +3,7 @@
 ====================
 
 Make InterfaceElements use a two-layer Sprite, one for background, one for text.
+	Now need to make clicking work again!
 
 Build the game interface
 	Build a more flexible Menu system. Allow sub menus.

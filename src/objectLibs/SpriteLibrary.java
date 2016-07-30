@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Point;
 import helpers.Rectangle;
+import objects.LayeredImage;
 import objects.Sprite;
 import worlds.GlobalOptions;
 
@@ -36,7 +37,7 @@ public class SpriteLibrary {
 			Image img = new Image(width, height);
 			Graphics g = img.getGraphics();
 			g.setColor(fill);
-			g.fillRect(0, 0, width - 1, height - 1);
+			g.fillRect(0, 0, width, height);
 			g.setColor(border);
 			g.drawRect(0, 0, width - 1, height - 1);
 			g.drawRect(1, 1, width - 3, height - 3);
@@ -111,6 +112,18 @@ public class SpriteLibrary {
 			se.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static Sprite interfaceElement(int width, int height, Color c, String text) {
+		LayeredImage limg = new LayeredImage(width, height, 2);
+		limg.fillLayer(0, c);
+		limg.setText(1, text);
+		
+		return new Sprite(limg,1);
+	}
+	
+	public static Sprite interfaceElement(int width, int height) {
+		return new Sprite(new LayeredImage(width, height, 2), 1);
 	}
 
 	public final static Sprite WALL = createRectangle(

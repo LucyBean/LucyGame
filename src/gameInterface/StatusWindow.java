@@ -2,33 +2,24 @@ package gameInterface;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibs.SpriteLibrary;
 import objects.InterfaceElement;
-import objects.Sprite;
 import objects.WorldObject;
 
 class StatusWindow extends InterfaceElement {
-	static Sprite sprite = SpriteLibrary.createRectangle(
-			new Rectangle(Point.ZERO, 200, 200), 1,
-			new Color(200, 170, 210, 100));
 	WorldObject watching;
 
 	public StatusWindow(Point origin) {
-		super(origin, sprite);
-		// TODO Auto-generated constructor stub
+		super(new Rectangle(origin, 200, 200));
+		setBackground(new Color(240, 220, 240, 200));
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) {
 		updateStatus();
 	}
-	
 
 	/**
 	 * Sets the StatusWindow to watch the Actor a. The status of a will be
@@ -49,25 +40,9 @@ class StatusWindow extends InterfaceElement {
 		}
 	}
 
-	private void setText(String s) {
-		try {
-			Image img = getSprite().getImage();
-			Graphics g = img.getGraphics();
-			g.clear();
-			g.setColor(Color.black);
-			g.drawString(s, 5, 5);
-			g.flush();
-			setSprite(new Sprite(img,1));
-		} catch (SlickException se) {
-			System.err.println("Tried to add update status for " + watching
-					+ " and failed");
-			se.printStackTrace();
-		}
-	}
-
 	@Override
 	public void onClick(int button) {
-		
+
 	}
 
 }

@@ -6,14 +6,14 @@ import helpers.Point;
 import helpers.Rectangle;
 
 /**
- * Sprite class for displaying objects on the world. Can handle static images or
- * animations.
+ * Sprite class for displaying objects on the world. Can handle static images.
+ * Will support animations in future.
  * 
  * @author Lucy
  *
  */
 public class Sprite {
-	Image[] image;
+	LayeredImage[] image;
 	Rectangle boundingRectangle;
 	Rectangle imageBoundingRectangle;
 	int tileX;
@@ -47,8 +47,9 @@ public class Sprite {
 	 *            The GameObject to which the Sprite is attached. This is
 	 *            required for drawing.
 	 */
-	public Sprite(Image img, Point origin, int tileX, int tileY, int gridSize) {
-		image = new Image[1];
+	public Sprite(LayeredImage img, Point origin, int tileX, int tileY,
+			int gridSize) {
+		image = new LayeredImage[1];
 		image[0] = img;
 		imageBoundingRectangle = new Rectangle(origin,
 				((float) img.getWidth()) / gridSize,
@@ -58,6 +59,14 @@ public class Sprite {
 		this.tileY = tileY;
 	}
 
+	public Sprite(LayeredImage img, int gridSize) {
+		this(img, Point.ZERO, 1, 1, gridSize);
+	}
+	
+	public Sprite(Image img, Point origin, int tileX, int tileY, int gridSize) {
+		this(new LayeredImage(img), origin, tileX, tileY, gridSize);
+	}
+	
 	public Sprite(Image img, int gridSize) {
 		this(img, Point.ZERO, 1, 1, gridSize);
 	}
@@ -66,7 +75,7 @@ public class Sprite {
 		return boundingRectangle.getTopLeft();
 	}
 
-	public Image getImage() {
+	public LayeredImage getImage() {
 		return image[0];
 	}
 
@@ -79,7 +88,7 @@ public class Sprite {
 						imageCoOrds.getY() + offset.getHeight() * y,
 						cot.getDrawScale());
 			}
-		} 
+		}
 	}
 
 	public Rectangle getBoundingRectangle() {

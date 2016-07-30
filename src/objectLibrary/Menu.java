@@ -15,7 +15,6 @@ public class Menu extends InterfaceElement {
 			(GlobalOptions.WINDOW_WIDTH - MenuButton.WIDTH) / 2, 100);
 
 	public Menu() {
-		super(null, null);
 		menuButtons = new ObjectLayer<MenuButton>();
 	}
 
