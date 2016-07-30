@@ -8,9 +8,9 @@ import helpers.Point;
 import objectLibrary.GravityPlayer;
 import objectLibrary.StatusWindow;
 import objects.Actor;
-import objects.WorldObject;
 import objects.Sprite;
 import objects.Static;
+import objects.WorldObject;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
@@ -23,7 +23,7 @@ import worlds.WorldLayer;
  */
 public class PlatformerDemoWorld extends World {
 	public PlatformerDemoWorld(LucyGame game) {
-		super(game);
+		super(game, "Platformer demo");
 	}
 
 	@Override
@@ -39,8 +39,8 @@ public class PlatformerDemoWorld extends World {
 
 		Actor gravityPlayer = new GravityPlayer(new Point(3, 2));
 		addObject(gravityPlayer);
-		
-		StatusWindow sw = new StatusWindow(new Point(340,0));
+
+		StatusWindow sw = new StatusWindow(new Point(340, 0));
 		sw.setWatching(gravityPlayer);
 		addObject(sw);
 

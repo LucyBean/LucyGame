@@ -14,7 +14,7 @@ import worlds.World;
 public class HiddenObjectDemoWorld extends World {
 
 	public HiddenObjectDemoWorld(LucyGame game) {
-		super(game);
+		super(game, "Hidden objects");
 	}
 
 	@Override

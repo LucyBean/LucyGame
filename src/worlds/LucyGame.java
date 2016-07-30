@@ -6,10 +6,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import worldLibrary.MenuDemoWorld;
-
 public class LucyGame extends BasicGame {
 	World world;
+	WorldLoader worldLoader = new WorldLoader(this);
 
 	public LucyGame() {
 		super("LucyGame");
@@ -24,10 +23,6 @@ public class LucyGame extends BasicGame {
 			se.printStackTrace();
 		}
 	}
-	
-	public void setNewWorld(World world) {
-		this.world = world;
-	}
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -36,7 +31,8 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-			setNewWorld(new MenuDemoWorld(this));
+			loadMainMenu();
+			
 	}
 
 	@Override
@@ -47,6 +43,17 @@ public class LucyGame extends BasicGame {
 	@Override
 	public void mousePressed(int button, int x, int y) {
 		world.mousePressed(button, x, y);
+	}
+	
+	public void loadMainMenu() {
+		world = worldLoader.getMainMenu();
+	}
+	
+	public void loadLevel(int i) {
+		World w = worldLoader.getLevel(i);
+		if (w != null) {
+			world = w;
+		}
 	}
 
 }

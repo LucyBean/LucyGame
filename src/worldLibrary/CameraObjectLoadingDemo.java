@@ -25,7 +25,7 @@ public class CameraObjectLoadingDemo extends World {
 	final int WORLD_HEIGHT = 10;
 
 	public CameraObjectLoadingDemo(LucyGame game) {
-		super(game);
+		super(game, "Camera object loading");
 	}
 
 	@Override

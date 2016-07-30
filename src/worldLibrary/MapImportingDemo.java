@@ -13,7 +13,7 @@ import worlds.World;
 public class MapImportingDemo extends World {
 
 	public MapImportingDemo(LucyGame game) {
-		super(game);
+		super(game, "Map importing demo");
 	}
 
 	@Override

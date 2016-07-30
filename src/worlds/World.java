@@ -11,6 +11,8 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
+import helpers.Rectangle;
+import objectLibrary.Button;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.InterfaceElement;
@@ -26,9 +28,11 @@ public class World implements MouseListener {
 	private List<WorldObject> activeSolids;
 	private List<WorldObject> interactables;
 	private final LucyGame game;
+	private final String name;
 
-	public World(LucyGame game) {
+	public World(LucyGame game, String name) {
 		this.game = game;
+		this.name = name;
 		reset();
 	}
 
@@ -52,6 +56,15 @@ public class World implements MouseListener {
 			}
 
 			init();
+			
+			Button menuButton = new Button(new Rectangle(new Point(200,0),100,32)){
+				@Override
+				public void onClick(int button) {
+					getWorld().getGame().loadMainMenu();
+				}
+			};
+			menuButton.setText("Main menu");
+			addObject(menuButton);
 		} catch (SlickException se) {
 			System.err.println("Unable to initialise or reset world.");
 			se.printStackTrace();
@@ -98,7 +111,7 @@ public class World implements MouseListener {
 
 		go.setWorld(this);
 	}
-	
+
 	public void addObject(InterfaceElement ie) {
 		gameInterface.add(ie);
 		ie.setWorld(this);
@@ -134,8 +147,12 @@ public class World implements MouseListener {
 		return camera;
 	}
 
-	protected LucyGame getGame() {
+	public LucyGame getGame() {
 		return game;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	//
@@ -192,7 +209,7 @@ public class World implements MouseListener {
 				ol.render(gc, g, getCamera());
 			}
 		}
-		
+
 		gameInterface.render(gc, g, camera);
 	}
 
@@ -225,10 +242,16 @@ public class World implements MouseListener {
 		}
 
 		camera.update(gc, delta);
-	}
+		
+		// Update all GameObjects
+		for (WorldLayer l : WorldLayer.values()) {
+			ObjectLayer ol = layers.get(l.ordinal());
+			if (ol.isVisible()) {
+				ol.update(gc, delta);
+			}
+		}
 
-	public void setNewWorld(World world) {
-		game.setNewWorld(world);
+		gameInterface.update(gc, delta);
 	}
 
 	//
@@ -265,7 +288,7 @@ public class World implements MouseListener {
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
-		gameInterface.mousePressed(button, new Point(x,y));
+		gameInterface.mousePressed(button, new Point(x, y));
 	}
 
 	//

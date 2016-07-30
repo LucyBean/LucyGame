@@ -18,7 +18,7 @@ import worlds.WorldLayer;
 public class ColliderDemoWorld extends World {
 
 	public ColliderDemoWorld(LucyGame game) {
-		super(game);
+		super(game, "Collider demo");
 	}
 
 	@Override
