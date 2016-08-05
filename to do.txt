@@ -2,15 +2,13 @@
 ==  THINGS TO DO  ==
 ====================
 
-Make Colliders use a tiled sprite?
-
 Build the game interface
 	Build a more flexible Menu system. Allow sub menus.
 	Add a debug sub-menu that can modify options. Save options?
 	
 Make collider drawing more efficient
 	Currently allocating buffer for every collider image drawn which is
-	pretty slow. Change it to tile the collider image?
+	pretty slow. Tile a smaller image?
 
 Camera following
 	Make the camera following less choppy.

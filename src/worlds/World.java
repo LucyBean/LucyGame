@@ -9,13 +9,10 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import gameInterface.DefaultGameInterface;
 import gameInterface.GameInterface;
 import helpers.Dir;
 import helpers.Point;
-import helpers.Rectangle;
-import objectLibrary.Button;
-import objectLibrary.Menu;
-import objectLibrary.MenuButton;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.InterfaceElement;
@@ -47,7 +44,6 @@ public class World {
 		try {
 			camera = new Camera();
 			layers = new ArrayList<ObjectLayer<WorldObject>>();
-			gameInterface = new GameInterface(this);
 			actors = new ArrayList<Actor>();
 			activeActors = new ArrayList<Actor>();
 			solids = new ArrayList<WorldObject>();
@@ -60,8 +56,9 @@ public class World {
 				layers.add(new ObjectLayer<WorldObject>());
 			}
 
+			setGameInterface(new DefaultGameInterface());
+
 			init();
-			buildGameInterface();
 
 		} catch (SlickException se) {
 			System.err.println("Unable to initialise or reset world.");
@@ -69,64 +66,15 @@ public class World {
 		}
 	}
 
-	/**
-	 * Builds the default interface for a World. Override this to implement a
-	 * different interface for that World.
-	 */
-	protected void buildGameInterface() {
-		Button openMenuButton = new Button(
-				new Rectangle(new Point(200, 0), 100, 32)) {
-			@Override
-			public void onClick(int button) {
-				getWorld().openMenu();
-			}
-		};
-		openMenuButton.setText("Open menu");
-		addObject(openMenuButton, WorldState.PLAYING);
-
-		Button closeMenuButton = new Button(
-				new Rectangle(new Point(300, 0), 100, 32)) {
-			@Override
-			public void onClick(int button) {
-				getWorld().closeMenu();
-			}
-		};
-		closeMenuButton.setText("Close menu");
-		addObject(closeMenuButton, WorldState.MENU);
-
-		Button clickToStopSelect = new Button(
-				new Rectangle(new Point(150, 0), 340, 32)) {
-			@Override
-			public void onClick(int button) {
-				getWorld().stopWatchSelect();
-			}
-		};
-		clickToStopSelect.setText("Click here to stop selecting");
-		addObject(clickToStopSelect, WorldState.WATCH_SELECT);
-
-		Menu m = new Menu();
-		m.add(new MenuButton("Hello!"));
-		m.add(new MenuButton("World!"));
-		MenuButton backToMainMenu = new MenuButton("Main menu") {
-			@Override
-			public void onClick(int button) {
-				getWorld().getGame().loadMainMenu();
-			}
-		};
-		m.add(backToMainMenu);
-		MenuButton selectWatchedObject = new MenuButton("Select watch object") {
-			@Override
-			public void onClick(int button) {
-				getWorld().startWatchSelect();
-			}
-		};
-		m.add(selectWatchedObject);
-
-		addObject(m, WorldState.MENU);
+	protected void setGameInterface(GameInterface gi) {
+		gameInterface = gi;
+		gi.setWorld(this);
 	}
 
 	protected void enableStatusWindow() {
-		gameInterface.enableStatusWindow();
+		if (gameInterface != null) {
+			gameInterface.enableStatusWindow();
+		}
 	}
 
 	/**
@@ -269,6 +217,7 @@ public class World {
 	// State transitions
 	//
 	// TODO: Make these check for validity.
+	// TODO: Change to a single "set state" method?
 	public void openMenu() {
 		worldState = WorldState.MENU;
 	}
@@ -282,7 +231,7 @@ public class World {
 	}
 
 	public void stopWatchSelect() {
-		worldState = WorldState.MENU;
+		worldState = WorldState.PLAYING;
 	}
 
 	/**

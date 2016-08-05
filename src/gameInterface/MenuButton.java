@@ -1,7 +1,8 @@
-package objectLibrary;
+package gameInterface;
 
 import helpers.Point;
 import helpers.Rectangle;
+import objectLibrary.Button;
 
 public class MenuButton extends Button {
 	public final static int WIDTH = 200;

@@ -1,4 +1,4 @@
-package objectLibrary;
+package gameInterface;
 
 import java.util.Iterator;
 

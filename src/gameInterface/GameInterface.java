@@ -13,17 +13,26 @@ import worlds.ObjectLayer;
 import worlds.World;
 import worlds.WorldState;
 
+/**
+ * Class for building GameInterfaces.
+ * 
+ * @author Lucy
+ *
+ */
 public class GameInterface {
 	List<ObjectLayer<InterfaceElement>> interfaces;
 	StatusWindow statusWindow;
 	World world;
 
-	public GameInterface(World world) {
+	public GameInterface() {
 		interfaces = new ArrayList<ObjectLayer<InterfaceElement>>();
 		for (int i = 0; i < WorldState.values().length; i++) {
 			interfaces.add(new ObjectLayer<InterfaceElement>());
 		}
-		this.world = world;
+	}
+	
+	public void setWorld(World w) {
+		world = w;
 	}
 
 	/**
