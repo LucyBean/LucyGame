@@ -1,12 +1,9 @@
 package helpers;
 
-import objects.Sprite;
-
 public class Rectangle {
 	Point topLeft;
 	float width;
 	float height;
-	Sprite sprite;
 
 	/**
 	 * Creates a new Rectangle object.

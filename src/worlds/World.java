@@ -12,6 +12,7 @@ import org.newdawn.slick.SlickException;
 import gameInterface.DefaultGameInterface;
 import gameInterface.GameInterface;
 import helpers.Dir;
+import helpers.Function;
 import helpers.Point;
 import objectLibrary.Wall;
 import objects.Actor;
@@ -248,7 +249,12 @@ public class World {
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
-				ol.render();
+				ol.applyToAll(new Function<WorldObject>(){
+					@Override
+					public void exec(WorldObject wo) {
+						wo.render();
+					}
+				});
 			}
 		}
 
@@ -277,12 +283,17 @@ public class World {
 		}
 	}
 
-	private void playingUpdate(GameContainer gc, int delta) {
+	private void playingUpdate(final GameContainer gc, final int delta) {
 		// Update all GameObjects
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
 			if (ol.isVisible()) {
-				ol.update(gc, delta);
+				ol.applyToAll(new Function<WorldObject>(){
+					@Override
+					public void exec(WorldObject wo) {
+						wo.update(gc, delta);
+					}
+				});
 			}
 		}
 	}
@@ -363,5 +374,4 @@ public class World {
 		drawWallBorder(GlobalOptions.WINDOW_WIDTH_GRID,
 				GlobalOptions.WINDOW_HEIGHT_GRID);
 	}
-
 }

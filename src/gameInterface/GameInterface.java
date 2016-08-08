@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 
+import helpers.Function;
 import helpers.Point;
 import objects.InterfaceElement;
 import objects.WorldObject;
@@ -31,8 +32,19 @@ public class GameInterface {
 		}
 	}
 	
-	public void setWorld(World w) {
+	public void setWorld(final World w) {
 		world = w;
+		Iterator<ObjectLayer<InterfaceElement>> ii = interfaces.iterator();
+		while (ii.hasNext()) {
+			ObjectLayer<InterfaceElement> olie = ii.next();
+			olie.applyToAll(new Function<InterfaceElement>(){
+
+				@Override
+				public void exec(InterfaceElement a) {
+					a.setWorld(w);
+				}
+			});
+		}
 	}
 
 	/**
@@ -97,7 +109,13 @@ public class GameInterface {
 	 *            The WorldState for which the interface should be rendered.
 	 */
 	public void render(WorldState state) {
-		interfaces.get(state.ordinal()).render();
+		ObjectLayer<InterfaceElement> current = interfaces.get(state.ordinal());
+		current.applyToAll(new Function<InterfaceElement>(){
+			@Override
+			public void exec(InterfaceElement ie) {
+				ie.render();
+			}
+		});
 	}
 
 	/**
@@ -108,7 +126,13 @@ public class GameInterface {
 	 * @param delta
 	 *            Time difference.
 	 */
-	public void update(GameContainer gc, int delta, WorldState state) {
-		interfaces.get(state.ordinal()).update(gc, delta);
+	public void update(final GameContainer gc, final int delta, WorldState state) {
+		ObjectLayer<InterfaceElement> current = interfaces.get(state.ordinal());
+		current.applyToAll(new Function<InterfaceElement>() {
+			@Override
+			public void exec(InterfaceElement ie) {
+				ie.update(gc, delta);
+			}
+		});
 	}
 }

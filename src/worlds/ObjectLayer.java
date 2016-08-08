@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.newdawn.slick.GameContainer;
-
+import helpers.Function;
 import helpers.Point;
 import helpers.Rectangle;
 import objects.GameObject;
@@ -24,41 +23,6 @@ public class ObjectLayer<T extends GameObject> {
 
 	public boolean isVisible() {
 		return visible;
-	}
-
-	/**
-	 * Renders all the objects on this layer.
-	 * 
-	 * @param gc
-	 *            GameContainer object to use.
-	 * @param g
-	 *            Graphics object.
-	 * @param camera
-	 *            The current world camera.
-	 */
-	public void render() {
-		Iterator<T> oli = objects.iterator();
-		while (oli.hasNext()) {
-			GameObject go = oli.next();
-			go.render();
-		}
-	}
-
-	/**
-	 * Propagates updates to all objects on this layer.
-	 * 
-	 * @param gc
-	 *            GameContainer object to use.
-	 * @param delta
-	 *            Time difference.
-	 */
-	public void update(GameContainer gc, int delta) {
-		// Propagate updates to all objects
-		Iterator<T> oli = objects.iterator();
-		while (oli.hasNext()) {
-			GameObject go = oli.next();
-			go.update(gc, delta);
-		}
 	}
 
 	public Iterator<T> iterator() {
@@ -87,5 +51,22 @@ public class ObjectLayer<T extends GameObject> {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Applies a Function f to all objects in the ObjectLayer. Use this to
+	 * render, update, and set the world of all objects.
+	 * 
+	 * @param f
+	 *            A Function to apply. Must take objects of type T and return
+	 *            void.
+	 */
+	public void applyToAll(Function<T> f) {
+		Iterator<T> io = objects.iterator();
+
+		while (io.hasNext()) {
+			T wo = io.next();
+			f.exec(wo);
+		}
 	}
 }
