@@ -76,12 +76,12 @@ public class ObjectLayerSet<T extends GameObject> {
 	/**
 	 * Renders the ObjectLayer with index layer.
 	 * 
-	 * @param layer
+	 * @param index
 	 *            The index of the layer to be rendered.
 	 */
-	public void render(int layer) {
-		if (ols.get(layer) != null) {
-			ols.get(layer).render();
+	public void render(int index) {
+		if (ols.get(index) != null) {
+			ols.get(index).render();
 		}
 	}
 

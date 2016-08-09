@@ -1,5 +1,8 @@
 package gameInterface;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
@@ -18,9 +21,11 @@ public class GameInterface {
 	ObjectLayerSet<InterfaceElement> interfaces;
 	StatusWindow statusWindow;
 	World world;
+	List<Menu> menus;
 
 	public GameInterface() {
 		interfaces = new ObjectLayerSet<InterfaceElement>();
+		menus = new ArrayList<Menu>();
 	}
 
 	/**
@@ -46,6 +51,9 @@ public class GameInterface {
 			interfaces.add(ie, state.ordinal());
 			ie.setWorld(world);
 		}
+		if (ie instanceof Menu) {
+			menus.add((Menu) ie);
+		}
 	}
 
 	/**
@@ -55,6 +63,9 @@ public class GameInterface {
 	 */
 	public void addToAll(InterfaceElement ie) {
 		interfaces.addToAll(ie);
+		if (ie instanceof Menu) {
+			menus.add((Menu) ie);
+		}
 	}
 
 	/**
@@ -112,5 +123,12 @@ public class GameInterface {
 	public void update(final GameContainer gc, final int delta,
 			WorldState state) {
 		interfaces.update(gc, delta, state.ordinal());
+	}
+
+	/**
+	 * Resets the menus to their original state (i.e. closes all sub-menus)
+	 */
+	public void resetMenus() {
+		menus.stream().forEach(m -> m.reset());
 	}
 }

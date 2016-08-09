@@ -44,14 +44,31 @@ public class DefaultGameInterface extends GameInterface {
 				getWorld().getGame().loadMainMenu();
 			}
 		};
-		m.add(backToMainMenu);
+		m.add(backToMainMenu, 0);
+		
 		MenuButton selectWatchedObject = new MenuButton("Select watch object") {
 			@Override
 			public void onClick(int button) {
 				getWorld().startWatchSelect();
 			}
 		};
-		m.add(selectWatchedObject);
+		m.add(selectWatchedObject, 0);
+		
+		MenuButton openSubMenu = new MenuButton("Open a sub menu") {
+			@Override
+			public void onClick(int button) {
+				getMenu().setState(1);
+			}
+		};
+		m.add(openSubMenu, 0);
+		
+		MenuButton subMenuButton = new MenuButton("Go back") {
+			@Override
+			public void onClick(int button) {
+				getMenu().setState(0);
+			}
+		};
+		m.add(subMenuButton, 1);
 
 		add(m, WorldState.MENU);
 	}

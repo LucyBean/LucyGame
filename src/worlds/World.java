@@ -20,7 +20,6 @@ import objects.WorldObject;
 
 public class World {
 	private Camera camera;
-	private ObjectLayerSet<WorldObject> layers;
 	private GameInterface gameInterface;
 	private List<Actor> actors;
 	private List<Actor> activeActors;
@@ -30,6 +29,7 @@ public class World {
 	private WorldState worldState;
 	private final LucyGame game;
 	private final String name;
+	private ObjectLayerSet<WorldObject> layers;
 
 	public World(LucyGame game, String name) {
 		this.game = game;
@@ -219,6 +219,7 @@ public class World {
 
 	public void closeMenu() {
 		worldState = WorldState.PLAYING;
+		gameInterface.resetMenus();
 	}
 
 	public void startWatchSelect() {
@@ -226,7 +227,7 @@ public class World {
 	}
 
 	public void stopWatchSelect() {
-		worldState = WorldState.PLAYING;
+		closeMenu();
 	}
 
 	/**

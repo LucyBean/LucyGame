@@ -72,7 +72,7 @@ public class ObjectLayer<T extends GameObject> {
 	 */
 	public void render() {
 		if (isVisible()) {
-			applyToAll(T::render);
+			applyToAll(t -> t.render());
 		}
 	}
 
