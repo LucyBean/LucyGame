@@ -1,9 +1,5 @@
 package gameInterface;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.newdawn.slick.GameContainer;
 
 import helpers.Function;
@@ -21,30 +17,27 @@ import worlds.WorldState;
  *
  */
 public class GameInterface {
-	List<ObjectLayer<InterfaceElement>> interfaces;
+	ObjectLayerSet<InterfaceElement> interfaces;
 	StatusWindow statusWindow;
 	World world;
 
 	public GameInterface() {
-		interfaces = new ArrayList<ObjectLayer<InterfaceElement>>();
-		for (int i = 0; i < WorldState.values().length; i++) {
-			interfaces.add(new ObjectLayer<InterfaceElement>());
-		}
+		interfaces = new ObjectLayerSet<InterfaceElement>();
 	}
-	
+
+	/**
+	 * Sets the World of the GameInterface and all contained InterfaceElements.
+	 * 
+	 * @param w
+	 */
 	public void setWorld(final World w) {
 		world = w;
-		Iterator<ObjectLayer<InterfaceElement>> ii = interfaces.iterator();
-		while (ii.hasNext()) {
-			ObjectLayer<InterfaceElement> olie = ii.next();
-			olie.applyToAll(new Function<InterfaceElement>(){
-
-				@Override
-				public void exec(InterfaceElement a) {
-					a.setWorld(w);
-				}
-			});
-		}
+		interfaces.applyToAllObjects(new Function<InterfaceElement>() {
+			@Override
+			public void exec(InterfaceElement ie) {
+				ie.setWorld(w);
+			}
+		});
 	}
 
 	/**
@@ -54,24 +47,21 @@ public class GameInterface {
 	 *            The InterfaceElement to be added.
 	 * @param state
 	 *            The WorldState for which the InterfaceElement should appear.
-	 *            Setting this to null will cause it to be added for all
-	 *            WorldStates.
 	 */
 	public void add(InterfaceElement ie, WorldState state) {
 		if (state != null) {
-			interfaces.get(state.ordinal()).add(ie);
+			interfaces.add(ie, state.ordinal());
 			ie.setWorld(world);
-		} else {
-			Iterator<ObjectLayer<InterfaceElement>> ii = interfaces.iterator();
-			while (ii.hasNext()) {
-				ObjectLayer<InterfaceElement> olie = ii.next();
-				olie.add(ie);
-			}
 		}
 	}
 
-	public void add(InterfaceElement ie) {
-		add(ie, null);
+	/**
+	 * Adds the InterfaceElement to all interface states.
+	 * 
+	 * @param ie
+	 */
+	public void addToAll(InterfaceElement ie) {
+		interfaces.addToAll(ie);
 	}
 
 	/**
@@ -88,18 +78,35 @@ public class GameInterface {
 	public void enableStatusWindow() {
 		if (statusWindow == null) {
 			statusWindow = new StatusWindow(new Point(440, 0));
-			add(statusWindow);
+			addToAll(statusWindow);
 		}
 	}
 
-	public void mousePressed(int button, Point clickPoint, WorldState state) {
-		Iterator<InterfaceElement> oli = interfaces.get(
-				state.ordinal()).iterator();
+	/**
+	 * Propagates the mousePressed update to all InterfaceElements within the
+	 * currently active interface.
+	 * 
+	 * @param button
+	 * @param clickPoint
+	 * @param state
+	 */
+	public void mousePressed(final int button, final Point clickPoint,
+			final WorldState state) {
+		// TODO: Look at how to build this using specialised templates.
+		//   I want an interface.mousePressed(...) method.
+		interfaces.applyToLayer(new Function<ObjectLayer<InterfaceElement>>() {
+			@Override
+			public void exec(ObjectLayer<InterfaceElement> ie) {
+				ie.applyToAll(new Function<InterfaceElement>() {
 
-		while (oli.hasNext()) {
-			InterfaceElement go = oli.next();
-			go.mousePressed(button, clickPoint);
-		}
+					@Override
+					public void exec(InterfaceElement a) {
+						a.mousePressed(button, clickPoint);
+					}
+
+				});
+			}
+		}, state.ordinal());
 	}
 
 	/**
@@ -109,13 +116,7 @@ public class GameInterface {
 	 *            The WorldState for which the interface should be rendered.
 	 */
 	public void render(WorldState state) {
-		ObjectLayer<InterfaceElement> current = interfaces.get(state.ordinal());
-		current.applyToAll(new Function<InterfaceElement>(){
-			@Override
-			public void exec(InterfaceElement ie) {
-				ie.render();
-			}
-		});
+		interfaces.render(state.ordinal());
 	}
 
 	/**
@@ -126,13 +127,8 @@ public class GameInterface {
 	 * @param delta
 	 *            Time difference.
 	 */
-	public void update(final GameContainer gc, final int delta, WorldState state) {
-		ObjectLayer<InterfaceElement> current = interfaces.get(state.ordinal());
-		current.applyToAll(new Function<InterfaceElement>() {
-			@Override
-			public void exec(InterfaceElement ie) {
-				ie.update(gc, delta);
-			}
-		});
+	public void update(final GameContainer gc, final int delta,
+			WorldState state) {
+		interfaces.update(gc, delta, state.ordinal());
 	}
 }

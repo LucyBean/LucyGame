@@ -1,7 +1,6 @@
 package worlds;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
@@ -11,8 +10,8 @@ import org.newdawn.slick.SlickException;
 
 import gameInterface.DefaultGameInterface;
 import gameInterface.GameInterface;
+import gameInterface.ObjectLayerSet;
 import helpers.Dir;
-import helpers.Function;
 import helpers.Point;
 import objectLibrary.Wall;
 import objects.Actor;
@@ -21,7 +20,7 @@ import objects.WorldObject;
 
 public class World {
 	private Camera camera;
-	private List<ObjectLayer<WorldObject>> layers;
+	private ObjectLayerSet<WorldObject> layers;
 	private GameInterface gameInterface;
 	private List<Actor> actors;
 	private List<Actor> activeActors;
@@ -44,18 +43,13 @@ public class World {
 	private void reset() {
 		try {
 			camera = new Camera();
-			layers = new ArrayList<ObjectLayer<WorldObject>>();
+			layers = new ObjectLayerSet<WorldObject>();
 			actors = new ArrayList<Actor>();
 			activeActors = new ArrayList<Actor>();
 			solids = new ArrayList<WorldObject>();
 			activeSolids = new ArrayList<WorldObject>();
 			interactables = new ArrayList<WorldObject>();
 			worldState = WorldState.PLAYING;
-
-			for (@SuppressWarnings("unused")
-			WorldLayer l : WorldLayer.values()) {
-				layers.add(new ObjectLayer<WorldObject>());
-			}
 
 			setGameInterface(new DefaultGameInterface());
 
@@ -109,7 +103,7 @@ public class World {
 	 */
 	public void addObject(WorldObject go) {
 		WorldLayer layer = go.getLayer();
-		layers.get(layer.ordinal()).add(go);
+		layers.add(go, layer.ordinal());
 
 		// Adds the object to any extra lists.
 		if (go instanceof Actor) {
@@ -245,11 +239,7 @@ public class World {
 	 *            Graphics object, passed from a Slick2D BasicGame render method
 	 */
 	public void render(GameContainer gc, Graphics g) {
-		// Renders all objects in layer order if the layer is visible.
-		for (WorldLayer l : WorldLayer.values()) {
-			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
-			ol.render();
-		}
+		layers.render();
 
 		gameInterface.render(getState());
 	}
@@ -277,16 +267,8 @@ public class World {
 	}
 
 	private void playingUpdate(final GameContainer gc, final int delta) {
-		// Update all GameObjects
-		for (WorldLayer l : WorldLayer.values()) {
-			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
-			ol.applyToAll(new Function<WorldObject>() {
-				@Override
-				public void exec(WorldObject wo) {
-					wo.update(gc, delta);
-				}
-			});
-		}
+		// Pass update signal to all objects in the game.
+		layers.update(gc, delta);
 	}
 
 	public void keyPressed(int keycode) {
@@ -323,19 +305,9 @@ public class World {
 	// TODO: Make this iterate in reverse order.
 	private void watchSelectMousePressed(int button, Point p) {
 		// For each world object, check whether it was clicked by the mouse
-		Iterator<ObjectLayer<WorldObject>> iol = layers.iterator();
-		WorldObject clicked = null;
-
-		while (iol.hasNext()) {
-			ObjectLayer<WorldObject> olwo = iol.next();
-			WorldObject wo = olwo.findClickedObject(p);
-			if (wo != null) {
-				clicked = wo;
-			}
-		}
+		WorldObject clicked = layers.findClickedObject(p);
 
 		if (clicked != null) {
-			System.out.println(clicked + " was clicked!");
 			setWatchTarget(clicked);
 			stopWatchSelect();
 		}
