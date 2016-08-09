@@ -44,7 +44,7 @@ public class DefaultGameInterface extends GameInterface {
 				getWorld().getGame().loadMainMenu();
 			}
 		};
-		m.add(backToMainMenu, 0);
+		m.add(backToMainMenu);
 		
 		MenuButton selectWatchedObject = new MenuButton("Select watch object") {
 			@Override
@@ -52,20 +52,20 @@ public class DefaultGameInterface extends GameInterface {
 				getWorld().startWatchSelect();
 			}
 		};
-		m.add(selectWatchedObject, 0);
+		m.add(selectWatchedObject);
 		
 		MenuButton openSubMenu = new MenuButton("Open a sub menu") {
 			@Override
 			public void onClick(int button) {
-				getMenu().setState(1);
+				getMenu().setSubMenu(1);
 			}
 		};
-		m.add(openSubMenu, 0);
+		m.add(openSubMenu);
 		
 		MenuButton subMenuButton = new MenuButton("Go back") {
 			@Override
 			public void onClick(int button) {
-				getMenu().setState(0);
+				getMenu().setSubMenu(0);
 			}
 		};
 		m.add(subMenuButton, 1);

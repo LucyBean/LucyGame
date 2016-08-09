@@ -3,7 +3,6 @@
 ====================
 
 Build the game interface
-	Build a more flexible Menu system. Allow sub menus.
 	Add a debug sub-menu that can modify options. Save options?
 	
 Make collider drawing more efficient
