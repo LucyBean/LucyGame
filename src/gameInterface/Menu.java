@@ -3,7 +3,6 @@ package gameInterface;
 import java.util.Iterator;
 
 import helpers.Dir;
-import helpers.Function;
 import helpers.Point;
 import objects.InterfaceElement;
 import worlds.GlobalOptions;
@@ -53,11 +52,6 @@ public class Menu extends InterfaceElement {
 
 	@Override
 	protected void draw() {
-		menuButtons.applyToAll(new Function<MenuButton>(){
-			@Override
-			public void exec(MenuButton mb) {
-				mb.render();
-			}
-		});
+		menuButtons.render();
 	}
 }

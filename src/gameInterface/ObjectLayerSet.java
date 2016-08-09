@@ -2,10 +2,10 @@ package gameInterface;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
 
-import helpers.Function;
 import helpers.Point;
 import objects.GameObject;
 import worlds.ObjectLayer;
@@ -25,30 +25,20 @@ public class ObjectLayerSet<T extends GameObject> {
 	 *            A Function to apply. Must take objects of type T and return
 	 *            void.
 	 */
-	public void applyToAllObjects(Function<T> f) {
+	public void applyToAllObjects(Consumer<T> f) {
 		for (int i : ols.keySet()) {
-			ObjectLayer<T> ol = ols.get(i);
-			ol.applyToAll(f);
+		ols.get(i).applyToAll(f);
 		}
 	}
 
-	/**
-	 * Applies the Function f to all ObjectLayers within the set. Use this to
-	 * add an object to all layers within the set.
-	 * 
-	 * @param f
-	 */
-	public void applyToAllLayers(Function<ObjectLayer<T>> f) {
-		for (int i : ols.keySet()) {
-			ObjectLayer<T> ol = ols.get(i);
-			f.exec(ol);
-		}
-	}
-
-	public void applyToLayer(Function<ObjectLayer<T>> f, int index) {
+	public void applyToLayerObjects(Consumer<T> f, int index) {
 		if (ols.get(index) != null) {
-			f.exec(ols.get(index));
+			ols.get(index).applyToAll(f);
 		}
+	}
+	
+	public void applyToAllLayers(Consumer<ObjectLayer<T>> f) {
+		ols.entrySet().stream().forEach(a -> f.accept(a.getValue()));
 	}
 
 	/**
@@ -80,12 +70,7 @@ public class ObjectLayerSet<T extends GameObject> {
 	 * Renders all ObjectLayers within the ObjectLayerSet.
 	 */
 	public void render() {
-		applyToAllLayers(new Function<ObjectLayer<T>>() {
-			@Override
-			public void exec(ObjectLayer<T> olt) {
-				olt.render();
-			}
-		});
+		applyToAllLayers(a -> a.render());
 	}
 
 	/**
@@ -103,13 +88,8 @@ public class ObjectLayerSet<T extends GameObject> {
 	/**
 	 * Propagates update signal to all ObjectLayers within the ObjectLayerSet.
 	 */
-	public void update(final GameContainer gc, final int delta) {
-		applyToAllLayers(new Function<ObjectLayer<T>>() {
-			@Override
-			public void exec(ObjectLayer<T> olt) {
-				olt.update(gc, delta);
-			}
-		});
+	public void update(GameContainer gc, int delta) {
+		applyToAllLayers(a -> a.update(gc, delta));
 	}
 
 	public void update(GameContainer gc, int delta, int layer) {

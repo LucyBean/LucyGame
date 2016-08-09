@@ -2,11 +2,9 @@ package gameInterface;
 
 import org.newdawn.slick.GameContainer;
 
-import helpers.Function;
 import helpers.Point;
 import objects.InterfaceElement;
 import objects.WorldObject;
-import worlds.ObjectLayer;
 import worlds.World;
 import worlds.WorldState;
 
@@ -32,12 +30,7 @@ public class GameInterface {
 	 */
 	public void setWorld(final World w) {
 		world = w;
-		interfaces.applyToAllObjects(new Function<InterfaceElement>() {
-			@Override
-			public void exec(InterfaceElement ie) {
-				ie.setWorld(w);
-			}
-		});
+		interfaces.applyToAllObjects(a -> a.setWorld(w));
 	}
 
 	/**
@@ -93,20 +86,9 @@ public class GameInterface {
 	public void mousePressed(final int button, final Point clickPoint,
 			final WorldState state) {
 		// TODO: Look at how to build this using specialised templates.
-		//   I want an interface.mousePressed(...) method.
-		interfaces.applyToLayer(new Function<ObjectLayer<InterfaceElement>>() {
-			@Override
-			public void exec(ObjectLayer<InterfaceElement> ie) {
-				ie.applyToAll(new Function<InterfaceElement>() {
-
-					@Override
-					public void exec(InterfaceElement a) {
-						a.mousePressed(button, clickPoint);
-					}
-
-				});
-			}
-		}, state.ordinal());
+		// I want an interface.mousePressed(...) method.
+		interfaces.applyToLayerObjects(a -> a.mousePressed(button, clickPoint),
+				state.ordinal());
 	}
 
 	/**

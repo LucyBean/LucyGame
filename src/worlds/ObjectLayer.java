@@ -3,10 +3,10 @@ package worlds;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
 
-import helpers.Function;
 import helpers.Point;
 import helpers.Rectangle;
 import objects.GameObject;
@@ -63,13 +63,8 @@ public class ObjectLayer<T extends GameObject> {
 	 *            A Function to apply. Must take objects of type T and return
 	 *            void.
 	 */
-	public void applyToAll(Function<T> f) {
-		Iterator<T> io = objects.iterator();
-
-		while (io.hasNext()) {
-			T wo = io.next();
-			f.exec(wo);
-		}
+	public void applyToAll(Consumer<T> f) {
+		objects.stream().forEach(f);
 	}
 
 	/**
@@ -77,12 +72,7 @@ public class ObjectLayer<T extends GameObject> {
 	 */
 	public void render() {
 		if (isVisible()) {
-			applyToAll(new Function<T>() {
-				@Override
-				public void exec(T wo) {
-					wo.render();
-				}
-			});
+			applyToAll(T::render);
 		}
 	}
 
@@ -92,12 +82,7 @@ public class ObjectLayer<T extends GameObject> {
 	 * @param gc
 	 * @param delta
 	 */
-	public void update(final GameContainer gc, final int delta) {
-		applyToAll(new Function<T>() {
-			@Override
-			public void exec(T wo) {
-				wo.update(gc, delta);
-			}
-		});
+	public void update(GameContainer gc, int delta) {
+		applyToAll(t -> t.update(gc, delta));
 	}
 }
