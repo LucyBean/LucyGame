@@ -248,14 +248,7 @@ public class World {
 		// Renders all objects in layer order if the layer is visible.
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
-			if (ol.isVisible()) {
-				ol.applyToAll(new Function<WorldObject>(){
-					@Override
-					public void exec(WorldObject wo) {
-						wo.render();
-					}
-				});
-			}
+			ol.render();
 		}
 
 		gameInterface.render(getState());
@@ -287,14 +280,12 @@ public class World {
 		// Update all GameObjects
 		for (WorldLayer l : WorldLayer.values()) {
 			ObjectLayer<WorldObject> ol = layers.get(l.ordinal());
-			if (ol.isVisible()) {
-				ol.applyToAll(new Function<WorldObject>(){
-					@Override
-					public void exec(WorldObject wo) {
-						wo.update(gc, delta);
-					}
-				});
-			}
+			ol.applyToAll(new Function<WorldObject>() {
+				@Override
+				public void exec(WorldObject wo) {
+					wo.update(gc, delta);
+				}
+			});
 		}
 	}
 

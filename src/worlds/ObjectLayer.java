@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.newdawn.slick.GameContainer;
+
 import helpers.Function;
 import helpers.Point;
 import helpers.Rectangle;
@@ -68,5 +70,34 @@ public class ObjectLayer<T extends GameObject> {
 			T wo = io.next();
 			f.exec(wo);
 		}
+	}
+
+	/**
+	 * Renders all objects on the layer.
+	 */
+	public void render() {
+		if (isVisible()) {
+			applyToAll(new Function<T>() {
+				@Override
+				public void exec(T wo) {
+					wo.render();
+				}
+			});
+		}
+	}
+
+	/**
+	 * Propagates the update signal to all objects on the layer.
+	 * 
+	 * @param gc
+	 * @param delta
+	 */
+	public void update(final GameContainer gc, final int delta) {
+		applyToAll(new Function<T>() {
+			@Override
+			public void exec(T wo) {
+				wo.update(gc, delta);
+			}
+		});
 	}
 }
