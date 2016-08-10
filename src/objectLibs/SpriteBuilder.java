@@ -17,8 +17,11 @@ import options.GlobalOptions;
  * @author Lucy
  *
  */
-public class SpriteLibrary {
+public class SpriteBuilder {
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
+
+	private static RectangleSpriteStore colliderImages = new RectangleSpriteStore();
+	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
 
 	/**
 	 * Creates a new rectangular sprite of the given colour.
@@ -62,10 +65,21 @@ public class SpriteLibrary {
 	 * @return
 	 */
 	public static Sprite makeColliderImage(Rectangle collider) {
-		Color fill = new Color(50, 135, 220, 130);
-		Color border = fill.darker(0.5f);
-		border.a = 220;
-		return createRectangle(collider, GRID_SIZE, fill, border);
+		// check if a collider of this size has been made already
+		int w = (int) (collider.getWidth() * GRID_SIZE);
+		int h = (int) (collider.getHeight() * GRID_SIZE);
+		Sprite s = colliderImages.get(w, h);
+
+		if (s == null) {
+			// Create a new image
+			Color fill = new Color(50, 135, 220, 130);
+			Color border = fill.darker(0.5f);
+			border.a = 220;
+			s = createRectangle(collider, GRID_SIZE, fill, border);
+			colliderImages.store(s);
+		}
+
+		return s;
 	}
 
 	/**
@@ -75,29 +89,42 @@ public class SpriteLibrary {
 	 * @return
 	 */
 	public static Sprite makeInteractBoxImage(Rectangle interactBox) {
-		Color fill = new Color(50, 220, 135, 130);
-		Color border = fill.darker(0.5f);
-		border.a = 220;
-		return createRectangle(interactBox, GRID_SIZE, fill, border);
+		// check if a collider of this size has been made already
+		int w = (int) (interactBox.getWidth() * GRID_SIZE);
+		int h = (int) (interactBox.getHeight() * GRID_SIZE);
+		Sprite s = interactBoxImages.get(w, h);
+
+		if (s == null) {
+
+			Color fill = new Color(50, 220, 135, 130);
+			Color border = fill.darker(0.5f);
+			border.a = 220;
+			s = createRectangle(interactBox, GRID_SIZE, fill, border);
+			interactBoxImages.store(s);
+		}
+
+		return s;
 	}
 
 	public static Sprite drawWall(int width, int height) {
-		return new Sprite(WALL.getImage(), Point.ZERO, width, height, GRID_SIZE);
+		return new Sprite(WALL.getImage(), Point.ZERO, width, height,
+				GRID_SIZE);
 	}
-	
-	public static Sprite interfaceElement(int width, int height, Color c, String text) {
+
+	public static Sprite interfaceElement(int width, int height, Color c,
+			String text) {
 		LayeredImage limg = new LayeredImage(width, height, 2);
 		limg.fillLayer(0, c);
 		limg.setText(1, text);
-		
+
 		return new Sprite(limg, Point.ZERO, 1);
 	}
-	
+
 	public static Sprite interfaceElement(int width, int height) {
 		return new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
 	}
 
-	public final static Sprite WALL = createRectangle(
+	private final static Sprite WALL = createRectangle(
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
 			new Color(240, 240, 40));
 	public final static Sprite PLAYER = createRectangle(

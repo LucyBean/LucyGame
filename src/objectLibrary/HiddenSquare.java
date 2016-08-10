@@ -3,14 +3,14 @@ package objectLibrary;
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 import objects.Actor;
 import objects.InteractBox;
 import worlds.WorldLayer;
 
 public class HiddenSquare extends Actor {
 	public HiddenSquare(Point origin) {
-		super(origin, WorldLayer.WORLD, SpriteLibrary.HIDDEN_SQUARE, null,
+		super(origin, WorldLayer.WORLD, SpriteBuilder.HIDDEN_SQUARE, null,
 				new InteractBox(Point.ZERO, 2, 2));
 	}
 

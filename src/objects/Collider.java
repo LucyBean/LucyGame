@@ -2,7 +2,7 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 
 public class Collider extends WOAttachment {
 	/**
@@ -32,7 +32,7 @@ public class Collider extends WOAttachment {
 	@Override
 	public Sprite getSprite()  {
 		if (sprite == null) {
-			sprite = SpriteLibrary.makeColliderImage(getRectangle());
+			sprite = SpriteBuilder.makeColliderImage(getRectangle());
 		}
 
 		return sprite;

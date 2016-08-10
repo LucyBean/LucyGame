@@ -2,7 +2,7 @@ package objectLibrary;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 import objects.Collider;
 import objects.Static;
 import worlds.WorldLayer;
@@ -16,7 +16,7 @@ public class Wall extends Static {
 				new Collider(Point.ZERO, width, height), null);
 		this.width = width;
 		this.height = height;
-		setSprite(SpriteLibrary.drawWall(width, height));
+		setSprite(SpriteBuilder.drawWall(width, height));
 	}
 	
 	public static Wall drawWall(Point start, Dir d, int length) {

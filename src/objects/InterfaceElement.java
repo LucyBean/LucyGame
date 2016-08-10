@@ -4,14 +4,14 @@ import org.newdawn.slick.Color;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 
 public abstract class InterfaceElement extends GameObject {
 	Rectangle rect;
 
 	public InterfaceElement(Rectangle rect) {
 		super(rect.getTopLeft(), null);
-		Sprite sprite = SpriteLibrary.interfaceElement((int) rect.getWidth(),
+		Sprite sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
 				(int) rect.getHeight());
 		setSprite(sprite);
 	}

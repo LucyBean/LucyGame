@@ -3,7 +3,7 @@
 ====================
 
 Build the game interface
-	Make options file save.
+	Make options saving automatic
 	Make options file a little more human-readable.
 	
 Make collider drawing more efficient

@@ -2,7 +2,7 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 
 public class InteractBox extends WOAttachment {
 	/**
@@ -32,7 +32,7 @@ public class InteractBox extends WOAttachment {
 	@Override
 	public Sprite getSprite() {
 		if (sprite == null) {
-			sprite = SpriteLibrary.makeInteractBoxImage(getRectangle());
+			sprite = SpriteBuilder.makeInteractBoxImage(getRectangle());
 		}
 
 		return sprite;

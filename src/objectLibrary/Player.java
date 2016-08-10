@@ -5,7 +5,7 @@ import org.newdawn.slick.Input;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 import objects.Actor;
 import objects.Collider;
 import worlds.WorldLayer;
@@ -14,7 +14,7 @@ public class Player extends Actor {
 	float speed;
 
 	public Player(Point origin) {
-		super(origin, WorldLayer.PLAYER, SpriteLibrary.PLAYER,
+		super(origin, WorldLayer.PLAYER, SpriteBuilder.PLAYER,
 				new Collider(Point.ZERO, 1, 2), null);
 	}
 

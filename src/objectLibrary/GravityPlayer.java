@@ -5,7 +5,7 @@ import org.newdawn.slick.Input;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibs.SpriteLibrary;
+import objectLibs.SpriteBuilder;
 import objects.Collider;
 import objects.GravityActor;
 import worlds.WorldLayer;
@@ -15,7 +15,7 @@ public class GravityPlayer extends GravityActor {
 	float jumpStrength = 0.03f;
 
 	public GravityPlayer(Point origin) {
-		super(origin, WorldLayer.PLAYER, SpriteLibrary.PLAYER,
+		super(origin, WorldLayer.PLAYER, SpriteBuilder.PLAYER,
 				new Collider(Point.ZERO, 1, 2), null);
 	}
 
