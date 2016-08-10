@@ -34,7 +34,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		GlobalOptions.init();
+		GlobalOptions.loadFromFile();
 		loadMainMenu();
 	}
 

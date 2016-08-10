@@ -3,7 +3,8 @@
 ====================
 
 Build the game interface
-	Add a debug sub-menu that can modify options. Save options?
+	Make options file save.
+	Make options file a little more human-readable.
 	
 Make collider drawing more efficient
 	Currently allocating buffer for every collider image drawn which is

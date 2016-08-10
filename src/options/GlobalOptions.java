@@ -1,15 +1,17 @@
 package options;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class GlobalOptions {
 	/**
 	 * Sets the program's options by reading from "data/settings.ini".
 	 */
-	public static void init() {
+	public static void loadFromFile() {
 		try {
 			File file = new File("data/settings.ini");
 			if (file.exists()) {
@@ -22,10 +24,35 @@ public class GlobalOptions {
 
 		} catch (IOException ioe) {
 			System.err.println("Error reading settitngs.");
-			ioe.printStackTrace();
+			if (GlobalOptions.debug()) {
+				ioe.printStackTrace();
+			}
 		}
 	}
-	
+
+	/**
+	 * Writes the program's currentoptions to "data/settings.ini"
+	 */
+	public static void saveToFile() {
+		try {
+			File file = new File("data/settings.ini");
+			file.createNewFile();
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			
+			for (Option o : Option.values()) {
+				bw.write(o.ordinal() + " = " + o.getValue());
+				bw.newLine();
+			}
+			
+			bw.close();
+		} catch (IOException ioe) {
+			System.err.println("Error writing settings.");
+			if (GlobalOptions.debug()) {
+				ioe.printStackTrace();
+			}
+		}
+	}
+
 	public static void process(String s) {
 		String[] parts = s.split("=");
 
@@ -35,13 +62,13 @@ public class GlobalOptions {
 			try {
 				int kn = Integer.parseInt(key);
 				int vn = Integer.parseInt(val);
-				
+
 				if (kn >= 0 && kn < Option.values().length) {
 					Option.values()[kn].setValue(vn);
 				} else {
 					System.err.println("Found unknown option " + kn);
 				}
-				
+
 			} catch (NumberFormatException nfe) {
 				System.err.println("Attempted to parse option " + s
 						+ " but it was badly formatted.");

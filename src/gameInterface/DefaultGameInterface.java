@@ -3,6 +3,7 @@ package gameInterface;
 import helpers.Point;
 import helpers.Rectangle;
 import objectLibrary.Button;
+import options.GlobalOptions;
 import options.Option;
 import worlds.WorldState;
 
@@ -92,6 +93,14 @@ public class DefaultGameInterface extends GameInterface {
 			MenuButton mb = new OptionButton(o);
 			m.add(mb,2);
 		}
+		MenuButton storeSettings = new MenuButton("Store settings") {
+			@Override
+			public void onClick(int button) {
+				GlobalOptions.saveToFile();
+			}
+		};
+		m.add(storeSettings, 2);
+		
 		add(m, WorldState.MENU);
 	}
 }

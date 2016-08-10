@@ -1,10 +1,12 @@
 package tests;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class FileReading {
@@ -21,9 +23,9 @@ public class FileReading {
 		try {
 			System.out.println("---Original---");
 			System.out.println(options);
-			
+
 			// Read in options
-			br = new BufferedReader(new FileReader("data/my file.txt"));
+			br = new BufferedReader(new FileReader("data/test/my file.txt"));
 			importedOptions = br.lines().map(s -> processOption(s)).filter(
 					s -> s != null).collect(
 							Collectors.toMap(FROption::getName,
@@ -41,6 +43,20 @@ public class FileReading {
 
 			System.out.println("---New---");
 			System.out.println(options);
+
+			for (int i = 0; i < 20; i++) {
+				Random rand = new Random();
+				int n = rand.nextInt(4);
+				File file = new File("data/test/" + n + ".txt");
+
+				if (file.exists()) {
+					System.out.println(file.getPath() + " already exists!");
+				} else {
+					file.createNewFile();
+					System.out.println("Created new file " + file.getPath());
+				}
+			}
+
 		} finally {
 			if (br != null) {
 				br.close();
