@@ -3,6 +3,7 @@ package gameInterface;
 import helpers.Point;
 import helpers.Rectangle;
 import objectLibrary.Button;
+import options.Option;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
@@ -37,6 +38,9 @@ public class DefaultGameInterface extends GameInterface {
 		clickToStopSelect.setText("Click here to stop selecting");
 		add(clickToStopSelect, WorldState.WATCH_SELECT);
 
+		//
+		// Root menu
+		//
 		Menu m = new Menu();
 		MenuButton backToMainMenu = new MenuButton("Main menu") {
 			@Override
@@ -62,6 +66,17 @@ public class DefaultGameInterface extends GameInterface {
 		};
 		m.add(openSubMenu);
 		
+		MenuButton openOptions = new MenuButton("Options") {
+			@Override
+			public void onClick(int button) {
+				getMenu().setSubMenu(2);
+			}
+		};
+		m.add(openOptions);
+		
+		//
+		// A sub menu
+		//
 		MenuButton subMenuButton = new MenuButton("Go back") {
 			@Override
 			public void onClick(int button) {
@@ -69,7 +84,14 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(subMenuButton, 1);
-
+		
+		//
+		// Options
+		//
+		for (Option o : Option.values()) {
+			MenuButton mb = new OptionButton(o);
+			m.add(mb,2);
+		}
 		add(m, WorldState.MENU);
 	}
 }

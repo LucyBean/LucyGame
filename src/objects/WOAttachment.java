@@ -5,7 +5,7 @@ import helpers.Rectangle;
 
 public abstract class WOAttachment {
 	Sprite sprite;
-	Rectangle rect;
+	private Rectangle rect;
 	
 	public WOAttachment(Point topLeft, float width, float height) {
 		rect = new Rectangle(topLeft, width, height);

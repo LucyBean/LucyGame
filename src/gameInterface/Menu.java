@@ -6,7 +6,7 @@ import java.util.Map;
 import helpers.Dir;
 import helpers.Point;
 import objects.InterfaceElement;
-import worlds.GlobalOptions;
+import options.GlobalOptions;
 import worlds.World;
 
 public class Menu extends InterfaceElement {
@@ -67,7 +67,7 @@ public class Menu extends InterfaceElement {
 		mb.setMenu(this);
 
 		// Set the position of the next button
-		nextPositions.put(state, nextPosition.move(Dir.SOUTH, 32));
+		nextPositions.put(state, nextPosition.move(Dir.SOUTH, 40));
 	}
 
 	/**

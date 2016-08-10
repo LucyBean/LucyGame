@@ -32,7 +32,7 @@ public class InteractBox extends WOAttachment {
 	@Override
 	public Sprite getSprite() {
 		if (sprite == null) {
-			sprite = SpriteLibrary.makeInteractBoxImage(rect);
+			sprite = SpriteLibrary.makeInteractBoxImage(getRectangle());
 		}
 
 		return sprite;

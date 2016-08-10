@@ -32,7 +32,7 @@ public class Collider extends WOAttachment {
 	@Override
 	public Sprite getSprite()  {
 		if (sprite == null) {
-			sprite = SpriteLibrary.makeColliderImage(rect);
+			sprite = SpriteLibrary.makeColliderImage(getRectangle());
 		}
 
 		return sprite;

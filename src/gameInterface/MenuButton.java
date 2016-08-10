@@ -5,7 +5,7 @@ import helpers.Rectangle;
 import objectLibrary.Button;
 
 public class MenuButton extends Button {
-	public final static int WIDTH = 200;
+	public final static int WIDTH = 360;
 	public final static int HEIGHT = 32;
 	Menu menu;
 	

@@ -59,16 +59,16 @@ public class Sprite {
 		this.tileY = tileY;
 	}
 
-	public Sprite(LayeredImage img, int gridSize) {
-		this(img, Point.ZERO, 1, 1, gridSize);
+	public Sprite(LayeredImage img, Point origin, int gridSize) {
+		this(img, origin, 1, 1, gridSize);
 	}
 	
 	public Sprite(Image img, Point origin, int tileX, int tileY, int gridSize) {
 		this(new LayeredImage(img), origin, tileX, tileY, gridSize);
 	}
 	
-	public Sprite(Image img, int gridSize) {
-		this(img, Point.ZERO, 1, 1, gridSize);
+	public Sprite(Image img, Point origin, int gridSize) {
+		this(img, origin, 1, 1, gridSize);
 	}
 
 	public Point getOrigin() {

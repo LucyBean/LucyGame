@@ -17,6 +17,7 @@ import objectLibrary.Wall;
 import objects.Actor;
 import objects.InterfaceElement;
 import objects.WorldObject;
+import options.GlobalOptions;
 
 public class World {
 	private Camera camera;

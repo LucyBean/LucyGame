@@ -7,6 +7,7 @@ import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
 import objects.WorldObject;
+import options.GlobalOptions;
 
 /**
  * Camera class for storing information about the camera.

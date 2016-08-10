@@ -19,6 +19,17 @@ public class Maps {
 		
 		System.out.println(m);
 		
+		System.out.println(m.get(8));
+		
+		Map<Integer, Integer> myFunction = new HashMap<Integer, Integer>();
+		myFunction.put(1, 1);
+		myFunction.put(2, 4);
+		myFunction.put(3, 9);
+		
+		System.out.println(myFunction);
+		Integer b = myFunction.get(6);
+		System.out.println(myFunction.get(6));
+		System.out.println(b);
 		Set<Entry<Integer, Y>> set = m.entrySet();
 		set.stream().forEach(a -> System.out.println(a.getValue()));
 	}

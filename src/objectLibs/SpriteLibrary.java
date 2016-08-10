@@ -9,7 +9,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import objects.LayeredImage;
 import objects.Sprite;
-import worlds.GlobalOptions;
+import options.GlobalOptions;
 
 /**
  * Class for holding and loading image sprites.
@@ -43,7 +43,7 @@ public class SpriteLibrary {
 			g.drawRect(1, 1, width - 3, height - 3);
 			g.flush();
 
-			return new Sprite(img, scale);
+			return new Sprite(img, r.getTopLeft(), scale);
 		} catch (SlickException se) {
 			System.err.println("Unable to draw rectangle " + r);
 			se.printStackTrace();
@@ -90,11 +90,11 @@ public class SpriteLibrary {
 		limg.fillLayer(0, c);
 		limg.setText(1, text);
 		
-		return new Sprite(limg,1);
+		return new Sprite(limg, Point.ZERO, 1);
 	}
 	
 	public static Sprite interfaceElement(int width, int height) {
-		return new Sprite(new LayeredImage(width, height, 2), 1);
+		return new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
 	}
 
 	public final static Sprite WALL = createRectangle(

@@ -2,8 +2,8 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
+import options.GlobalOptions;
 import worlds.Camera;
-import worlds.GlobalOptions;
 import worlds.WorldLayer;
 
 public class CoOrdTranslator {	

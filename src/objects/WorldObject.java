@@ -1,7 +1,7 @@
 package objects;
 
 import helpers.Point;
-import worlds.GlobalOptions;
+import options.GlobalOptions;
 import worlds.WorldLayer;
 
 public abstract class WorldObject extends GameObject {
