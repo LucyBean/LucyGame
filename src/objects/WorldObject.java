@@ -131,7 +131,6 @@ public abstract class WorldObject extends GameObject {
 	//
 	// Render
 	//
-	@SuppressWarnings("unused")
 	@Override
 	public void draw() {
 		// Draw the sprite
@@ -139,13 +138,13 @@ public abstract class WorldObject extends GameObject {
 
 		// Draws collider and interact boxes
 		if (getCollider() != null) {
-			if (GlobalOptions.DRAW_ALL_COLLIDERS
-					|| GlobalOptions.DRAW_INVIS_OBJ_COLLIDERS
+			if (GlobalOptions.drawAllColliders()
+					|| GlobalOptions.drawInvisObjColliders()
 					&& (getSprite() == null || !isVisible())) {
 				getCollider().draw(getCoOrdTranslator());
 			}
 		}
-		if (interactBox != null && GlobalOptions.DRAW_INTERACT_BOXES) {
+		if (interactBox != null && GlobalOptions.drawInteractBoxes()) {
 			getInteractBox().draw(getCoOrdTranslator());
 		}
 	}
