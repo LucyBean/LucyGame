@@ -10,9 +10,10 @@ import objects.WorldObject;
 
 class StatusWindow extends InterfaceElement {
 	WorldObject watching;
+	static Point textTopLeft = new Point(5,5);
 
 	public StatusWindow(Point origin) {
-		super(new Rectangle(origin, 200, 200));
+		super(new Rectangle(origin, 300, 200));
 		setBackground(new Color(240, 220, 240, 200));
 	}
 
@@ -33,10 +34,10 @@ class StatusWindow extends InterfaceElement {
 
 	private void updateStatus() {
 		if (watching == null) {
-			setText("Watching nothing");
+			setText("Watching nothing", textTopLeft);
 		} else {
-			setText("Watching " + watching + "\nPos: "
-					+ watching.getPosition());
+			setText("Watching [" + watching.getClass().getSimpleName() + "]\n"
+					+ "Pos: " + watching.getPosition(), textTopLeft);
 		}
 	}
 

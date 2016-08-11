@@ -1,10 +1,14 @@
-package objects;
+package gameInterface;
+
 
 import org.newdawn.slick.Color;
 
 import helpers.Point;
 import helpers.Rectangle;
 import objectLibs.SpriteBuilder;
+import objects.GameObject;
+import objects.LayeredImage;
+import objects.Sprite;
 
 public abstract class InterfaceElement extends GameObject {
 	Rectangle rect;

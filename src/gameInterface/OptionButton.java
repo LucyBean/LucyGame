@@ -12,6 +12,6 @@ public class OptionButton extends MenuButton {
 	@Override
 	public void onClick(int button) {
 		option.setToNextValue();
-		setText(option.toString());
+		setTextCentered(option.toString());
 	}
 }

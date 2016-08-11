@@ -115,7 +115,7 @@ public class SpriteBuilder {
 			String text) {
 		LayeredImage limg = new LayeredImage(width, height, 2);
 		limg.fillLayer(0, c);
-		limg.setText(1, text);
+		limg.setTextCentered(1, text);
 
 		return new Sprite(limg, Point.ZERO, 1);
 	}

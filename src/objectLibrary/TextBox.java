@@ -10,7 +10,7 @@ public class TextBox extends InterfaceElement {
 	public TextBox(Rectangle rect) {
 		super(rect);
 		setBackground(Color.white);
-		setText("Hello, world!");
+		setTextCentered("Hello, world!");
 	}
 
 	@Override

@@ -151,6 +151,6 @@ public abstract class WorldObject extends GameObject {
 
 	@Override
 	public String toString() {
-		return "[" + getClass().getName() + " at " + getPosition();
+		return "[" + getClass().getSimpleName() + "] at " + getPosition();
 	}
 }

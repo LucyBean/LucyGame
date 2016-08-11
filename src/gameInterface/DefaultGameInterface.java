@@ -16,7 +16,7 @@ public class DefaultGameInterface extends GameInterface {
 				getWorld().openMenu();
 			}
 		};
-		openMenuButton.setText("Open menu");
+		openMenuButton.setTextCentered("Open menu");
 		add(openMenuButton, WorldState.PLAYING);
 
 		Button closeMenuButton = new Button(
@@ -26,7 +26,7 @@ public class DefaultGameInterface extends GameInterface {
 				getWorld().closeMenu();
 			}
 		};
-		closeMenuButton.setText("Close menu");
+		closeMenuButton.setTextCentered("Close menu");
 		add(closeMenuButton, WorldState.MENU);
 
 		Button clickToStopSelect = new Button(
@@ -36,7 +36,7 @@ public class DefaultGameInterface extends GameInterface {
 				getWorld().stopWatchSelect();
 			}
 		};
-		clickToStopSelect.setText("Click here to stop selecting");
+		clickToStopSelect.setTextCentered("Click here to stop selecting");
 		add(clickToStopSelect, WorldState.WATCH_SELECT);
 
 		//

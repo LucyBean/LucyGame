@@ -9,7 +9,7 @@ public class WorldLoaderButton extends Button {
 	public WorldLoaderButton(Point origin, int worldNumber, String text) {
 		super(new Rectangle(origin, 400, 32));
 		this.worldNumber = worldNumber;
-		setText(text);
+		setTextCentered(text);
 	}
 
 	@Override

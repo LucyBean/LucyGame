@@ -22,7 +22,7 @@ import options.GlobalOptions;
 public class World {
 	private Camera camera;
 	private GameInterface gameInterface;
-	private GameInterface levelInterface;
+	private GameInterface worldInterface;
 	private List<Actor> actors;
 	private List<Actor> activeActors;
 	private List<WorldObject> solids;
@@ -56,7 +56,7 @@ public class World {
 			worldState = WorldState.PLAYING;
 			
 			setGameInterface(defaultInterface);
-			levelInterface = new GameInterface();
+			worldInterface = new GameInterface();
 
 			init();
 
@@ -72,8 +72,8 @@ public class World {
 	}
 
 	protected void enableStatusWindow() {
-		if (gameInterface != null) {
-			gameInterface.enableStatusWindow();
+		if (worldInterface != null) {
+			worldInterface.enableStatusWindow();
 		}
 	}
 
@@ -85,7 +85,10 @@ public class World {
 	 *            The WorldObject whose status should be displayed.
 	 */
 	public void setWatchTarget(WorldObject a) {
-		gameInterface.setWatchTarget(a);
+		if (GlobalOptions.debug()) {
+			System.out.println("Now watching: " + a);
+		}
+		worldInterface.setWatchTarget(a);
 	}
 
 	/**
@@ -130,7 +133,7 @@ public class World {
 	}
 
 	public void addObject(InterfaceElement ie, WorldState state) {
-		levelInterface.add(ie, state);
+		worldInterface.add(ie, state);
 		ie.setWorld(this);
 	}
 
@@ -247,7 +250,7 @@ public class World {
 	public void render(GameContainer gc, Graphics g) {
 		layers.render();
 
-		levelInterface.render(getState());
+		worldInterface.render(getState());
 		gameInterface.render(getState());
 	}
 
@@ -256,7 +259,7 @@ public class World {
 
 		camera.update(gc, delta);
 		gameInterface.update(gc, delta, getState());
-		levelInterface.render(getState());
+		worldInterface.update(gc, delta, getState());
 
 		// Reset on D
 		if (input.isKeyDown(Input.KEY_D)) {
@@ -306,7 +309,7 @@ public class World {
 			watchSelectMousePressed(button, clickPoint);
 		}
 
-		levelInterface.mousePressed(button, clickPoint, getState());
+		worldInterface.mousePressed(button, clickPoint, getState());
 		gameInterface.mousePressed(button, clickPoint, getState());
 
 	}

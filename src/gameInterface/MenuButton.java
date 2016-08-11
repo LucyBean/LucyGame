@@ -11,7 +11,7 @@ public class MenuButton extends Button {
 	
 	public MenuButton(String text) {
 		super(new Rectangle(Point.ZERO, WIDTH, HEIGHT));
-		setText(text);
+		setTextCentered(text);
 	}
 	
 	public void setMenu(Menu m) {

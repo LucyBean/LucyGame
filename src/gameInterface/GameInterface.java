@@ -8,6 +8,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Point;
 import objects.InterfaceElement;
 import objects.WorldObject;
+import worlds.ObjectLayer;
 import worlds.World;
 import worlds.WorldState;
 
@@ -19,12 +20,14 @@ import worlds.WorldState;
  */
 public class GameInterface {
 	ObjectLayerSet<InterfaceElement> interfaces;
+	ObjectLayer<InterfaceElement> allStateInterface;
 	StatusWindow statusWindow;
 	World world;
 	List<Menu> menus;
 
 	public GameInterface() {
 		interfaces = new ObjectLayerSet<InterfaceElement>();
+		allStateInterface = new ObjectLayer<InterfaceElement>();
 		menus = new ArrayList<Menu>();
 	}
 
@@ -36,6 +39,7 @@ public class GameInterface {
 	public void setWorld(final World w) {
 		world = w;
 		interfaces.applyToAllObjects(a -> a.setWorld(w));
+		allStateInterface.applyToAll(a -> a.setWorld(w));
 	}
 
 	/**
@@ -62,7 +66,7 @@ public class GameInterface {
 	 * @param ie
 	 */
 	public void addToAll(InterfaceElement ie) {
-		interfaces.addToAll(ie);
+		allStateInterface.add(ie);
 		if (ie instanceof Menu) {
 			menus.add((Menu) ie);
 		}
@@ -81,7 +85,7 @@ public class GameInterface {
 
 	public void enableStatusWindow() {
 		if (statusWindow == null) {
-			statusWindow = new StatusWindow(new Point(440, 0));
+			statusWindow = new StatusWindow(new Point(340, 0));
 			addToAll(statusWindow);
 		}
 	}
@@ -100,6 +104,7 @@ public class GameInterface {
 		// I want an interface.mousePressed(...) method.
 		interfaces.applyToLayerObjects(a -> a.mousePressed(button, clickPoint),
 				state.ordinal());
+		allStateInterface.applyToAll(a -> a.mousePressed(button, clickPoint));
 	}
 
 	/**
@@ -110,6 +115,7 @@ public class GameInterface {
 	 */
 	public void render(WorldState state) {
 		interfaces.render(state.ordinal());
+		allStateInterface.render();
 	}
 
 	/**
@@ -123,6 +129,7 @@ public class GameInterface {
 	public void update(final GameContainer gc, final int delta,
 			WorldState state) {
 		interfaces.update(gc, delta, state.ordinal());
+		allStateInterface.update(gc, delta);
 	}
 
 	/**

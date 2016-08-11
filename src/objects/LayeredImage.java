@@ -5,6 +5,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import helpers.Point;
+import options.GlobalOptions;
+
 /**
  * A wrapper for Images that allows a Sprite to use multiple Images as a layer.
  * 
@@ -36,7 +39,7 @@ public class LayeredImage {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public int getTopLayerNumber() {
 		return layers.length - 1;
 	}
@@ -90,29 +93,62 @@ public class LayeredImage {
 	}
 
 	/**
-	 * Sets the layer to show the text. The text will be centered.
+	 * Sets the layer to show the text. The text will be centered. The layer
+	 * specified will be completely cleared before the text is added.
 	 * 
 	 * @param layer
 	 *            The number of the layer to fill. 0 is the background.
 	 * @param text
 	 *            The color with which to fill the layer.
 	 */
-	public void setText(int layer, String text) {
+	public void setTextCentered(int layer, String text) {
+		Image img = getLayer(layer);
+		if (img != null) {
+			try {
+				Graphics g = img.getGraphics();
+				float w = g.getFont().getWidth(text);
+				float h = g.getFont().getHeight(text);
+
+				float x = (width - w) / 2;
+				float y = (height - h) / 2;
+
+				setText(layer, text, new Point(x, y));
+			} catch (SlickException se) {
+				System.err.println("Error while adding text to image layer.");
+				if (GlobalOptions.debug()) {
+					se.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sets the layer to show the text. The text will be aligned with its
+	 * top-left at the point topLeft. The layer specified will be completely
+	 * cleared before the text is added.
+	 * 
+	 * @param layer
+	 *            The number of the layer to fill. 0 is the background.
+	 * @param text
+	 *            The color with which to fill the layer.
+	 * @param topLeft
+	 *            The point at which the topLeft of the text will be.
+	 */
+	public void setText(int layer, String text, Point topLeft) {
 		Image img = getLayer(layer);
 		if (img != null) {
 			try {
 				Graphics g = img.getGraphics();
 				g.clear();
-				
-				float w = g.getFont().getWidth(text);
-				float h = g.getFont().getHeight(text);
-				
+
 				g.setColor(Color.black);
-				g.drawString(text, (width - w)/2, (height - h)/2);
+				g.drawString(text, topLeft.getX(), topLeft.getY());
 				g.flush();
 			} catch (SlickException se) {
-				System.err.println("Error while adding text to image layer");
-				se.printStackTrace();
+				System.err.println("Error while adding text to image layer.");
+				if (GlobalOptions.debug()) {
+					se.printStackTrace();
+				}
 			}
 		}
 	}
