@@ -22,6 +22,7 @@ import options.GlobalOptions;
 public class World {
 	private Camera camera;
 	private GameInterface gameInterface;
+	private GameInterface levelInterface;
 	private List<Actor> actors;
 	private List<Actor> activeActors;
 	private List<WorldObject> solids;
@@ -31,6 +32,8 @@ public class World {
 	private final LucyGame game;
 	private final String name;
 	private ObjectLayerSet<WorldObject> layers;
+	
+	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
 	public World(LucyGame game, String name) {
 		this.game = game;
@@ -51,8 +54,9 @@ public class World {
 			activeSolids = new ArrayList<WorldObject>();
 			interactables = new ArrayList<WorldObject>();
 			worldState = WorldState.PLAYING;
-
-			setGameInterface(new DefaultGameInterface());
+			
+			setGameInterface(defaultInterface);
+			levelInterface = new GameInterface();
 
 			init();
 
@@ -62,7 +66,7 @@ public class World {
 		}
 	}
 
-	protected void setGameInterface(GameInterface gi) {
+	private void setGameInterface(GameInterface gi) {
 		gameInterface = gi;
 		gi.setWorld(this);
 	}
@@ -126,7 +130,7 @@ public class World {
 	}
 
 	public void addObject(InterfaceElement ie, WorldState state) {
-		gameInterface.add(ie, state);
+		levelInterface.add(ie, state);
 		ie.setWorld(this);
 	}
 
@@ -243,6 +247,7 @@ public class World {
 	public void render(GameContainer gc, Graphics g) {
 		layers.render();
 
+		levelInterface.render(getState());
 		gameInterface.render(getState());
 	}
 
@@ -251,6 +256,7 @@ public class World {
 
 		camera.update(gc, delta);
 		gameInterface.update(gc, delta, getState());
+		levelInterface.render(getState());
 
 		// Reset on D
 		if (input.isKeyDown(Input.KEY_D)) {
@@ -300,6 +306,7 @@ public class World {
 			watchSelectMousePressed(button, clickPoint);
 		}
 
+		levelInterface.mousePressed(button, clickPoint, getState());
 		gameInterface.mousePressed(button, clickPoint, getState());
 
 	}

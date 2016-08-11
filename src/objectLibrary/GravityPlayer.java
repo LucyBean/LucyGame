@@ -16,7 +16,7 @@ public class GravityPlayer extends GravityActor {
 
 	public GravityPlayer(Point origin) {
 		super(origin, WorldLayer.PLAYER, SpriteBuilder.PLAYER,
-				new Collider(Point.ZERO, 1, 2), null);
+				new Collider(SpriteBuilder.PLAYER.getBoundingRectangle()), null);
 	}
 
 	@Override

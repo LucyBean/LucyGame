@@ -128,7 +128,7 @@ public class SpriteBuilder {
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
 			new Color(240, 240, 40));
 	public final static Sprite PLAYER = createRectangle(
-			new Rectangle(Point.ZERO, 1, 2), GRID_SIZE,
+			new Rectangle(Point.ZERO, 0.8f, 1.6f), GRID_SIZE,
 			new Color(240, 40, 240));
 	public final static Sprite BUTTON = createRectangle(
 			new Rectangle(Point.ZERO, 6, 1), 1, new Color(230, 130, 230));
