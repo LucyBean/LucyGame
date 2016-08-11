@@ -23,7 +23,8 @@ public class ColliderDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-		WorldObject mover = new Player(new Point(3, 10));
+		Actor mover = new Player(new Point(3, 10));
+		mover.useGravity(false);
 		addObject(mover);
 
 		drawWallBorder();

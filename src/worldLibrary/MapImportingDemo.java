@@ -4,9 +4,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
 import helpers.Point;
-import objectLibrary.GravityPlayer;
+import objectLibrary.Player;
 import objectLibrary.Wall;
-import objects.WorldObject;
+import objects.Actor;
 import worlds.LucyGame;
 import worlds.World;
 
@@ -32,7 +32,7 @@ public class MapImportingDemo extends World {
 					addObject(new Wall(new Point(x, y), 1, 1));
 				}
 				if (id == 2) {
-					WorldObject gp = new GravityPlayer(new Point(x, y));
+					Actor gp = new Player(new Point(x, y));
 					addObject(gp);
 					setCameraTarget(gp);
 				}

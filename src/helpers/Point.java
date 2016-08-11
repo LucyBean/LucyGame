@@ -3,8 +3,8 @@ package helpers;
 public class Point {
 	public static final Point ZERO = new Point(0, 0);
 
-	float x;
-	float y;
+	final float x;
+	final float y;
 
 	public Point(float x, float y) {
 		this.x = x;
@@ -85,14 +85,6 @@ public class Point {
 		return new Point(sx * x, sy * y);
 	}
 
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public void setY(float y) {
-		this.y = y;
-	}
-
 	public float getX() {
 		return x;
 	}
@@ -103,6 +95,7 @@ public class Point {
 
 	@Override
 	public String toString() {
-		return "(" + getX() + "," + getY() + ")";
+		return "(" + String.format("%.2f", getX()) + ","
+				+ String.format("%.2f", getY()) + ")";
 	}
 }

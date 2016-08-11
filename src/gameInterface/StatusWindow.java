@@ -19,7 +19,7 @@ class StatusWindow extends InterfaceElement {
 
 	@Override
 	public void update(GameContainer gc, int delta) {
-		updateStatus();
+		updateStatus(delta);
 	}
 
 	/**
@@ -32,10 +32,11 @@ class StatusWindow extends InterfaceElement {
 		watching = a;
 	}
 
-	private void updateStatus() {
+	private void updateStatus(int delta) {
 		if (watching == null) {
 			setText("Watching nothing", textTopLeft);
 		} else {
+
 			setText("Watching [" + watching.getClass().getSimpleName() + "]\n"
 					+ "Pos: " + watching.getPosition(), textTopLeft);
 		}

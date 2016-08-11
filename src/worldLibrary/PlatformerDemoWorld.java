@@ -5,7 +5,7 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibrary.GravityPlayer;
+import objectLibrary.Player;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.Sprite;
@@ -37,7 +37,7 @@ public class PlatformerDemoWorld extends World {
 		};
 		addObject(background);
 
-		Actor gravityPlayer = new GravityPlayer(new Point(3, 2));
+		Actor gravityPlayer = new Player(new Point(3, 2));
 		addObject(gravityPlayer);
 
 		// Add some walls

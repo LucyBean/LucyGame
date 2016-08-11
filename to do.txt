@@ -2,20 +2,6 @@
 ==  THINGS TO DO  ==
 ====================
 
-Build the game interface
-	Make options saving automatic
-	Make options file a little more human-readable.
-	
-Make collider drawing more efficient
-	Currently allocating buffer for every collider image drawn which is
-	pretty slow. Tile a smaller image?
-
-Camera following
-	Make the camera following less choppy.
-
-Interactions
-	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
-
 Creating other types of map objects (especially linked objects, like keys and switches)
 
 Map sector object loading
@@ -23,3 +9,18 @@ Map sector object loading
 Platformer moves
 
 Animations
+
+=============
+==  IDEAS  ==
+=============
+
+Build the game interface
+	Make options saving automatic
+	Make options file a little more human-readable.
+		
+Make interface drawing more efficient
+	Every menu element image currently has its own image buffer, even though they share
+	a background.
+	
+Interactions
+	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.

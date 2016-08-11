@@ -12,8 +12,11 @@ import helpers.Rectangle;
 import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {
-	List<WorldObject> activeInteractables;
-	Dir lastDirectionMoved;
+	private List<WorldObject> activeInteractables;
+	private Dir lastDirectionMoved;
+	private final static float GRAVITY = 0.0001f;
+	private float vSpeed;
+	private boolean gravityEnabled;
 
 	public Actor(Point origin, WorldLayer layer, Sprite sprite,
 			Collider collider, InteractBox interactBox) {
@@ -30,6 +33,8 @@ public abstract class Actor extends WorldObject {
 
 	protected final void resetState() {
 		activeInteractables = new ArrayList<WorldObject>();
+		vSpeed = 0.0f;
+		gravityEnabled = true;
 		resetActorState();
 	}
 
@@ -46,7 +51,18 @@ public abstract class Actor extends WorldObject {
 		return lastDirectionMoved;
 	}
 
-	// TODO
+	public boolean gravityEnabled() {
+		return gravityEnabled;
+	}
+	
+	//
+	// Setters
+	//
+	public void useGravity(boolean gravity) {
+		gravityEnabled = gravity;
+	}
+
+	//
 	// Move, with collision checking
 	//
 	public void move(Dir d, float amount) {
@@ -299,13 +315,78 @@ public abstract class Actor extends WorldObject {
 		activeInteractables = nowActive;
 	}
 
+	//
+	// #JustGravityThings
+	//
+	/**
+	 * Checks whether this Actor is on the floor.
+	 * 
+	 * @return
+	 */
+	protected boolean isOnGround() {
+		if (getCollider() == null) {
+			return false;
+		}
+
+		// Check a very narrow rectangle at the bottom of the actor for any
+		// solid objects.
+		Collider c = getCollider();
+		Rectangle bottomEdge = new Rectangle(c.getBottomLeft(), c.getWidth(),
+				0.001f).translate(getPosition());
+		bottomEdge = bottomEdge.translate(new Point(0, 0.001f));
+
+		// See if it collides with any objects
+		List<WorldObject> collidingSolids = getCollidingSolids(bottomEdge);
+		return !collidingSolids.isEmpty();
+	}
+
+	/**
+	 * Checks whether this Actor has hit the ceiling.
+	 * 
+	 * @return
+	 */
+	protected boolean isOnCeiling() {
+		if (getCollider() == null) {
+			return false;
+		}
+
+		// Check a very narrow rectangle at the top of the actor for any solid
+		// objects.
+		Collider c = getCollider();
+		Rectangle topEdge = new Rectangle(c.getTopLeft(), c.getWidth(),
+				0.001f).translate(getPosition());
+		topEdge = topEdge.translate(new Point(0, -0.001f));
+
+		// See if it collides with any objects
+		List<WorldObject> collidingSolids = getCollidingSolids(topEdge);
+		return !collidingSolids.isEmpty();
+	}
+
+	private void calculateVSpeed(int delta) {
+		if (gravityEnabled()) {
+			// If player is on the ground and is falling, stop them.
+			if (isOnGround() && vSpeed >= 0.0f) {
+				vSpeed = 0.0f;
+			} else if (isOnCeiling() && vSpeed < 0.0f) {
+				vSpeed = 0.0f;
+			} else {
+				vSpeed += GRAVITY * delta;
+			}
+		}
+	}
+
+	protected void jump(float strength) {
+		if (gravityEnabled() && isOnGround()) {
+			vSpeed = -strength;
+		}
+	}
+
 	// TODO
 	// Event reactions
 	//
 	/*
 	 * added to world, on created, on collision, on interact
 	 */
-
 	public void onMouseDown() {
 
 	}
@@ -321,6 +402,11 @@ public abstract class Actor extends WorldObject {
 		if (isEnabled()) {
 			act(gc, delta);
 			checkForInteractions();
+
+			if (gravityEnabled()) {
+				calculateVSpeed(delta);
+				move(Dir.SOUTH, vSpeed * delta);
+			}
 		}
 	}
 

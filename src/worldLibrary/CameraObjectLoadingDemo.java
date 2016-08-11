@@ -31,6 +31,7 @@ public class CameraObjectLoadingDemo extends World {
 	@Override
 	public void init() throws SlickException {
 		cb = new CameraBox(new Point(2.5f, 2.5f));
+		cb.useGravity(false);
 		addObject(cb);
 
 		buildSectors(WORLD_WIDTH, WORLD_HEIGHT);

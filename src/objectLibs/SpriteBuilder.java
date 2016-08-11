@@ -121,7 +121,7 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite interfaceElement(int width, int height) {
-		return new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
+		return  new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
 	}
 
 	private final static Sprite WALL = createRectangle(
