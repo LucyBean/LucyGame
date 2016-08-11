@@ -2,7 +2,6 @@ package worldLibrary;
 
 import java.util.Random;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
@@ -10,6 +9,8 @@ import objectLibrary.Player;
 import objectLibs.SpriteBuilder;
 import objects.Actor;
 import objects.InteractBox;
+import objects.PickUpItem;
+import objects.Static;
 import objects.WorldObject;
 import worlds.LucyGame;
 import worlds.World;
@@ -36,19 +37,21 @@ public class HiddenObjectDemoWorld extends World {
 			WorldObject go = new HiddenSquare(position);
 			addObject(go);
 		}
+		
+		for (int i = 0; i < 5; i++) {
+			Random r = new Random();
+			Point position = new Point(r.nextFloat() * 17 + 1,
+					r.nextFloat() * 12 + 1);
+			WorldObject go = new PickUpSquare(position);
+			addObject(go);
+		}
 	}
 }
 
-class HiddenSquare extends Actor {
+class HiddenSquare extends Static {
 	public HiddenSquare(Point origin) {
 		super(origin, WorldLayer.WORLD, SpriteBuilder.HIDDEN_SQUARE, null,
 				new InteractBox(Point.ZERO, 2, 2));
-		useGravity(false);
-	}
-
-	@Override
-	protected void resetActorState() {
-		setVisibility(false);
 	}
 
 	@Override
@@ -66,8 +69,14 @@ class HiddenSquare extends Actor {
 	}
 
 	@Override
-	public void act(GameContainer gc, int delta) {
-		// TODO Auto-generated method stub
+	protected void resetStaticState() {
+		setVisibility(false);
+		
+	}
+}
 
+class PickUpSquare extends PickUpItem {
+	public PickUpSquare(Point origin) {
+		super(origin, SpriteBuilder.PICK_UP_ITEM);
 	}
 }

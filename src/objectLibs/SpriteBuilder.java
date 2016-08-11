@@ -138,4 +138,7 @@ public class SpriteBuilder {
 	public final static Sprite COLLIDER = createRectangle(
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
 			new Color(50, 135, 220, 130));
+	public final static Sprite PICK_UP_ITEM = createRectangle(
+			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
+			new Color(80, 250, 80));
 }
