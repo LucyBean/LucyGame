@@ -58,13 +58,13 @@ public class Player extends Actor {
 		inventory = new LinkedList<PickUpItem>();
 	}
 	
-	public void addToInventory(PickUpItem pui) {
+	private void addToInventory(PickUpItem pui) {
 		inventory.add(pui);
 		
 		System.out.println("Inventory: " + inventory);
 	}
 	
-	public void removeFromInventory(PickUpItem pui) {
+	private void removeFromInventory(PickUpItem pui) {
 		inventory.remove(pui);
 		
 		System.out.println("Inventory: " + inventory);
@@ -77,6 +77,14 @@ public class Player extends Actor {
 			pui.disable();
 			addToInventory(pui);
 		}
+		if (wo instanceof Lock) {
+			Lock lock = (Lock) wo;
+			Key k = lock.getKey();
+			if (has(k)) {
+				lock.unlock();
+				removeFromInventory(k);
+			}
+		}
 	}
 	
 	/**
@@ -84,7 +92,7 @@ public class Player extends Actor {
 	 * @param pui 
 	 * @return
 	 */
-	public boolean has(PickUpItem pui) {
+	private boolean has(PickUpItem pui) {
 		return inventory.contains(pui);
 	}
 }

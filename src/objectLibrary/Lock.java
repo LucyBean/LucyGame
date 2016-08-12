@@ -4,7 +4,6 @@ import helpers.Point;
 import objectLibs.SpriteBuilder;
 import objects.InteractBox;
 import objects.Static;
-import objects.WorldObject;
 import worlds.WorldLayer;
 
 public class Lock extends Static {
@@ -22,15 +21,12 @@ public class Lock extends Static {
 		
 	}
 	
-	@Override
-	public void overlapStart(WorldObject wo) {
-		if (wo instanceof Player) {
-			Player p = (Player) wo;
-			if (p.has(key)) {
-				disable();
-				p.removeFromInventory(key);
-			}
-		}
+	public void unlock() {
+		disable();
+	}
+	
+	public Key getKey() {
+		return key;
 	}
 	
 
