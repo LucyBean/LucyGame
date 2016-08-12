@@ -14,6 +14,7 @@ import objects.Collider;
 import objects.InteractBox;
 import objects.Sprite;
 import objects.Static;
+import objects.WorldObject;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
@@ -208,20 +209,22 @@ class WorldSector extends Static {
 	}
 
 	@Override
-	public void overlapStart(Actor a) {
+	public void overlapStart(WorldObject a) {
 		if (a instanceof CameraBox) {
+			CameraBox cb = (CameraBox) a;
 			// activate neighbour sectors
 			CameraObjectLoadingDemo cw = (CameraObjectLoadingDemo) getWorld();
-			cw.loadSectors(a.getLastDirectionMoved(), x, y);
+			cw.loadSectors(cb.getLastDirectionMoved(), x, y);
 		}
 	}
 
 	@Override
-	public void overlapEnd(Actor a) {
+	public void overlapEnd(WorldObject a) {
 		if (a instanceof CameraBox) {
+			CameraBox cb = (CameraBox) a;
 			// deactivate neighbour sectors
 			CameraObjectLoadingDemo cw = (CameraObjectLoadingDemo) getWorld();
-			cw.unloadSectors(a.getLastDirectionMoved(), x, y);
+			cw.unloadSectors(cb.getLastDirectionMoved(), x, y);
 		}
 	}
 

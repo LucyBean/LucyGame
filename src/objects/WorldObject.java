@@ -109,23 +109,23 @@ public abstract class WorldObject extends GameObject {
 	}
 
 	/**
-	 * This is called on an object when the Actor a starts overlapping it.
+	 * This is called on an object when a WorldObject starts overlapping it.
 	 * Override this to react to "on entry" events.
 	 * 
 	 * @param a
-	 *            The Actor that has started overlapping this.
+	 *            The WorldObject that has started overlapping this.
 	 */
-	public void overlapStart(Actor a) {
+	public void overlapStart(WorldObject a) {
 	}
 
 	/**
-	 * This is called on an object when the Actor a stops overlapping it.
+	 * This is called on an object when the a WorldObject stops overlapping it.
 	 * Override this to react to "on exit" events.
 	 * 
 	 * @param a
-	 *            The Actor that has stopped overlapping this.
+	 *            The WorldObject that has stopped overlapping this.
 	 */
-	public void overlapEnd(Actor a) {
+	public void overlapEnd(WorldObject a) {
 	}
 
 	//
@@ -151,6 +151,10 @@ public abstract class WorldObject extends GameObject {
 
 	@Override
 	public String toString() {
-		return "[" + getClass().getSimpleName() + "] at " + getPosition();
+		if (isEnabled()) {
+			return getClass().getSimpleName() + " at " + getPosition();
+		} else {
+			return getClass().getSimpleName();
+		}
 	}
 }

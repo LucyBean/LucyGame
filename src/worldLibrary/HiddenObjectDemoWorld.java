@@ -5,6 +5,8 @@ import java.util.Random;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
+import objectLibrary.Key;
+import objectLibrary.Lock;
 import objectLibrary.Player;
 import objectLibs.SpriteBuilder;
 import objects.Actor;
@@ -42,8 +44,13 @@ public class HiddenObjectDemoWorld extends World {
 			Random r = new Random();
 			Point position = new Point(r.nextFloat() * 17 + 1,
 					r.nextFloat() * 12 + 1);
-			WorldObject go = new PickUpSquare(position);
-			addObject(go);
+			Key key = new Key(position);
+			addObject(key);
+			
+			position = new Point(r.nextFloat() * 17 + 1,
+					r.nextFloat() * 12 + 1);
+			Lock lock = new Lock(position, key);
+			addObject(lock);
 		}
 	}
 }
@@ -55,14 +62,14 @@ class HiddenSquare extends Static {
 	}
 
 	@Override
-	public void overlapStart(Actor a) {
+	public void overlapStart(WorldObject a) {
 		if (a instanceof Player) {
 			setVisibility(true);
 		}
 	}
 
 	@Override
-	public void overlapEnd(Actor a) {
+	public void overlapEnd(WorldObject a) {
 		if (a instanceof Player) {
 			setVisibility(false);
 		}

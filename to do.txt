@@ -3,6 +3,10 @@
 ====================
 
 Creating other types of map objects (especially linked objects, like keys and switches)
+	Add picked-up PickUpItems to an inventory
+	Build an inventory display
+	Make the inventory persist across worlds?
+	Add a way of using these PickUpItems (e.g. unlock a door)
 
 Map sector object loading
 

@@ -23,6 +23,9 @@ public class SpriteBuilder {
 	private static RectangleSpriteStore colliderImages = new RectangleSpriteStore();
 	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
 
+	private static Sprite KEY;
+	private static Sprite LOCK;
+
 	/**
 	 * Creates a new rectangular sprite of the given colour.
 	 * 
@@ -121,7 +124,31 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite interfaceElement(int width, int height) {
-		return  new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
+		return new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
+	}
+
+	public static Sprite key() {
+		if (KEY == null) {
+			LayeredImage limg = new LayeredImage(32, 32, 2);
+			limg.fillLayer(0, new Color(30, 160, 30));
+			limg.setTextCentered(1, "K");
+			
+			KEY = new Sprite(limg, Point.ZERO, GRID_SIZE);
+		}
+		
+		return KEY;
+	}
+	
+	public static Sprite getLockImg() {
+		if (LOCK == null) {
+			LayeredImage limg = new LayeredImage(32, 32, 2);
+			limg.fillLayer(0, new Color(160, 30, 30));
+			limg.setTextCentered(1, "L");
+			
+			LOCK = new Sprite(limg, Point.ZERO, GRID_SIZE);
+		}
+		
+		return LOCK;
 	}
 
 	private final static Sprite WALL = createRectangle(
@@ -139,6 +166,5 @@ public class SpriteBuilder {
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
 			new Color(50, 135, 220, 130));
 	public final static Sprite PICK_UP_ITEM = createRectangle(
-			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
-			new Color(80, 250, 80));
+			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE, new Color(80, 250, 80));
 }

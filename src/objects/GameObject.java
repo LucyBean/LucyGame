@@ -32,10 +32,20 @@ public abstract class GameObject {
 		return sprite;
 	}
 
+	/**
+	 * Returns the current position of the object. Will return null if the
+	 * object is disabled.
+	 * 
+	 * @return
+	 */
 	public Point getPosition() {
-		return position;
+		if (isEnabled()) {
+			return position;
+		} else {
+			return null;
+		}
 	}
-	
+
 	public CoOrdTranslator getCoOrdTranslator() {
 		return cot;
 	}

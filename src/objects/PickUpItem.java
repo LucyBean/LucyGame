@@ -1,7 +1,6 @@
 package objects;
 
 import helpers.Point;
-import objectLibrary.Player;
 import worlds.WorldLayer;
 
 public class PickUpItem extends Static {
@@ -13,14 +12,6 @@ public class PickUpItem extends Static {
 	@Override
 	protected void resetStaticState() {
 		
-	}
-	
-	@Override
-	public void overlapStart(Actor a) {
-		if (a instanceof Player) {
-			// TODO: Add to inventory
-			disable();
-		}
 	}
 
 }

@@ -54,7 +54,7 @@ public abstract class Actor extends WorldObject {
 	public boolean gravityEnabled() {
 		return gravityEnabled;
 	}
-	
+
 	//
 	// Setters
 	//
@@ -246,9 +246,6 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private List<WorldObject> findInteractablesHere() {
-		if (getCollider() == null) {
-			return new ArrayList<WorldObject>();
-		}
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(
 				getPosition());
@@ -257,7 +254,7 @@ public abstract class Actor extends WorldObject {
 		Iterator<WorldObject> ii = interactables.iterator();
 		while (ii.hasNext()) {
 			WorldObject go = ii.next();
-			if (go != this) {
+			if (go != this && go.isEnabled()) {
 				// Get interaction rectangle in relative co-ordinates
 				Rectangle rectRel = go.getInteractBox().getRectangle();
 				// Translate to world co-ords.
@@ -289,30 +286,44 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void checkForInteractions() {
-		List<WorldObject> nowActive = findInteractablesHere();
-		List<WorldObject> prevActive = activeInteractables;
-		// Figure out the objects that are newly active/inactive
-		// activeInteractables is the list of interactables active last
-		// iteration
-		// nowActive is the list of interactables active this iteration
-		List<WorldObject> newlyActive = subtract(nowActive, prevActive);
-		List<WorldObject> newlyInactive = subtract(prevActive, nowActive);
+		if (getCollider() != null) {
+			List<WorldObject> nowActive = findInteractablesHere();
+			List<WorldObject> prevActive = activeInteractables;
+			// Figure out the objects that are newly active/inactive
+			// activeInteractables is the list of interactables active last
+			// iteration
+			// nowActive is the list of interactables active this iteration
+			List<WorldObject> newlyActive = subtract(nowActive, prevActive);
+			List<WorldObject> newlyInactive = subtract(prevActive, nowActive);
 
-		// Call overlapStart and overlapEnd on these newly active/inactive
-		// objects
-		Iterator<WorldObject> ii = newlyActive.iterator();
-		while (ii.hasNext()) {
-			WorldObject go = ii.next();
-			go.overlapStart(this);
+			// Call overlapStart and overlapEnd on these newly active/inactive
+			// objects
+			Iterator<WorldObject> ii = newlyActive.iterator();
+			while (ii.hasNext()) {
+				WorldObject go = ii.next();
+				overlapStart(go);
+
+				// If the overlapping WorldObject is an Actor it will detect the
+				// overlap
+				// and trigger overlapStart itself. Otherwise, it must be
+				// triggered by
+				// the newly overlapping Actor
+				if (!(go instanceof Actor)) {
+					go.overlapStart(this);
+				}
+			}
+
+			ii = newlyInactive.iterator();
+			while (ii.hasNext()) {
+				WorldObject go = ii.next();
+				overlapEnd(go);
+				if (!(go instanceof Actor)) {
+					go.overlapEnd(this);
+				}
+			}
+
+			activeInteractables = nowActive;
 		}
-
-		ii = newlyInactive.iterator();
-		while (ii.hasNext()) {
-			WorldObject go = ii.next();
-			go.overlapEnd(this);
-		}
-
-		activeInteractables = nowActive;
 	}
 
 	//
