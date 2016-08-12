@@ -211,7 +211,7 @@ public class World {
 		if (go instanceof Actor) {
 			activeActors.add((Actor) go);
 		}
-		if (go.isSolid()) {
+		if (go.isSolid() && !activeSolids.contains(go)) {
 			activeSolids.add(go);
 		}
 	}
