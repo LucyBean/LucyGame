@@ -77,7 +77,7 @@ public class Player extends Actor {
 			pui.disable();
 			addToInventory(pui);
 		}
-		if (wo instanceof Lock) {
+		else if (wo instanceof Lock) {
 			Lock lock = (Lock) wo;
 			Key k = lock.getKey();
 			if (has(k)) {
