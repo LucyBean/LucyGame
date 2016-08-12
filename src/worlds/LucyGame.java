@@ -6,6 +6,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import objectLibs.SpriteBuilder;
 import options.GlobalOptions;
 
 public class LucyGame extends BasicGame {
@@ -34,6 +35,7 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
+		SpriteBuilder.initSpriteSheets();
 		GlobalOptions.loadFromFile();
 		loadMainMenu();
 	}

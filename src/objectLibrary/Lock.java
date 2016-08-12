@@ -10,10 +10,10 @@ import worlds.WorldLayer;
 public class Lock extends Locker {
 	Key key;
 
-	public Lock(Point origin, Key key) {
-		super(origin, WorldLayer.WORLD, SpriteBuilder.getLockImg(), null,
+	public Lock(Point origin, Key key, int keyID) {
+		super(origin, WorldLayer.WORLD, SpriteBuilder.getLockImg(keyID), null,
 				new InteractBox(
-						SpriteBuilder.getLockImg().getBoundingRectangle()));
+						SpriteBuilder.getLockImg(keyID).getBoundingRectangle()));
 		this.key = key;
 	}
 

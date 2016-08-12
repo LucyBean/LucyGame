@@ -45,12 +45,12 @@ public class HiddenObjectDemoWorld extends World {
 			Random r = new Random();
 			Point position = new Point(r.nextFloat() * 17 + 1,
 					r.nextFloat() * 12 + 1);
-			Key key = new Key(position);
+			Key key = new Key(position, 1);
 			addObject(key);
 			
 			position = new Point(r.nextFloat() * 17 + 1,
 					r.nextFloat() * 12 + 1);
-			Lock lock = new Lock(position, key);
+			Lock lock = new Lock(position, key, 1);
 			addObject(lock);
 			
 			position = new Point(r.nextFloat() * 17 + 1,

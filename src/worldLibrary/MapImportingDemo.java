@@ -86,7 +86,7 @@ public class MapImportingDemo extends World {
 	}
 
 	private void addKey(Point point, int keyID) {
-		Key k = new Key(point);
+		Key k = new Key(point, keyID);
 		keys.put(keyID, new Pair<Key, Boolean>(k, false));
 		addObject(k);
 	}
@@ -99,11 +99,11 @@ public class MapImportingDemo extends World {
 				System.err.println("Adding lock with unused keyID " + keyID
 						+ " at " + point);
 			}
-			lock = new Lock(point, null);
+			lock = new Lock(point, null, keyID);
 		} else {
 			Key k = kp.getFirst();
 			kp.setSecond(true);
-			lock = new Lock(point, k);
+			lock = new Lock(point, k, keyID);
 		}
 		addObject(lock);
 	}

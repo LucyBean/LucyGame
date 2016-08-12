@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -23,9 +24,13 @@ public class SpriteBuilder {
 	private static RectangleSpriteStore colliderImages = new RectangleSpriteStore();
 	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
 
-	private static Sprite KEY;
-	private static Sprite LOCK;
 	private static Sprite DOOR;
+
+	private static SpriteSheet keysAndLocks;
+
+	public static void initSpriteSheets() throws SlickException {
+		keysAndLocks = new SpriteSheet("data/keys.png", 32, 32);
+	}
 
 	/**
 	 * Creates a new rectangular sprite of the given colour.
@@ -128,39 +133,31 @@ public class SpriteBuilder {
 		return new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
 	}
 
-	public static Sprite key() {
-		if (KEY == null) {
-			LayeredImage limg = new LayeredImage(32, 32, 2);
-			limg.fillLayer(0, new Color(30, 160, 30));
-			limg.setTextCentered(1, "K");
-			
-			KEY = new Sprite(limg, Point.ZERO, GRID_SIZE);
+	public static Sprite getKeyImg(int keyID) {
+		if (keyID <= 0 || keyID > 4) {
+			keyID = 1;
 		}
-		
-		return KEY;
+		Image img = keysAndLocks.getSubImage(0, keyID - 1);
+		return new Sprite(img, Point.ZERO, GRID_SIZE);
 	}
-	
-	public static Sprite getLockImg() {
-		if (LOCK == null) {
-			LayeredImage limg = new LayeredImage(32, 32, 2);
-			limg.fillLayer(0, new Color(160, 30, 30));
-			limg.setTextCentered(1, "L");
-			
-			LOCK = new Sprite(limg, Point.ZERO, GRID_SIZE);
+
+	public static Sprite getLockImg(int keyID) {
+		if (keyID <= 0 || keyID > 4) {
+			keyID = 1;
 		}
-		
-		return LOCK;
+		Image img = keysAndLocks.getSubImage(1,  keyID - 1);
+		return new Sprite(img, Point.ZERO, GRID_SIZE);
 	}
-	
+
 	public static Sprite getDoorImg() {
 		if (DOOR == null) {
 			LayeredImage limg = new LayeredImage(32, 64, 2);
-			limg.fillLayer(0,  new Color(20, 20, 100));
+			limg.fillLayer(0, new Color(20, 20, 100));
 			limg.setTextCentered(1, "D");
-			
+
 			DOOR = new Sprite(limg, Point.ZERO, GRID_SIZE);
 		}
-		
+
 		return DOOR;
 	}
 
