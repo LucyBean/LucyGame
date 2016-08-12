@@ -1,7 +1,9 @@
 package objectLibrary;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
@@ -20,10 +22,12 @@ public class Player extends Actor {
 	float speed;
 	float jumpStrength = 0.03f;
 	List<PickUpItem> inventory;
+	Map<Integer, Integer> keys;
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, SpriteBuilder.PLAYER,
-				new Collider(SpriteBuilder.PLAYER.getBoundingRectangle()), null);
+				new Collider(SpriteBuilder.PLAYER.getBoundingRectangle()),
+				null);
 	}
 
 	@Override
@@ -39,9 +43,9 @@ public class Player extends Actor {
 			}
 			if (input.isKeyDown(Input.KEY_O)) {
 				move(Dir.SOUTH, speed * delta);
-			}			
+			}
 		}
-		
+
 		if (input.isKeyDown(Input.KEY_A)) {
 			move(Dir.WEST, speed * delta);
 		}
@@ -57,36 +61,61 @@ public class Player extends Actor {
 	protected void resetActorState() {
 		speed = 0.01f;
 		inventory = new LinkedList<PickUpItem>();
+		keys = new HashMap<Integer, Integer>();
 	}
-	
+
 	private void addToInventory(PickUpItem pui) {
-		inventory.add(pui);
-		
-		System.out.println("Inventory: " + inventory);
+		if (pui instanceof Key) {
+			Key k = (Key) pui;
+			int nk = keys.getOrDefault(k.getKeyID(), 0) + 1;
+			keys.put(k.getKeyID(), nk);
+		} else {
+			inventory.add(pui);
+		}
+	}
+
+	public boolean hasKey(int keyID) {
+		Integer n = keys.get(keyID);
+		if (n == null) {
+			return false;
+		} else if (n == 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
+	public void useKey(int keyID) {
+		int nk = keys.get(keyID) - 1;
+		if (nk <= 0) {
+			keys.remove(keyID);
+		} else {
+			keys.put(keyID, nk);
+		}
+	}
+
 	public void removeFromInventory(PickUpItem pui) {
 		inventory.remove(pui);
-		
+
 		System.out.println("Inventory: " + inventory);
 	}
-	
+
 	@Override
 	public void overlapStart(WorldObject wo) {
 		if (wo instanceof PickUpItem) {
 			PickUpItem pui = (PickUpItem) wo;
 			pui.disable();
 			addToInventory(pui);
-		}
-		else if (wo instanceof Locker) {
+		} else if (wo instanceof Locker) {
 			Locker lock = (Locker) wo;
 			lock.unlock(this);
 		}
 	}
-	
+
 	/**
 	 * Checks whether this Player has picked up this PickUpItem.
-	 * @param pui 
+	 * 
+	 * @param pui
 	 * @return
 	 */
 	public boolean has(PickUpItem pui) {

@@ -27,10 +27,46 @@
     <property name="key_id" type="int" value="1"/>
    </properties>
   </tile>
+  <tile id="4">
+   <properties>
+    <property name="block_id" type="int" value="3"/>
+    <property name="key_id" type="int" value="2"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="block_id" type="int" value="4"/>
+    <property name="key_id" type="int" value="2"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="block_id" type="int" value="3"/>
+    <property name="key_id" type="int" value="3"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="block_id" type="int" value="4"/>
+    <property name="key_id" type="int" value="3"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="block_id" type="int" value="3"/>
+    <property name="key_id" type="int" value="4"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="block_id" type="int" value="4"/>
+    <property name="key_id" type="int" value="4"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="40" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NkYGBgHOR4sIJR91EGRt1HGRh1H2Vg1H2UgVH3UQZG3UcZGHUfZQDmPqaBdggOgC/8BLGICdHQLdjAUInfwYwB1xsnv4AMAAA=
+   H4sIAAAAAAAAC2NkYGBgHOR4sIJR91EGRt1HGRh1H2Vg1H2UgVH3UQZG3UcZGHUfZQDmPqaBdggOgC/8BJHYolBaCEqLYVGDLE8tMFTidzBjAO7O+n6ADAAA
   </data>
  </layer>
 </map>

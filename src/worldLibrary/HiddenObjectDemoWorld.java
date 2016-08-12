@@ -50,7 +50,7 @@ public class HiddenObjectDemoWorld extends World {
 			
 			position = new Point(r.nextFloat() * 17 + 1,
 					r.nextFloat() * 12 + 1);
-			Lock lock = new Lock(position, key, 1);
+			Lock lock = new Lock(position, 1);
 			addObject(lock);
 			
 			position = new Point(r.nextFloat() * 17 + 1,

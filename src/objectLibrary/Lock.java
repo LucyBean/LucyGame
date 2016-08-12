@@ -8,13 +8,13 @@ import objects.Locker;
 import worlds.WorldLayer;
 
 public class Lock extends Locker {
-	Key key;
+	int keyID;
 
-	public Lock(Point origin, Key key, int keyID) {
+	public Lock(Point origin, int keyID) {
 		super(origin, WorldLayer.WORLD, SpriteBuilder.getLockImg(keyID), null,
 				new InteractBox(
 						SpriteBuilder.getLockImg(keyID).getBoundingRectangle()));
-		this.key = key;
+		this.keyID = keyID;
 	}
 
 	@Override
@@ -31,8 +31,8 @@ public class Lock extends Locker {
 	protected boolean unlockCheck(Actor a) {
 		if (a instanceof Player) {
 			Player p = (Player) a;
-			if (p.has(key)) {
-				p.removeFromInventory(key);
+			if (p.hasKey(keyID)) {
+				p.useKey(keyID);
 				return true;
 			} else {
 				return false;
