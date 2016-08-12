@@ -11,6 +11,7 @@ import helpers.Point;
 import objectLibs.SpriteBuilder;
 import objects.Actor;
 import objects.Collider;
+import objects.Locker;
 import objects.PickUpItem;
 import objects.WorldObject;
 import worlds.WorldLayer;
@@ -64,7 +65,7 @@ public class Player extends Actor {
 		System.out.println("Inventory: " + inventory);
 	}
 	
-	private void removeFromInventory(PickUpItem pui) {
+	public void removeFromInventory(PickUpItem pui) {
 		inventory.remove(pui);
 		
 		System.out.println("Inventory: " + inventory);
@@ -77,13 +78,9 @@ public class Player extends Actor {
 			pui.disable();
 			addToInventory(pui);
 		}
-		else if (wo instanceof Lock) {
-			Lock lock = (Lock) wo;
-			Key k = lock.getKey();
-			if (has(k)) {
-				lock.unlock();
-				removeFromInventory(k);
-			}
+		else if (wo instanceof Locker) {
+			Locker lock = (Locker) wo;
+			lock.unlock(this);
 		}
 	}
 	
@@ -92,7 +89,7 @@ public class Player extends Actor {
 	 * @param pui 
 	 * @return
 	 */
-	private boolean has(PickUpItem pui) {
+	public boolean has(PickUpItem pui) {
 		return inventory.contains(pui);
 	}
 }

@@ -88,7 +88,9 @@ public abstract class WorldObject extends GameObject {
 	 */
 	public void enable() {
 		super.enable();
-		getWorld().addToActiveLists(this);
+		if (getWorld() != null) {
+			getWorld().addToActiveLists(this);
+		}
 		resetState();
 	}
 
@@ -140,7 +142,7 @@ public abstract class WorldObject extends GameObject {
 		if (getCollider() != null) {
 			if (GlobalOptions.drawAllColliders()
 					|| GlobalOptions.drawInvisObjColliders()
-					&& (getSprite() == null || !isVisible())) {
+							&& (getSprite() == null || !isVisible())) {
 				getCollider().draw(getCoOrdTranslator());
 			}
 		}

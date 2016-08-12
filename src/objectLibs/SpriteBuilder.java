@@ -25,6 +25,7 @@ public class SpriteBuilder {
 
 	private static Sprite KEY;
 	private static Sprite LOCK;
+	private static Sprite DOOR;
 
 	/**
 	 * Creates a new rectangular sprite of the given colour.
@@ -149,6 +150,18 @@ public class SpriteBuilder {
 		}
 		
 		return LOCK;
+	}
+	
+	public static Sprite getDoorImg() {
+		if (DOOR == null) {
+			LayeredImage limg = new LayeredImage(32, 64, 2);
+			limg.fillLayer(0,  new Color(20, 20, 100));
+			limg.setTextCentered(1, "D");
+			
+			DOOR = new Sprite(limg, Point.ZERO, GRID_SIZE);
+		}
+		
+		return DOOR;
 	}
 
 	private final static Sprite WALL = createRectangle(

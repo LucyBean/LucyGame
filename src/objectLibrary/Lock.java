@@ -2,11 +2,12 @@ package objectLibrary;
 
 import helpers.Point;
 import objectLibs.SpriteBuilder;
+import objects.Actor;
 import objects.InteractBox;
-import objects.Static;
+import objects.Locker;
 import worlds.WorldLayer;
 
-public class Lock extends Static {
+public class Lock extends Locker {
 	Key key;
 
 	public Lock(Point origin, Key key) {
@@ -20,13 +21,34 @@ public class Lock extends Static {
 	protected void resetStaticState() {
 		
 	}
-	
-	public void unlock() {
-		disable();
+
+	@Override
+	protected boolean lockCheck(Actor a) {
+		return true;
 	}
-	
-	public Key getKey() {
-		return key;
+
+	@Override
+	protected boolean unlockCheck(Actor a) {
+		if (a instanceof Player) {
+			Player p = (Player) a;
+			if (p.has(key)) {
+				p.removeFromInventory(key);
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	protected void lockAction() {
+		enable();
+	}
+
+	@Override
+	protected void unlockAction() {
+		disable();
 	}
 	
 

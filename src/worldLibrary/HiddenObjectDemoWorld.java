@@ -5,6 +5,7 @@ import java.util.Random;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
+import objectLibrary.Door;
 import objectLibrary.Key;
 import objectLibrary.Lock;
 import objectLibrary.Player;
@@ -51,6 +52,12 @@ public class HiddenObjectDemoWorld extends World {
 					r.nextFloat() * 12 + 1);
 			Lock lock = new Lock(position, key);
 			addObject(lock);
+			
+			position = new Point(r.nextFloat() * 17 + 1,
+					r.nextFloat() * 12 + 1);
+			Door door = new Door(position);
+			lock.link(door);
+			addObject(door);
 		}
 	}
 }
