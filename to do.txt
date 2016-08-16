@@ -2,11 +2,11 @@
 ==  THINGS TO DO  ==
 ====================
 
+Change Object lists to sets
+
 Creating other types of map objects (especially linked objects, like keys and switches)
-	Add a way of using these PickUpItems (e.g. unlock a door)
 	Unlocked lock sprite
 	Build an inventory display
-	Create a way to import these from Tiled
 	Make the inventory persist across worlds?
 	
 Refactor World to include a Map object. This will be responsible for holding all the objects

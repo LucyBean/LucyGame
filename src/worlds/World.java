@@ -1,7 +1,7 @@
 package worlds;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -23,11 +23,11 @@ public class World {
 	private Camera camera;
 	private GameInterface gameInterface;
 	private GameInterface worldInterface;
-	private List<Actor> actors;
-	private List<Actor> activeActors;
-	private List<WorldObject> solids;
-	private List<WorldObject> activeSolids;
-	private List<WorldObject> interactables;
+	private Collection<Actor> actors;
+	private Collection<Actor> activeActors;
+	private Collection<WorldObject> solids;
+	private Collection<WorldObject> activeSolids;
+	private Collection<WorldObject> interactables;
 	private WorldState worldState;
 	private final LucyGame game;
 	private final String name;
@@ -48,11 +48,11 @@ public class World {
 		try {
 			camera = new Camera();
 			layers = new ObjectLayerSet<WorldObject>();
-			actors = new ArrayList<Actor>();
-			activeActors = new ArrayList<Actor>();
-			solids = new ArrayList<WorldObject>();
-			activeSolids = new ArrayList<WorldObject>();
-			interactables = new ArrayList<WorldObject>();
+			actors = new HashSet<Actor>();
+			activeActors = new HashSet<Actor>();
+			solids = new HashSet<WorldObject>();
+			activeSolids = new HashSet<WorldObject>();
+			interactables = new HashSet<WorldObject>();
 			worldState = WorldState.PLAYING;
 			
 			setGameInterface(defaultInterface);
@@ -126,7 +126,7 @@ public class World {
 		}
 
 		if (go.isEnabled()) {
-			addToActiveLists(go);
+			addToActiveSets(go);
 		}
 
 		go.setWorld(this);
@@ -145,7 +145,7 @@ public class World {
 	 * 
 	 * @return
 	 */
-	public List<WorldObject> getActiveSolids() {
+	public Collection<WorldObject> getActiveSolids() {
 		// Currently returns all solid objects in the world.
 		// Modify to keep track of on screen objects.
 		return activeSolids;
@@ -160,7 +160,7 @@ public class World {
 	 * 
 	 * @return
 	 */
-	public List<WorldObject> getAllInteractables() {
+	public Collection<WorldObject> getAllInteractables() {
 		// TODO
 		// Currently returns all interactables in the world.
 		// Modify to keep track of on screen objects.
@@ -207,7 +207,7 @@ public class World {
 	 * 
 	 * @param go
 	 */
-	public void addToActiveLists(WorldObject go) {
+	public void addToActiveSets(WorldObject go) {
 		if (go instanceof Actor) {
 			activeActors.add((Actor) go);
 		}

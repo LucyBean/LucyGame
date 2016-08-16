@@ -1,8 +1,9 @@
 package objects;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 
@@ -12,7 +13,7 @@ import helpers.Rectangle;
 import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {
-	private List<WorldObject> activeInteractables;
+	private Collection<WorldObject> activeInteractables;
 	private Dir lastDirectionMoved;
 	private final static float GRAVITY = 0.0001f;
 	private float vSpeed;
@@ -123,9 +124,9 @@ public abstract class Actor extends WorldObject {
 		return new Rectangle(origin, width, height);
 	}
 
-	protected List<WorldObject> getCollidingSolids(Rectangle rect) {
-		List<WorldObject> solids = getWorld().getActiveSolids();
-		List<WorldObject> collidingSolids = new ArrayList<WorldObject>();
+	protected Collection<WorldObject> getCollidingSolids(Rectangle rect) {
+		Collection<WorldObject> solids = getWorld().getActiveSolids();
+		Collection<WorldObject> collidingSolids = new ArrayList<WorldObject>();
 		Iterator<WorldObject> si = solids.iterator();
 		while (si.hasNext()) {
 			WorldObject go = si.next();
@@ -157,7 +158,7 @@ public abstract class Actor extends WorldObject {
 			amount = -amount;
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
-		List<WorldObject> activeSolids = getCollidingSolids(moveArea);
+		Collection<WorldObject> activeSolids = getCollidingSolids(moveArea);
 
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
@@ -245,12 +246,12 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
-	private List<WorldObject> findInteractablesHere() {
+	private Collection<WorldObject> findInteractablesHere() {
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(
 				getPosition());
-		List<WorldObject> interactables = getWorld().getAllInteractables();
-		List<WorldObject> nowActive = new ArrayList<WorldObject>();
+		Collection<WorldObject> interactables = getWorld().getAllInteractables();
+		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
 		Iterator<WorldObject> ii = interactables.iterator();
 		while (ii.hasNext()) {
 			WorldObject go = ii.next();
@@ -279,22 +280,22 @@ public abstract class Actor extends WorldObject {
 	 * @param b
 	 * @return
 	 */
-	private <T> List<T> subtract(List<T> a, List<T> b) {
-		List<T> toReturn = new ArrayList<T>(a);
+	private <T> Collection<T> subtract(Collection<T> a, Collection<T> b) {
+		Collection<T> toReturn = new HashSet<T>(a);
 		toReturn.removeAll(b);
 		return toReturn;
 	}
 
 	private void checkForInteractions() {
 		if (getCollider() != null) {
-			List<WorldObject> nowActive = findInteractablesHere();
-			List<WorldObject> prevActive = activeInteractables;
+			Collection<WorldObject> nowActive = findInteractablesHere();
+			Collection<WorldObject> prevActive = activeInteractables;
 			// Figure out the objects that are newly active/inactive
 			// activeInteractables is the list of interactables active last
 			// iteration
 			// nowActive is the list of interactables active this iteration
-			List<WorldObject> newlyActive = subtract(nowActive, prevActive);
-			List<WorldObject> newlyInactive = subtract(prevActive, nowActive);
+			Collection<WorldObject> newlyActive = subtract(nowActive, prevActive);
+			Collection<WorldObject> newlyInactive = subtract(prevActive, nowActive);
 
 			// Call overlapStart and overlapEnd on these newly active/inactive
 			// objects
@@ -347,7 +348,7 @@ public abstract class Actor extends WorldObject {
 		bottomEdge = bottomEdge.translate(new Point(0, 0.001f));
 
 		// See if it collides with any objects
-		List<WorldObject> collidingSolids = getCollidingSolids(bottomEdge);
+		Collection<WorldObject> collidingSolids = getCollidingSolids(bottomEdge);
 		return !collidingSolids.isEmpty();
 	}
 
@@ -369,7 +370,7 @@ public abstract class Actor extends WorldObject {
 		topEdge = topEdge.translate(new Point(0, -0.001f));
 
 		// See if it collides with any objects
-		List<WorldObject> collidingSolids = getCollidingSolids(topEdge);
+		Collection<WorldObject> collidingSolids = getCollidingSolids(topEdge);
 		return !collidingSolids.isEmpty();
 	}
 

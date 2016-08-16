@@ -89,7 +89,7 @@ public abstract class WorldObject extends GameObject {
 	public void enable() {
 		super.enable();
 		if (getWorld() != null) {
-			getWorld().addToActiveLists(this);
+			getWorld().addToActiveSets(this);
 		}
 		resetState();
 	}
