@@ -2,6 +2,7 @@ package worlds;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -24,9 +25,9 @@ public class World {
 	private GameInterface gameInterface;
 	private GameInterface worldInterface;
 	private Collection<Actor> actors;
-	private Collection<Actor> activeActors;
+	private Set<Actor> activeActors;
 	private Collection<WorldObject> solids;
-	private Collection<WorldObject> activeSolids;
+	private Set<WorldObject> activeSolids;
 	private Collection<WorldObject> interactables;
 	private WorldState worldState;
 	private final LucyGame game;
@@ -211,7 +212,7 @@ public class World {
 		if (go instanceof Actor) {
 			activeActors.add((Actor) go);
 		}
-		if (go.isSolid() && !activeSolids.contains(go)) {
+		if (go.isSolid()) {
 			activeSolids.add(go);
 		}
 	}
