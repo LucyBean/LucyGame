@@ -24,7 +24,8 @@ public class SpriteBuilder {
 	private static RectangleSpriteStore colliderImages = new RectangleSpriteStore();
 	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
 
-	private static Sprite DOOR;
+	private static Sprite door;
+	private static Sprite player;
 
 	private static SpriteSheet keysAndLocks;
 
@@ -150,23 +151,31 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite getDoorImg() {
-		if (DOOR == null) {
+		if (door == null) {
 			LayeredImage limg = new LayeredImage(32, 64, 2);
 			limg.fillLayer(0, new Color(20, 20, 100));
 			limg.setTextCentered(1, "D");
 
-			DOOR = new Sprite(limg, Point.ZERO, GRID_SIZE);
+			door = new Sprite(limg, Point.ZERO, GRID_SIZE);
 		}
 
-		return DOOR;
+		return door;
+	}
+	
+	public static Sprite getPlayerImg() {
+		if (player == null) {
+			/*player = createRectangle(
+					new Rectangle(Point.ZERO, 0.8f, 1.6f), GRID_SIZE,
+					new Color(240, 40, 240));*/
+			player = new Sprite(ImageBuilder.getBbyImage(), Point.ZERO, GRID_SIZE);
+		}
+		
+		return player;
 	}
 
 	private final static Sprite WALL = createRectangle(
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
 			new Color(240, 240, 40));
-	public final static Sprite PLAYER = createRectangle(
-			new Rectangle(Point.ZERO, 0.8f, 1.6f), GRID_SIZE,
-			new Color(240, 40, 240));
 	public final static Sprite BUTTON = createRectangle(
 			new Rectangle(Point.ZERO, 6, 1), 1, new Color(230, 130, 230));
 	public final static Sprite HIDDEN_SQUARE = createRectangle(

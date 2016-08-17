@@ -1,8 +1,6 @@
 package objectLibrary;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.newdawn.slick.GameContainer;
@@ -10,6 +8,7 @@ import org.newdawn.slick.Input;
 
 import helpers.Dir;
 import helpers.Point;
+import inventoryItems.InventoryItem;
 import objectLibs.SpriteBuilder;
 import objects.Actor;
 import objects.Collider;
@@ -21,12 +20,13 @@ import worlds.WorldLayer;
 public class Player extends Actor {
 	float speed;
 	float jumpStrength = 0.03f;
-	List<PickUpItem> inventory;
+	Inventory inventory;
 	Map<Integer, Integer> keys;
 
 	public Player(Point origin) {
-		super(origin, WorldLayer.PLAYER, SpriteBuilder.PLAYER,
-				new Collider(SpriteBuilder.PLAYER.getBoundingRectangle()),
+		super(origin, WorldLayer.PLAYER, SpriteBuilder.getPlayerImg(),
+				new Collider(
+						SpriteBuilder.getPlayerImg().getBoundingRectangle()),
 				null);
 	}
 
@@ -60,42 +60,22 @@ public class Player extends Actor {
 	@Override
 	protected void resetActorState() {
 		speed = 0.01f;
-		inventory = new LinkedList<PickUpItem>();
+		inventory = new Inventory();
 		keys = new HashMap<Integer, Integer>();
 	}
 
-	private void addToInventory(PickUpItem pui) {
-		if (pui instanceof Key) {
-			Key k = (Key) pui;
-			int nk = keys.getOrDefault(k.getKeyID(), 0) + 1;
-			keys.put(k.getKeyID(), nk);
-		} else {
-			inventory.add(pui);
+	private void addToInventory(InventoryItem ii) {
+		if (ii != null) {
+			inventory.add(ii);
 		}
+
+		System.out.println("Inventory: " + inventory);
 	}
 
-	public boolean hasKey(int keyID) {
-		Integer n = keys.get(keyID);
-		if (n == null) {
-			return false;
-		} else if (n == 0) {
-			return false;
-		} else {
-			return true;
+	public void removeFromInventory(InventoryItem ii) {
+		if (ii != null) {
+			inventory.removeOne(ii);
 		}
-	}
-	
-	public void useKey(int keyID) {
-		int nk = keys.get(keyID) - 1;
-		if (nk <= 0) {
-			keys.remove(keyID);
-		} else {
-			keys.put(keyID, nk);
-		}
-	}
-
-	public void removeFromInventory(PickUpItem pui) {
-		inventory.remove(pui);
 
 		System.out.println("Inventory: " + inventory);
 	}
@@ -105,7 +85,7 @@ public class Player extends Actor {
 		if (wo instanceof PickUpItem) {
 			PickUpItem pui = (PickUpItem) wo;
 			pui.disable();
-			addToInventory(pui);
+			addToInventory(pui.getInventoryItem());
 		} else if (wo instanceof Locker) {
 			Locker lock = (Locker) wo;
 			lock.unlock(this);
@@ -113,12 +93,77 @@ public class Player extends Actor {
 	}
 
 	/**
-	 * Checks whether this Player has picked up this PickUpItem.
+	 * Checks whether this Player has picked up this InventoryItem.
 	 * 
-	 * @param pui
+	 * @param ii
 	 * @return
 	 */
-	public boolean has(PickUpItem pui) {
-		return inventory.contains(pui);
+	public boolean has(InventoryItem ii) {
+		return inventory.has(ii);
+	}
+
+	public boolean hasKey(int keyID) {
+		InventoryItem key = InventoryItem.getKeyByID(keyID);
+		return has(key);
+	}
+
+	public void useKey(int keyID) {
+		InventoryItem key = InventoryItem.getKeyByID(keyID);
+		removeFromInventory(key);
+	}
+}
+
+class Inventory {
+	Map<InventoryItem, Integer> items;
+
+	public Inventory() {
+		items = new HashMap<InventoryItem, Integer>();
+	}
+
+	/**
+	 * Checks whether this Inventory contains this InventoryItem.
+	 * 
+	 * @param ii
+	 * @return
+	 */
+	public boolean has(InventoryItem ii) {
+		Integer n = items.get(ii);
+
+		return n != null && n > 0;
+	}
+
+	/**
+	 * Adds an InventoryItem to this Inventory.
+	 * 
+	 * @param ii
+	 */
+	public void add(InventoryItem ii) {
+		items.putIfAbsent(ii, 0);
+		int newAmount = items.get(ii) + 1;
+		items.put(ii, newAmount);
+	}
+
+	/**
+	 * Removes one of the InventoryItem from this Inventory, if it is in this
+	 * Inventory.
+	 * 
+	 * @param ii
+	 */
+	public void removeOne(InventoryItem ii) {
+		Integer n = items.get(ii);
+
+		if (n != null && n > 0) {
+			int newAmount = n - 1;
+			if (newAmount > 0) {
+				items.put(ii, newAmount);
+			} else {
+				items.remove(ii);
+			}
+		}
+	}
+
+	@Override
+	public String toString() {
+		return items.toString();
 	}
 }

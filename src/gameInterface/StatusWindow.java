@@ -35,9 +35,13 @@ class StatusWindow extends InterfaceElement {
 		if (watching == null) {
 			setText("Watching nothing", textTopLeft);
 		} else {
-
-			setText("Watching [" + watching.getClass().getSimpleName() + "]\n"
-					+ "Pos: " + watching.getPosition(), textTopLeft);
+			String text = "Watching [" + watching.getClass().getSimpleName() + "]\n";
+			if (watching.isEnabled()) {
+				text += "Pos: " + watching.getPosition() + "\n";
+			} else {
+				text += "Disabled;n";
+			}
+			setText(text, textTopLeft);
 		}
 	}
 

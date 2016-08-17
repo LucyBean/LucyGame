@@ -97,7 +97,7 @@ public class GlobalOptions {
 
 	public final static int WINDOW_WIDTH = 640;
 	public final static int WINDOW_HEIGHT = 480;
-	public final static int GRID_SIZE = 32;
+	public final static int GRID_SIZE = 40;
 	public final static int WINDOW_WIDTH_GRID = WINDOW_WIDTH / GRID_SIZE;
 	public final static int WINDOW_HEIGHT_GRID = WINDOW_HEIGHT / GRID_SIZE;
 }

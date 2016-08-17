@@ -110,6 +110,12 @@ public class LayeredImage {
 
 	public void setLayer(int layer, Image img) {
 		if (layer >= 0 && layer < numLayers) {
+			if (GlobalOptions.debug()
+					&& (img.getWidth() != width || img.getHeight() != height)) {
+				System.err.println("Incorrectly sized image " + img.getWidth()
+						+ "x" + img.getHeight() + " added to layer of size "
+						+ width + "x" + height);
+			}
 			layers.add(layer, img);
 		} else if (GlobalOptions.debug()) {
 			System.err.println(

@@ -1,12 +1,20 @@
 package objects;
 
 import helpers.Point;
+import inventoryItems.InventoryItem;
 import worlds.WorldLayer;
 
 public class PickUpItem extends Static {
-	public PickUpItem(Point origin, Sprite sprite) {
+	InventoryItem inventoryItem;
+	
+	public PickUpItem(Point origin, Sprite sprite, InventoryItem inventoryItem) {
 		super(origin, WorldLayer.WORLD, sprite, null,
 				new InteractBox(sprite.getBoundingRectangle()));
+		this.inventoryItem = inventoryItem;
+	}
+	
+	public InventoryItem getInventoryItem() {
+		return inventoryItem;
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import objects.InteractBox;
 import objects.Sprite;
 import objects.Static;
 import objects.WorldObject;
+import options.GlobalOptions;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
@@ -185,10 +186,10 @@ class CameraBox extends Actor {
 
 class WorldSector extends Static {
 	static Rectangle spriteRect = new Rectangle(Point.ZERO, 3, 3);
-	static Sprite active = SpriteBuilder.createRectangle(spriteRect, 32,
-			new Color(100, 240, 100));
-	static Sprite inactive = SpriteBuilder.createRectangle(spriteRect, 32,
-			new Color(240, 100, 100));
+	static Sprite active = SpriteBuilder.createRectangle(spriteRect,
+			GlobalOptions.GRID_SIZE, new Color(100, 240, 100));
+	static Sprite inactive = SpriteBuilder.createRectangle(spriteRect,
+			GlobalOptions.GRID_SIZE, new Color(240, 100, 100));
 
 	boolean activeSector;
 	final WorldSector[] neighbours;

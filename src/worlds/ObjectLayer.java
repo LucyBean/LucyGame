@@ -46,9 +46,11 @@ public class ObjectLayer<T extends GameObject> {
 
 		while (io.hasNext()) {
 			T wo = io.next();
-			Rectangle r = wo.getSpriteRectangleScreenCoOrds();
-			if (r != null && r.contains(p)) {
-				return wo;
+			if (wo.isEnabled()) {
+				Rectangle r = wo.getSpriteRectangleScreenCoOrds();
+				if (r != null && r.contains(p)) {
+					return wo;
+				}
 			}
 		}
 

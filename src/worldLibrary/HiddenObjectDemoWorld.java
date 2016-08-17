@@ -15,6 +15,7 @@ import objects.InteractBox;
 import objects.PickUpItem;
 import objects.Static;
 import objects.WorldObject;
+import options.GlobalOptions;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
@@ -32,29 +33,32 @@ public class HiddenObjectDemoWorld extends World {
 		addObject(mover);
 
 		drawWallBorder();
+		
+		int objectWindowWidth = GlobalOptions.WINDOW_WIDTH_GRID - 2;
+		int objectWindowHeight = GlobalOptions.WINDOW_HEIGHT_GRID - 2;
 
 		for (int i = 0; i < 10; i++) {
 			Random r = new Random();
-			Point position = new Point(r.nextFloat() * 17 + 1,
-					r.nextFloat() * 12 + 1);
+			Point position = new Point(r.nextFloat() * objectWindowWidth + 1,
+					r.nextFloat() * objectWindowHeight + 1);
 			WorldObject go = new HiddenSquare(position);
 			addObject(go);
 		}
 		
 		for (int i = 0; i < 5; i++) {
 			Random r = new Random();
-			Point position = new Point(r.nextFloat() * 17 + 1,
-					r.nextFloat() * 12 + 1);
+			Point position = new Point(r.nextFloat() * objectWindowWidth + 1,
+					r.nextFloat() * objectWindowHeight + 1);
 			Key key = new Key(position, 1);
 			addObject(key);
 			
-			position = new Point(r.nextFloat() * 17 + 1,
-					r.nextFloat() * 12 + 1);
+			position = new Point(r.nextFloat() * objectWindowWidth + 1,
+					r.nextFloat() * objectWindowHeight + 1);
 			Lock lock = new Lock(position, 1);
 			addObject(lock);
 			
-			position = new Point(r.nextFloat() * 17 + 1,
-					r.nextFloat() * 12 + 1);
+			position = new Point(r.nextFloat() * objectWindowWidth + 1,
+					r.nextFloat() * objectWindowHeight + 1);
 			Door door = new Door(position);
 			lock.link(door);
 			addObject(door);
@@ -91,6 +95,6 @@ class HiddenSquare extends Static {
 
 class PickUpSquare extends PickUpItem {
 	public PickUpSquare(Point origin) {
-		super(origin, SpriteBuilder.PICK_UP_ITEM);
+		super(origin, SpriteBuilder.PICK_UP_ITEM, null);
 	}
 }
