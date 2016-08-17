@@ -120,10 +120,10 @@ public class SpriteBuilder {
 				GRID_SIZE);
 	}
 
-	public static Sprite interfaceElement(int width, int height, Color c,
+	public static Sprite interfaceElement(Image background,
 			String text) {
-		LayeredImage limg = new LayeredImage(width, height, 2);
-		limg.fillLayer(0, c);
+		LayeredImage limg = new LayeredImage(background);
+		limg.addLayers(1);
 		limg.setTextCentered(1, text);
 
 		return new Sprite(limg, Point.ZERO, 1);

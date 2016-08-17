@@ -5,7 +5,6 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objects.InterfaceElement;
 import objects.WorldObject;
 
 class StatusWindow extends InterfaceElement {

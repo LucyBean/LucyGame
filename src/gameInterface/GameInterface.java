@@ -6,7 +6,6 @@ import java.util.List;
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
-import objects.InterfaceElement;
 import objects.WorldObject;
 import worlds.ObjectLayer;
 import worlds.World;

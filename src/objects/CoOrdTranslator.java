@@ -1,5 +1,6 @@
 package objects;
 
+import gameInterface.InterfaceElement;
 import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;

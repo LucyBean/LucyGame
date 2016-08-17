@@ -2,7 +2,6 @@ package gameInterface;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibrary.Button;
 import options.GlobalOptions;
 import options.Option;
 import worlds.WorldState;

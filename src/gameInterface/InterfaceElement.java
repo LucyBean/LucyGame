@@ -1,7 +1,7 @@
 package gameInterface;
 
-
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -13,6 +13,15 @@ import objects.Sprite;
 public abstract class InterfaceElement extends GameObject {
 	Rectangle rect;
 
+	public InterfaceElement(Rectangle rect, Sprite sprite) {
+		super(rect.getTopLeft(), sprite);
+		if (sprite == null) {
+			sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
+					(int) rect.getHeight());
+			setSprite(sprite);
+		}
+	}
+	
 	public InterfaceElement(Rectangle rect) {
 		super(rect.getTopLeft(), null);
 		Sprite sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
@@ -46,6 +55,11 @@ public abstract class InterfaceElement extends GameObject {
 	protected void setBackground(Color c) {
 		LayeredImage limg = getSprite().getImage();
 		limg.fillLayer(0, c);
+	}
+	
+	protected void setBackground(Image img) {
+		LayeredImage limg = getSprite().getImage();
+		limg.setLayer(0, img);
 	}
 
 	/**

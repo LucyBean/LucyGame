@@ -1,5 +1,8 @@
 package objects;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -15,21 +18,36 @@ import options.GlobalOptions;
  *
  */
 public class LayeredImage {
-	Image[] layers;
+	List<Image> layers;
 	private int width;
 	private int height;
+	private int numLayers = 0;
 
 	public LayeredImage(int width, int height, int numLayers) {
-		layers = new Image[numLayers];
+		layers = new LinkedList<Image>();
+		addLayers(numLayers);
 		this.width = width;
 		this.height = height;
 	}
 
 	public LayeredImage(Image img) {
-		layers = new Image[1];
-		layers[0] = img;
+		layers = new LinkedList<Image>();
+		layers.add(img);
+		this.numLayers = 1;
 		this.width = img.getWidth();
 		this.height = img.getHeight();
+	}
+
+	public LayeredImage(List<Image> imgs) {
+		layers = new LinkedList<Image>(imgs);
+		numLayers = imgs.size();
+		if (numLayers > 0) {
+			this.width = imgs.get(0).getWidth();
+			this.height = imgs.get(0).getHeight();
+		} else if (GlobalOptions.debug()) {
+			System.err.println("Attempted to create a new LayeredImage "
+					+ "from an empty list of images.");
+		}
 	}
 
 	public int getWidth() {
@@ -41,31 +59,61 @@ public class LayeredImage {
 	}
 
 	public int getTopLayerNumber() {
-		return layers.length - 1;
+		return numLayers - 1;
 	}
 
 	public void draw(float x, float y, float scale) {
-		for (int i = 0; i < layers.length; i++) {
-			if (layers[i] != null) {
-				layers[i].draw(x, y, scale);
-			}
+		layers.stream().filter(i -> i != null).forEach(
+				i -> i.draw(x, y, scale));
+	}
+
+	/**
+	 * Adds more layers to this LayeredImage.
+	 * 
+	 * @param num
+	 *            The number of layers to add.
+	 */
+	public void addLayers(int num) {
+		numLayers += num;
+
+		for (int i = 0; i < num; i++) {
+			layers.add(null);
 		}
 	}
 
+	/**
+	 * Gets the Image on a given layer.
+	 * 
+	 * @param z
+	 *            The index of the layer to get. 0 is the bottom layer.
+	 * @return
+	 */
 	public Image getLayer(int z) {
-		if (z >= 0 && z < layers.length) {
-			Image img = layers[z];
+		if (z >= 0 && z < numLayers) {
+			Image img = layers.get(z);
 			if (img == null) {
 				try {
 					img = new Image(width, height);
-					layers[z] = img;
+					layers.add(z, img);
 				} catch (SlickException se) {
-					se.printStackTrace();
+					System.err.println("Unable to create new layer on image.");
+					if (GlobalOptions.debug()) {
+						se.printStackTrace();
+					}
 				}
 			}
 			return img;
 		} else {
 			return null;
+		}
+	}
+
+	public void setLayer(int layer, Image img) {
+		if (layer >= 0 && layer < numLayers) {
+			layers.add(layer, img);
+		} else if (GlobalOptions.debug()) {
+			System.err.println(
+					"Attempting to add an image to an invalid layer " + layer);
 		}
 	}
 

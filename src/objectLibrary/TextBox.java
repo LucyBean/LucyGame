@@ -2,8 +2,8 @@ package objectLibrary;
 
 import org.newdawn.slick.Color;
 
+import gameInterface.InterfaceElement;
 import helpers.Rectangle;
-import objects.InterfaceElement;
 
 public class TextBox extends InterfaceElement {
 

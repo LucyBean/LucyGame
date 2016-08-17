@@ -1,8 +1,7 @@
 package gameInterface;
 
 import helpers.Point;
-import helpers.Rectangle;
-import objectLibrary.Button;
+import objectLibs.ImageBuilder;
 
 public class MenuButton extends Button {
 	public final static int WIDTH = 360;
@@ -10,7 +9,7 @@ public class MenuButton extends Button {
 	Menu menu;
 	
 	public MenuButton(String text) {
-		super(new Rectangle(Point.ZERO, WIDTH, HEIGHT));
+		super(Point.ZERO, ImageBuilder.getMenuButtonBackground());
 		setTextCentered(text);
 	}
 	

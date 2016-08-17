@@ -5,7 +5,6 @@ import java.util.Map;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.InterfaceElement;
 import options.GlobalOptions;
 import worlds.World;
 
