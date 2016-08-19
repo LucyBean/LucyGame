@@ -13,10 +13,10 @@ import helpers.Point;
 import objectLibrary.Door;
 import objectLibrary.Key;
 import objectLibrary.Lock;
-import objectLibrary.Player;
 import objectLibrary.Wall;
 import objects.Lockable;
 import options.GlobalOptions;
+import player.Player;
 import worlds.LucyGame;
 import worlds.World;
 

@@ -1,10 +1,11 @@
 package objectLibrary;
 
 import helpers.Point;
-import objectLibs.SpriteBuilder;
+import images.SpriteBuilder;
 import objects.Actor;
 import objects.InteractBox;
 import objects.Locker;
+import player.Player;
 import worlds.WorldLayer;
 
 public class Lock extends Locker {

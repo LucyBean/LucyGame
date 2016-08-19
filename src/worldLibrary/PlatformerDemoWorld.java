@@ -5,12 +5,12 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibrary.Player;
+import images.Sprite;
 import objectLibrary.Wall;
 import objects.Actor;
-import objects.Sprite;
 import objects.Static;
 import objects.WorldObject;
+import player.Player;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;

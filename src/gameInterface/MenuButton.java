@@ -1,6 +1,6 @@
 package gameInterface;
 
-import objectLibs.ImageBuilder;
+import images.ImageBuilder;
 
 public class MenuButton extends IEListItem {
 	Menu menu;

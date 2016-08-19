@@ -4,7 +4,7 @@ import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objects.Sprite;
+import images.Sprite;
 
 public abstract class IEListItem extends InterfaceElement {
 	

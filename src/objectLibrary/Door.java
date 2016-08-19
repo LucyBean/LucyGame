@@ -1,7 +1,7 @@
 package objectLibrary;
 
 import helpers.Point;
-import objectLibs.SpriteBuilder;
+import images.SpriteBuilder;
 import objects.Collider;
 import objects.Lockable;
 import objects.Static;

@@ -2,7 +2,8 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibs.SpriteBuilder;
+import images.Sprite;
+import images.SpriteBuilder;
 
 public class InteractBox extends WOAttachment {
 	/**

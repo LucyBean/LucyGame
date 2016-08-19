@@ -2,6 +2,7 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
+import images.Sprite;
 
 public abstract class WOAttachment {
 	Sprite sprite;

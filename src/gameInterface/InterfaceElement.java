@@ -5,10 +5,10 @@ import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objectLibs.SpriteBuilder;
+import images.LayeredImage;
+import images.Sprite;
+import images.SpriteBuilder;
 import objects.GameObject;
-import objects.LayeredImage;
-import objects.Sprite;
 
 public abstract class InterfaceElement extends GameObject {
 	Rectangle rect;

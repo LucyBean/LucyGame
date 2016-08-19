@@ -5,10 +5,10 @@ import java.util.Random;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
-import objectLibrary.Player;
 import objects.Actor;
 import objects.Collider;
 import objects.WorldObject;
+import player.Player;
 import objects.InteractBox;
 import objects.Static;
 import worlds.LucyGame;

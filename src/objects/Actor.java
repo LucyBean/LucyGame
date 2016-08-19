@@ -10,6 +10,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
+import images.Sprite;
 import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {

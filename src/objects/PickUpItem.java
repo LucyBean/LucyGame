@@ -1,7 +1,8 @@
 package objects;
 
 import helpers.Point;
-import inventoryItems.InventoryItem;
+import images.Sprite;
+import player.InventoryItem;
 import worlds.WorldLayer;
 
 public class PickUpItem extends Static {

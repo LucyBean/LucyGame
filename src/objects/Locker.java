@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import helpers.Point;
+import images.Sprite;
 import worlds.WorldLayer;
 
 public abstract class Locker extends Static {

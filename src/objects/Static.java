@@ -1,6 +1,7 @@
 package objects;
 
 import helpers.Point;
+import images.Sprite;
 import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {

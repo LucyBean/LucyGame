@@ -2,7 +2,7 @@ package objectLibrary;
 
 import gameInterface.Button;
 import helpers.Point;
-import objectLibs.ImageBuilder;
+import images.ImageBuilder;
 
 public class WorldLoaderButton extends Button {
 	int worldNumber;

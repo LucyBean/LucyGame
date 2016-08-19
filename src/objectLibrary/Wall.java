@@ -2,7 +2,7 @@ package objectLibrary;
 
 import helpers.Dir;
 import helpers.Point;
-import objectLibs.SpriteBuilder;
+import images.SpriteBuilder;
 import objects.Collider;
 import objects.Static;
 import worlds.WorldLayer;

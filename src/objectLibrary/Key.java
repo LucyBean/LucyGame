@@ -1,9 +1,9 @@
 package objectLibrary;
 
 import helpers.Point;
-import inventoryItems.InventoryItem;
-import objectLibs.SpriteBuilder;
+import images.SpriteBuilder;
 import objects.PickUpItem;
+import player.InventoryItem;
 
 public class Key extends PickUpItem {
 	int keyID;

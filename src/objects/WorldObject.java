@@ -1,6 +1,7 @@
 package objects;
 
 import helpers.Point;
+import images.Sprite;
 import options.GlobalOptions;
 import worlds.WorldLayer;
 
