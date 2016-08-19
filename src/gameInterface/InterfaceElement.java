@@ -13,13 +13,8 @@ import objects.Sprite;
 public abstract class InterfaceElement extends GameObject {
 	Rectangle rect;
 
-	public InterfaceElement(Rectangle rect, Sprite sprite) {
-		super(rect.getTopLeft(), sprite);
-		if (sprite == null) {
-			sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
-					(int) rect.getHeight());
-			setSprite(sprite);
-		}
+	public InterfaceElement(Point point, Sprite sprite) {
+		super(point, sprite);
 	}
 	
 	public InterfaceElement(Rectangle rect) {

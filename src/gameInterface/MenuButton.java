@@ -1,15 +1,12 @@
 package gameInterface;
 
-import helpers.Point;
 import objectLibs.ImageBuilder;
 
-public class MenuButton extends Button {
-	public final static int WIDTH = 360;
-	public final static int HEIGHT = 32;
+public class MenuButton extends IEListItem {
 	Menu menu;
 	
 	public MenuButton(String text) {
-		super(Point.ZERO, ImageBuilder.getMenuButtonBackground());
+		super(ImageBuilder.getMenuButtonBackground());
 		setTextCentered(text);
 	}
 	
@@ -19,5 +16,17 @@ public class MenuButton extends Button {
 	
 	public Menu getMenu() {
 		return menu;
+	}
+
+	@Override
+	public float getHeight() {
+		// TODO Auto-generated method stub
+		return 40;
+	}
+
+	@Override
+	public void onClick(int button) {
+		// TODO Auto-generated method stub
+		
 	}
 }

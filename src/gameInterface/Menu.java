@@ -3,21 +3,18 @@ package gameInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-import helpers.Dir;
 import helpers.Point;
 import options.GlobalOptions;
 import worlds.World;
 
 public class Menu extends InterfaceElement {
-	private ObjectLayerSet<MenuButton> menuButtons;
-	private Map<Integer, Point> nextPositions;
-	private static final Point DEFAULT_POINT = new Point(
-			(GlobalOptions.WINDOW_WIDTH - MenuButton.WIDTH) / 2, 100);
+	private Map<Integer, IEList<MenuButton>> menus;
+	private static final Point START_POINT = new Point(
+			(GlobalOptions.WINDOW_WIDTH - 360) / 2, 100);
 	private int currentActive;
 
 	public Menu() {
-		menuButtons = new ObjectLayerSet<MenuButton>();
-		nextPositions = new HashMap<Integer, Point>();
+		menus = new HashMap<Integer, IEList<MenuButton>>();
 		reset();
 	}
 
@@ -36,13 +33,15 @@ public class Menu extends InterfaceElement {
 	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
-		menuButtons.applyToAllObjects(mb -> mb.setWorld(world));
+		menus.values().stream().forEach(li -> li.setWorld(world));
 	}
 
 	@Override
 	public void mousePressed(int button, Point clickPoint) {
-		menuButtons.applyToLayerObjects(a -> a.mousePressed(button, clickPoint),
-				currentActive);
+		IEList<MenuButton> currentMenu = menus.get(currentActive);
+		if (currentMenu != null) {
+			currentMenu.mousePressed(button, clickPoint);
+		}
 	}
 
 	/**
@@ -55,18 +54,13 @@ public class Menu extends InterfaceElement {
 	 *            is the default root menu.
 	 */
 	public void add(MenuButton mb, int state) {
-		menuButtons.add(mb, state);
-
-		// Get the next position
-		nextPositions.putIfAbsent(state, DEFAULT_POINT.copy());
-		Point nextPosition = nextPositions.get(state);
-
-		mb.setPosition(nextPosition);
-		mb.setWorld(getWorld());
+		IEList<MenuButton> subMenu = menus.get(state);
+		if (subMenu == null) {
+			subMenu = new IEList<MenuButton>(START_POINT);
+			menus.put(state, subMenu);
+		}
+		subMenu.add(mb);
 		mb.setMenu(this);
-
-		// Set the position of the next button
-		nextPositions.put(state, nextPosition.move(Dir.SOUTH, 40));
 	}
 
 	/**
@@ -81,7 +75,10 @@ public class Menu extends InterfaceElement {
 
 	@Override
 	protected void draw() {
-		menuButtons.render(currentActive);
+		IEList<MenuButton> currentMenu = menus.get(currentActive);
+		if (currentMenu != null) {
+			currentMenu.render();
+		}
 	}
 
 	/**
