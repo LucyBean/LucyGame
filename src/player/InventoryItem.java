@@ -3,25 +3,30 @@ package player;
 import java.util.HashMap;
 import java.util.Map;
 
-import images.Sprite;
-import images.SpriteBuilder;
+import org.newdawn.slick.Image;
+
+import images.ImageBuilder;
 
 public class InventoryItem {
 	String name;
-	Sprite sprite;
+	Image img;
 	
-	protected InventoryItem(String name, Sprite sprite) {
+	protected InventoryItem(String name, Image img) {
 		this.name = name;
-		this.sprite = sprite;
+		this.img = img;
 	}
 	
 	@Override
 	public String toString() {
-		return name;
+		return getName();
 	}
 	
-	public Sprite getSprite() {
-		return sprite;
+	public Image getImage() {
+		return img;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	private static InventoryItem gem;
@@ -29,7 +34,7 @@ public class InventoryItem {
 	
 	public static InventoryItem getGem() {
 		if (gem == null) {
-			gem = new InventoryItem("Gem", SpriteBuilder.getGemImg());
+			gem = new InventoryItem("Gem", ImageBuilder.getGemImg());
 		}
 		
 		return gem;
@@ -42,7 +47,7 @@ public class InventoryItem {
 		
 		InventoryItem key = keys.get(keyID);
 		if (key == null) {
-			key = new InventoryItem("Key " + keyID, SpriteBuilder.getKeyImg(keyID));
+			key = new InventoryItem("Key " + keyID, ImageBuilder.getKeyImg(keyID));
 			keys.put(keyID, key);
 		}
 		

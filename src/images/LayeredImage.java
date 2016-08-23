@@ -2,7 +2,7 @@ package images;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -43,12 +43,14 @@ public class LayeredImage {
 		layers = new LinkedList<PositionedImage>(imgs);
 		numLayers = imgs.size();
 		// TODO: Find the maximum width and height of the biggest layer
-		Stream<Float> widths = imgs.stream().map(i -> i.getWidth());
-		Stream<Float> heights = imgs.stream().map(i -> i.getHeight());
+		Optional<Float> w = imgs.stream().map(i -> i.getWidth()).reduce(
+				Float::max);
+		Optional<Float> h = imgs.stream().map(i -> i.getHeight()).reduce(
+				Float::max);
 
-		if (numLayers > 0) {
-			this.width = (int) imgs.get(0).getWidth();
-			this.height = (int) imgs.get(0).getHeight();
+		if (w.isPresent() && h.isPresent()) {
+			this.width = (int) ((float) w.get());
+			this.height = (int) ((float) h.get());
 		} else if (GlobalOptions.debug()) {
 			System.err.println("Attempted to create a new LayeredImage "
 					+ "from an empty list of images.");
@@ -127,8 +129,11 @@ public class LayeredImage {
 			if (GlobalOptions.debug()
 					&& (img.getWidth() > width || img.getHeight() > height)) {
 				System.err.println("Incorrectly sized image " + img.getWidth()
-						+ "x" + img.getHeight() + " added to layer of size "
+						+ "x" + img.getHeight() + " added to image of size "
 						+ width + "x" + height);
+			}
+			if (layers.get(layer) != null) {
+				layers.remove(layer);
 			}
 			layers.add(layer, img);
 		} else if (GlobalOptions.debug()) {
@@ -137,8 +142,44 @@ public class LayeredImage {
 		}
 	}
 
+	/**
+	 * Sets the origin position for the image to be drawn to a layer.
+	 * 
+	 * @param layer
+	 *            The layer for which the origin position will be set.
+	 * @param p
+	 *            The new origin position for the layer.
+	 */
+	public void setLayerPosition(int layer, Point p) {
+		if (layer >= 0 && layer < numLayers) {
+			if (GlobalOptions.debug()
+					&& (p.getX() > width || p.getY() > height)) {
+				System.err.println("Incorrect image position " + p
+						+ " on image of size " + width + "x" + height);
+			}
+			layers.add(layer, new PositionedImage(p, null));
+		} else if (GlobalOptions.debug()) {
+			System.err.println(
+					"Attempting to add an image to an invalid layer " + layer);
+		}
+	}
+
+	/**
+	 * Sets this layer's image. Will be drawn at the origin position for that
+	 * layer.
+	 * 
+	 * @param layer
+	 * @param img
+	 */
 	public void setLayer(int layer, Image img) {
-		setLayer(layer, new PositionedImage(Point.ZERO, img));
+		PositionedImage pimg = layers.get(layer);
+		Point point;
+		if (pimg != null) {
+			point = pimg.getOrigin();
+		} else {
+			point = Point.ZERO;
+		}
+		setLayer(layer, new PositionedImage(point, img));
 	}
 
 	/**
@@ -165,6 +206,25 @@ public class LayeredImage {
 	}
 
 	/**
+	 * Clears the layer, setting the image to be transparent.
+	 * 
+	 * @param layer
+	 */
+	public void clear(int layer) {
+		Image img = getLayer(layer).getImage();
+		if (img != null) {
+			try {
+				Graphics g = img.getGraphics();
+				g.clear();
+				g.flush();
+			} catch (SlickException se) {
+				System.err.println("Error while filling layer.");
+				se.printStackTrace();
+			}
+		}
+	}
+
+	/**
 	 * Sets the layer to show the text. The text will be centered. The layer
 	 * specified will be completely cleared before the text is added.
 	 * 
@@ -180,7 +240,7 @@ public class LayeredImage {
 				Graphics g = img.getGraphics();
 				float w = g.getFont().getWidth(text);
 				float h = g.getFont().getHeight(text);
-				
+
 				float width = img.getWidth();
 				float height = img.getHeight();
 
@@ -225,6 +285,9 @@ public class LayeredImage {
 					se.printStackTrace();
 				}
 			}
+		} else if (GlobalOptions.debug()) {
+			System.err.println(
+					"Attempting to add text to uninitialised layer.");
 		}
 	}
 }

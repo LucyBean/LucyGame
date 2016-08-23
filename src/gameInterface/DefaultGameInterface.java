@@ -4,6 +4,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;
 import options.Option;
+import player.InventoryItem;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
@@ -49,7 +50,7 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(backToMainMenu);
-		
+
 		MenuButton selectWatchedObject = new MenuButton("Select watch object") {
 			@Override
 			public void onClick(int button) {
@@ -57,7 +58,7 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(selectWatchedObject);
-		
+
 		MenuButton openSubMenu = new MenuButton("Open a sub menu") {
 			@Override
 			public void onClick(int button) {
@@ -65,7 +66,7 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(openSubMenu);
-		
+
 		MenuButton openOptions = new MenuButton("Options") {
 			@Override
 			public void onClick(int button) {
@@ -73,7 +74,7 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(openOptions);
-		
+
 		//
 		// A sub menu
 		//
@@ -84,13 +85,13 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(subMenuButton, 1);
-		
+
 		//
 		// Options
 		//
 		for (Option o : Option.values()) {
 			MenuButton mb = new OptionButton(o);
-			m.add(mb,2);
+			m.add(mb, 2);
 		}
 		MenuButton storeSettings = new MenuButton("Store settings") {
 			@Override
@@ -99,7 +100,21 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		};
 		m.add(storeSettings, 2);
-		
+
 		add(m, WorldState.MENU);
+
+		IEList<InventoryItemDisplayer> inventory = new IEList<InventoryItemDisplayer>(
+				new Point(400, 40));
+		InventoryItemDisplayer gem = new InventoryItemDisplayer();
+		gem.display(InventoryItem.getGem(), 22);
+		inventory.add(gem);
+		InventoryItemDisplayer key1 = new InventoryItemDisplayer();
+		key1.display(InventoryItem.getKeyByID(1), 3);
+		inventory.add(key1);
+		InventoryItemDisplayer key2 = new InventoryItemDisplayer();
+		key2.display(InventoryItem.getKeyByID(2), 89);
+		inventory.add(key2);
+
+		add(inventory, WorldState.PLAYING);
 	}
 }

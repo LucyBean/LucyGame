@@ -13,11 +13,11 @@ public class ImageBuilder {
 	private static Image worldLoaderButtonBackground;
 	private static Image bby;
 	private static SpriteSheet keysAndLocks;
-	private static SpriteSheet worldSprites;
+	private static SpriteSheet inventoryItems;
 
 	public static void initSpriteSheets() throws SlickException {
 		keysAndLocks = new SpriteSheet("data/keys.png", 32, 32);
-		worldSprites = new SpriteSheet("data/sprites.png", 32, 32);
+		inventoryItems = new SpriteSheet("data/inventory_items.png", 32, 32);
 	}
 
 	public static Image makeRectangle(int width, int height, Color fill, Color border) {
@@ -29,6 +29,7 @@ public class ImageBuilder {
 			g.setColor(border);
 			g.drawRect(0, 0, width - 1, height - 1);
 			g.drawRect(1, 1, width - 3, height - 3);
+			g.flush();
 			return img;
 		} catch (SlickException se) {
 			System.err.println("Error while creating image.");
@@ -102,7 +103,6 @@ public class ImageBuilder {
 	}
 	
 	public static Image getGemImg() {
-
-		return worldSprites.getSprite(0, 3);
+		return inventoryItems.getSprite(0, 0);
 	}
 }
