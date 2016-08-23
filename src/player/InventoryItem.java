@@ -7,7 +7,7 @@ import org.newdawn.slick.Image;
 
 import images.ImageBuilder;
 
-public class InventoryItem {
+public class InventoryItem implements Comparable {
 	String name;
 	Image img;
 	
@@ -52,5 +52,11 @@ public class InventoryItem {
 		}
 		
 		return key;
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		InventoryItem other = (InventoryItem) arg0;
+		return getName().compareTo(other.getName());
 	}
 }

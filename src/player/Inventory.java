@@ -1,16 +1,15 @@
 package player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.TreeMap;
 
 public class Inventory {
-	Map<InventoryItem, Integer> items;
+	TreeMap<InventoryItem, Integer> items;
 
 	public Inventory() {
-		items = new HashMap<InventoryItem, Integer>();
+		items = new TreeMap<InventoryItem, Integer>();
 	}
-	
-	public Map<InventoryItem, Integer> getItems() {
+
+	public TreeMap<InventoryItem, Integer> getItems() {
 		return items;
 	}
 
@@ -27,14 +26,34 @@ public class Inventory {
 	}
 
 	/**
-	 * Adds an InventoryItem to this Inventory.
+	 * Adds a quantity of an InventoryItems to this Inventory.
 	 * 
 	 * @param ii
+	 *            The InventoryItem to add.
+	 * @param quantity
+	 *            The amount to add.
+	 */
+	public void add(InventoryItem ii, int quantity) {
+		int newAmount = items.getOrDefault(ii, 0) + quantity;
+
+		if (newAmount <= 0) {
+			items.remove(ii);
+		} else {
+			if (newAmount > 99) {
+				newAmount = 99;
+			}
+			items.put(ii, newAmount);
+		}
+	}
+
+	/**
+	 * Adds one InventoryItem to this Inventory.
+	 * 
+	 * @param ii
+	 *            The InventoryItem to add.
 	 */
 	public void add(InventoryItem ii) {
-		items.putIfAbsent(ii, 0);
-		int newAmount = items.get(ii) + 1;
-		items.put(ii, newAmount);
+		add(ii, 1);
 	}
 
 	/**

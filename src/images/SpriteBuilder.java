@@ -187,11 +187,11 @@ public class SpriteBuilder {
 		p = p.move(Dir.EAST, textBoxWidth + padding);
 		
 		// Digit one
-		Image digit1 = ImageBuilder.makeRectangle(digitWidth, iconSize, new Color(50, 0, 10), Color.white);
+		Image digit1 = ImageBuilder.makeRectangle(digitWidth, iconSize, new Color(50, 0, 10));
 		img.setLayer(3, new PositionedImage(p, digit1));
 		p = p.move(Dir.EAST, digitWidth);
 		
-		Image digit2 = ImageBuilder.makeRectangle(digitWidth, iconSize, new Color(50, 0, 10), Color.white);
+		Image digit2 = ImageBuilder.makeRectangle(digitWidth, iconSize, new Color(50, 0, 10));
 		img.setLayer(4, new PositionedImage(p, digit2));
 
 		return new Sprite(img, 1);

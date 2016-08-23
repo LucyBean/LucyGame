@@ -4,6 +4,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;
 import options.Option;
+import player.Inventory;
 import player.InventoryItem;
 import worlds.WorldState;
 
@@ -102,19 +103,25 @@ public class DefaultGameInterface extends GameInterface {
 		m.add(storeSettings, 2);
 
 		add(m, WorldState.MENU);
+		
+		Inventory i = new Inventory();
+		i.add(InventoryItem.getGem(), 4);
+		i.add(InventoryItem.getGem(), 20);
+		i.add(InventoryItem.getKeyByID(3), 100);
+		InventoryDisplay id = new InventoryDisplay(new Point(400, 40), i.getItems());
+		add(id, WorldState.PLAYING);
 
-		IEList<InventoryItemDisplayer> inventory = new IEList<InventoryItemDisplayer>(
-				new Point(400, 40));
-		InventoryItemDisplayer gem = new InventoryItemDisplayer();
-		gem.display(InventoryItem.getGem(), 22);
-		inventory.add(gem);
-		InventoryItemDisplayer key1 = new InventoryItemDisplayer();
-		key1.display(InventoryItem.getKeyByID(1), 3);
-		inventory.add(key1);
-		InventoryItemDisplayer key2 = new InventoryItemDisplayer();
-		key2.display(InventoryItem.getKeyByID(2), 89);
-		inventory.add(key2);
-
-		add(inventory, WorldState.PLAYING);
+//		IEList<InventoryItemDisplayer> inventory = new IEList<InventoryItemDisplayer>(
+//				new Point(400, 40));
+//		InventoryItemDisplayer gem = new InventoryItemDisplayer();
+//		gem.display(InventoryItem.getGem(), 22);
+//		inventory.add(gem);
+//		InventoryItemDisplayer key1 = new InventoryItemDisplayer();
+//		key1.display(InventoryItem.getKeyByID(1), 3);
+//		inventory.add(key1);
+//		InventoryItemDisplayer key2 = new InventoryItemDisplayer();
+//		key2.display(InventoryItem.getKeyByID(2), 89);
+//		inventory.add(key2);
+//		add(inventory, WorldState.PLAYING);
 	}
 }

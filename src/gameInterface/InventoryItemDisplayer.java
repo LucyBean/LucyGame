@@ -35,6 +35,14 @@ public class InventoryItemDisplayer extends IEListItem {
 		int digitOnes = quantity % 10;
 		limg.setText(4, "" + digitOnes, vTextAlign);
 	}
+	
+	public void displayBlank() {
+		LayeredImage limg = getSprite().getImage();
+		// Clear layers 1 to 4
+		for (int i = 1; i <= 4; i++) {
+			limg.clear(i);
+		}
+	}
 
 	@Override
 	public float getHeight() {
