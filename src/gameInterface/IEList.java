@@ -62,7 +62,7 @@ public abstract class IEList extends InterfaceElement {
 	final public void updateSprites() {
 		for (int i = 0; i < items.size(); i++) {
 			Sprite s = items.get(i).getSprite();
-			getElementSprite(i, s);
+			getElementSprite(i + minItemDisplayed, s);
 		}
 	}
 

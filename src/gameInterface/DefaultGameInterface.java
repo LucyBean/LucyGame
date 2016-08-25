@@ -40,69 +40,26 @@ public class DefaultGameInterface extends GameInterface {
 		clickToStopSelect.setTextCentered("Click here to stop selecting");
 		add(clickToStopSelect, WorldState.WATCH_SELECT);
 
-//		//
-//		// Root menu
-//		//
-		Menu m = new Menu();
-		m.add("Main menu", s -> s.getWorld().getGame().loadMainMenu());
-//		MenuButton backToMainMenu = new MenuButton("Main menu") {
-//			@Override
-//			public void onClick(int button) {
-//				getWorld().getGame().loadMainMenu();
-//			}
-//		};
-//		m.add(backToMainMenu);
-//
-//		MenuButton selectWatchedObject = new MenuButton("Select watch object") {
-//			@Override
-//			public void onClick(int button) {
-//				getWorld().startWatchSelect();
-//			}
-//		};
-//		m.add(selectWatchedObject);
-//
-//		MenuButton openSubMenu = new MenuButton("Open a sub menu") {
-//			@Override
-//			public void onClick(int button) {
-//				getMenu().setSubMenu(1);
-//			}
-//		};
-//		m.add(openSubMenu);
-//
-//		MenuButton openOptions = new MenuButton("Options") {
-//			@Override
-//			public void onClick(int button) {
-//				getMenu().setSubMenu(2);
-//			}
-//		};
-//		m.add(openOptions);
-//
-//		//
-//		// A sub menu
-//		//
-//		MenuButton subMenuButton = new MenuButton("Go back") {
-//			@Override
-//			public void onClick(int button) {
-//				getMenu().setSubMenu(0);
-//			}
-//		};
-//		m.add(subMenuButton, 1);
-//
-//		//
-//		// Options
-//		//
-//		for (Option o : Option.values()) {
-//			MenuButton mb = new OptionButton(o);
-//			m.add(mb, 2);
-//		}
-//		MenuButton storeSettings = new MenuButton("Store settings") {
-//			@Override
-//			public void onClick(int button) {
-//				GlobalOptions.saveToFile();
-//			}
-//		};
-//		m.add(storeSettings, 2);
-//
+		//
+		// Root menu
+		//
+		MenuSet m = new MenuSet();
+		m.add(() -> "Main menu", s -> s.getWorld().getGame().loadMainMenu());
+		m.add(() -> "Select watch object", s -> s.getWorld().startWatchSelect());
+		m.add(() -> "Open a sub menu", s -> s.getMenuSet().setSubMenu(1));
+		m.add(() -> "Open options", s -> s.getMenuSet().setSubMenu(2));
+		//
+		// A sub menu
+		//
+		m.add(() -> "Go back", s -> s.getMenuSet().setSubMenu(0), 1);
+		//
+		// Options
+		//
+		for (Option o : Option.values()) {
+			m.add(() -> o.toString(), s -> {o.setToNextValue(); s.updateSprites();}, 2);
+		}
+		m.add(() -> "Store settings", s -> GlobalOptions.saveToFile(), 2);
+		
 		add(m, WorldState.MENU);
 		
 		Inventory i = new Inventory();

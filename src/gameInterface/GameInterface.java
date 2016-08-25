@@ -22,12 +22,12 @@ public class GameInterface {
 	ObjectLayer<InterfaceElement> allStateInterface;
 	StatusWindow statusWindow;
 	World world;
-	List<Menu> menus;
+	List<MenuSet> menus;
 
 	public GameInterface() {
 		interfaces = new ObjectLayerSet<InterfaceElement>();
 		allStateInterface = new ObjectLayer<InterfaceElement>();
-		menus = new ArrayList<Menu>();
+		menus = new ArrayList<MenuSet>();
 	}
 
 	/**
@@ -54,8 +54,8 @@ public class GameInterface {
 			interfaces.add(ie, state.ordinal());
 			ie.setWorld(world);
 		}
-		if (ie instanceof Menu) {
-			menus.add((Menu) ie);
+		if (ie instanceof MenuSet) {
+			menus.add((MenuSet) ie);
 		}
 	}
 
@@ -66,8 +66,8 @@ public class GameInterface {
 	 */
 	public void addToAll(InterfaceElement ie) {
 		allStateInterface.add(ie);
-		if (ie instanceof Menu) {
-			menus.add((Menu) ie);
+		if (ie instanceof MenuSet) {
+			menus.add((MenuSet) ie);
 		}
 	}
 
