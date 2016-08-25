@@ -12,7 +12,6 @@ public class ImageBuilder {
 	private static Image menuButtonBackground;
 	private static Image worldLoaderButtonBackground;
 	private static Image bby;
-	private static Image blankInventory;
 	private static SpriteSheet keysAndLocks;
 	private static SpriteSheet inventoryItems;
 

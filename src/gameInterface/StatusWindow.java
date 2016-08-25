@@ -47,7 +47,7 @@ class StatusWindow extends InterfaceElement {
 
 	@Override
 	public void onClick(int button) {
-
+		getWorld().startWatchSelect();
 	}
 
 }

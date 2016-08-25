@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.newdawn.slick.Input;
+
 import helpers.Dir;
 import helpers.Point;
 import images.Sprite;
@@ -65,7 +67,7 @@ public abstract class IEList extends InterfaceElement {
 	/**
 	 * Displays the next element in the list, if any.
 	 */
-	final public void moveDown() {
+	public void moveDown() {
 		minItemDisplayed++;
 		int numButtons = buttons.size();
 		
@@ -73,7 +75,6 @@ public abstract class IEList extends InterfaceElement {
 		
 		// Shift sprites up
 		for (int i = 0; i < numButtons - 1; i++) {
-			
 			Sprite next = buttons.get(i+1).getSprite();
 			buttons.get(i).setSprite(next);
 		}
@@ -81,6 +82,23 @@ public abstract class IEList extends InterfaceElement {
 		// Set first sprite to last position and update it
 		buttons.get(numButtons-1).setSprite(first);
 		getElementSprite(numButtons - 1 + minItemDisplayed, first);
+	}
+	
+	public void moveUp() {
+		minItemDisplayed--;
+		int numButtons = buttons.size();
+		
+		Sprite last = buttons.get(numButtons - 1).getSprite();
+		
+		// Shift sprites down
+		for (int i = numButtons - 1; i >= 1; i--) {
+			Sprite prev = buttons.get(i-1).getSprite();
+			buttons.get(i).setSprite(prev);
+		}
+		
+		// Set the last sprite to first position and update it
+		buttons.get(0).setSprite(last);
+		getElementSprite(minItemDisplayed, last);
 	}
 
 	public abstract void elementClicked(int elementIndex);
@@ -101,19 +119,26 @@ public abstract class IEList extends InterfaceElement {
 	public abstract void getElementSprite(int elementIndex, Sprite s);
 
 	@Override
-	final public void setWorld(World world) {
+	public void setWorld(World world) {
 		super.setWorld(world);
 		buttons.stream().forEach(i -> i.setWorld(world));
 	}
 
 	@Override
-	final public void mousePressed(int button, Point clickPoint) {
+	public void mousePressed(int button, Point clickPoint) {
 		buttons.stream().forEach(i -> i.mousePressed(button, clickPoint));
 	}
-
+	
 	@Override
-	public void onClick(int button) {
-
+	public void keyPressed(int keycode) {
+		switch (keycode) {
+			case Input.KEY_COMMA:
+				moveUp();
+				break;
+			case Input.KEY_O:
+				moveDown();
+				break;
+		}
 	}
 
 	@Override

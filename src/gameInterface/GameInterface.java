@@ -97,13 +97,21 @@ public class GameInterface {
 	 * @param clickPoint
 	 * @param state
 	 */
-	public void mousePressed(final int button, final Point clickPoint,
-			final WorldState state) {
-		// TODO: Look at how to build this using specialised templates.
-		// I want an interface.mousePressed(...) method.
+	public void mousePressed(int button, Point clickPoint, WorldState state) {
 		interfaces.applyToLayerObjects(a -> a.mousePressed(button, clickPoint),
 				state.ordinal());
 		allStateInterface.applyToAll(a -> a.mousePressed(button, clickPoint));
+	}
+
+	/**
+	 * Propagates the keyPressed update to all InterfaceElements within the
+	 * currently active interface.
+	 * 
+	 * @param keycode
+	 */
+	public void keyPressed(int keycode, WorldState state) {
+		interfaces.applyToLayerObjects(a -> a.keyPressed(keycode), state.ordinal());
+		allStateInterface.applyToAll(a -> a.keyPressed(keycode));
 	}
 
 	/**

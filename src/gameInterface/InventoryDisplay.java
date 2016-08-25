@@ -27,7 +27,7 @@ public class InventoryDisplay extends IEList {
 
 	@Override
 	public void elementClicked(int elementIndex) {
-		moveDown();
+		moveUp();
 	}
 
 	@Override

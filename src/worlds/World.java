@@ -290,6 +290,8 @@ public class World {
 	}
 
 	public void keyPressed(int keycode) {
+		gameInterface.keyPressed(keycode, worldState);
+		
 		switch (worldState) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {

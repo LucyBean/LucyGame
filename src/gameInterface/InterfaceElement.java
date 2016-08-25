@@ -16,7 +16,7 @@ public abstract class InterfaceElement extends GameObject {
 	public InterfaceElement(Point point, Sprite sprite) {
 		super(point, sprite);
 	}
-	
+
 	public InterfaceElement(Rectangle rect) {
 		super(rect.getTopLeft(), null);
 		Sprite sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
@@ -39,8 +39,6 @@ public abstract class InterfaceElement extends GameObject {
 		}
 	}
 
-	public abstract void onClick(int button);
-
 	/**
 	 * Sets the background color for the InterfaceElement's sprite.
 	 * 
@@ -51,7 +49,7 @@ public abstract class InterfaceElement extends GameObject {
 		LayeredImage limg = getSprite().getImage();
 		limg.fillLayer(0, c);
 	}
-	
+
 	protected void setBackground(Image img) {
 		LayeredImage limg = getSprite().getImage();
 		limg.setLayer(0, img);
@@ -81,5 +79,25 @@ public abstract class InterfaceElement extends GameObject {
 	public void setText(String text, Point topLeft) {
 		LayeredImage limg = getSprite().getImage();
 		limg.setText(limg.getTopLayerNumber(), text, topLeft);
+	}
+
+	/**
+	 * This is called when the object is clicked on.
+	 * 
+	 * @param button
+	 *            The mouse button used to click the object.
+	 */
+	public void onClick(int button) {
+
+	}
+
+	/**
+	 * This is called for the object when a key is pressed.
+	 * 
+	 * @param keycode
+	 *            The keycode of the key pressed.
+	 */
+	public void keyPressed(int keycode) {
+
 	}
 }
