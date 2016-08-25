@@ -6,22 +6,20 @@ import helpers.Point;
 import player.InventoryItem;
 
 public class InventoryDisplay extends IEList<InventoryItemDisplayer> {
-	int currentIndex;
 	TreeMap<InventoryItem, Integer> items;
-	final int size = 4;
+	final int displaySize = 4;
 
 	InventoryItem minItem;
 	InventoryItem maxItem;
 
-	InventoryItemDisplayer[] itemDisplayers = new InventoryItemDisplayer[size];
+	InventoryItemDisplayer[] itemDisplayers = new InventoryItemDisplayer[displaySize];
 
 	public InventoryDisplay(Point firstPoint,
 			TreeMap<InventoryItem, Integer> items) {
 		super(firstPoint);
 		this.items = items;
-		currentIndex = 0;
 
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < displaySize; i++) {
 			itemDisplayers[i] = new InventoryItemDisplayer();
 
 			if (i == 0 && !items.isEmpty()) {
@@ -38,10 +36,11 @@ public class InventoryDisplay extends IEList<InventoryItemDisplayer> {
 			}
 			add(itemDisplayers[i]);
 		}
-	}
 
-	public void showNext() {
-
+		// set the first object to be selected if it exists
+		if (minItem != null) {
+			itemDisplayers[0].setSelectedBackground();
+		}
 	}
 
 }

@@ -1,5 +1,6 @@
 package gameInterface;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 import helpers.Point;
@@ -12,19 +13,19 @@ public class InventoryItemDisplayer extends IEListItem {
 	public InventoryItemDisplayer() {
 		super(SpriteBuilder.makeInventoryDisplaySprite());
 	}
-	
+
 	public void display(InventoryItem item, int quantity) {
-		Point vTextAlign = new Point(0,8);
+		Point vTextAlign = new Point(0, 8);
 		Image img = item.getImage();
 		String name = item.getName();
-		
+
 		LayeredImage limg = getSprite().getImage();
 		// Set image on layer 1
 		limg.setLayer(1, img);
-		
+
 		// Set name on layer 2
 		limg.setText(2, name, vTextAlign);
-		
+
 		// Set quantity on layers 3 and 4
 		if (quantity >= 10) {
 			int digitTens = quantity / 10;
@@ -35,13 +36,25 @@ public class InventoryItemDisplayer extends IEListItem {
 		int digitOnes = quantity % 10;
 		limg.setText(4, "" + digitOnes, vTextAlign);
 	}
-	
+
+	/**
+	 * Clears the display for this InventoryItemDisplayer, removing the item
+	 * image, name and quantity.
+	 */
 	public void displayBlank() {
 		LayeredImage limg = getSprite().getImage();
 		// Clear layers 1 to 4
 		for (int i = 1; i <= 4; i++) {
 			limg.clear(i);
 		}
+	}
+	
+	public void setSelectedBackground() {
+		setBackground(new Color(230, 230, 230));
+	}
+	
+	public void setUnselectedBackground() {
+		setBackground(new Color(200, 200, 200));
 	}
 
 	@Override
@@ -52,6 +65,6 @@ public class InventoryItemDisplayer extends IEListItem {
 	@Override
 	public void onClick(int button) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

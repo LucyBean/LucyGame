@@ -7,7 +7,7 @@ import org.newdawn.slick.Image;
 
 import images.ImageBuilder;
 
-public class InventoryItem implements Comparable {
+public class InventoryItem implements Comparable<InventoryItem> {
 	String name;
 	Image img;
 	
@@ -45,6 +45,9 @@ public class InventoryItem implements Comparable {
 			keys = new HashMap<Integer, InventoryItem>();
 		}
 		
+		if (keyID < 0) {
+			keyID = 0;
+		}
 		InventoryItem key = keys.get(keyID);
 		if (key == null) {
 			key = new InventoryItem("Key " + keyID, ImageBuilder.getKeyImg(keyID));
@@ -55,8 +58,7 @@ public class InventoryItem implements Comparable {
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		InventoryItem other = (InventoryItem) arg0;
+	public int compareTo(InventoryItem other) {
 		return getName().compareTo(other.getName());
 	}
 }

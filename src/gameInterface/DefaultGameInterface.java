@@ -106,10 +106,13 @@ public class DefaultGameInterface extends GameInterface {
 		
 		Inventory i = new Inventory();
 		i.add(InventoryItem.getGem(), 4);
-		i.add(InventoryItem.getGem(), 20);
+		i.add(InventoryItem.getKeyByID(2), 30);
 		i.add(InventoryItem.getKeyByID(3), 100);
+		i.add(InventoryItem.getKeyByID(1), 23);
+		i.add(InventoryItem.getKeyByID(-1), 2);
+		i.add(InventoryItem.getKeyByID(4), 1);
 		InventoryDisplay id = new InventoryDisplay(new Point(400, 40), i.getItems());
-		add(id, WorldState.PLAYING);
+		add(id, WorldState.INVENTORY);
 
 //		IEList<InventoryItemDisplayer> inventory = new IEList<InventoryItemDisplayer>(
 //				new Point(400, 40));

@@ -238,6 +238,14 @@ public class World {
 	public void stopWatchSelect() {
 		closeMenu();
 	}
+	
+	public void openInventoryDisplay() {
+		worldState = WorldState.INVENTORY;
+	}
+	
+	public void closeInventoryDisplay() {
+		worldState = WorldState.PLAYING;
+	}
 
 	/**
 	 * Renders the world.
@@ -271,9 +279,7 @@ public class World {
 			case PLAYING:
 				playingUpdate(gc, delta);
 				break;
-			case MENU:
-				break;
-			case WATCH_SELECT:
+			default:
 				break;
 		}
 	}
@@ -289,6 +295,9 @@ public class World {
 				if (keycode == Input.KEY_ESCAPE) {
 					openMenu();
 				}
+				if (keycode == Input.KEY_I) {
+					openInventoryDisplay();
+				}
 				break;
 			case MENU:
 				if (keycode == Input.KEY_ESCAPE) {
@@ -299,6 +308,12 @@ public class World {
 				if (keycode == Input.KEY_ESCAPE) {
 					stopWatchSelect();
 				}
+				break;
+			case INVENTORY:
+				if (keycode == Input.KEY_I) {
+					closeInventoryDisplay();
+				}
+			default:
 				break;
 		}
 	}
