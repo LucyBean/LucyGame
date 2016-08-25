@@ -27,11 +27,19 @@ public class PositionedImage {
 	 * @return
 	 */
 	public float getWidth() {
-		return image.getWidth() + origin.getX();
+		if (image != null && origin != null) {
+			return image.getWidth() + origin.getX();
+		} else {
+			return 0;
+		}
 	}
-	
+
 	public float getHeight() {
-		return image.getHeight() + origin.getY();
+		if (image != null && origin != null) {
+			return image.getHeight() + origin.getY();
+		} else {
+			return 0;
+		}
 	}
 
 	public Point getOrigin() {
@@ -41,13 +49,18 @@ public class PositionedImage {
 	public Image getImage() {
 		return image;
 	}
-	
+
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "PositionedImage " + image.getWidth() + "x" + image.getHeight() + " at " + origin;
+		if (image != null) {
+		return "PositionedImage " + image.getWidth() + "x" + image.getHeight()
+				+ " at " + origin;
+		} else {
+			return "PositionedImage at " + origin;
+		}
 	}
 }

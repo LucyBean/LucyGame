@@ -70,7 +70,7 @@ public class LayeredImage {
 	}
 
 	public void draw(float x, float y, float scale) {
-		layers.stream().filter(i -> i != null).forEach(
+		layers.stream().filter(i -> i != null && i.getImage() != null).forEach(
 				i -> i.getImage().draw(x + i.getOrigin().getX() * scale,
 						y + i.getOrigin().getY() * scale, scale));
 	}

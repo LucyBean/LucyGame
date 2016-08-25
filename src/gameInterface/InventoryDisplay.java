@@ -27,8 +27,7 @@ public class InventoryDisplay extends IEList {
 
 	@Override
 	public void elementClicked(int elementIndex) {
-		// TODO Auto-generated method stub
-
+		moveDown();
 	}
 
 	@Override
@@ -64,6 +63,17 @@ public class InventoryDisplay extends IEList {
 			}
 			int digitOnes = quantity % 10;
 			limg.setText(4, "" + digitOnes, vTextAlign);
+		} else {
+			// No information to display
+			LayeredImage limg = s.getImage();
+			
+			// Remove icon
+			limg.setLayer(1, (Image) null);
+			
+			// Clear name and quantity
+			for (int i = 2; i <= 4; i++) {
+				limg.clear(i);
+			}
 		}
 	}
 }

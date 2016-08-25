@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.newdawn.slick.Image;
+
 import helpers.Point;
 import images.ImageBuilder;
 import images.LayeredImage;
@@ -64,6 +66,10 @@ public class Menu extends IEList {
 			LayeredImage limg = s.getImage();
 			limg.setLayer(0, ImageBuilder.getMenuButtonBackground());
 			limg.setTextCentered(1, label);
+		} else {
+			LayeredImage limg = s.getImage();
+			limg.setLayer(0, (Image) null);
+			limg.clear(1);
 		}
 	}
 
