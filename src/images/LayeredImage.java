@@ -225,6 +225,15 @@ public class LayeredImage {
 	}
 
 	/**
+	 * Clears all layers, setting all images to be transparent.
+	 */
+	public void clearAll() {
+		for (int i = 0; i < numLayers; i++) {
+			clear(i);
+		}
+	}
+
+	/**
 	 * Sets the layer to show the text. The text will be centered. The layer
 	 * specified will be completely cleared before the text is added.
 	 * 
@@ -291,7 +300,7 @@ public class LayeredImage {
 					"Attempting to add text to uninitialised layer.");
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		List<PositionedImage> images = layers.subList(0, numLayers);

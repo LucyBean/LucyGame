@@ -34,14 +34,14 @@ public class InventoryDisplay extends IEList {
 	@Override
 	public void getElementSprite(int elementIndex, Sprite s) {
 		if (items != null && elementIndex >= 0 && elementIndex < items.size()) {
+			// There is information to display
+			// Navigate to correct element
 			Iterator<InventoryItem> iie = items.navigableKeySet().iterator();
-
 			for (int i = 0; i < elementIndex; i++) {
 				iie.next();
 			}
 
 			InventoryItem ii = iie.next();
-
 			LayeredImage limg = s.getImage();
 			// set the sprite according to the contents of ii
 			Image img = ii.getImage();
@@ -66,5 +66,4 @@ public class InventoryDisplay extends IEList {
 			limg.setText(4, "" + digitOnes, vTextAlign);
 		}
 	}
-
 }

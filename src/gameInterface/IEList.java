@@ -14,6 +14,23 @@ public abstract class IEList extends InterfaceElement {
 	private List<IEListItem> items;
 	private int minItemDisplayed;
 
+	/**
+	 * Creates a new IEList. An IEList is used to display a number of elements
+	 * on screen in an ordered manner. The IEList can scroll up and down to
+	 * display a large number of elements using a small number of buttons.
+	 * 
+	 * This constructor will initialise all IEListItem sprites using the
+	 * provided Sprite Supplier.
+	 * 
+	 * @param firstPoint
+	 *            The Point for the first object in the list.
+	 * @param numDisplayElems
+	 *            The number of elements that are displayed on the screen at any
+	 *            one time. The IEList can scroll to permit showing large lists.
+	 * @param spriteMaker
+	 *            A Supplier that will produce a blank Sprite for each IEList
+	 *            element.
+	 */
 	public IEList(Point firstPoint, int numDisplayElems,
 			Supplier<Sprite> spriteMaker) {
 		nextPosition = firstPoint;
@@ -68,5 +85,18 @@ public abstract class IEList extends InterfaceElement {
 
 	public abstract void elementClicked(int elementIndex);
 
+	/**
+	 * Updates the IEList buttons to display the correct elements.
+	 * 
+	 * @param elementIndex
+	 *            The index of the element that is to be displayed in this
+	 *            IEList button.
+	 * @param s
+	 *            The current sprite of the IEList button. This should be
+	 *            modified to show information for the correct element.
+	 * @param spriteMaker
+	 *            A function to produce an empty Sprite. This should be called
+	 *            if there is element information to display but s is null.
+	 */
 	public abstract void getElementSprite(int elementIndex, Sprite s);
 }
