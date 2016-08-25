@@ -9,6 +9,9 @@ Creating other types of map objects (especially linked objects, like keys and sw
 	Build an inventory display
 	Make the inventory persist across worlds?
 	
+Add a pet that follows me
+Add a Matt quest
+	
 Refactor World to include a Map object. This will be responsible for holding all the objects
 in the world. A MapImporter class can then be built which will read a TiledMap from file and
 produce a Map. As a minimum the Map is the set of WorldObject lists.

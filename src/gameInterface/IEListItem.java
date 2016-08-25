@@ -1,21 +1,20 @@
 package gameInterface;
 
-import org.newdawn.slick.Image;
-
 import helpers.Point;
-import helpers.Rectangle;
 import images.Sprite;
 
-public abstract class IEListItem extends InterfaceElement {
+public class IEListItem extends InterfaceElement {
+	private IEList parent;
+	private int index;
 	
-	public IEListItem(Sprite sprite) {
-		super(Point.ZERO, sprite);
-	}
-	
-	public IEListItem(Image backgroundImage) {
-		super(new Rectangle(Point.ZERO, backgroundImage.getWidth(), backgroundImage.getHeight()));
-		setBackground(backgroundImage);
+	public IEListItem(IEList parent, int index, Point position, Sprite s) {
+		super(position, s);
+		this.parent = parent;
+		this.index = index;
 	}
 
-	public abstract float getHeight();
+	@Override
+	public void onClick(int button) {
+		parent.buttonClicked(index);
+	}
 }

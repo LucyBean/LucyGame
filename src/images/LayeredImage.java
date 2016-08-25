@@ -235,24 +235,25 @@ public class LayeredImage {
 	 */
 	public void setTextCentered(int layer, String text) {
 		Image img = getLayer(layer).getImage();
-		if (img != null) {
-			try {
-				Graphics g = img.getGraphics();
-				float w = g.getFont().getWidth(text);
-				float h = g.getFont().getHeight(text);
+		if (img == null) {
+			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
+		}
+		try {
+			Graphics g = img.getGraphics();
+			float w = g.getFont().getWidth(text);
+			float h = g.getFont().getHeight(text);
 
-				float width = img.getWidth();
-				float height = img.getHeight();
+			float width = img.getWidth();
+			float height = img.getHeight();
 
-				float x = (width - w) / 2;
-				float y = (height - h) / 2;
+			float x = (width - w) / 2;
+			float y = (height - h) / 2;
 
-				setText(layer, text, new Point(x, y));
-			} catch (SlickException se) {
-				System.err.println("Error while adding text to image layer.");
-				if (GlobalOptions.debug()) {
-					se.printStackTrace();
-				}
+			setText(layer, text, new Point(x, y));
+		} catch (SlickException se) {
+			System.err.println("Error while adding text to image layer.");
+			if (GlobalOptions.debug()) {
+				se.printStackTrace();
 			}
 		}
 	}
@@ -289,5 +290,11 @@ public class LayeredImage {
 			System.err.println(
 					"Attempting to add text to uninitialised layer.");
 		}
+	}
+	
+	@Override
+	public String toString() {
+		List<PositionedImage> images = layers.subList(0, numLayers);
+		return images.toString();
 	}
 }

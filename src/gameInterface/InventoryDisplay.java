@@ -1,45 +1,69 @@
 package gameInterface;
 
+import java.util.Iterator;
 import java.util.TreeMap;
 
+import org.newdawn.slick.Image;
+
 import helpers.Point;
+import images.LayeredImage;
+import images.Sprite;
+import images.SpriteBuilder;
 import player.InventoryItem;
 
-public class InventoryDisplay extends IEList<InventoryItemDisplayer> {
+public class InventoryDisplay extends IEList {
 	TreeMap<InventoryItem, Integer> items;
-	final int displaySize = 4;
 
 	InventoryItem minItem;
 	InventoryItem maxItem;
 
-	InventoryItemDisplayer[] itemDisplayers = new InventoryItemDisplayer[displaySize];
-
 	public InventoryDisplay(Point firstPoint,
 			TreeMap<InventoryItem, Integer> items) {
-		super(firstPoint);
+		super(firstPoint, 4,
+				(() -> SpriteBuilder.makeInventoryDisplaySprite()));
 		this.items = items;
+		updateSprites();
+	}
 
-		for (int i = 0; i < displaySize; i++) {
-			itemDisplayers[i] = new InventoryItemDisplayer();
+	@Override
+	public void elementClicked(int elementIndex) {
+		// TODO Auto-generated method stub
 
-			if (i == 0 && !items.isEmpty()) {
-				minItem = items.firstKey();
-				maxItem = items.firstKey();
-			} else if (maxItem != null) {
-				maxItem = items.higherKey(maxItem);
+	}
+
+	@Override
+	public void getElementSprite(int elementIndex, Sprite s) {
+		if (items != null && elementIndex >= 0 && elementIndex < items.size()) {
+			Iterator<InventoryItem> iie = items.navigableKeySet().iterator();
+
+			for (int i = 0; i < elementIndex; i++) {
+				iie.next();
 			}
 
-			if (maxItem != null) {
-				itemDisplayers[i].display(maxItem, items.get(maxItem));
+			InventoryItem ii = iie.next();
+
+			LayeredImage limg = s.getImage();
+			// set the sprite according to the contents of ii
+			Image img = ii.getImage();
+			String name = ii.getName();
+			Point vTextAlign = new Point(0, 8);
+			int quantity = items.get(ii);
+
+			// Set image on layer 1
+			limg.setLayer(1, img);
+
+			// Set name on layer 2
+			limg.setText(2, name, vTextAlign);
+
+			// Set quantity on layers 3 and 4
+			if (quantity >= 10) {
+				int digitTens = quantity / 10;
+				limg.setText(3, "" + digitTens, vTextAlign);
 			} else {
-				itemDisplayers[i].displayBlank();
+				limg.clear(3);
 			}
-			add(itemDisplayers[i]);
-		}
-
-		// set the first object to be selected if it exists
-		if (minItem != null) {
-			itemDisplayers[0].setSelectedBackground();
+			int digitOnes = quantity % 10;
+			limg.setText(4, "" + digitOnes, vTextAlign);
 		}
 	}
 

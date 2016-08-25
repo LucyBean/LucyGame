@@ -196,6 +196,15 @@ public class SpriteBuilder {
 
 		return new Sprite(img, 1);
 	}
+	
+	public static Sprite makeMenuButton(String text) {
+		Image bg = ImageBuilder.getMenuButtonBackground();
+		LayeredImage limg = new LayeredImage(bg);
+		limg.addLayers(1);
+		limg.setTextCentered(limg.getTopLayerNumber(), text);
+		
+		return new Sprite(limg, 1);
+	}
 
 	private final static Sprite WALL = createRectangle(
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,

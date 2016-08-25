@@ -1,20 +1,31 @@
 package gameInterface;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
+import helpers.Pair;
 import helpers.Point;
+import images.Sprite;
+import images.SpriteBuilder;
 import options.GlobalOptions;
 import worlds.World;
 
 public class Menu extends InterfaceElement {
-	private Map<Integer, IEList<MenuButton>> menus;
+	private Map<Integer, IEList> menus;
 	private static final Point START_POINT = new Point(
 			(GlobalOptions.WINDOW_WIDTH - 360) / 2, 100);
 	private int currentActive;
+	// TODO: Move to sub menu class
+	private Map<Integer, List<Consumer<Menu>>> clickActions;
+	private Map<Integer, List<String>> labels;
 
 	public Menu() {
-		menus = new HashMap<Integer, IEList<MenuButton>>();
+		menus = new HashMap<Integer, IEList>();
+		clickActions = new HashMap<Integer, List<Consumer<Menu>>>();
+		labels = new HashMap<Integer, List<String>>();
 		reset();
 	}
 
@@ -38,7 +49,7 @@ public class Menu extends InterfaceElement {
 
 	@Override
 	public void mousePressed(int button, Point clickPoint) {
-		IEList<MenuButton> currentMenu = menus.get(currentActive);
+		IEList currentMenu = menus.get(currentActive);
 		if (currentMenu != null) {
 			currentMenu.mousePressed(button, clickPoint);
 		}
@@ -53,29 +64,42 @@ public class Menu extends InterfaceElement {
 	 *            The sub-menu number to which the MenuButton should be added. 0
 	 *            is the default root menu.
 	 */
-	public void add(MenuButton mb, int state) {
-		IEList<MenuButton> subMenu = menus.get(state);
+	public void add(String text, Consumer<Menu> clickAction, int state) {
+		IEList subMenu = menus.get(state);
 		if (subMenu == null) {
-			subMenu = new IEList<MenuButton>(START_POINT);
+			subMenu = new IEList(START_POINT, 10,
+					(() -> SpriteBuilder.makeMenuButton("hello"))) {
+				@Override
+				public void elementClicked(int elementIndex) {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void getElementSprite(int elementIndex, Sprite s) {
+					// TODO Auto-generated method stub
+					
+				}
+
+			};
 			menus.put(state, subMenu);
 		}
-		subMenu.add(mb);
-		mb.setMenu(this);
-	}
 
-	/**
-	 * Adds the MenuButton to the Menu's root menu.
-	 * 
-	 * @param mb
-	 *            The MenuButton to add.
-	 */
-	public void add(MenuButton mb) {
-		add(mb, 0);
+		// TODO: Add the menu choice and action to the element list
+		labels.putIfAbsent(state, new ArrayList<String>());
+		labels.get(state).add(text);
+		
+		clickActions.putIfAbsent(state, new ArrayList<Consumer<Menu>>());
+		clickActions.get(state).add(clickAction);
+	}
+	
+	public void add(String text, Consumer<Menu> clickAction) {
+		add(text, clickAction, 0);
 	}
 
 	@Override
 	protected void draw() {
-		IEList<MenuButton> currentMenu = menus.get(currentActive);
+		IEList currentMenu = menus.get(currentActive);
 		if (currentMenu != null) {
 			currentMenu.render();
 		}
