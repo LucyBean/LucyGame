@@ -12,11 +12,11 @@ import org.newdawn.slick.SlickException;
 import gameInterface.DefaultGameInterface;
 import gameInterface.GameInterface;
 import gameInterface.InterfaceElement;
-import gameInterface.ObjectLayerSet;
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.Wall;
 import objects.Actor;
+import objects.ObjectLayerSet;
 import objects.WorldObject;
 import options.GlobalOptions;
 

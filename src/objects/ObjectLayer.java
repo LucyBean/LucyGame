@@ -1,22 +1,21 @@
-package worlds;
+package objects;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objects.GameObject;
 
 public class ObjectLayer<T extends GameObject> {
-	List<T> objects;
+	Collection<T> objects;
 	boolean visible = true;
 
 	public ObjectLayer() {
-		objects = new ArrayList<T>();
+		objects = new HashSet<T>();
 	}
 
 	public void add(T go) {
