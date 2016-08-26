@@ -76,4 +76,9 @@ public class InventoryDisplay extends IEList {
 			}
 		}
 	}
+
+	@Override
+	public int getNumElements() {
+		return items.size();
+	}
 }

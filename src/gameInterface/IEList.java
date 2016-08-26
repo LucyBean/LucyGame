@@ -63,45 +63,47 @@ public abstract class IEList extends InterfaceElement {
 			getElementSprite(i + minItemDisplayed, s);
 		}
 	}
-	
+
 	/**
 	 * Displays the next element in the list, if any.
 	 */
 	public void moveDown() {
-		minItemDisplayed++;
-		int numButtons = buttons.size();
-		
-		Sprite first = buttons.get(0).getSprite();
-		
-		// Shift sprites up
-		for (int i = 0; i < numButtons - 1; i++) {
-			Sprite next = buttons.get(i+1).getSprite();
-			buttons.get(i).setSprite(next);
+		if (minItemDisplayed < getNumElements() - buttons.size()) {
+			minItemDisplayed++;
+			int numButtons = buttons.size();
+
+			Sprite first = buttons.get(0).getSprite();
+
+			// Shift sprites up
+			for (int i = 0; i < numButtons - 1; i++) {
+				Sprite next = buttons.get(i + 1).getSprite();
+				buttons.get(i).setSprite(next);
+			}
+
+			// Set first sprite to last position and update it
+			buttons.get(numButtons - 1).setSprite(first);
+			getElementSprite(numButtons - 1 + minItemDisplayed, first);
 		}
-		
-		// Set first sprite to last position and update it
-		buttons.get(numButtons-1).setSprite(first);
-		getElementSprite(numButtons - 1 + minItemDisplayed, first);
-	}
-	
-	public void moveUp() {
-		minItemDisplayed--;
-		int numButtons = buttons.size();
-		
-		Sprite last = buttons.get(numButtons - 1).getSprite();
-		
-		// Shift sprites down
-		for (int i = numButtons - 1; i >= 1; i--) {
-			Sprite prev = buttons.get(i-1).getSprite();
-			buttons.get(i).setSprite(prev);
-		}
-		
-		// Set the last sprite to first position and update it
-		buttons.get(0).setSprite(last);
-		getElementSprite(minItemDisplayed, last);
 	}
 
-	public abstract void elementClicked(int elementIndex);
+	public void moveUp() {
+		if (minItemDisplayed >= 1) {
+			minItemDisplayed--;
+			int numButtons = buttons.size();
+
+			Sprite last = buttons.get(numButtons - 1).getSprite();
+
+			// Shift sprites down
+			for (int i = numButtons - 1; i >= 1; i--) {
+				Sprite prev = buttons.get(i - 1).getSprite();
+				buttons.get(i).setSprite(prev);
+			}
+
+			// Set the last sprite to first position and update it
+			buttons.get(0).setSprite(last);
+			getElementSprite(minItemDisplayed, last);
+		}
+	}
 
 	/**
 	 * Updates the IEList buttons to display the correct elements.
@@ -118,6 +120,10 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	public abstract void getElementSprite(int elementIndex, Sprite s);
 
+	public abstract int getNumElements();
+	
+	public abstract void elementClicked(int elementNumber);
+
 	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
@@ -128,7 +134,7 @@ public abstract class IEList extends InterfaceElement {
 	public void mousePressed(int button, Point clickPoint) {
 		buttons.stream().forEach(i -> i.mousePressed(button, clickPoint));
 	}
-	
+
 	@Override
 	public void keyPressed(int keycode) {
 		switch (keycode) {
@@ -145,6 +151,5 @@ public abstract class IEList extends InterfaceElement {
 	protected void draw() {
 		buttons.stream().forEach(s -> s.render());
 	}
-	
-	
+
 }
