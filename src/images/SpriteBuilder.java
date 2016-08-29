@@ -170,7 +170,8 @@ public class SpriteBuilder {
 		LayeredImage img = new LayeredImage(width, height, 5);
 
 		// Set background
-		img.fillLayer(0, new Color(200, 200, 200));
+		img.setLayer(0, ImageBuilder.makeRectangle(width, height));
+//		img.fillLayer(0, new Color(200, 200, 200));
 
 		Point p = new Point(border, border);
 

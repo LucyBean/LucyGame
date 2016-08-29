@@ -3,6 +3,7 @@ package gameInterface;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 import helpers.Point;
@@ -19,8 +20,8 @@ public class InventoryDisplay extends IEList {
 
 	public InventoryDisplay(Point firstPoint,
 			TreeMap<InventoryItem, Integer> items) {
-		super(firstPoint, 4,
-				(() -> SpriteBuilder.makeInventoryDisplaySprite()));
+		super(firstPoint, 4, (() -> SpriteBuilder.makeInventoryDisplaySprite()),
+				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
 		this.items = items;
 		updateSprites();
 	}
@@ -48,6 +49,9 @@ public class InventoryDisplay extends IEList {
 			Point vTextAlign = new Point(0, 8);
 			int quantity = items.get(ii);
 
+			// Set deselected background
+			limg.fillLayer(0, new Color(200, 200, 200));
+
 			// Set image on layer 1
 			limg.setLayer(1, img);
 
@@ -66,10 +70,10 @@ public class InventoryDisplay extends IEList {
 		} else {
 			// No information to display
 			LayeredImage limg = s.getImage();
-			
+
 			// Remove icon
 			limg.setLayer(1, (Image) null);
-			
+
 			// Clear name and quantity
 			for (int i = 2; i <= 4; i++) {
 				limg.clear(i);

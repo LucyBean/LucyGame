@@ -2,6 +2,7 @@ package gameInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.newdawn.slick.Input;
@@ -15,6 +16,9 @@ public abstract class IEList extends InterfaceElement {
 	private Point nextPosition;
 	private List<IEListItem> buttons;
 	private int minItemDisplayed;
+	private int selectedIndex;
+	private Consumer<Sprite> setSelectedSprite;
+	private boolean usingSelection;
 
 	/**
 	 * Creates a new IEList. An IEList is used to display a number of elements
@@ -32,12 +36,17 @@ public abstract class IEList extends InterfaceElement {
 	 * @param spriteMaker
 	 *            A Supplier that will produce a blank Sprite for each IEList
 	 *            element.
+	 * @param setSelectedSprite
+	 *            A Consumer that takes a Sprite and applies some effect to
+	 *            display that the corresponding button has been selected.
 	 */
 	public IEList(Point firstPoint, int numDisplayElems,
-			Supplier<Sprite> spriteMaker) {
+			Supplier<Sprite> spriteMaker, Consumer<Sprite> setSelectedSprite) {
 		nextPosition = firstPoint;
 		buttons = new ArrayList<IEListItem>();
 		minItemDisplayed = 0;
+		this.setSelectedSprite = setSelectedSprite;
+		usingSelection = (setSelectedSprite != null);
 
 		for (int i = 0; i < numDisplayElems; i++) {
 			Sprite s = spriteMaker.get();
@@ -47,9 +56,43 @@ public abstract class IEList extends InterfaceElement {
 			nextPosition = nextPosition.move(Dir.SOUTH,
 					s.getBoundingRectangle().getHeight());
 		}
+
+		setSelectedIndex(0);
 	}
 
-	final public void buttonClicked(int buttonIndex) {
+	/**
+	 * Creates a new IEList which does not have the ability to select an
+	 * element.
+	 * 
+	 * @param firstPoint
+	 * @param numDisplayElems
+	 * @param spriteMaker
+	 */
+	public IEList(Point firstPoint, int numDisplayElems,
+			Supplier<Sprite> spriteMaker) {
+		this(firstPoint, numDisplayElems, spriteMaker, null);
+	}
+
+	private void setSelectedIndex(int newButtonIndex) {
+		if (usingSelection) {
+			// deselect old index
+			int oldButtonIndex = selectedIndex;
+			int oldElementIndex = selectedIndex + minItemDisplayed;
+			if (oldButtonIndex >= 0 && oldButtonIndex < buttons.size()) {
+				getElementSprite(oldElementIndex,
+						buttons.get(oldButtonIndex).getSprite());
+			}
+
+			// select new index
+			if (newButtonIndex >= 0 && newButtonIndex < buttons.size()) {
+				setSelectedSprite.accept(
+						buttons.get(newButtonIndex).getSprite());
+			}
+			selectedIndex = newButtonIndex;
+		}
+	}
+
+	public void buttonClicked(int buttonIndex) {
 		elementClicked(buttonIndex + minItemDisplayed);
 	}
 
@@ -62,46 +105,31 @@ public abstract class IEList extends InterfaceElement {
 			Sprite s = buttons.get(i).getSprite();
 			getElementSprite(i + minItemDisplayed, s);
 		}
+		setSelectedIndex(selectedIndex);
 	}
 
 	/**
 	 * Displays the next element in the list, if any.
 	 */
 	public void moveDown() {
-		if (minItemDisplayed < getNumElements() - buttons.size()) {
+		int numButtons = buttons.size();
+		int maxItemDisplayed = minItemDisplayed + numButtons - 1;
+
+		if (selectedIndex < numButtons - 2 || selectedIndex < numButtons - 1
+				&& maxItemDisplayed == getNumElements() - 1) {
+			setSelectedIndex(selectedIndex + 1);
+		} else if (minItemDisplayed < getNumElements() - buttons.size()) {
 			minItemDisplayed++;
-			int numButtons = buttons.size();
-
-			Sprite first = buttons.get(0).getSprite();
-
-			// Shift sprites up
-			for (int i = 0; i < numButtons - 1; i++) {
-				Sprite next = buttons.get(i + 1).getSprite();
-				buttons.get(i).setSprite(next);
-			}
-
-			// Set first sprite to last position and update it
-			buttons.get(numButtons - 1).setSprite(first);
-			getElementSprite(numButtons - 1 + minItemDisplayed, first);
+			updateSprites();
 		}
 	}
 
 	public void moveUp() {
-		if (minItemDisplayed >= 1) {
+		if (selectedIndex > 1 || selectedIndex > 0 && minItemDisplayed == 0) {
+			setSelectedIndex(selectedIndex - 1);
+		} else if (minItemDisplayed >= 1) {
 			minItemDisplayed--;
-			int numButtons = buttons.size();
-
-			Sprite last = buttons.get(numButtons - 1).getSprite();
-
-			// Shift sprites down
-			for (int i = numButtons - 1; i >= 1; i--) {
-				Sprite prev = buttons.get(i - 1).getSprite();
-				buttons.get(i).setSprite(prev);
-			}
-
-			// Set the last sprite to first position and update it
-			buttons.get(0).setSprite(last);
-			getElementSprite(minItemDisplayed, last);
+			updateSprites();
 		}
 	}
 
@@ -113,15 +141,16 @@ public abstract class IEList extends InterfaceElement {
 	 *            IEList button.
 	 * @param s
 	 *            The current sprite of the IEList button. This should be
-	 *            modified to show information for the correct element.
-	 * @param spriteMaker
-	 *            A function to produce an empty Sprite. This should be called
-	 *            if there is element information to display but s is null.
+	 *            modified to show information for the correct element in its
+	 *            unselected state.
 	 */
 	public abstract void getElementSprite(int elementIndex, Sprite s);
 
+	/**
+	 * @return The number of elements within the list being displayed.
+	 */
 	public abstract int getNumElements();
-	
+
 	public abstract void elementClicked(int elementNumber);
 
 	@Override

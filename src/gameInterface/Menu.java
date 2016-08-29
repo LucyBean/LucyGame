@@ -19,7 +19,9 @@ public class Menu extends IEList {
 
 	public Menu(Point firstPoint, int numDisplayElems,
 			Supplier<Sprite> spriteMaker, MenuSet menuSet) {
-		super(firstPoint, numDisplayElems, spriteMaker);
+		super(firstPoint, numDisplayElems, spriteMaker,
+				(s -> s.getImage().setLayer(0,
+						ImageBuilder.getMenuButtonSelectedBackground())));
 		labels = new ArrayList<Supplier<String>>();
 		clickActions = new ArrayList<Consumer<Menu>>();
 		this.menuSet = menuSet;

@@ -10,6 +10,7 @@ import options.GlobalOptions;
 
 public class ImageBuilder {
 	private static Image menuButtonBackground;
+	private static Image menuButtonSelectedBackground;
 	private static Image worldLoaderButtonBackground;
 	private static Image bby;
 	private static SpriteSheet keysAndLocks;
@@ -62,6 +63,14 @@ public class ImageBuilder {
 		}
 
 		return menuButtonBackground;
+	}
+	
+	public static Image getMenuButtonSelectedBackground() {
+		if (menuButtonSelectedBackground == null) {
+			menuButtonSelectedBackground = makeRectangle(360, 32, new Color(240, 240, 180));
+		}
+		
+		return menuButtonSelectedBackground;
 	}
 
 	public static Image getWorldButtonBackground() {
