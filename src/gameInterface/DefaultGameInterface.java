@@ -4,8 +4,6 @@ import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;
 import options.Option;
-import player.Inventory;
-import player.InventoryItem;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
@@ -61,15 +59,5 @@ public class DefaultGameInterface extends GameInterface {
 		m.add(() -> "Store settings", s -> GlobalOptions.saveToFile(), 2);
 		
 		add(m, WorldState.MENU);
-		
-		Inventory i = new Inventory();
-		i.add(InventoryItem.getGem(), 4);
-		i.add(InventoryItem.getKeyByID(2), 30);
-		i.add(InventoryItem.getKeyByID(3), 100);
-		i.add(InventoryItem.getKeyByID(1), 23);
-		i.add(InventoryItem.getKeyByID(-1), 2);
-		i.add(InventoryItem.getKeyByID(4), 1);
-		InventoryDisplay id = new InventoryDisplay(new Point(400, 40), i.getItems());
-		add(id, WorldState.INVENTORY);
 	}
 }

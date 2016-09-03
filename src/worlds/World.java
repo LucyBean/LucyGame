@@ -19,6 +19,8 @@ import objects.Actor;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
 import options.GlobalOptions;
+import player.Inventory;
+import player.Player;
 
 public class World {
 	private Camera camera;
@@ -128,6 +130,12 @@ public class World {
 
 		if (go.isEnabled()) {
 			addToActiveSets(go);
+		}
+		
+		// If it is a Player, register their inventory with the inventory displayer
+		if (go instanceof Player) {
+			Inventory i = ((Player) go).getInventory();
+			gameInterface.setInventoryToDisplay(i);
 		}
 
 		go.setWorld(this);
@@ -240,6 +248,7 @@ public class World {
 	}
 	
 	public void openInventoryDisplay() {
+		gameInterface.refreshInventoryDisplay();
 		worldState = WorldState.INVENTORY;
 	}
 	

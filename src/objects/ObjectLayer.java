@@ -1,6 +1,5 @@
 package objects;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Consumer;
@@ -10,24 +9,15 @@ import org.newdawn.slick.GameContainer;
 import helpers.Point;
 import helpers.Rectangle;
 
-public class ObjectLayer<T extends GameObject> {
-	Collection<T> objects;
+public class ObjectLayer<T extends GameObject> extends HashSet<T> {
+	/**
+	 * No I don't know what this is.
+	 */
+	private static final long serialVersionUID = 1154685374354625221L;
 	boolean visible = true;
-
-	public ObjectLayer() {
-		objects = new HashSet<T>();
-	}
-
-	public void add(T go) {
-		objects.add(go);
-	}
 
 	public boolean isVisible() {
 		return visible;
-	}
-
-	public Iterator<T> iterator() {
-		return objects.iterator();
 	}
 
 	/**
@@ -41,7 +31,7 @@ public class ObjectLayer<T extends GameObject> {
 	 * @return The first object in the layer (if any) which contains the point.
 	 */
 	public T findClickedObject(Point p) {
-		Iterator<T> io = objects.iterator();
+		Iterator<T> io = iterator();
 
 		while (io.hasNext()) {
 			T wo = io.next();
@@ -65,7 +55,7 @@ public class ObjectLayer<T extends GameObject> {
 	 *            void.
 	 */
 	public void applyToAll(Consumer<T> f) {
-		objects.stream().forEach(f);
+		stream().forEach(f);
 	}
 
 	/**

@@ -110,5 +110,9 @@ public class Player extends Actor {
 		InventoryItem key = InventoryItem.getKeyByID(keyID);
 		removeFromInventory(key);
 	}
+
+	public Inventory getInventory() {
+		return inventory;
+	}
 }
 

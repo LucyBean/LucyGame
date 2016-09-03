@@ -10,6 +10,7 @@ import helpers.Point;
 import images.LayeredImage;
 import images.Sprite;
 import images.SpriteBuilder;
+import player.Inventory;
 import player.InventoryItem;
 
 public class InventoryDisplay extends IEList {
@@ -18,11 +19,20 @@ public class InventoryDisplay extends IEList {
 	InventoryItem minItem;
 	InventoryItem maxItem;
 
-	public InventoryDisplay(Point firstPoint,
-			TreeMap<InventoryItem, Integer> items) {
+	public InventoryDisplay(Point firstPoint, Inventory i) {
 		super(firstPoint, 4, (() -> SpriteBuilder.makeInventoryDisplaySprite()),
 				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
-		this.items = items;
+		this.items = i.getItems();
+		updateSprites();
+	}
+
+	public InventoryDisplay(Point firstPoint) {
+		super(firstPoint, 4, (() -> SpriteBuilder.makeInventoryDisplaySprite()),
+				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
+	}
+
+	public void setInventory(Inventory i) {
+		this.items = i.getItems();
 		updateSprites();
 	}
 
@@ -71,6 +81,9 @@ public class InventoryDisplay extends IEList {
 			// No information to display
 			LayeredImage limg = s.getImage();
 
+			// Set deselected background
+			limg.fillLayer(0, new Color(200, 200, 200));
+
 			// Remove icon
 			limg.setLayer(1, (Image) null);
 
@@ -83,6 +96,10 @@ public class InventoryDisplay extends IEList {
 
 	@Override
 	public int getNumElements() {
-		return items.size();
+		if (items == null) {
+			return 0;
+		} else {
+			return items.size();
+		}
 	}
 }

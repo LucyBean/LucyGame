@@ -1,19 +1,17 @@
 package objects;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 
-public class ObjectLayerSet<T extends GameObject> {
-	private Map<Integer, ObjectLayer<T>> ols;
-
-	public ObjectLayerSet() {
-		ols = new HashMap<Integer, ObjectLayer<T>>();
-	}
+public class ObjectLayerSet<T extends GameObject> extends HashMap<Integer, ObjectLayer<T>> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2821732972727075089L;
 
 	/**
 	 * Applies the Function f to all objects in all ObjectLayers in the set. Use
@@ -24,19 +22,19 @@ public class ObjectLayerSet<T extends GameObject> {
 	 *            void.
 	 */
 	public void applyToAllObjects(Consumer<T> f) {
-		for (int i : ols.keySet()) {
-		ols.get(i).applyToAll(f);
+		for (int i : keySet()) {
+		get(i).applyToAll(f);
 		}
 	}
 
 	public void applyToLayerObjects(Consumer<T> f, int index) {
-		if (ols.get(index) != null) {
-			ols.get(index).applyToAll(f);
+		if (get(index) != null) {
+			get(index).applyToAll(f);
 		}
 	}
 	
 	public void applyToAllLayers(Consumer<ObjectLayer<T>> f) {
-		ols.entrySet().stream().forEach(a -> f.accept(a.getValue()));
+		entrySet().stream().forEach(a -> f.accept(a.getValue()));
 	}
 
 	/**
@@ -49,8 +47,8 @@ public class ObjectLayerSet<T extends GameObject> {
 	 *            The number of the layer to which t will be added.
 	 */
 	public void add(T t, int layer) {
-		ols.putIfAbsent(layer, new ObjectLayer<T>());
-		ols.get(layer).add(t);
+		putIfAbsent(layer, new ObjectLayer<T>());
+		get(layer).add(t);
 	}
 
 	/**
@@ -59,8 +57,8 @@ public class ObjectLayerSet<T extends GameObject> {
 	 * @param t
 	 */
 	public void addToAll(T t) {
-		for (int i : ols.keySet()) {
-			ols.get(i).add(t);
+		for (int i : keySet()) {
+			get(i).add(t);
 		}
 	}
 
@@ -78,8 +76,8 @@ public class ObjectLayerSet<T extends GameObject> {
 	 *            The index of the layer to be rendered.
 	 */
 	public void render(int index) {
-		if (ols.get(index) != null) {
-			ols.get(index).render();
+		if (get(index) != null) {
+			get(index).render();
 		}
 	}
 
@@ -91,16 +89,16 @@ public class ObjectLayerSet<T extends GameObject> {
 	}
 
 	public void update(GameContainer gc, int delta, int layer) {
-		if (ols.get(layer) != null) {
-			ols.get(layer).update(gc, delta);
+		if (get(layer) != null) {
+			get(layer).update(gc, delta);
 		}
 	}
 
 	public T findClickedObject(Point p) {
 		T clicked = null;
 
-		for (int i : ols.keySet()) {
-			ObjectLayer<T> ol = ols.get(i);
+		for (int i : keySet()) {
+			ObjectLayer<T> ol = get(i);
 			T wo = ol.findClickedObject(p);
 			if (wo != null) {
 				clicked = wo;
@@ -111,8 +109,8 @@ public class ObjectLayerSet<T extends GameObject> {
 	}
 
 	public T findClickedObject(Point p, int index) {
-		if (ols.get(index) != null) {
-			return ols.get(index).findClickedObject(p);
+		if (get(index) != null) {
+			return get(index).findClickedObject(p);
 		} else {
 			return null;
 		}

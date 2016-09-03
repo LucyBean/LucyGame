@@ -9,6 +9,7 @@ import helpers.Point;
 import objects.ObjectLayer;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
+import player.Inventory;
 import worlds.World;
 import worlds.WorldState;
 
@@ -22,6 +23,7 @@ public class GameInterface {
 	ObjectLayerSet<InterfaceElement> interfaces;
 	ObjectLayer<InterfaceElement> allStateInterface;
 	StatusWindow statusWindow;
+	InventoryDisplay inventoryDisplay;
 	World world;
 	List<MenuSet> menus;
 
@@ -73,6 +75,17 @@ public class GameInterface {
 	}
 
 	/**
+	 * Removes an InterfaceElement from all interfaces in which it appears.
+	 * 
+	 * @param ie
+	 *            The InterfaceElement to remove.
+	 */
+	public void remove(InterfaceElement ie) {
+		allStateInterface.remove(ie);
+		interfaces.applyToAllLayers(ol -> ol.remove(ie));
+	}
+
+	/**
 	 * Sets the watch target for the GameInterface's StatusWindow. This will
 	 * also enable the StatusWindow.
 	 * 
@@ -87,6 +100,21 @@ public class GameInterface {
 		if (statusWindow == null) {
 			statusWindow = new StatusWindow(new Point(340, 0));
 			addToAll(statusWindow);
+		}
+	}
+
+	public void setInventoryToDisplay(Inventory i) {
+		if (inventoryDisplay == null) {
+			inventoryDisplay = new InventoryDisplay(new Point(400, 40), i);
+			add(inventoryDisplay, WorldState.INVENTORY);
+		} else {
+			inventoryDisplay.setInventory(i);
+		}
+	}
+
+	public void refreshInventoryDisplay() {
+		if (inventoryDisplay != null) {
+			inventoryDisplay.updateSprites();
 		}
 	}
 
@@ -111,7 +139,8 @@ public class GameInterface {
 	 * @param keycode
 	 */
 	public void keyPressed(int keycode, WorldState state) {
-		interfaces.applyToLayerObjects(a -> a.keyPressed(keycode), state.ordinal());
+		interfaces.applyToLayerObjects(a -> a.keyPressed(keycode),
+				state.ordinal());
 		allStateInterface.applyToAll(a -> a.keyPressed(keycode));
 	}
 

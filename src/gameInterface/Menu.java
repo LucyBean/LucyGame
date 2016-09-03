@@ -77,7 +77,11 @@ public class Menu extends IEList {
 
 	@Override
 	public int getNumElements() {
-		return labels.size();
+		if (labels == null) {
+			return 0;
+		} else {
+			return labels.size();
+		}
 	}
 
 }

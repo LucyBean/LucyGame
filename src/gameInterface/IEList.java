@@ -73,22 +73,37 @@ public abstract class IEList extends InterfaceElement {
 		this(firstPoint, numDisplayElems, spriteMaker, null);
 	}
 
-	private void setSelectedIndex(int newButtonIndex) {
-		if (usingSelection) {
-			// deselect old index
-			int oldButtonIndex = selectedIndex;
-			int oldElementIndex = selectedIndex + minItemDisplayed;
-			if (oldButtonIndex >= 0 && oldButtonIndex < buttons.size()) {
-				getElementSprite(oldElementIndex,
-						buttons.get(oldButtonIndex).getSprite());
-			}
+	/**
+	 * Checks whether an element exists at this index.
+	 * 
+	 * @param elementIndex
+	 * @return
+	 */
+	public boolean elementExists(int elementIndex) {
+		return elementIndex >= 0 && elementIndex < getNumElements();
+	}
 
-			// select new index
-			if (newButtonIndex >= 0 && newButtonIndex < buttons.size()) {
-				setSelectedSprite.accept(
-						buttons.get(newButtonIndex).getSprite());
+	private void setSelectedIndex(int newButtonIndex) {
+		// check if the item to select exists
+		int newElementIndex = newButtonIndex + minItemDisplayed;
+		if (elementExists(newElementIndex)) {
+
+			if (usingSelection) {
+				// deselect old index
+				int oldButtonIndex = selectedIndex;
+				int oldElementIndex = selectedIndex + minItemDisplayed;
+				if (oldButtonIndex >= 0 && oldButtonIndex < buttons.size()) {
+					getElementSprite(oldElementIndex,
+							buttons.get(oldButtonIndex).getSprite());
+				}
+
+				// select new index
+				if (newButtonIndex >= 0 && newButtonIndex < buttons.size()) {
+					setSelectedSprite.accept(
+							buttons.get(newButtonIndex).getSprite());
+				}
+				selectedIndex = newButtonIndex;
 			}
-			selectedIndex = newButtonIndex;
 		}
 	}
 
