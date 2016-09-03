@@ -1,5 +1,5 @@
 package worlds;
 
 public enum WorldState {
-	PLAYING, MENU, WATCH_SELECT, INVENTORY;
+	PLAYING, MENU, WATCH_SELECT, INVENTORY, CONVERSATION;
 }

@@ -9,7 +9,7 @@ import helpers.Point;
 import objects.ObjectLayer;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
-import player.Inventory;
+import objects.characters.player.Inventory;
 import worlds.World;
 import worlds.WorldState;
 
@@ -24,6 +24,7 @@ public class GameInterface {
 	ObjectLayer<InterfaceElement> allStateInterface;
 	StatusWindow statusWindow;
 	InventoryDisplay inventoryDisplay;
+	ConversationDisplay conversationDisplay;
 	World world;
 	List<MenuSet> menus;
 
@@ -31,6 +32,8 @@ public class GameInterface {
 		interfaces = new ObjectLayerSet<InterfaceElement>();
 		allStateInterface = new ObjectLayer<InterfaceElement>();
 		menus = new ArrayList<MenuSet>();
+		conversationDisplay = new ConversationDisplay();
+		add(conversationDisplay, WorldState.CONVERSATION);
 	}
 
 	/**
@@ -116,6 +119,10 @@ public class GameInterface {
 		if (inventoryDisplay != null) {
 			inventoryDisplay.updateSprites();
 		}
+	}
+	
+	public void showConversation(String textToShow) {
+		conversationDisplay.setText(textToShow);
 	}
 
 	/**

@@ -3,7 +3,6 @@ package images;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
-import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;
@@ -154,48 +153,6 @@ public class SpriteBuilder {
 		}
 
 		return gem;
-	}
-
-	public static Sprite makeInventoryDisplaySprite() {
-		final int iconSize = 32;
-		final int border = 6;
-		final int padding = 6;
-		final int textBoxWidth = 70;
-		final int digitWidth = 10;
-
-		final int width = border * 2 + padding * 2 + iconSize + textBoxWidth
-				+ digitWidth * 2;
-		final int height = border * 2 + iconSize;
-
-		LayeredImage img = new LayeredImage(width, height, 5);
-
-		// Set background
-		img.setLayer(0, ImageBuilder.makeRectangle(width, height));
-//		img.fillLayer(0, new Color(200, 200, 200));
-
-		Point p = new Point(border, border);
-
-		// Icon
-		Image icon = ImageBuilder.makeRectangle(iconSize, iconSize,
-				new Color(50, 0, 10));
-		img.setLayer(1, new PositionedImage(p, icon));
-		p = p.move(Dir.EAST, iconSize + padding);
-
-		// Text
-		Image textBox = ImageBuilder.makeRectangle(textBoxWidth, iconSize,
-				new Color(50, 0, 10));
-		img.setLayer(2, new PositionedImage(p, textBox));
-		p = p.move(Dir.EAST, textBoxWidth + padding);
-		
-		// Digit one
-		Image digit1 = ImageBuilder.makeRectangle(digitWidth, iconSize, new Color(50, 0, 10));
-		img.setLayer(3, new PositionedImage(p, digit1));
-		p = p.move(Dir.EAST, digitWidth);
-		
-		Image digit2 = ImageBuilder.makeRectangle(digitWidth, iconSize, new Color(50, 0, 10));
-		img.setLayer(4, new PositionedImage(p, digit2));
-
-		return new Sprite(img, 1);
 	}
 	
 	public static Sprite makeMenuButton(String text) {

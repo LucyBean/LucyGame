@@ -10,7 +10,7 @@ import objectLibrary.Wall;
 import objects.Actor;
 import objects.Static;
 import objects.WorldObject;
-import player.Player;
+import objects.characters.player.Player;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldLayer;
@@ -43,5 +43,12 @@ public class PlatformerDemoWorld extends World {
 		// Add some walls
 		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 10));
 		addObject(Wall.drawWall(new Point(11, 9), Dir.EAST, 3));
+		
+		String longText = "This is a very long string. I need an exceptionally long string " 
+		+ "to test that my conversation maker is working. I am just going to chat "
+		+ "to myself until I write enough crap to test it is working properly. "
+		+ "Who'd have thought that something like this would be so hard!";
+		
+		showConversation(longText);
 	}
 }

@@ -18,9 +18,9 @@ import objectLibrary.Wall;
 import objects.Actor;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
+import objects.characters.player.Inventory;
+import objects.characters.player.Player;
 import options.GlobalOptions;
-import player.Inventory;
-import player.Player;
 
 public class World {
 	private Camera camera;
@@ -255,6 +255,14 @@ public class World {
 	public void closeInventoryDisplay() {
 		worldState = WorldState.PLAYING;
 	}
+	
+	public void conversationStarted() {
+		worldState = WorldState.CONVERSATION;
+	}
+	
+	public void conversationFinished() {
+		worldState = WorldState.PLAYING;
+	}
 
 	/**
 	 * Renders the world.
@@ -350,6 +358,11 @@ public class World {
 			setWatchTarget(clicked);
 			stopWatchSelect();
 		}
+	}
+	
+	public void showConversation(String textToShow) {
+		gameInterface.showConversation(textToShow);
+		conversationStarted();
 	}
 
 	//

@@ -2,11 +2,8 @@
 ==  THINGS TO DO  ==
 ====================
 
-Change Object lists to sets
-
 Creating other types of map objects (especially linked objects, like keys and switches)
 	Unlocked lock sprite
-	Build an inventory display
 	Make the inventory persist across worlds?
 	
 Add a pet that follows me

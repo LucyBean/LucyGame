@@ -3,7 +3,7 @@ package objectLibrary;
 import helpers.Point;
 import images.SpriteBuilder;
 import objects.PickUpItem;
-import player.InventoryItem;
+import objects.characters.player.InventoryItem;
 
 public class Key extends PickUpItem {
 	int keyID;
