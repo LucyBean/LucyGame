@@ -23,7 +23,7 @@ public class Player extends Actor {
 	Map<Integer, Integer> keys;
 
 	public Player(Point origin) {
-		super(origin, WorldLayer.PLAYER, SpriteBuilder.getPlayerImg(),
+		super(origin, WorldLayer.PLAYER, SpriteBuilder.getCharacterSprite(0),
 				new Collider(Point.ZERO, 0.8f, 2),
 				null);
 	}

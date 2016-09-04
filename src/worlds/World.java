@@ -307,9 +307,7 @@ public class World {
 		layers.update(gc, delta);
 	}
 
-	public void keyPressed(int keycode) {
-		gameInterface.keyPressed(keycode, worldState);
-		
+	public void keyPressed(int keycode) {		
 		switch (worldState) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {
@@ -333,9 +331,12 @@ public class World {
 				if (keycode == Input.KEY_I) {
 					closeInventoryDisplay();
 				}
+				break;
 			default:
 				break;
 		}
+		
+		gameInterface.keyPressed(keycode, worldState);
 	}
 
 	public void mousePressed(int button, int x, int y) {

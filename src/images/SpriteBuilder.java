@@ -133,13 +133,9 @@ public class SpriteBuilder {
 		return door;
 	}
 
-	public static Sprite getPlayerImg() {
-		if (player == null) {
-			player = new Sprite(ImageBuilder.getCharacterImg(0), new Point(-0.25f, 0.5f),
-					GRID_SIZE);
-		}
-
-		return player;
+	public static Sprite getCharacterSprite(int id) {
+		return new Sprite(ImageBuilder.getCharacterImg(id),
+				new Point(-0.25f, -0.5f), GRID_SIZE);
 	}
 
 	public static Sprite getGemImg() {
@@ -150,13 +146,13 @@ public class SpriteBuilder {
 
 		return gem;
 	}
-	
+
 	public static Sprite makeMenuButton(String text) {
 		Image bg = ImageBuilder.getMenuButtonBackground();
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 		limg.setTextCentered(limg.getTopLayerNumber(), text);
-		
+
 		return new Sprite(limg, 1);
 	}
 

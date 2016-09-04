@@ -3,8 +3,7 @@ package worldLibrary;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import characters.Conversation;
-import characters.ConversationCharacter;
+import characters.Matt;
 import helpers.Dir;
 import helpers.Point;
 import images.Sprite;
@@ -47,16 +46,8 @@ public class PlatformerDemoWorld extends World {
 		addObject(Wall.drawWall(new Point(11, 9), Dir.EAST, 3));
 		addObject(Wall.drawWall(new Point(0, 13), Dir.EAST, 5));
 		
-		Conversation c = new Conversation();
-		
-		String longText = "This is a very long string. I need an exceptionally long string " 
-		+ "to test that my conversation maker is working. I am just going to chat "
-		+ "to myself until I write enough crap to test it is working properly. "
-		+ "Who'd have thought that something like this would be so hard!";
-		
-		c.add(ConversationCharacter.LUCY, longText);
-		c.add(ConversationCharacter.MATT, "I like bean.");
-		
-		showConversation(c);
+		// Add a Matt
+		Matt matt = new Matt(new Point(12,7));
+		addObject(matt);
 	}
 }
