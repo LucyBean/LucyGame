@@ -15,10 +15,12 @@ public class ImageBuilder {
 	private static Image bby;
 	private static SpriteSheet keysAndLocks;
 	private static SpriteSheet inventoryItems;
+	private static SpriteSheet conversationCharacters;
 
 	public static void initSpriteSheets() throws SlickException {
 		keysAndLocks = new SpriteSheet("data/keys.png", 32, 32);
 		inventoryItems = new SpriteSheet("data/inventory_items.png", 32, 32);
+		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64, 64);
 	}
 
 	public static Image makeRectangle(int width, int height, Color fill, Color border) {
@@ -113,5 +115,13 @@ public class ImageBuilder {
 	
 	public static Image getGemImg() {
 		return inventoryItems.getSprite(0, 0);
+	}
+	
+	public static Image getConversationCharacterImg(int id) {
+		if (id >= 0 && id < 4) {
+			return conversationCharacters.getSprite(id, 0);
+		} else {
+			return null;
+		}
 	}
 }

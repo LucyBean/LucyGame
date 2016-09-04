@@ -8,7 +8,7 @@ import helpers.Point;
 import objects.Actor;
 import objects.Collider;
 import objects.WorldObject;
-import objects.characters.player.Player;
+import player.Player;
 import objects.InteractBox;
 import objects.Static;
 import worlds.LucyGame;

@@ -3,6 +3,7 @@ package images;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import characters.ConversationCharacter;
 import helpers.Point;
 import options.GlobalOptions;
 
@@ -11,7 +12,7 @@ public class ConversationBlockSprite extends Sprite {
 		final int spriteSize = 64;
 		final int border = 10;
 		final int padding = 4;
-		final int nameHeight = 12;
+		final int nameHeight = 20;
 
 		final int height = border * 2 + padding + spriteSize + nameHeight;
 		final int width = GlobalOptions.WINDOW_WIDTH - 100;
@@ -61,6 +62,15 @@ public class ConversationBlockSprite extends Sprite {
 		}
 
 		return null;
+	}
+
+	public void setCharacter(ConversationCharacter cc) {
+		if (cc.getImage() != null) {
+			getImage().setLayer(1, cc.getImage());
+		} else {
+			getImage().clear(1);
+		}
+		getImage().setTextCentered(2, cc.getName());
 	}
 
 }

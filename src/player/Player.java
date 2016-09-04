@@ -1,4 +1,4 @@
-package objects.characters.player;
+package player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,14 +9,14 @@ import org.newdawn.slick.Input;
 import helpers.Dir;
 import helpers.Point;
 import images.SpriteBuilder;
+import objects.Actor;
 import objects.Collider;
 import objects.Locker;
 import objects.PickUpItem;
 import objects.WorldObject;
-import objects.characters.GameCharacter;
 import worlds.WorldLayer;
 
-public class Player extends GameCharacter {
+public class Player extends Actor {
 	float speed;
 	float jumpStrength = 0.03f;
 	Inventory inventory;
@@ -109,11 +109,6 @@ public class Player extends GameCharacter {
 
 	public Inventory getInventory() {
 		return inventory;
-	}
-	
-	@Override
-	public String getName() {
-		return "Lucy";
 	}
 }
 

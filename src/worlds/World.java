@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import characters.Conversation;
 import gameInterface.DefaultGameInterface;
 import gameInterface.GameInterface;
 import gameInterface.InterfaceElement;
@@ -18,9 +19,9 @@ import objectLibrary.Wall;
 import objects.Actor;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
-import objects.characters.player.Inventory;
-import objects.characters.player.Player;
 import options.GlobalOptions;
+import player.Inventory;
+import player.Player;
 
 public class World {
 	private Camera camera;
@@ -360,8 +361,8 @@ public class World {
 		}
 	}
 	
-	public void showConversation(String textToShow) {
-		gameInterface.showConversation(textToShow);
+	public void showConversation(Conversation c) {
+		gameInterface.showConversation(c);
 		conversationStarted();
 	}
 

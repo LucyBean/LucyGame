@@ -15,8 +15,8 @@ import objectLibrary.Key;
 import objectLibrary.Lock;
 import objectLibrary.Wall;
 import objects.Lockable;
-import objects.characters.player.Player;
 import options.GlobalOptions;
+import player.Player;
 import worlds.LucyGame;
 import worlds.World;
 

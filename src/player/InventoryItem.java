@@ -1,4 +1,4 @@
-package objects.characters.player;
+package player;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -5,7 +5,7 @@ import org.newdawn.slick.Image;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.characters.player.InventoryItem;
+import player.InventoryItem;
 
 public class InventoryDisplaySprite extends Sprite {
 	private final static Point vTextAlign = new Point(0, 8);

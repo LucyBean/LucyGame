@@ -8,8 +8,8 @@ import org.newdawn.slick.Color;
 import helpers.Point;
 import images.InventoryDisplaySprite;
 import images.Sprite;
-import objects.characters.player.Inventory;
-import objects.characters.player.InventoryItem;
+import player.Inventory;
+import player.InventoryItem;
 
 public class InventoryDisplay extends IEList {
 	TreeMap<InventoryItem, Integer> items;

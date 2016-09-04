@@ -9,19 +9,45 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import characters.Conversation;
+import characters.ConversationCharacter;
 import helpers.Dir;
+import helpers.Pair;
 import helpers.Point;
 import images.ConversationBlockSprite;
 
 public class ConversationDisplay extends InterfaceElement {
 	Iterator<String> wordListIterator;
 	String savedWord;
+	Conversation current;
 
 	public ConversationDisplay() {
 		super(new Point(50, 350), new ConversationBlockSprite());
 	}
 
-	public void setText(String s) {
+	public void setConversation(Conversation c) {
+		current = c;
+		showNextSpeech();
+	}
+
+	private void showNextSpeech() {
+		Pair<ConversationCharacter, String> next = current.getNext();
+
+		if (next != null) {
+			setCharacter(next.getFirst());
+			setText(next.getSecond());
+			showNextTextLine();
+		} else {
+			getWorld().conversationFinished();
+		}
+	}
+
+	private void setCharacter(ConversationCharacter cc) {
+		ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
+		cbs.setCharacter(cc);
+	}
+
+	private void setText(String s) {
 		s = s.replace("\n", "");
 
 		String[] words = s.split(" ");
@@ -31,8 +57,6 @@ public class ConversationDisplay extends InterfaceElement {
 		}
 
 		wordListIterator = wordList.iterator();
-
-		showNext();
 	}
 
 	public boolean wordsRemaining() {
@@ -45,7 +69,7 @@ public class ConversationDisplay extends InterfaceElement {
 		}
 	}
 
-	public void showNext() {
+	public void showNextTextLine() {
 		try {
 			ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
 			Image textLayer = cbs.getTextImage();
@@ -87,13 +111,13 @@ public class ConversationDisplay extends InterfaceElement {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void keyPressed(int keycode) {
-		if(wordsRemaining()) {
-			showNext();
+		if (wordsRemaining()) {
+			showNextTextLine();
 		} else {
-			getWorld().conversationFinished();
+			showNextSpeech();
 		}
 	}
 }

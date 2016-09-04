@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 
+import characters.Conversation;
 import helpers.Point;
 import objects.ObjectLayer;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
-import objects.characters.player.Inventory;
+import player.Inventory;
 import worlds.World;
 import worlds.WorldState;
 
@@ -121,8 +122,8 @@ public class GameInterface {
 		}
 	}
 	
-	public void showConversation(String textToShow) {
-		conversationDisplay.setText(textToShow);
+	public void showConversation(Conversation c) {
+		conversationDisplay.setConversation(c);
 	}
 
 	/**

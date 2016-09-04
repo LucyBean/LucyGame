@@ -5,7 +5,7 @@ import images.SpriteBuilder;
 import objects.Actor;
 import objects.InteractBox;
 import objects.Locker;
-import objects.characters.player.Player;
+import player.Player;
 import worlds.WorldLayer;
 
 public class Lock extends Locker {
