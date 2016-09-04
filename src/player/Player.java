@@ -24,8 +24,7 @@ public class Player extends Actor {
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, SpriteBuilder.getPlayerImg(),
-				new Collider(
-						SpriteBuilder.getPlayerImg().getBoundingRectangle()),
+				new Collider(Point.ZERO, 0.8f, 2),
 				null);
 	}
 

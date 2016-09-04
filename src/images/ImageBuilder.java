@@ -12,15 +12,16 @@ public class ImageBuilder {
 	private static Image menuButtonBackground;
 	private static Image menuButtonSelectedBackground;
 	private static Image worldLoaderButtonBackground;
-	private static Image bby;
 	private static SpriteSheet keysAndLocks;
 	private static SpriteSheet inventoryItems;
 	private static SpriteSheet conversationCharacters;
+	private static SpriteSheet characters;
 
 	public static void initSpriteSheets() throws SlickException {
 		keysAndLocks = new SpriteSheet("data/keys.png", 32, 32);
 		inventoryItems = new SpriteSheet("data/inventory_items.png", 32, 32);
 		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64, 64);
+		characters = new SpriteSheet("data/characters.png", 40, 80);
 	}
 
 	public static Image makeRectangle(int width, int height, Color fill, Color border) {
@@ -83,21 +84,6 @@ public class ImageBuilder {
 
 		return worldLoaderButtonBackground;
 	}
-
-	public static Image getBbyImage() {
-		if (bby == null) {
-			try {
-				bby = new Image("data/Bby.png");
-			} catch (SlickException e) {
-				System.err.println("Error importing Bby image.");
-				if (GlobalOptions.debug()) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return bby;
-	}
 	
 	public static Image getKeyImg(int keyID) {
 		if (keyID <= 0 || keyID > 4) {
@@ -120,6 +106,14 @@ public class ImageBuilder {
 	public static Image getConversationCharacterImg(int id) {
 		if (id >= 0 && id < 4) {
 			return conversationCharacters.getSprite(id, 0);
+		} else {
+			return null;
+		}
+	}
+	
+	public static Image getCharacterImg(int id) {
+		if (id >= 0 && id < 4) {
+			return characters.getSprite(id, 0);
 		} else {
 			return null;
 		}

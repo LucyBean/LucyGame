@@ -84,25 +84,29 @@ public abstract class IEList extends InterfaceElement {
 	}
 
 	private void setSelectedIndex(int newButtonIndex) {
-		// check if the item to select exists
-		int newElementIndex = newButtonIndex + minItemDisplayed;
-		if (elementExists(newElementIndex)) {
+		if (usingSelection) {
+			// check if the item to select exists
+			int newElementIndex = newButtonIndex + minItemDisplayed;
+			if (elementExists(newElementIndex)) {
 
-			if (usingSelection) {
-				// deselect old index
-				int oldButtonIndex = selectedIndex;
-				int oldElementIndex = selectedIndex + minItemDisplayed;
-				if (oldButtonIndex >= 0 && oldButtonIndex < buttons.size()) {
-					getElementSprite(oldElementIndex,
-							buttons.get(oldButtonIndex).getSprite());
-				}
+				if (usingSelection) {
+					// deselect old index
+					int oldButtonIndex = selectedIndex;
+					int oldElementIndex = selectedIndex + minItemDisplayed;
+					if (oldButtonIndex >= 0
+							&& oldButtonIndex < buttons.size()) {
+						getElementSprite(oldElementIndex,
+								buttons.get(oldButtonIndex).getSprite());
+					}
 
-				// select new index
-				if (newButtonIndex >= 0 && newButtonIndex < buttons.size()) {
-					setSelectedSprite.accept(
-							buttons.get(newButtonIndex).getSprite());
+					// select new index
+					if (newButtonIndex >= 0
+							&& newButtonIndex < buttons.size()) {
+						setSelectedSprite.accept(
+								buttons.get(newButtonIndex).getSprite());
+					}
+					selectedIndex = newButtonIndex;
 				}
-				selectedIndex = newButtonIndex;
 			}
 		}
 	}
@@ -181,13 +185,15 @@ public abstract class IEList extends InterfaceElement {
 
 	@Override
 	public void keyPressed(int keycode) {
-		switch (keycode) {
-			case Input.KEY_COMMA:
-				moveUp();
-				break;
-			case Input.KEY_O:
-				moveDown();
-				break;
+		if (usingSelection) {
+			switch (keycode) {
+				case Input.KEY_COMMA:
+					moveUp();
+					break;
+				case Input.KEY_O:
+					moveDown();
+					break;
+			}
 		}
 	}
 

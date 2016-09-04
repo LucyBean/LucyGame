@@ -135,11 +135,7 @@ public class SpriteBuilder {
 
 	public static Sprite getPlayerImg() {
 		if (player == null) {
-			/*
-			 * player = createRectangle( new Rectangle(Point.ZERO, 0.8f, 1.6f),
-			 * GRID_SIZE, new Color(240, 40, 240));
-			 */
-			player = new Sprite(ImageBuilder.getBbyImage(), Point.ZERO,
+			player = new Sprite(ImageBuilder.getCharacterImg(0), new Point(-0.25f, 0.5f),
 					GRID_SIZE);
 		}
 

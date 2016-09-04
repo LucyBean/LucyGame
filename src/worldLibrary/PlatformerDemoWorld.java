@@ -45,6 +45,7 @@ public class PlatformerDemoWorld extends World {
 		// Add some walls
 		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 10));
 		addObject(Wall.drawWall(new Point(11, 9), Dir.EAST, 3));
+		addObject(Wall.drawWall(new Point(0, 13), Dir.EAST, 5));
 		
 		Conversation c = new Conversation();
 		
