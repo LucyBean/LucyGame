@@ -70,7 +70,7 @@ public class Player extends Actor {
 
 	public void removeFromInventory(InventoryItem ii) {
 		if (ii != null) {
-			inventory.removeOne(ii);
+			inventory.remove(ii);
 		}
 	}
 

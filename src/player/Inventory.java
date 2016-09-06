@@ -2,16 +2,11 @@ package player;
 
 import java.util.TreeMap;
 
-public class Inventory {
-	TreeMap<InventoryItem, Integer> items;
-
-	public Inventory() {
-		items = new TreeMap<InventoryItem, Integer>();
-	}
-
-	public TreeMap<InventoryItem, Integer> getItems() {
-		return items;
-	}
+public class Inventory extends TreeMap<InventoryItem, Integer> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4108883944655371134L;
 
 	/**
 	 * Checks whether this Inventory contains this InventoryItem.
@@ -20,7 +15,7 @@ public class Inventory {
 	 * @return
 	 */
 	public boolean has(InventoryItem ii) {
-		Integer n = items.get(ii);
+		Integer n = get(ii);
 
 		return n != null && n > 0;
 	}
@@ -34,15 +29,15 @@ public class Inventory {
 	 *            The amount to add.
 	 */
 	public void add(InventoryItem ii, int quantity) {
-		int newAmount = items.getOrDefault(ii, 0) + quantity;
+		int newAmount = getOrDefault(ii, 0) + quantity;
 
 		if (newAmount <= 0) {
-			items.remove(ii);
+			remove(ii);
 		} else {
 			if (newAmount > 99) {
 				newAmount = 99;
 			}
-			items.put(ii, newAmount);
+			put(ii, newAmount);
 		}
 	}
 
@@ -62,21 +57,20 @@ public class Inventory {
 	 * 
 	 * @param ii
 	 */
-	public void removeOne(InventoryItem ii) {
-		Integer n = items.get(ii);
+	public void remove(InventoryItem ii, int amount) {
+		Integer n = get(ii);
 
 		if (n != null && n > 0) {
-			int newAmount = n - 1;
+			int newAmount = n - amount;
 			if (newAmount > 0) {
-				items.put(ii, newAmount);
+				put(ii, newAmount);
 			} else {
-				items.remove(ii);
+				remove(ii);
 			}
 		}
 	}
-
-	@Override
-	public String toString() {
-		return items.toString();
+	
+	public void remove(InventoryItem ii) {
+		remove(ii, 1);
 	}
 }
