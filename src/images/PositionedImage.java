@@ -6,7 +6,7 @@ import helpers.Point;
 import options.GlobalOptions;
 
 public class PositionedImage {
-	final Point origin;
+	Point origin;
 	Image image;
 
 	public PositionedImage(Point origin, Image image) {
@@ -62,5 +62,9 @@ public class PositionedImage {
 		} else {
 			return "PositionedImage at " + origin;
 		}
+	}
+
+	public void setPosition(Point p) {
+		origin = p;
 	}
 }

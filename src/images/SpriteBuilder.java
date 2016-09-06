@@ -20,7 +20,6 @@ public class SpriteBuilder {
 	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
 
 	private static Sprite door;
-	private static Sprite player;
 	private static Sprite gem;
 
 	/**

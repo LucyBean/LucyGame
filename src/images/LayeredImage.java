@@ -157,7 +157,12 @@ public class LayeredImage {
 				System.err.println("Incorrect image position " + p
 						+ " on image of size " + width + "x" + height);
 			}
-			layers.add(layer, new PositionedImage(p, null));
+			PositionedImage pi = layers.get(layer);
+			if (pi != null) {
+				pi.setPosition(p);
+			} else {
+				layers.add(layer, new PositionedImage(p, null));
+			}
 		} else if (GlobalOptions.debug()) {
 			System.err.println(
 					"Attempting to add an image to an invalid layer " + layer);
@@ -232,6 +237,42 @@ public class LayeredImage {
 			clear(i);
 		}
 	}
+	/**
+	 * 	 Sets the layer to show the text. The text will be aligned with its
+	 * top-left at the point topLeft. The layer specified will be completely
+	 * cleared before the text is added.
+	 * @param layer The number of the layer to fill. 0 is the background.
+	 * @param text The text to draw.
+	 * @param origin The point at which the text will be drawn.
+	 * @param hAlign
+	 *            The horizontal alignment for the layer relative to the origin.
+	 *            0 = left, 1 = center, 2 = right
+	 * @param vAlign
+	 *            The vertical alignment for the layer relative to the origin. 0
+	 *            = top, 1 = middle, 2 = bottom
+	 */
+	public void setText(int layer, String text, Point origin, int hAlign,
+			int vAlign) {
+		Image img = getLayer(layer).getImage();
+		if (img == null) {
+			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
+		}
+		try {
+			Graphics g = img.getGraphics();
+			float w = g.getFont().getWidth(text);
+			float h = g.getFont().getHeight(text);
+
+			float x = origin.getX() - (w * hAlign) / 2;
+			float y = origin.getY() - (h * vAlign) / 2;
+
+			setText(layer, text, new Point(x, y));
+		} catch (SlickException se) {
+			System.err.println("Error while adding text to image layer.");
+			if (GlobalOptions.debug()) {
+				se.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * Sets the layer to show the text. The text will be centered. The layer
@@ -247,24 +288,9 @@ public class LayeredImage {
 		if (img == null) {
 			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
 		}
-		try {
-			Graphics g = img.getGraphics();
-			float w = g.getFont().getWidth(text);
-			float h = g.getFont().getHeight(text);
-
-			float width = img.getWidth();
-			float height = img.getHeight();
-
-			float x = (width - w) / 2;
-			float y = (height - h) / 2;
-
-			setText(layer, text, new Point(x, y));
-		} catch (SlickException se) {
-			System.err.println("Error while adding text to image layer.");
-			if (GlobalOptions.debug()) {
-				se.printStackTrace();
-			}
-		}
+		float width = img.getWidth();
+		float height = img.getHeight();
+		setText(layer, text, new Point(width/2, height/2), 1, 1);
 	}
 
 	/**
@@ -275,7 +301,7 @@ public class LayeredImage {
 	 * @param layer
 	 *            The number of the layer to fill. 0 is the background.
 	 * @param text
-	 *            The color with which to fill the layer.
+	 *            The text to draw.
 	 * @param topLeft
 	 *            The point at which the topLeft of the text will be.
 	 */
