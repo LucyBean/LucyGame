@@ -7,6 +7,7 @@ import characters.Matt;
 import helpers.Dir;
 import helpers.Point;
 import images.Sprite;
+import objectLibrary.Gem;
 import objectLibrary.Key;
 import objectLibrary.Wall;
 import objects.Actor;
@@ -30,20 +31,20 @@ public class PlatformerDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-		WorldObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
-				new Sprite(new Image("data/Desert.jpg"), Point.ZERO, 1)) {
-			@Override
-			protected void resetStaticState() {
-
-			}
-		};
-		addObject(background);
+//		WorldObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
+//				new Sprite(new Image("data/Desert.jpg"), Point.ZERO, 1)) {
+//			@Override
+//			protected void resetStaticState() {
+//
+//			}
+//		};
+//		addObject(background);
 
 		Actor gravityPlayer = new Player(new Point(3, 2));
 		addObject(gravityPlayer);
 
 		// Add some walls
-		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 10));
+		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 20));
 		addObject(Wall.drawWall(new Point(11, 9), Dir.EAST, 3));
 		addObject(Wall.drawWall(new Point(0, 13), Dir.EAST, 5));
 		
@@ -54,5 +55,9 @@ public class PlatformerDemoWorld extends World {
 		// Add a key
 		Key k = new Key(new Point(4,12), 1);
 		addObject(k);
+		
+		// Add a gem
+		Gem g = new Gem(new Point(18,7));
+		addObject(g);
 	}
 }

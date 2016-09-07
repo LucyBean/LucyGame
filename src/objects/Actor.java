@@ -11,6 +11,8 @@ import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
 import images.Sprite;
+import quests.EventInfo;
+import quests.EventType;
 import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {
@@ -432,6 +434,7 @@ public abstract class Actor extends WorldObject {
 			while (aii.hasNext()) {
 				WorldObject go = aii.next();
 				go.interactedBy(this);
+				getWorld().signalEvent(new EventInfo(EventType.INTERACT, this, go));
 			}
 		}
 	}

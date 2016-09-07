@@ -22,7 +22,7 @@ public class Player extends Actor {
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, SpriteBuilder.getCharacterSprite(0),
-				new Collider(Point.ZERO, 0.8f, 2),
+				new Collider(Point.ZERO, 0.8f, 1.99f),
 				null);
 	}
 

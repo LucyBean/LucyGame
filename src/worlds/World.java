@@ -382,6 +382,10 @@ public class World {
 		activeQuests.add(q);
 		q.start();
 	}
+	
+	public void stopQuest(Quest q) {
+		activeQuests.remove(q);
+	}
 
 	//
 	// Some helpful world creator tools
