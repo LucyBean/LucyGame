@@ -7,6 +7,7 @@ import characters.Matt;
 import helpers.Dir;
 import helpers.Point;
 import images.Sprite;
+import objectLibrary.Key;
 import objectLibrary.Wall;
 import objects.Actor;
 import objects.Static;
@@ -49,5 +50,9 @@ public class PlatformerDemoWorld extends World {
 		// Add a Matt
 		Matt matt = new Matt(new Point(12,7));
 		addObject(matt);
+		
+		// Add a key
+		Key k = new Key(new Point(4,12), 1);
+		addObject(k);
 	}
 }

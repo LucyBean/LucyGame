@@ -7,6 +7,8 @@ import images.SpriteBuilder;
 import objects.Actor;
 import objects.InteractBox;
 import player.Player;
+import quests.Objective;
+import quests.Quest;
 import worlds.WorldLayer;
 
 public class Matt extends Actor {
@@ -41,6 +43,10 @@ public class Matt extends Actor {
 			c.add(lucy, "Ys!");
 			
 			getWorld().showConversation(c);
+			
+			Quest q = new Quest();
+			q.add(new Objective("Do something", ei -> true));
+			getWorld().startQuest(q);
 		}
 	}
 }

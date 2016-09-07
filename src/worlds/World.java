@@ -22,6 +22,8 @@ import objects.WorldObject;
 import options.GlobalOptions;
 import player.Inventory;
 import player.Player;
+import quests.EventInfo;
+import quests.Quest;
 
 public class World {
 	private Camera camera;
@@ -33,6 +35,7 @@ public class World {
 	private Set<WorldObject> activeSolids;
 	private Collection<WorldObject> interactables;
 	private WorldState worldState;
+	private Collection<Quest> activeQuests;
 	private final LucyGame game;
 	private final String name;
 	private ObjectLayerSet<WorldObject> layers;
@@ -51,13 +54,14 @@ public class World {
 	private void reset() {
 		try {
 			camera = new Camera();
-			layers = new ObjectLayerSet<WorldObject>();
-			actors = new HashSet<Actor>();
-			activeActors = new HashSet<Actor>();
-			solids = new HashSet<WorldObject>();
-			activeSolids = new HashSet<WorldObject>();
-			interactables = new HashSet<WorldObject>();
+			layers = new ObjectLayerSet<>();
+			actors = new HashSet<>();
+			activeActors = new HashSet<>();
+			solids = new HashSet<>();
+			activeSolids = new HashSet<>();
+			interactables = new HashSet<>();
 			worldState = WorldState.PLAYING;
+			activeQuests = new HashSet<>();
 			
 			setGameInterface(defaultInterface);
 			worldInterface = new GameInterface();
@@ -365,6 +369,18 @@ public class World {
 	public void showConversation(Conversation c) {
 		gameInterface.showConversation(c);
 		conversationStarted();
+	}
+	
+	//
+	// Quests
+	//
+	public void signalEvent(EventInfo ei) {
+		activeQuests.stream().forEach(q -> q.signalEvent(ei));
+	}
+	
+	public void startQuest(Quest q) {
+		activeQuests.add(q);
+		q.start();
 	}
 
 	//

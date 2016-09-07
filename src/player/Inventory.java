@@ -15,9 +15,13 @@ public class Inventory extends TreeMap<InventoryItem, Integer> {
 	 * @return
 	 */
 	public boolean has(InventoryItem ii) {
+		return has(ii, 1);
+	}
+	
+	public boolean has(InventoryItem ii, int quantity) {
 		Integer n = get(ii);
-
-		return n != null && n > 0;
+		
+		return n != null && n >= quantity;
 	}
 
 	/**

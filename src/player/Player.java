@@ -11,8 +11,6 @@ import helpers.Point;
 import images.SpriteBuilder;
 import objects.Actor;
 import objects.Collider;
-import objects.Locker;
-import objects.PickUpItem;
 import objects.WorldObject;
 import worlds.WorldLayer;
 
@@ -62,7 +60,7 @@ public class Player extends Actor {
 		keys = new HashMap<Integer, Integer>();
 	}
 
-	private void addToInventory(InventoryItem ii) {
+	public void addToInventory(InventoryItem ii) {
 		if (ii != null) {
 			inventory.add(ii);
 		}
@@ -76,14 +74,7 @@ public class Player extends Actor {
 
 	@Override
 	public void overlapStart(WorldObject wo) {
-		if (wo instanceof PickUpItem) {
-			PickUpItem pui = (PickUpItem) wo;
-			pui.disable();
-			addToInventory(pui.getInventoryItem());
-		} else if (wo instanceof Locker) {
-			Locker lock = (Locker) wo;
-			lock.unlock(this);
-		}
+		
 	}
 
 	/**
@@ -94,6 +85,10 @@ public class Player extends Actor {
 	 */
 	public boolean has(InventoryItem ii) {
 		return inventory.has(ii);
+	}
+	
+	public boolean has(InventoryItem ii, int quantity) {
+		return inventory.has(ii, quantity);
 	}
 
 	public boolean hasKey(int keyID) {

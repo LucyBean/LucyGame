@@ -102,7 +102,7 @@ public class GameInterface {
 
 	public void enableStatusWindow() {
 		if (statusWindow == null) {
-			statusWindow = new StatusWindow(new Point(340, 0));
+			statusWindow = new StatusWindow(new Point(0, 0));
 			addToAll(statusWindow);
 		}
 	}

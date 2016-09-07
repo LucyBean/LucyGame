@@ -22,6 +22,7 @@ public class LucyGame extends BasicGame {
 			AppGameContainer app = new AppGameContainer(new LucyGame());
 			app.setDisplayMode(GlobalOptions.WINDOW_WIDTH,
 					GlobalOptions.WINDOW_HEIGHT, false);
+			app.setShowFPS(false);
 			app.start();
 		} catch (SlickException se) {
 			se.printStackTrace();

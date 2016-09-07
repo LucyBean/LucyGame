@@ -5,6 +5,7 @@ import java.util.List;
 
 import helpers.Point;
 import images.Sprite;
+import player.Player;
 import worlds.WorldLayer;
 
 public abstract class Locker extends Static {
@@ -20,6 +21,14 @@ public abstract class Locker extends Static {
 	
 	public boolean isLocked() {
 		return locked;
+	}
+	
+	@Override
+	public void overlapStart(WorldObject wo) {
+		if (wo instanceof Player) {
+			Player p = (Player) wo;
+			unlock(p);
+		}
 	}
 	
 	public void link(Lockable k) {
