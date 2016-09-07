@@ -21,20 +21,18 @@ import worlds.WorldState;
  *
  */
 public class GameInterface {
-	ObjectLayerSet<InterfaceElement> interfaces;
-	ObjectLayer<InterfaceElement> allStateInterface;
-	StatusWindow statusWindow;
-	InventoryDisplay inventoryDisplay;
-	ConversationDisplay conversationDisplay;
-	World world;
-	List<MenuSet> menus;
+	private ObjectLayerSet<InterfaceElement> interfaces;
+	private ObjectLayer<InterfaceElement> allStateInterface;
+	private StatusWindow statusWindow;
+	private InventoryDisplay inventoryDisplay;
+	private ConversationDisplay conversationDisplay;
+	private World world;
+	private List<MenuSet> menus;
 
 	public GameInterface() {
 		interfaces = new ObjectLayerSet<InterfaceElement>();
 		allStateInterface = new ObjectLayer<InterfaceElement>();
 		menus = new ArrayList<MenuSet>();
-		conversationDisplay = new ConversationDisplay();
-		add(conversationDisplay, WorldState.CONVERSATION);
 	}
 
 	/**
@@ -123,6 +121,10 @@ public class GameInterface {
 	}
 	
 	public void showConversation(Conversation c) {
+		if (conversationDisplay == null) {
+			conversationDisplay = new ConversationDisplay();
+			add(conversationDisplay, WorldState.CONVERSATION);
+		}
 		conversationDisplay.setConversation(c);
 	}
 

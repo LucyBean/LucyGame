@@ -15,7 +15,6 @@ public class MenuSet extends InterfaceElement {
 	private static final Point START_POINT = new Point(
 			(GlobalOptions.WINDOW_WIDTH - 360) / 2, 100);
 	private int currentActive;
-	// TODO: Move to sub menu class
 
 	public MenuSet() {
 		menus = new HashMap<Integer, Menu>();
@@ -45,6 +44,14 @@ public class MenuSet extends InterfaceElement {
 		IEList currentMenu = menus.get(currentActive);
 		if (currentMenu != null) {
 			currentMenu.mousePressed(button, clickPoint);
+		}
+	}
+	
+	@Override
+	public void keyPressed(int keycode) {
+		IEList currentMenu = menus.get(currentActive);
+		if (currentMenu != null) {
+			currentMenu.keyPressed(keycode);
 		}
 	}
 

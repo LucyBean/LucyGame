@@ -341,6 +341,7 @@ public class World {
 		}
 		
 		gameInterface.keyPressed(keycode, worldState);
+		worldInterface.keyPressed(keycode, worldState);
 	}
 
 	public void mousePressed(int button, int x, int y) {

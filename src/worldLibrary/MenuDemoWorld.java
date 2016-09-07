@@ -2,8 +2,7 @@ package worldLibrary;
 
 import org.newdawn.slick.SlickException;
 
-import helpers.Point;
-import objectLibrary.WorldLoaderButton;
+import gameInterface.MenuSet;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldState;
@@ -15,10 +14,11 @@ public class MenuDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
+		MenuSet m = new MenuSet();
 		for (int i = 0; i < 5; i++) {
-			WorldLoaderButton wlb = new WorldLoaderButton(
-					new Point(32, (i + 2) * 64), i, "" + i);
-			addObject(wlb, WorldState.PLAYING);
+			final int w = i;
+			m.add((() -> "Level " + w), s -> s.getWorld().getGame().loadLevel(w));
 		}
+		addObject(m, WorldState.PLAYING);
 	}
 }

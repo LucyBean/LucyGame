@@ -38,6 +38,7 @@ public class ConversationDisplay extends InterfaceElement {
 			setText(next.getSecond());
 			showNextTextLine();
 		} else {
+			current = null;
 			getWorld().conversationFinished();
 		}
 	}
@@ -114,10 +115,12 @@ public class ConversationDisplay extends InterfaceElement {
 
 	@Override
 	public void keyPressed(int keycode) {
-		if (wordsRemaining()) {
-			showNextTextLine();
-		} else {
-			showNextSpeech();
+		if (current != null) {
+			if (wordsRemaining()) {
+				showNextTextLine();
+			} else {
+				showNextSpeech();
+			}
 		}
 	}
 }

@@ -1,22 +1,17 @@
 package worldLibrary;
 
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import characters.Matt;
 import helpers.Dir;
 import helpers.Point;
-import images.Sprite;
 import objectLibrary.Gem;
 import objectLibrary.Key;
 import objectLibrary.Wall;
 import objects.Actor;
-import objects.Static;
-import objects.WorldObject;
 import player.Player;
 import worlds.LucyGame;
 import worlds.World;
-import worlds.WorldLayer;
 
 /**
  * A demo of a basic platform game.
@@ -57,7 +52,7 @@ public class PlatformerDemoWorld extends World {
 		addObject(k);
 		
 		// Add a gem
-		Gem g = new Gem(new Point(18,7));
+		Gem g = new Gem(new Point(18,8));
 		addObject(g);
 	}
 }

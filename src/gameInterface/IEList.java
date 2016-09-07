@@ -193,6 +193,10 @@ public abstract class IEList extends InterfaceElement {
 				case Input.KEY_O:
 					moveDown();
 					break;
+				case Input.KEY_ENTER:
+				case Input.KEY_SPACE:
+					elementClicked(selectedIndex);
+					break;
 			}
 		}
 	}
