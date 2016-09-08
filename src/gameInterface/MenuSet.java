@@ -78,7 +78,7 @@ public class MenuSet extends InterfaceElement {
 		Menu subMenu = menus.get(state);
 		if (subMenu == null) {
 			subMenu = new Menu(START_POINT, 10,
-					(() -> SpriteBuilder.makeMenuButton("hello")), this);
+					(() -> SpriteBuilder.makeMenuButton("")), this);
 
 			menus.put(state, subMenu);
 		}

@@ -17,14 +17,14 @@ public class InventoryDisplay extends IEList {
 	InventoryItem maxItem;
 
 	public InventoryDisplay(Point firstPoint, Inventory i) {
-		super(firstPoint, 4, (() -> new InventoryDisplaySprite()),
+		super(firstPoint, 4, 1, 4, (() -> new InventoryDisplaySprite()),
 				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
 		inventory = i;
 		updateSprites();
 	}
 
 	public InventoryDisplay(Point firstPoint) {
-		super(firstPoint, 4, (() -> new InventoryDisplaySprite()),
+		super(firstPoint, 4, 1, 4, (() -> new InventoryDisplaySprite()),
 				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
 	}
 

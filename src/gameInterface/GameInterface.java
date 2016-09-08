@@ -119,7 +119,7 @@ public class GameInterface {
 			inventoryDisplay.updateSprites();
 		}
 	}
-	
+
 	public void showConversation(Conversation c) {
 		if (conversationDisplay == null) {
 			conversationDisplay = new ConversationDisplay();
@@ -152,6 +152,27 @@ public class GameInterface {
 		interfaces.applyToLayerObjects(a -> a.keyPressed(keycode),
 				state.ordinal());
 		allStateInterface.applyToAll(a -> a.keyPressed(keycode));
+	}
+
+	/**
+	 * Checks whether the mouse is currently over an element in this interface.
+	 * 
+	 * @param mousePoint
+	 *            The position of the mouse.
+	 * @return
+	 */
+	public boolean mouseOver(Point mousePoint, WorldState state) {
+		InterfaceElement t = interfaces.findClickedObject(mousePoint, state.ordinal());
+		if (t != null) {
+			return true;
+		}
+		
+		t = allStateInterface.findClickedObject(mousePoint);
+		if (t !=null) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**

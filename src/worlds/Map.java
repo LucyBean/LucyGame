@@ -24,14 +24,22 @@ public class Map {
 	private Set<WorldObject> activeSolids;
 	private Collection<WorldObject> interactables;
 	private ObjectLayerSet<WorldObject> layers;
+	private MapPainter mapPainter;
+	private World world;
 
-	public Map() {
+	public Map(World world) {
 		layers = new ObjectLayerSet<>();
 		actors = new HashSet<>();
 		activeActors = new HashSet<>();
 		solids = new HashSet<>();
 		activeSolids = new HashSet<>();
 		interactables = new HashSet<>();
+		mapPainter = new MapPainter(this);
+		this.world = world;
+	}
+	
+	public MapPainter getPainter() {
+		return mapPainter;
 	}
 
 	public void addObject(WorldObject go) {
@@ -53,6 +61,9 @@ public class Map {
 		if (go.isEnabled()) {
 			addToActiveSets(go);
 		}
+		
+
+		go.setWorld(world);
 	}
 
 	public void removeObject(WorldObject go) {

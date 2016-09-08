@@ -154,6 +154,14 @@ public class SpriteBuilder {
 
 		return new Sprite(limg, 1);
 	}
+	
+	public static Sprite makePaletteBlock() {
+		Image bg = ImageBuilder.getPaletteBlockBackground();
+		LayeredImage limg = new LayeredImage(bg);
+		limg.addLayers(1);
+		
+		return new Sprite(limg, 1);
+	}
 
 	private final static Sprite WALL = createRectangle(
 			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,

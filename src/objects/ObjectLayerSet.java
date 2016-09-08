@@ -54,6 +54,7 @@ public class ObjectLayerSet<T extends GameObject>
 
 	/**
 	 * Removes an object T from all ObjectLayers in which it is present.
+	 * 
 	 * @param t
 	 */
 	public void remove(T t) {
@@ -103,6 +104,12 @@ public class ObjectLayerSet<T extends GameObject>
 		}
 	}
 
+	/**
+	 * Finds the first object that is currently under the mouse on any layer.
+	 * 
+	 * @param p
+	 * @return
+	 */
 	public T findClickedObject(Point p) {
 		T clicked = null;
 
@@ -117,6 +124,14 @@ public class ObjectLayerSet<T extends GameObject>
 		return clicked;
 	}
 
+	/**
+	 * Finds the first object that is currently under the mouse on the required
+	 * layer.
+	 * 
+	 * @param p
+	 * @param index
+	 * @return
+	 */
 	public T findClickedObject(Point p, int index) {
 		if (get(index) != null) {
 			return get(index).findClickedObject(p);

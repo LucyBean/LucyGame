@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
 
 import helpers.Dir;
 import helpers.Point;
+import helpers.Rectangle;
+import images.LayeredImage;
 import images.Sprite;
 import worlds.World;
 
@@ -19,6 +22,8 @@ public abstract class IEList extends InterfaceElement {
 	private int selectedIndex;
 	private Consumer<Sprite> setSelectedSprite;
 	private boolean usingSelection;
+	private int width;
+	private int padding;
 
 	/**
 	 * Creates a new IEList. An IEList is used to display a number of elements
@@ -40,21 +45,35 @@ public abstract class IEList extends InterfaceElement {
 	 *            A Consumer that takes a Sprite and applies some effect to
 	 *            display that the corresponding button has been selected.
 	 */
-	public IEList(Point firstPoint, int numDisplayElems,
+	public IEList(Point firstPoint, int numDisplayElems, int width, int padding,
 			Supplier<Sprite> spriteMaker, Consumer<Sprite> setSelectedSprite) {
 		nextPosition = firstPoint;
 		buttons = new ArrayList<IEListItem>();
 		minItemDisplayed = 0;
 		this.setSelectedSprite = setSelectedSprite;
+		this.width = width;
+		this.padding = padding;
 		usingSelection = (setSelectedSprite != null);
+		
+		setPosition(firstPoint);
 
+		int column = 0;
 		for (int i = 0; i < numDisplayElems; i++) {
 			Sprite s = spriteMaker.get();
+			Rectangle r = s.getBoundingRectangle();
 			IEListItem ieli = new IEListItem(this, i, nextPosition, s);
 			getElementSprite(i, s);
 			buttons.add(ieli);
-			nextPosition = nextPosition.move(Dir.SOUTH,
-					s.getBoundingRectangle().getHeight());
+
+			column++;
+			if (column >= width) {
+				nextPosition = new Point(firstPoint.getX(),
+						nextPosition.getY() + r.getHeight() + padding);
+				column = 0;
+			} else {
+				nextPosition = nextPosition.move(Dir.EAST,
+						r.getWidth() + padding);
+			}
 		}
 
 		setSelectedIndex(0);
@@ -68,9 +87,46 @@ public abstract class IEList extends InterfaceElement {
 	 * @param numDisplayElems
 	 * @param spriteMaker
 	 */
-	public IEList(Point firstPoint, int numDisplayElems,
+	public IEList(Point firstPoint, int numDisplayElems, int width, int padding,
 			Supplier<Sprite> spriteMaker) {
-		this(firstPoint, numDisplayElems, spriteMaker, null);
+		this(firstPoint, numDisplayElems, width, padding, spriteMaker, null);
+	}
+
+	/**
+	 * Sets the background to be the given sprite.
+	 * 
+	 * @param s
+	 */
+	public void setBackground(Sprite s) {
+		setSprite(s);
+	}
+
+	/**
+	 * Sets the background to be the given colour
+	 * 
+	 * @param c
+	 */
+	public void setBackground(Color c) {
+		if (buttons.size() > 0) {
+			if (getSprite() == null) {
+				Rectangle spriteBound = buttons.get(
+						0).getSprite().getBoundingRectangle();
+				int height = buttons.size() / width;
+				if (buttons.size() % width != 0) {
+					height++;
+				}
+				int w = (int) (spriteBound.getWidth() * width
+						+ padding * (width + 1));
+				int h = (int) (spriteBound.getHeight() * height
+						+ padding * (height + 1));
+				Point origin = new Point(-padding, -padding);
+
+				LayeredImage limg = new LayeredImage(w, h, 1);
+				setSprite(new Sprite(limg, origin, 1));
+			}
+
+			getSprite().getImage().fillLayer(0, c);
+		}
 	}
 
 	/**
@@ -203,6 +259,9 @@ public abstract class IEList extends InterfaceElement {
 
 	@Override
 	protected void draw() {
+		if (getSprite() != null) {
+			getSprite().draw(getCoOrdTranslator());
+		}
 		buttons.stream().forEach(s -> s.render());
 	}
 

@@ -12,6 +12,7 @@ public class ImageBuilder {
 	private static Image menuButtonBackground;
 	private static Image menuButtonSelectedBackground;
 	private static Image worldLoaderButtonBackground;
+	private static Image paletteBlockBackground;
 	private static SpriteSheet keysAndLocks;
 	private static SpriteSheet inventoryItems;
 	private static SpriteSheet conversationCharacters;
@@ -61,7 +62,7 @@ public class ImageBuilder {
 
 	public static Image getMenuButtonBackground() {
 		if (menuButtonBackground == null) {
-			menuButtonBackground = makeRectangle(360, 32,
+			menuButtonBackground = makeRectangle(280, 32,
 					new Color(240, 120, 180));
 		}
 
@@ -70,7 +71,7 @@ public class ImageBuilder {
 	
 	public static Image getMenuButtonSelectedBackground() {
 		if (menuButtonSelectedBackground == null) {
-			menuButtonSelectedBackground = makeRectangle(360, 32, new Color(240, 240, 180));
+			menuButtonSelectedBackground = makeRectangle(280, 32, new Color(240, 240, 180));
 		}
 		
 		return menuButtonSelectedBackground;
@@ -117,5 +118,13 @@ public class ImageBuilder {
 		} else {
 			return null;
 		}
+	}
+
+	public static Image getPaletteBlockBackground() {
+		if (paletteBlockBackground == null) {
+			paletteBlockBackground = ImageBuilder.makeRectangle(32, 32);
+		}
+		
+		return paletteBlockBackground;
 	}
 }

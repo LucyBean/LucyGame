@@ -48,7 +48,7 @@ public class World {
 			camera = new Camera();
 			worldState = WorldState.PLAYING;
 			activeQuests = new HashSet<>();
-			map = new Map();
+			map = new Map(this);
 
 			setGameInterface(defaultInterface);
 			worldInterface = new GameInterface();
@@ -113,10 +113,8 @@ public class World {
 			Inventory i = ((Player) go).getInventory();
 			gameInterface.setInventoryToDisplay(i);
 		}
-
-		go.setWorld(this);
 	}
-	
+
 	public void removeObject(WorldObject go) {
 		map.removeObject(go);
 	}
@@ -164,6 +162,10 @@ public class World {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Map getMap() {
+		return map;
 	}
 
 	//
@@ -285,28 +287,31 @@ public class World {
 		Input input = gc.getInput();
 		Point mousePoint = new Point(input.getMouseX(), input.getMouseY());
 		WorldObject wo = map.findClickedObject(mousePoint);
-		
-		if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-			if (wo == null) {
-				int gridSize = GlobalOptions.GRID_SIZE;
-				Point worldCoOrds = mousePoint.scale(
-						1 / (camera.getScale() * gridSize)).move(
-								camera.getLocation().scale(
-										WorldLayer.WORLD.getParallaxX(),
-										WorldLayer.WORLD.getParallaxY()));
+		boolean mouseOnMap = !gameInterface.mouseOver(mousePoint, getState())
+				& !worldInterface.mouseOver(mousePoint, getState());
 
-				// Need to ensure that the objects are snapped to the grid!
-				float snapX = (float) Math.floor(worldCoOrds.getX());
-				float snapY = (float) Math.floor(worldCoOrds.getY());
+		if (mouseOnMap) {
+			if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+				if (wo == null) {
+					int gridSize = GlobalOptions.GRID_SIZE;
+					Point worldCoOrds = mousePoint.scale(
+							1 / (camera.getScale() * gridSize)).move(
+									camera.getLocation().scale(
+											WorldLayer.WORLD.getParallaxX(),
+											WorldLayer.WORLD.getParallaxY()));
 
-				worldCoOrds = new Point(snapX, snapY);
+					// Need to ensure that the objects are snapped to the grid!
+					float snapX = (float) Math.floor(worldCoOrds.getX());
+					float snapY = (float) Math.floor(worldCoOrds.getY());
 
-				Wall w = new Wall(worldCoOrds, 1, 1);
-				addObject(w);
-			}
-		} else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-			if (wo != null) {
-				removeObject(wo);
+					worldCoOrds = new Point(snapX, snapY);
+
+					map.getPainter().paint(worldCoOrds);
+				}
+			} else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
+				if (wo != null) {
+					removeObject(wo);
+				}
 			}
 		}
 	}
