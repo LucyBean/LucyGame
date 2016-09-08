@@ -2,7 +2,6 @@ package worlds;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -16,8 +15,6 @@ import gameInterface.InterfaceElement;
 import helpers.Dir;
 import helpers.Point;
 import objectLibrary.Wall;
-import objects.Actor;
-import objects.ObjectLayerSet;
 import objects.WorldObject;
 import options.GlobalOptions;
 import player.Inventory;
@@ -29,17 +26,12 @@ public class World {
 	private Camera camera;
 	private GameInterface gameInterface;
 	private GameInterface worldInterface;
-	private Collection<Actor> actors;
-	private Set<Actor> activeActors;
-	private Collection<WorldObject> solids;
-	private Set<WorldObject> activeSolids;
-	private Collection<WorldObject> interactables;
 	private WorldState worldState;
 	private Collection<Quest> activeQuests;
 	private final LucyGame game;
 	private final String name;
-	private ObjectLayerSet<WorldObject> layers;
-	
+	private Map map;
+
 	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
 	public World(LucyGame game, String name) {
@@ -54,15 +46,10 @@ public class World {
 	private void reset() {
 		try {
 			camera = new Camera();
-			layers = new ObjectLayerSet<>();
-			actors = new HashSet<>();
-			activeActors = new HashSet<>();
-			solids = new HashSet<>();
-			activeSolids = new HashSet<>();
-			interactables = new HashSet<>();
 			worldState = WorldState.PLAYING;
 			activeQuests = new HashSet<>();
-			
+			map = new Map();
+
 			setGameInterface(defaultInterface);
 			worldInterface = new GameInterface();
 
@@ -118,32 +105,20 @@ public class World {
 	 *            The WorldLayer for the object.
 	 */
 	public void addObject(WorldObject go) {
-		WorldLayer layer = go.getLayer();
-		layers.add(go, layer.ordinal());
+		map.addObject(go);
 
-		// Adds the object to any extra lists.
-		if (go instanceof Actor) {
-			actors.add((Actor) go);
-		}
-
-		if (go.isSolid()) {
-			solids.add(go);
-		}
-		if (go.isInteractable()) {
-			interactables.add(go);
-		}
-
-		if (go.isEnabled()) {
-			addToActiveSets(go);
-		}
-		
-		// If it is a Player, register their inventory with the inventory displayer
+		// If it is a Player, register their inventory with the inventory
+		// displayer
 		if (go instanceof Player) {
 			Inventory i = ((Player) go).getInventory();
 			gameInterface.setInventoryToDisplay(i);
 		}
 
 		go.setWorld(this);
+	}
+	
+	public void removeObject(WorldObject go) {
+		map.removeObject(go);
 	}
 
 	public void addObject(InterfaceElement ie, WorldState state) {
@@ -160,9 +135,7 @@ public class World {
 	 * @return
 	 */
 	public Collection<WorldObject> getActiveSolids() {
-		// Currently returns all solid objects in the world.
-		// Modify to keep track of on screen objects.
-		return activeSolids;
+		return map.getActiveSolids();
 	}
 
 	public WorldState getState() {
@@ -178,7 +151,7 @@ public class World {
 		// TODO
 		// Currently returns all interactables in the world.
 		// Modify to keep track of on screen objects.
-		return interactables;
+		return map.getAllInteractables();
 	}
 
 	public Camera getCamera() {
@@ -207,12 +180,7 @@ public class World {
 	 * @param go
 	 */
 	public void removeFromActiveLists(WorldObject go) {
-		if (go instanceof Actor) {
-			activeActors.remove((Actor) go);
-		}
-		if (go.isSolid()) {
-			activeSolids.remove(go);
-		}
+		map.removeFromActiveSets(go);
 	}
 
 	/**
@@ -222,12 +190,7 @@ public class World {
 	 * @param go
 	 */
 	public void addToActiveSets(WorldObject go) {
-		if (go instanceof Actor) {
-			activeActors.add((Actor) go);
-		}
-		if (go.isSolid()) {
-			activeSolids.add(go);
-		}
+		map.addToActiveSets(go);
 	}
 
 	//
@@ -251,22 +214,26 @@ public class World {
 	public void stopWatchSelect() {
 		closeMenu();
 	}
-	
+
 	public void openInventoryDisplay() {
 		gameInterface.refreshInventoryDisplay();
 		worldState = WorldState.INVENTORY;
 	}
-	
+
 	public void closeInventoryDisplay() {
 		worldState = WorldState.PLAYING;
 	}
-	
+
 	public void conversationStarted() {
 		worldState = WorldState.CONVERSATION;
 	}
-	
+
 	public void conversationFinished() {
 		worldState = WorldState.PLAYING;
+	}
+
+	public void startBuilding() {
+		worldState = WorldState.BUILDING;
 	}
 
 	/**
@@ -279,7 +246,7 @@ public class World {
 	 *            Graphics object, passed from a Slick2D BasicGame render method
 	 */
 	public void render(GameContainer gc, Graphics g) {
-		layers.render();
+		map.render();
 
 		worldInterface.render(getState());
 		gameInterface.render(getState());
@@ -301,17 +268,50 @@ public class World {
 			case PLAYING:
 				playingUpdate(gc, delta);
 				break;
+			case BUILDING:
+				buildingUpdate(gc, delta);
+				break;
 			default:
 				break;
 		}
 	}
 
-	private void playingUpdate(final GameContainer gc, final int delta) {
+	private void playingUpdate(GameContainer gc, int delta) {
 		// Pass update signal to all objects in the game.
-		layers.update(gc, delta);
+		map.update(gc, delta);
 	}
 
-	public void keyPressed(int keycode) {		
+	private void buildingUpdate(GameContainer gc, int delta) {
+		Input input = gc.getInput();
+		Point mousePoint = new Point(input.getMouseX(), input.getMouseY());
+		WorldObject wo = map.findClickedObject(mousePoint);
+		
+		if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+			if (wo == null) {
+				int gridSize = GlobalOptions.GRID_SIZE;
+				Point worldCoOrds = mousePoint.scale(
+						1 / (camera.getScale() * gridSize)).move(
+								camera.getLocation().scale(
+										WorldLayer.WORLD.getParallaxX(),
+										WorldLayer.WORLD.getParallaxY()));
+
+				// Need to ensure that the objects are snapped to the grid!
+				float snapX = (float) Math.floor(worldCoOrds.getX());
+				float snapY = (float) Math.floor(worldCoOrds.getY());
+
+				worldCoOrds = new Point(snapX, snapY);
+
+				Wall w = new Wall(worldCoOrds, 1, 1);
+				addObject(w);
+			}
+		} else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
+			if (wo != null) {
+				removeObject(wo);
+			}
+		}
+	}
+
+	public void keyPressed(int keycode) {
 		switch (worldState) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {
@@ -339,7 +339,7 @@ public class World {
 			default:
 				break;
 		}
-		
+
 		gameInterface.keyPressed(keycode, worldState);
 		worldInterface.keyPressed(keycode, worldState);
 	}
@@ -356,34 +356,33 @@ public class World {
 
 	}
 
-	// TODO: Make this iterate in reverse order.
 	private void watchSelectMousePressed(int button, Point p) {
 		// For each world object, check whether it was clicked by the mouse
-		WorldObject clicked = layers.findClickedObject(p);
+		WorldObject clicked = map.findClickedObject(p);
 
 		if (clicked != null) {
 			setWatchTarget(clicked);
 			stopWatchSelect();
 		}
 	}
-	
+
 	public void showConversation(Conversation c) {
 		gameInterface.showConversation(c);
 		conversationStarted();
 	}
-	
+
 	//
 	// Quests
 	//
 	public void signalEvent(EventInfo ei) {
 		activeQuests.stream().forEach(q -> q.signalEvent(ei));
 	}
-	
+
 	public void startQuest(Quest q) {
 		activeQuests.add(q);
 		q.start();
 	}
-	
+
 	public void stopQuest(Quest q) {
 		activeQuests.remove(q);
 	}

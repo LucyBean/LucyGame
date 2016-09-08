@@ -1,6 +1,12 @@
 package worlds;
 
-import worldLibrary.*;
+import worldLibrary.CameraObjectLoadingDemo;
+import worldLibrary.ColliderDemoWorld;
+import worldLibrary.HiddenObjectDemoWorld;
+import worldLibrary.LevelBuildingWorld;
+import worldLibrary.MapImportingDemo;
+import worldLibrary.MenuDemoWorld;
+import worldLibrary.PlatformerDemoWorld;
 
 public class WorldLoader {
 	LucyGame game;
@@ -25,6 +31,8 @@ public class WorldLoader {
 				return new MapImportingDemo(game);
 			case 4:
 				return new PlatformerDemoWorld(game);
+			case 5:
+				return new LevelBuildingWorld(game);
 			default:
 				return null;
 		}

@@ -7,7 +7,8 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 
-public class ObjectLayerSet<T extends GameObject> extends HashMap<Integer, ObjectLayer<T>> {
+public class ObjectLayerSet<T extends GameObject>
+		extends HashMap<Integer, ObjectLayer<T>> {
 	/**
 	 * 
 	 */
@@ -23,7 +24,7 @@ public class ObjectLayerSet<T extends GameObject> extends HashMap<Integer, Objec
 	 */
 	public void applyToAllObjects(Consumer<T> f) {
 		for (int i : keySet()) {
-		get(i).applyToAll(f);
+			get(i).applyToAll(f);
 		}
 	}
 
@@ -32,7 +33,7 @@ public class ObjectLayerSet<T extends GameObject> extends HashMap<Integer, Objec
 			get(index).applyToAll(f);
 		}
 	}
-	
+
 	public void applyToAllLayers(Consumer<ObjectLayer<T>> f) {
 		entrySet().stream().forEach(a -> f.accept(a.getValue()));
 	}
@@ -49,6 +50,14 @@ public class ObjectLayerSet<T extends GameObject> extends HashMap<Integer, Objec
 	public void add(T t, int layer) {
 		putIfAbsent(layer, new ObjectLayer<T>());
 		get(layer).add(t);
+	}
+
+	/**
+	 * Removes an object T from all ObjectLayers in which it is present.
+	 * @param t
+	 */
+	public void remove(T t) {
+		applyToAllLayers(l -> l.remove(t));
 	}
 
 	/**

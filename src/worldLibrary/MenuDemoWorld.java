@@ -15,7 +15,7 @@ public class MenuDemoWorld extends World {
 	@Override
 	public void init() throws SlickException {
 		MenuSet m = new MenuSet();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 6; i++) {
 			final int w = i;
 			m.add((() -> "Level " + w), s -> s.getWorld().getGame().loadLevel(w));
 		}
