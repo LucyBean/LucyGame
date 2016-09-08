@@ -73,8 +73,4 @@ public class Inventory extends TreeMap<InventoryItem, Integer> {
 			}
 		}
 	}
-	
-	public void remove(InventoryItem ii) {
-		remove(ii, 1);
-	}
 }

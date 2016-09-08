@@ -19,6 +19,10 @@ public class Wall extends Static {
 		setSprite(SpriteBuilder.drawWall(width, height));
 	}
 	
+	public Wall(Point origin) {
+		this(origin, 1, 1);
+	}
+	
 	public static Wall drawWall(Point start, Dir d, int length) {
 		Wall w;
 		switch (d) {

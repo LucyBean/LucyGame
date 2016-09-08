@@ -66,12 +66,6 @@ public class Player extends Actor {
 		}
 	}
 
-	public void removeFromInventory(InventoryItem ii) {
-		if (ii != null) {
-			inventory.remove(ii);
-		}
-	}
-
 	@Override
 	public void overlapStart(WorldObject wo) {
 		
@@ -98,7 +92,7 @@ public class Player extends Actor {
 
 	public void useKey(int keyID) {
 		InventoryItem key = InventoryItem.getKeyByID(keyID);
-		removeFromInventory(key);
+		inventory.remove(key,1);
 	}
 
 	public Inventory getInventory() {

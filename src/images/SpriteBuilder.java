@@ -5,6 +5,7 @@ import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
+import objects.ItemType;
 import options.GlobalOptions;
 
 /**
@@ -92,7 +93,8 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite drawWall(int width, int height) {
-		return new Sprite(WALL.getImage(), Point.ZERO, width, height,
+		Image img = ImageBuilder.getItemImage(ItemType.WALL);
+		return new Sprite(img, Point.ZERO, width, height,
 				GRID_SIZE);
 	}
 
@@ -137,9 +139,9 @@ public class SpriteBuilder {
 				new Point(-0.25f, -0.5f), GRID_SIZE);
 	}
 
-	public static Sprite getGemImg() {
+	public static Sprite getWorldItem(ItemType it) {
 		if (gem == null) {
-			Image img = ImageBuilder.getGemImg();
+			Image img = ImageBuilder.getItemImage(it);
 			gem = new Sprite(img, Point.ZERO, GRID_SIZE);
 		}
 
@@ -162,18 +164,4 @@ public class SpriteBuilder {
 		
 		return new Sprite(limg, 1);
 	}
-
-	private final static Sprite WALL = createRectangle(
-			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
-			new Color(240, 240, 40));
-	public final static Sprite BUTTON = createRectangle(
-			new Rectangle(Point.ZERO, 6, 1), 1, new Color(230, 130, 230));
-	public final static Sprite HIDDEN_SQUARE = createRectangle(
-			new Rectangle(Point.ZERO, 2, 2), GRID_SIZE,
-			new Color(190, 60, 190));
-	public final static Sprite COLLIDER = createRectangle(
-			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE,
-			new Color(50, 135, 220, 130));
-	public final static Sprite PICK_UP_ITEM = createRectangle(
-			new Rectangle(Point.ZERO, 1, 1), GRID_SIZE, new Color(80, 250, 80));
 }

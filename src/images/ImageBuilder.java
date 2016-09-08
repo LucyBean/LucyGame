@@ -6,6 +6,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
+import objects.ItemType;
 import options.GlobalOptions;
 
 public class ImageBuilder {
@@ -13,19 +14,19 @@ public class ImageBuilder {
 	private static Image menuButtonSelectedBackground;
 	private static Image worldLoaderButtonBackground;
 	private static Image paletteBlockBackground;
-	private static SpriteSheet keysAndLocks;
-	private static SpriteSheet inventoryItems;
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
+	private static SpriteSheet worldObjects;
 
 	public static void initSpriteSheets() throws SlickException {
-		keysAndLocks = new SpriteSheet("data/keys.png", 32, 32);
-		inventoryItems = new SpriteSheet("data/inventory_items.png", 32, 32);
-		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64, 64);
+		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
+				64);
 		characters = new SpriteSheet("data/characters.png", 40, 80);
+		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
 	}
 
-	public static Image makeRectangle(int width, int height, Color fill, Color border) {
+	public static Image makeRectangle(int width, int height, Color fill,
+			Color border) {
 		try {
 			Image img = new Image(width, height);
 			Graphics g = img.getGraphics();
@@ -45,19 +46,20 @@ public class ImageBuilder {
 
 		return null;
 	}
-	
+
 	public static Image makeRectangle(int width, int height, Color fill) {
 		return ImageBuilder.makeRectangle(width, height, fill, fill);
 	}
-	
+
 	/**
 	 * Creates a new blank rectangular image.
+	 * 
 	 * @param width
 	 * @param height
 	 * @return
 	 */
 	public static Image makeRectangle(int width, int height) {
-		return ImageBuilder.makeRectangle(width,  height, new Color(0,0,0,0));
+		return ImageBuilder.makeRectangle(width, height, new Color(0, 0, 0, 0));
 	}
 
 	public static Image getMenuButtonBackground() {
@@ -68,12 +70,13 @@ public class ImageBuilder {
 
 		return menuButtonBackground;
 	}
-	
+
 	public static Image getMenuButtonSelectedBackground() {
 		if (menuButtonSelectedBackground == null) {
-			menuButtonSelectedBackground = makeRectangle(280, 32, new Color(240, 240, 180));
+			menuButtonSelectedBackground = makeRectangle(280, 32,
+					new Color(240, 240, 180));
 		}
-		
+
 		return menuButtonSelectedBackground;
 	}
 
@@ -85,25 +88,23 @@ public class ImageBuilder {
 
 		return worldLoaderButtonBackground;
 	}
-	
+
 	public static Image getKeyImg(int keyID) {
 		if (keyID <= 0 || keyID > 4) {
 			keyID = 1;
 		}
-		return keysAndLocks.getSubImage(0, keyID - 1);
+		int itemID = (keyID - 1) + ItemType.YELLOW_KEY.ordinal();
+		return getItemImage(itemID);
 	}
-	
+
 	public static Image getLockImg(int keyID) {
 		if (keyID <= 0 || keyID > 4) {
 			keyID = 1;
 		}
-		return keysAndLocks.getSubImage(1, keyID - 1);
+		int itemID = (keyID - 1) + ItemType.YELLOW_LOCK.ordinal();
+		return getItemImage(itemID);
 	}
-	
-	public static Image getGemImg() {
-		return inventoryItems.getSprite(0, 0);
-	}
-	
+
 	public static Image getConversationCharacterImg(int id) {
 		if (id >= 0 && id < 4) {
 			return conversationCharacters.getSprite(id, 0);
@@ -111,7 +112,7 @@ public class ImageBuilder {
 			return null;
 		}
 	}
-	
+
 	public static Image getCharacterImg(int id) {
 		if (id >= 0 && id < 4) {
 			return characters.getSprite(id, 0);
@@ -124,7 +125,18 @@ public class ImageBuilder {
 		if (paletteBlockBackground == null) {
 			paletteBlockBackground = ImageBuilder.makeRectangle(32, 32);
 		}
-		
+
 		return paletteBlockBackground;
+	}
+	
+	public static Image getItemImage(int id) {
+		int col = id % 8;
+		int row = id / 8;
+		return worldObjects.getSprite(col, row);
+	}
+
+	public static Image getItemImage(ItemType it) {
+		int id = it.ordinal();
+		return getItemImage(id);
 	}
 }

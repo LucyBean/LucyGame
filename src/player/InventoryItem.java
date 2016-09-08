@@ -6,6 +6,7 @@ import java.util.Map;
 import org.newdawn.slick.Image;
 
 import images.ImageBuilder;
+import objects.ItemType;
 
 public class InventoryItem implements Comparable<InventoryItem> {
 	String name;
@@ -34,7 +35,7 @@ public class InventoryItem implements Comparable<InventoryItem> {
 	
 	public static InventoryItem getGem() {
 		if (gem == null) {
-			gem = new InventoryItem("Gem", ImageBuilder.getGemImg());
+			gem = new InventoryItem("Gem", ImageBuilder.getItemImage(ItemType.GEM));
 		}
 		
 		return gem;

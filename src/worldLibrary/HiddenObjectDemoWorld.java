@@ -2,10 +2,12 @@ package worldLibrary;
 
 import java.util.Random;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
-import images.SpriteBuilder;
+import images.ImageBuilder;
+import images.Sprite;
 import objectLibrary.Door;
 import objectLibrary.Key;
 import objectLibrary.Lock;
@@ -33,7 +35,7 @@ public class HiddenObjectDemoWorld extends World {
 		addObject(mover);
 
 		drawWallBorder();
-		
+
 		int objectWindowWidth = GlobalOptions.WINDOW_WIDTH_GRID - 2;
 		int objectWindowHeight = GlobalOptions.WINDOW_HEIGHT_GRID - 2;
 
@@ -44,19 +46,19 @@ public class HiddenObjectDemoWorld extends World {
 			WorldObject go = new HiddenSquare(position);
 			addObject(go);
 		}
-		
+
 		for (int i = 0; i < 5; i++) {
 			Random r = new Random();
 			Point position = new Point(r.nextFloat() * objectWindowWidth + 1,
 					r.nextFloat() * objectWindowHeight + 1);
 			Key key = new Key(position, 1);
 			addObject(key);
-			
+
 			position = new Point(r.nextFloat() * objectWindowWidth + 1,
 					r.nextFloat() * objectWindowHeight + 1);
 			Lock lock = new Lock(position, 1);
 			addObject(lock);
-			
+
 			position = new Point(r.nextFloat() * objectWindowWidth + 1,
 					r.nextFloat() * objectWindowHeight + 1);
 			Door door = new Door(position);
@@ -67,8 +69,14 @@ public class HiddenObjectDemoWorld extends World {
 }
 
 class HiddenSquare extends Static {
+	private final static int gridSize = GlobalOptions.GRID_SIZE;
+	private final static Sprite sprite = new Sprite(
+			ImageBuilder.makeRectangle(gridSize * 2, gridSize * 2,
+					new Color(190, 60, 190)),
+			gridSize);
+
 	public HiddenSquare(Point origin) {
-		super(origin, WorldLayer.WORLD, SpriteBuilder.HIDDEN_SQUARE, null,
+		super(origin, WorldLayer.WORLD, sprite, null,
 				new InteractBox(Point.ZERO, 2, 2));
 	}
 
@@ -89,12 +97,18 @@ class HiddenSquare extends Static {
 	@Override
 	protected void resetStaticState() {
 		setVisibility(false);
-		
+
 	}
 }
 
 class PickUpSquare extends PickUpItem {
+	private final static int gridSize = GlobalOptions.GRID_SIZE;
+	private final static Sprite sprite = new Sprite(
+			ImageBuilder.makeRectangle(gridSize, gridSize,
+					new Color(80, 250, 80)),
+			gridSize);
+
 	public PickUpSquare(Point origin) {
-		super(origin, SpriteBuilder.PICK_UP_ITEM, null);
+		super(origin, sprite, null);
 	}
 }
