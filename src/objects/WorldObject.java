@@ -2,6 +2,7 @@ package objects;
 
 import helpers.Point;
 import images.Sprite;
+import images.SpriteBuilder;
 import options.GlobalOptions;
 import worlds.WorldLayer;
 
@@ -46,9 +47,25 @@ public abstract class WorldObject extends GameObject {
 	public WorldObject(Point origin, WorldLayer layer, Sprite sprite) {
 		this(origin, layer, sprite, null, null);
 	}
+	
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
+		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
+	}
 
 	public WorldObject(Point origin, WorldLayer layer) {
 		this(origin, layer, null, null, null);
+	}
+	
+	public void setColliderFromSprite() {
+		if (getSprite() != null) {
+			collider = new Collider(getSprite().getBoundingRectangle());
+		}
+	}
+	
+	public void setInteractBoxFromSprite() {
+		if (getSprite() != null) {
+			interactBox = new InteractBox(getSprite().getBoundingRectangle());
+		}
 	}
 
 	/**

@@ -13,6 +13,7 @@ import objectLibrary.Key;
 import objectLibrary.Lock;
 import objects.Actor;
 import objects.InteractBox;
+import objects.ItemType;
 import objects.PickUpItem;
 import objects.Static;
 import objects.WorldObject;
@@ -102,13 +103,8 @@ class HiddenSquare extends Static {
 }
 
 class PickUpSquare extends PickUpItem {
-	private final static int gridSize = GlobalOptions.GRID_SIZE;
-	private final static Sprite sprite = new Sprite(
-			ImageBuilder.makeRectangle(gridSize, gridSize,
-					new Color(80, 250, 80)),
-			gridSize);
 
 	public PickUpSquare(Point origin) {
-		super(origin, sprite, null);
+		super(origin, ItemType.GEM, null);
 	}
 }

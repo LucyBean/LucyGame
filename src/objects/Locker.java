@@ -5,6 +5,7 @@ import java.util.List;
 
 import helpers.Point;
 import images.Sprite;
+import images.SpriteBuilder;
 import player.Player;
 import worlds.WorldLayer;
 
@@ -17,6 +18,11 @@ public abstract class Locker extends Static {
 		super(origin, layer, sprite, collider, interactBox);
 		linkedItems = new LinkedList<Lockable>();
 		lock();
+	}
+	
+	public Locker(Point origin, WorldLayer layer, ItemType itemType) {
+		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
+		setInteractBoxFromSprite();
 	}
 	
 	public boolean isLocked() {

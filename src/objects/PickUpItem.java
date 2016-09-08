@@ -1,7 +1,6 @@
 package objects;
 
 import helpers.Point;
-import images.Sprite;
 import player.InventoryItem;
 import player.Player;
 import quests.EventInfo;
@@ -11,10 +10,10 @@ import worlds.WorldLayer;
 public class PickUpItem extends Static {
 	InventoryItem inventoryItem;
 	
-	public PickUpItem(Point origin, Sprite sprite, InventoryItem inventoryItem) {
-		super(origin, WorldLayer.WORLD, sprite, null,
-				new InteractBox(sprite.getBoundingRectangle()));
+	public PickUpItem(Point origin, ItemType itemType, InventoryItem inventoryItem) {
+		super(origin, WorldLayer.WORLD, itemType);
 		this.inventoryItem = inventoryItem;
+		setInteractBoxFromSprite();
 	}
 	
 	public InventoryItem getInventoryItem() {

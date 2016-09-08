@@ -1,20 +1,25 @@
 package objectLibrary;
 
 import helpers.Point;
-import images.SpriteBuilder;
 import objects.Actor;
-import objects.InteractBox;
+import objects.ItemType;
 import objects.Locker;
 import player.Player;
 import worlds.WorldLayer;
 
 public class Lock extends Locker {
 	int keyID;
+	
+	private static ItemType keyIDtoItemType(int keyID) {
+		if (keyID < 0 || keyID >= 4) {
+			keyID = 1;
+		}
+		int n = (keyID - 1) + ItemType.YELLOW_LOCK.ordinal();
+		return ItemType.values()[n];
+	}
 
 	public Lock(Point origin, int keyID) {
-		super(origin, WorldLayer.WORLD, SpriteBuilder.getLockImg(keyID), null,
-				new InteractBox(
-						SpriteBuilder.getLockImg(keyID).getBoundingRectangle()));
+		super(origin, WorldLayer.WORLD, keyIDtoItemType(keyID));
 		this.keyID = keyID;
 	}
 

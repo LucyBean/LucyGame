@@ -2,6 +2,7 @@ package objects;
 
 import helpers.Point;
 import images.Sprite;
+import images.SpriteBuilder;
 import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {
@@ -11,6 +12,10 @@ public abstract class Static extends WorldObject {
 	
 	public Static(Point origin, WorldLayer layer, Sprite sprite) {
 		this(origin, layer, sprite, null, null);
+	}
+	
+	public Static(Point origin, WorldLayer layer, ItemType itemType) {
+		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
 	}
 	
 	public Static(Point origin, WorldLayer layer) {

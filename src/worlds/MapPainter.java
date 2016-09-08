@@ -1,6 +1,7 @@
 package worlds;
 
 import helpers.Point;
+import objectLibrary.Door;
 import objectLibrary.Gem;
 import objectLibrary.Key;
 import objectLibrary.Lock;
@@ -11,7 +12,6 @@ import objects.WorldObject;
 public class MapPainter {
 	private Map map;
 	private ItemType item;
-	private int keyID = 1;
 
 	public MapPainter(Map m) {
 		map = m;
@@ -42,10 +42,36 @@ public class MapPainter {
 				wo = new Gem(p);
 				break;
 			case YELLOW_KEY:
-				wo = new Key(p, keyID);
+				wo = new Key(p, 1);
 				break;
 			case YELLOW_LOCK:
-				wo = new Lock(p, keyID);
+				wo = new Lock(p, 1);
+				break;
+			case BLUE_KEY:
+				wo = new Key(p, 2);
+				break;
+			case BLUE_LOCK:
+				wo = new Lock(p, 2);
+				break;
+
+			case RED_KEY:
+				wo = new Key(p,3);
+				break;
+			case RED_LOCK:
+				wo = new Lock(p,3);
+				break;
+
+			case GREEN_KEY:
+				wo = new Key(p,4);
+				break;
+			case GREEN_LOCK:
+				wo = new Lock(p,4);
+				break;
+			case DOOR_BTM:
+				wo = new Door(p);
+				break;
+			case DOOR_TOP:
+				wo = new Door(p);
 				break;
 			default:
 				wo = null;

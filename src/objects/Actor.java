@@ -11,6 +11,7 @@ import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
 import images.Sprite;
+import images.SpriteBuilder;
 import quests.EventInfo;
 import quests.EventType;
 import worlds.WorldLayer;
@@ -29,6 +30,10 @@ public abstract class Actor extends WorldObject {
 
 	public Actor(Point origin, WorldLayer layer, Sprite sprite) {
 		this(origin, layer, sprite, null, null);
+	}
+	
+	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
+		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
 	}
 
 	public Actor(Point origin, WorldLayer layer) {

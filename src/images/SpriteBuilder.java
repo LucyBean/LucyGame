@@ -20,9 +20,6 @@ public class SpriteBuilder {
 	private static RectangleSpriteStore colliderImages = new RectangleSpriteStore();
 	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
 
-	private static Sprite door;
-	private static Sprite gem;
-
 	/**
 	 * Creates a new rectangular sprite of the given colour.
 	 * 
@@ -94,8 +91,7 @@ public class SpriteBuilder {
 
 	public static Sprite drawWall(int width, int height) {
 		Image img = ImageBuilder.getItemImage(ItemType.WALL);
-		return new Sprite(img, Point.ZERO, width, height,
-				GRID_SIZE);
+		return new Sprite(img, Point.ZERO, width, height, GRID_SIZE);
 	}
 
 	public static Sprite interfaceElement(Image background, String text) {
@@ -110,28 +106,14 @@ public class SpriteBuilder {
 		return new Sprite(new LayeredImage(width, height, 2), Point.ZERO, 1);
 	}
 
-	public static Sprite getKeyImg(int keyID) {
-		Image img = ImageBuilder.getKeyImg(keyID);
-		return new Sprite(img, Point.ZERO, GRID_SIZE);
-	}
+	private static Sprite getDoorSprite() {
+		LayeredImage limg = new LayeredImage(32, 64, 2);
+		Image top = ImageBuilder.getItemImage(ItemType.DOOR_TOP);
+		Image btm = ImageBuilder.getItemImage(ItemType.DOOR_BTM);
+		limg.setLayer(0, top);
+		limg.setLayer(1, new PositionedImage(new Point(0, 32), btm));
 
-	public static Sprite getLockImg(int keyID) {
-		Image img = ImageBuilder.getLockImg(keyID);
-		return new Sprite(img, Point.ZERO, GRID_SIZE);
-	}
-
-	public static Sprite getDoorImg() {
-		if (door == null) {
-			LayeredImage limg = new LayeredImage(32, 64, 2);
-			limg.fillLayer(0, new Color(20, 20, 100));
-			limg.setLayer(1, new PositionedImage(new Point(0, 32),
-					ImageBuilder.makeRectangle(32, 32)));
-			limg.setTextCentered(1, "D");
-
-			door = new Sprite(limg, Point.ZERO, GRID_SIZE);
-		}
-
-		return door;
+		return new Sprite(limg, GRID_SIZE);
 	}
 
 	public static Sprite getCharacterSprite(int id) {
@@ -140,12 +122,15 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite getWorldItem(ItemType it) {
-		if (gem == null) {
-			Image img = ImageBuilder.getItemImage(it);
-			gem = new Sprite(img, Point.ZERO, GRID_SIZE);
+		if (it == ItemType.DOOR_TOP) {
+			return getDoorSprite();
 		}
-
-		return gem;
+		if (it.isPaintable()) {
+			Image img = ImageBuilder.getItemImage(it);
+			return new Sprite(img, Point.ZERO, GRID_SIZE);
+		} else {
+			return getWorldItem(it.getParent());
+		}
 	}
 
 	public static Sprite makeMenuButton(String text) {
@@ -156,12 +141,12 @@ public class SpriteBuilder {
 
 		return new Sprite(limg, 1);
 	}
-	
+
 	public static Sprite makePaletteBlock() {
 		Image bg = ImageBuilder.getPaletteBlockBackground();
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
-		
+
 		return new Sprite(limg, 1);
 	}
 }

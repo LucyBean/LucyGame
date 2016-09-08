@@ -19,9 +19,11 @@ public class Palette extends IEList {
 		super(firstPoint, 16, 8, 4, () -> SpriteBuilder.makePaletteBlock());
 		setBackground(Color.white);
 		elements = new ArrayList<>();
-		
+
 		for (ItemType it : ItemType.values()) {
-			elements.add(it);
+			if (it.isPaintable()) {
+				elements.add(it);
+			}
 		}
 
 		updateSprites();
