@@ -1,15 +1,20 @@
 package worlds;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import objects.Actor;
+import objects.Lockable;
+import objects.Locker;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
+import options.GlobalOptions;
 
 /**
  * The Map is responsible for holding all the objects in a World.
@@ -17,7 +22,7 @@ import objects.WorldObject;
  * @author Lucy
  *
  */
-public class Map {
+public class WorldMap {
 	private Collection<Actor> actors;
 	private Set<Actor> activeActors;
 	private Collection<WorldObject> solids;
@@ -26,8 +31,10 @@ public class Map {
 	private ObjectLayerSet<WorldObject> layers;
 	private MapPainter mapPainter;
 	private World world;
+	private Map<Integer, Set<Lockable>> lockablesByID;
+	private Map<Integer, Locker> lockers;
 
-	public Map(World world) {
+	public WorldMap(World world) {
 		layers = new ObjectLayerSet<>();
 		actors = new HashSet<>();
 		activeActors = new HashSet<>();
@@ -35,9 +42,11 @@ public class Map {
 		activeSolids = new HashSet<>();
 		interactables = new HashSet<>();
 		mapPainter = new MapPainter(this);
+		lockablesByID = new HashMap<>();
+		lockers = new HashMap<>();
 		this.world = world;
 	}
-	
+
 	public MapPainter getPainter() {
 		return mapPainter;
 	}
@@ -50,18 +59,38 @@ public class Map {
 		if (go instanceof Actor) {
 			actors.add((Actor) go);
 		}
-
 		if (go.isSolid()) {
 			solids.add(go);
 		}
 		if (go.isInteractable()) {
 			interactables.add(go);
 		}
-
 		if (go.isEnabled()) {
 			addToActiveSets(go);
 		}
-		
+		if (go instanceof Lockable) {
+			Lockable lgo = (Lockable) go;
+			int lockID = lgo.getLockID();
+			lockablesByID.putIfAbsent(lockID, new HashSet<Lockable>());
+			lockablesByID.get(lockID).add(lgo);
+			Locker locker = lockers.get(lockID);
+			if (locker != null) {
+				if (locker.isLocked()) {
+					lgo.lock();
+				} else {
+					lgo.unlock();
+				}
+			}
+		}
+		if (go instanceof Locker) {
+			Locker lgo = (Locker) go;
+			int lockID = lgo.getLockID();
+			Locker old = lockers.put(lockID, lgo);
+			if (GlobalOptions.debug() && old != null) {
+				System.err.println("Warning! Locks with duplicate lockIDs.");
+			}
+
+		}
 
 		go.setWorld(world);
 	}
@@ -109,6 +138,10 @@ public class Map {
 		if (go.isSolid()) {
 			activeSolids.add(go);
 		}
+	}
+
+	public Collection<Lockable> getLockablesByID(int lockID) {
+		return lockablesByID.get(lockID);
 	}
 
 	public void render() {

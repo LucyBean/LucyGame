@@ -30,7 +30,7 @@ public class World {
 	private Collection<Quest> activeQuests;
 	private final LucyGame game;
 	private final String name;
-	private Map map;
+	private WorldMap map;
 
 	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
@@ -48,7 +48,7 @@ public class World {
 			camera = new Camera();
 			worldState = WorldState.PLAYING;
 			activeQuests = new HashSet<>();
-			map = new Map(this);
+			map = new WorldMap(this);
 
 			setGameInterface(defaultInterface);
 			worldInterface = new GameInterface();
@@ -164,7 +164,7 @@ public class World {
 		return name;
 	}
 	
-	public Map getMap() {
+	public WorldMap getMap() {
 		return map;
 	}
 

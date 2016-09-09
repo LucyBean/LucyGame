@@ -77,9 +77,9 @@ public class MapImportingDemo extends World {
 							break;
 
 						case 5: // Door
-							Door d = new Door(pos);
+							int lockID = getLockID(pos);
+							Door d = new Door(pos, lockID);
 							addObject(d);
-							registerLockable(d, getLockID(pos));
 							break;
 
 						default:
@@ -93,8 +93,6 @@ public class MapImportingDemo extends World {
 				}
 			}
 		}
-
-		linkLockables();
 
 		if (GlobalOptions.debug()) {
 			checkUnusedKeys();
@@ -203,25 +201,13 @@ public class MapImportingDemo extends World {
 	}
 
 	private void addLock(Point point, int keyID, int lockID) {
-		Lock lock = new Lock(point, keyID);
-		if (GlobalOptions.debug() && locks.get(lockID) != null) {
-			System.err.println("Locks with identical lockID " + lockID);
-		}
+		Lock lock = new Lock(point, keyID, lockID);
 		if (lockID != 0) {
 			locks.put(lockID, lock);
 		} else if (GlobalOptions.debug()) {
 			System.err.println("Lock with no lockID at " + point);
 		}
 		addObject(lock);
-	}
-
-	private void registerLockable(Lockable l, int lockID) {
-		if (lockID != 0) {
-			lockables.putIfAbsent(lockID, new LinkedList<Lockable>());
-			lockables.get(lockID).add(l);
-		} else if (GlobalOptions.debug()) {
-			System.err.println("Lockable with no lockID");
-		}
 	}
 
 	private void checkUnusedKeys() {
@@ -237,21 +223,6 @@ public class MapImportingDemo extends World {
 		for (int keyID : locks.keySet()) {
 			if (!usedKeyIDs.contains(keyID)) {
 				System.err.println("Key-less lock with keyID " + keyID);
-			}
-		}
-	}
-
-	private void linkLockables() {
-		for (int lockID : lockables.keySet()) {
-			List<Lockable> ll = lockables.get(lockID);
-			Lock l = locks.get(lockID);
-			if (l != null) {
-				ll.stream().forEach(s -> l.link(s));
-			} else {
-				if (GlobalOptions.debug()) {
-					System.err.println(
-							"Un-unlockable Lockables with lockID " + lockID);
-				}
 			}
 		}
 	}

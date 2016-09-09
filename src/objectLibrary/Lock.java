@@ -18,8 +18,8 @@ public class Lock extends Locker {
 		return ItemType.values()[n];
 	}
 
-	public Lock(Point origin, int keyID) {
-		super(origin, WorldLayer.WORLD, keyIDtoItemType(keyID));
+	public Lock(Point origin, int keyID, int lockID) {
+		super(lockID, origin, WorldLayer.WORLD, keyIDtoItemType(keyID));
 		this.keyID = keyID;
 	}
 

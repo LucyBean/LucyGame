@@ -7,9 +7,12 @@ import objects.Static;
 import worlds.WorldLayer;
 
 public class Door extends Static implements Lockable {
-	public Door(Point origin) {
+	private int lockID;
+	
+	public Door(Point origin, int lockID) {
 		super(origin, WorldLayer.WORLD, ItemType.DOOR_TOP);
 		setColliderFromSprite();
+		this.lockID = lockID;
 	}
 
 	@Override
@@ -25,6 +28,11 @@ public class Door extends Static implements Lockable {
 	@Override
 	protected void resetStaticState() {
 		
+	}
+
+	@Override
+	public int getLockID() {
+		return lockID;
 	}
 
 }

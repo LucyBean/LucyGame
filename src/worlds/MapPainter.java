@@ -10,10 +10,11 @@ import objects.ItemType;
 import objects.WorldObject;
 
 public class MapPainter {
-	private Map map;
+	private WorldMap map;
 	private ItemType item;
+	private int lockID = 0;
 
-	public MapPainter(Map m) {
+	public MapPainter(WorldMap m) {
 		map = m;
 		if (ItemType.values().length > 0) {
 			item = ItemType.values()[0];
@@ -45,33 +46,31 @@ public class MapPainter {
 				wo = new Key(p, 1);
 				break;
 			case YELLOW_LOCK:
-				wo = new Lock(p, 1);
+				wo = new Lock(p, 1, lockID);
 				break;
 			case BLUE_KEY:
 				wo = new Key(p, 2);
 				break;
 			case BLUE_LOCK:
-				wo = new Lock(p, 2);
+				wo = new Lock(p, 2, lockID);
 				break;
-
 			case RED_KEY:
 				wo = new Key(p,3);
 				break;
 			case RED_LOCK:
-				wo = new Lock(p,3);
+				wo = new Lock(p,3, lockID);
 				break;
-
 			case GREEN_KEY:
 				wo = new Key(p,4);
 				break;
 			case GREEN_LOCK:
-				wo = new Lock(p,4);
+				wo = new Lock(p,4, lockID);
 				break;
 			case DOOR_BTM:
-				wo = new Door(p);
+				wo = new Door(p, lockID);
 				break;
 			case DOOR_TOP:
-				wo = new Door(p);
+				wo = new Door(p, lockID);
 				break;
 			default:
 				wo = null;

@@ -76,6 +76,7 @@ public abstract class GameObject {
 	//
 	public void setWorld(World world) {
 		this.world = world;
+		addedToWorld(world);
 	}
 
 	public void setPosition(Point position) {
@@ -158,5 +159,13 @@ public abstract class GameObject {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Called when this GameObject has been added to the World.
+	 * @param w
+	 */
+	public void addedToWorld(World w) {
+		
 	}
 }

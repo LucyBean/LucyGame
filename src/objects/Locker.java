@@ -1,49 +1,63 @@
 package objects;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 
 import helpers.Point;
 import images.Sprite;
 import images.SpriteBuilder;
 import player.Player;
+import worlds.World;
 import worlds.WorldLayer;
 
 public abstract class Locker extends Static {
-	List<Lockable> linkedItems;
-	boolean locked;
+	private int lockID;
+	private boolean locked;
 
-	public Locker(Point origin, WorldLayer layer, Sprite sprite,
+	/**
+	 * Creates a new Locker. This will start in the Locked state by default.
+	 * 
+	 * @param lockID
+	 *            The ID of the lock. This is used to link Lockable objects to
+	 *            their Locker.
+	 * @param origin
+	 *            The position of the Locker.
+	 * @param layer
+	 *            The WorldLayer for the Locker.
+	 * @param sprite
+	 * @param collider
+	 * @param interactBox
+	 */
+	public Locker(int lockID, Point origin, WorldLayer layer, Sprite sprite,
 			Collider collider, InteractBox interactBox) {
 		super(origin, layer, sprite, collider, interactBox);
-		linkedItems = new LinkedList<Lockable>();
-		lock();
+		this.lockID = lockID;
 	}
-	
-	public Locker(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
+
+	public Locker(int lockID, Point origin, WorldLayer layer,
+			ItemType itemType) {
+		this(lockID, origin, layer, SpriteBuilder.getWorldItem(itemType), null,
+				null);
 		setInteractBoxFromSprite();
 	}
 	
+	@Override
+	public void addedToWorld(World w) {
+		lock();
+	}
+
 	public boolean isLocked() {
 		return locked;
 	}
-	
+
+	public int getLockID() {
+		return lockID;
+	}
+
 	@Override
 	public void overlapStart(WorldObject wo) {
 		if (wo instanceof Player) {
 			Player p = (Player) wo;
 			unlock(p);
-		}
-	}
-	
-	public void link(Lockable k) {
-		linkedItems.add(k);
-		
-		if (locked) {
-			k.lock();
-		} else {
-			k.unlock();
 		}
 	}
 
@@ -64,7 +78,11 @@ public abstract class Locker extends Static {
 	 */
 	private final void lock() {
 		lockAction();
-		linkedItems.stream().forEach(b -> b.lock());
+		Collection<Lockable> linkedItems = getWorld().getMap().getLockablesByID(
+				lockID);
+		if (linkedItems != null) {
+			linkedItems.stream().forEach(b -> b.lock());
+		}
 		locked = true;
 	}
 
@@ -86,7 +104,11 @@ public abstract class Locker extends Static {
 	 */
 	private final void unlock() {
 		unlockAction();
-		linkedItems.stream().forEach(b -> b.unlock());
+		Collection<Lockable> linkedItems = getWorld().getMap().getLockablesByID(
+				lockID);
+		if (linkedItems != null) {
+			linkedItems.stream().forEach(b -> b.unlock());
+		}
 		locked = false;
 	}
 

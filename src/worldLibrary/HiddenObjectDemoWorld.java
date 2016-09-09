@@ -57,13 +57,12 @@ public class HiddenObjectDemoWorld extends World {
 
 			position = new Point(r.nextFloat() * objectWindowWidth + 1,
 					r.nextFloat() * objectWindowHeight + 1);
-			Lock lock = new Lock(position, 1);
+			Lock lock = new Lock(position, 1, i);
 			addObject(lock);
 
 			position = new Point(r.nextFloat() * objectWindowWidth + 1,
 					r.nextFloat() * objectWindowHeight + 1);
-			Door door = new Door(position);
-			lock.link(door);
+			Door door = new Door(position, i);
 			addObject(door);
 		}
 	}
