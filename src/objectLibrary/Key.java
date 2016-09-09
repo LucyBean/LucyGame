@@ -9,7 +9,9 @@ public class Key extends PickUpItem {
 	int keyID;
 
 	private static ItemType keyIDtoItemType(int keyID) {
-		if (keyID < 0 || keyID >= 4) {
+		if (keyID > 0) {
+			keyID = (keyID % 4) + 1;
+		} else {
 			keyID = 1;
 		}
 		int n = (keyID - 1) + ItemType.YELLOW_KEY.ordinal();
@@ -17,9 +19,7 @@ public class Key extends PickUpItem {
 	}
 
 	public Key(Point origin, int keyID) {
-		super(origin, keyIDtoItemType(keyID),
-				InventoryItem.getKeyByID(keyID));
-		this.keyID = keyID;
+		super(origin, keyIDtoItemType(keyID), InventoryItem.getKeyByID(keyID));
 		setInteractBoxFromSprite();
 	}
 

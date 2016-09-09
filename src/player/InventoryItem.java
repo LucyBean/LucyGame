@@ -49,6 +49,7 @@ public class InventoryItem implements Comparable<InventoryItem> {
 		if (keyID < 0) {
 			keyID = 0;
 		}
+		
 		InventoryItem key = keys.get(keyID);
 		if (key == null) {
 			key = new InventoryItem("Key " + keyID, ImageBuilder.getKeyImg(keyID));

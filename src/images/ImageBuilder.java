@@ -90,8 +90,8 @@ public class ImageBuilder {
 	}
 
 	public static Image getKeyImg(int keyID) {
-		if (keyID <= 0 || keyID > 4) {
-			keyID = 1;
+		if (keyID > 0) {
+			keyID = (keyID % 4) + 1;
 		}
 		int itemID = (keyID - 1) + ItemType.YELLOW_KEY.ordinal();
 		return getItemImage(itemID);
@@ -128,7 +128,7 @@ public class ImageBuilder {
 
 		return paletteBlockBackground;
 	}
-	
+
 	public static Image getItemImage(int id) {
 		int col = id % 8;
 		int row = id / 8;

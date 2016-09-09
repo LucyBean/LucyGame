@@ -17,15 +17,16 @@ public class InventoryDisplay extends IEList {
 	InventoryItem maxItem;
 
 	public InventoryDisplay(Point firstPoint, Inventory i) {
-		super(firstPoint, 4, 1, 4, (() -> new InventoryDisplaySprite()),
+		super(firstPoint, 4, 2, 4, (() -> new InventoryDisplaySprite()),
 				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
-		inventory = i;
-		updateSprites();
+		if (i != null) {
+			inventory = i;
+			updateSprites();
+		}
 	}
 
 	public InventoryDisplay(Point firstPoint) {
-		super(firstPoint, 4, 1, 4, (() -> new InventoryDisplaySprite()),
-				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
+		this(firstPoint, null);
 	}
 
 	public void setInventory(Inventory i) {
@@ -41,8 +42,9 @@ public class InventoryDisplay extends IEList {
 	@Override
 	public void getElementSprite(int elementIndex, Sprite s) {
 		InventoryDisplaySprite ids = (InventoryDisplaySprite) s;
-		
-		if (inventory != null && elementIndex >= 0 && elementIndex < inventory.size()) {
+
+		if (inventory != null && elementIndex >= 0
+				&& elementIndex < inventory.size()) {
 			// There is information to display
 			// Navigate to correct element
 			Iterator<InventoryItem> iie = inventory.navigableKeySet().iterator();
@@ -51,9 +53,9 @@ public class InventoryDisplay extends IEList {
 			}
 			InventoryItem ii = iie.next();
 			int quantity = inventory.get(ii);
-			
+
 			ids.setTo(ii, quantity);
-			
+
 		} else {
 			// No information to display
 			ids.setBlank();

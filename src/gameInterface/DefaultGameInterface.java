@@ -4,6 +4,8 @@ import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;
 import options.Option;
+import player.Inventory;
+import player.InventoryItem;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
@@ -43,7 +45,8 @@ public class DefaultGameInterface extends GameInterface {
 		//
 		MenuSet m = new MenuSet();
 		m.add(() -> "Main menu", s -> s.getWorld().getGame().loadMainMenu());
-		m.add(() -> "Select watch object", s -> s.getWorld().startWatchSelect());
+		m.add(() -> "Select watch object",
+				s -> s.getWorld().startWatchSelect());
 		m.add(() -> "Open a sub menu", s -> s.getMenuSet().setSubMenu(1));
 		m.add(() -> "Open options", s -> s.getMenuSet().setSubMenu(2));
 		//
@@ -54,10 +57,13 @@ public class DefaultGameInterface extends GameInterface {
 		// Options
 		//
 		for (Option o : Option.values()) {
-			m.add(() -> o.toString(), s -> {o.setToNextValue(); s.updateSprites();}, 2);
+			m.add(() -> o.toString(), s -> {
+				o.setToNextValue();
+				s.updateSprites();
+			}, 2);
 		}
 		m.add(() -> "Store settings", s -> GlobalOptions.saveToFile(), 2);
-		
+
 		add(m, WorldState.MENU);
 	}
 }

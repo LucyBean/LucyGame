@@ -19,10 +19,11 @@ public abstract class IEList extends InterfaceElement {
 	private Point nextPosition;
 	private List<IEListItem> buttons;
 	private int minItemDisplayed;
-	private int selectedIndex;
+	private Point selectedPoint;
 	private Consumer<Sprite> setSelectedSprite;
 	private boolean usingSelection;
 	private int width;
+	private int height;
 	private int padding;
 
 	/**
@@ -35,9 +36,10 @@ public abstract class IEList extends InterfaceElement {
 	 * 
 	 * @param firstPoint
 	 *            The Point for the first object in the list.
-	 * @param numDisplayElems
-	 *            The number of elements that are displayed on the screen at any
-	 *            one time. The IEList can scroll to permit showing large lists.
+	 * @param height
+	 *            The number of buttons to display up/down.
+	 * @param width
+	 *            The number of buttons to display across.
 	 * @param spriteMaker
 	 *            A Supplier that will produce a blank Sprite for each IEList
 	 *            element.
@@ -45,16 +47,19 @@ public abstract class IEList extends InterfaceElement {
 	 *            A Consumer that takes a Sprite and applies some effect to
 	 *            display that the corresponding button has been selected.
 	 */
-	public IEList(Point firstPoint, int numDisplayElems, int width, int padding,
+	public IEList(Point firstPoint, int height, int width, int padding,
 			Supplier<Sprite> spriteMaker, Consumer<Sprite> setSelectedSprite) {
 		nextPosition = firstPoint;
 		buttons = new ArrayList<IEListItem>();
 		minItemDisplayed = 0;
 		this.setSelectedSprite = setSelectedSprite;
 		this.width = width;
+		this.height = height;
 		this.padding = padding;
+		int numDisplayElems = height * width;
 		usingSelection = (setSelectedSprite != null);
-		
+		selectedPoint = Point.ZERO;
+
 		setPosition(firstPoint);
 
 		int column = 0;
@@ -76,7 +81,7 @@ public abstract class IEList extends InterfaceElement {
 			}
 		}
 
-		setSelectedIndex(0);
+		setSelectedButton(Point.ZERO);
 	}
 
 	/**
@@ -111,10 +116,6 @@ public abstract class IEList extends InterfaceElement {
 			if (getSprite() == null) {
 				Rectangle spriteBound = buttons.get(
 						0).getSprite().getBoundingRectangle();
-				int height = buttons.size() / width;
-				if (buttons.size() % width != 0) {
-					height++;
-				}
 				int w = (int) (spriteBound.getWidth() * width
 						+ padding * (width + 1));
 				int h = (int) (spriteBound.getHeight() * height
@@ -139,20 +140,33 @@ public abstract class IEList extends InterfaceElement {
 		return elementIndex >= 0 && elementIndex < getNumElements();
 	}
 
-	private void setSelectedIndex(int newButtonIndex) {
+	private int buttonPointToIndex(Point buttonPoint) {
+		int col = (int) buttonPoint.getX();
+		int row = (int) buttonPoint.getY();
+
+		if (col >= 0 && col < width && row >= 0 && row < height) {
+			return row * width + col;
+		} else {
+			return -1;
+		}
+	}
+
+	private void setSelectedButton(Point newButtonPoint) {
 		if (usingSelection) {
 			// check if the item to select exists
+			int newButtonIndex = buttonPointToIndex(newButtonPoint);
 			int newElementIndex = newButtonIndex + minItemDisplayed;
 			if (elementExists(newElementIndex)) {
-
 				if (usingSelection) {
 					// deselect old index
-					int oldButtonIndex = selectedIndex;
-					int oldElementIndex = selectedIndex + minItemDisplayed;
-					if (oldButtonIndex >= 0
-							&& oldButtonIndex < buttons.size()) {
-						getElementSprite(oldElementIndex,
-								buttons.get(oldButtonIndex).getSprite());
+					if (selectedPoint != null) {
+						int oldButtonIndex = buttonPointToIndex(selectedPoint);
+						int oldElementIndex = oldButtonIndex + minItemDisplayed;
+						if (oldButtonIndex >= 0
+								&& oldButtonIndex < buttons.size()) {
+							getElementSprite(oldElementIndex,
+									buttons.get(oldButtonIndex).getSprite());
+						}
 					}
 
 					// select new index
@@ -161,7 +175,7 @@ public abstract class IEList extends InterfaceElement {
 						setSelectedSprite.accept(
 								buttons.get(newButtonIndex).getSprite());
 					}
-					selectedIndex = newButtonIndex;
+					selectedPoint = newButtonPoint;
 				}
 			}
 		}
@@ -180,30 +194,50 @@ public abstract class IEList extends InterfaceElement {
 			Sprite s = buttons.get(i).getSprite();
 			getElementSprite(i + minItemDisplayed, s);
 		}
-		setSelectedIndex(selectedIndex);
+		setSelectedButton(selectedPoint);
 	}
 
 	/**
 	 * Displays the next element in the list, if any.
 	 */
 	public void moveDown() {
-		int numButtons = buttons.size();
-		int maxItemDisplayed = minItemDisplayed + numButtons - 1;
+		int maxItemDisplayed = minItemDisplayed + height * width;
+		int numElems = getNumElements();
+		int selY = (int) selectedPoint.getY();
 
-		if (selectedIndex < numButtons - 2 || selectedIndex < numButtons - 1
-				&& maxItemDisplayed == getNumElements() - 1) {
-			setSelectedIndex(selectedIndex + 1);
+		if (selY < height - 2
+				|| selY < height - 1 && maxItemDisplayed == numElems) {
+			setSelectedButton(selectedPoint.move(Dir.SOUTH, 1));
 		} else if (minItemDisplayed < getNumElements() - buttons.size()) {
-			minItemDisplayed++;
+			minItemDisplayed += width;
 			updateSprites();
 		}
 	}
 
 	public void moveUp() {
-		if (selectedIndex > 1 || selectedIndex > 0 && minItemDisplayed == 0) {
-			setSelectedIndex(selectedIndex - 1);
+		if (selectedPoint.getY() > 1
+				|| selectedPoint.getY() >= 0 && minItemDisplayed == 0) {
+			setSelectedButton(selectedPoint.move(Dir.NORTH, 1));
 		} else if (minItemDisplayed >= 1) {
-			minItemDisplayed--;
+			minItemDisplayed -= width;
+			updateSprites();
+		}
+	}
+
+	public void moveLeft() {
+		int selX = (int) selectedPoint.getX();
+
+		if (selX > 0) {
+			setSelectedButton(selectedPoint.move(Dir.WEST, 1));
+			updateSprites();
+		}
+	}
+
+	public void moveRight() {
+		int selX = (int) selectedPoint.getX();
+
+		if (selX < width - 1) {
+			setSelectedButton(selectedPoint.move(Dir.EAST, 1));
 			updateSprites();
 		}
 	}
@@ -249,9 +283,15 @@ public abstract class IEList extends InterfaceElement {
 				case Input.KEY_O:
 					moveDown();
 					break;
+				case Input.KEY_A:
+					moveLeft();
+					break;
+				case Input.KEY_E:
+					moveRight();
+					break;
 				case Input.KEY_ENTER:
 				case Input.KEY_SPACE:
-					elementClicked(selectedIndex);
+					elementClicked(buttonPointToIndex(selectedPoint));
 					break;
 			}
 		}
