@@ -21,6 +21,8 @@ public class PropertyPanel extends IEList {
 		properties = new ArrayList<PainterProperty>();
 		properties.add(PainterProperty.getLockID());
 		properties.add(PainterProperty.getNpcID());
+		
+		PainterProperty.setPanel(this);
 
 		updateSprites();
 	}
@@ -56,10 +58,8 @@ public class PropertyPanel extends IEList {
 
 			if (plus.contains(clickPoint)) {
 				p.increment();
-				updateSprites();
 			} else if (minus.contains(clickPoint)) {
 				p.decrement();
-				updateSprites();
 			}
 		}
 	}

@@ -47,24 +47,28 @@ public class MapPainter {
 				break;
 			case YELLOW_LOCK:
 				wo = new Lock(p, 1, lockID);
+				PainterProperty.getLockID().increment();
 				break;
 			case BLUE_KEY:
 				wo = new Key(p, 2);
 				break;
 			case BLUE_LOCK:
 				wo = new Lock(p, 2, lockID);
+				PainterProperty.getLockID().increment();
 				break;
 			case RED_KEY:
 				wo = new Key(p,3);
 				break;
 			case RED_LOCK:
 				wo = new Lock(p,3, lockID);
+				PainterProperty.getLockID().increment();
 				break;
 			case GREEN_KEY:
 				wo = new Key(p,4);
 				break;
 			case GREEN_LOCK:
 				wo = new Lock(p,4, lockID);
+				PainterProperty.getLockID().increment();
 				break;
 			case DOOR_BTM:
 				wo = new Door(p, lockID);
