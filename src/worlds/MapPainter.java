@@ -12,7 +12,6 @@ import objects.WorldObject;
 public class MapPainter {
 	private WorldMap map;
 	private ItemType item;
-	private int lockID = 0;
 
 	public MapPainter(WorldMap m) {
 		map = m;
@@ -34,6 +33,7 @@ public class MapPainter {
 
 	private WorldObject makeObject(Point p) {
 		WorldObject wo;
+		int lockID = PainterProperty.getLockID().getValue();
 
 		switch (item) {
 			case WALL:
