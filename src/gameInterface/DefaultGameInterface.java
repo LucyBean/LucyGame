@@ -4,8 +4,6 @@ import helpers.Point;
 import helpers.Rectangle;
 import options.GlobalOptions;
 import options.Option;
-import player.Inventory;
-import player.InventoryItem;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {

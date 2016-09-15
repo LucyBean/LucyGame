@@ -108,6 +108,16 @@ public class WorldMap {
 		if (go.isInteractable()) {
 			interactables.remove(go);
 		}
+		if (go instanceof Lockable) {
+			Lockable lgo = (Lockable) go;
+			int lockID = lgo.getLockID();
+			lockablesByID.get(lockID).remove(lgo);
+		}
+		if (go instanceof Locker) {
+			Locker lgo = (Locker) go;
+			int lockID = lgo.getLockID();
+			lockers.remove(lockID);
+		}
 
 		removeFromActiveSets(go);
 	}

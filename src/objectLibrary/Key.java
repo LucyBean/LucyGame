@@ -9,10 +9,11 @@ public class Key extends PickUpItem {
 	int keyID;
 
 	private static ItemType keyIDtoItemType(int keyID) {
-		if (keyID > 0) {
-			keyID = (keyID % 4) + 1;
-		} else {
+		if (keyID < 0) {
 			keyID = 1;
+		}
+		else if (keyID > 4) {
+			keyID = (keyID % 4) + 1;
 		}
 		int n = (keyID - 1) + ItemType.YELLOW_KEY.ordinal();
 		return ItemType.values()[n];

@@ -3,7 +3,6 @@ package gameInterface;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -48,7 +47,7 @@ public abstract class IEList extends InterfaceElement {
 	 *            display that the corresponding button has been selected.
 	 */
 	public IEList(Point firstPoint, int height, int width, int padding,
-			Supplier<Sprite> spriteMaker, Consumer<Sprite> setSelectedSprite) {
+			Consumer<Sprite> setSelectedSprite) {
 		nextPosition = firstPoint;
 		buttons = new ArrayList<IEListItem>();
 		minItemDisplayed = 0;
@@ -64,7 +63,7 @@ public abstract class IEList extends InterfaceElement {
 
 		int column = 0;
 		for (int i = 0; i < numDisplayElems; i++) {
-			Sprite s = spriteMaker.get();
+			Sprite s = makeNewSprite();
 			Rectangle r = s.getBoundingRectangle();
 			IEListItem ieli = new IEListItem(this, i, nextPosition, s);
 			getElementSprite(i, s);
@@ -87,14 +86,9 @@ public abstract class IEList extends InterfaceElement {
 	/**
 	 * Creates a new IEList which does not have the ability to select an
 	 * element.
-	 * 
-	 * @param firstPoint
-	 * @param numDisplayElems
-	 * @param spriteMaker
 	 */
-	public IEList(Point firstPoint, int numDisplayElems, int width, int padding,
-			Supplier<Sprite> spriteMaker) {
-		this(firstPoint, numDisplayElems, width, padding, spriteMaker, null);
+	public IEList(Point firstPoint, int height, int width, int padding) {
+		this(firstPoint, height, width, padding, null);
 	}
 
 	/**
@@ -253,14 +247,16 @@ public abstract class IEList extends InterfaceElement {
 	 *            modified to show information for the correct element in its
 	 *            unselected state.
 	 */
-	public abstract void getElementSprite(int elementIndex, Sprite s);
+	protected abstract void getElementSprite(int elementIndex, Sprite s);
 
 	/**
 	 * @return The number of elements within the list being displayed.
 	 */
-	public abstract int getNumElements();
+	protected abstract int getNumElements();
 
-	public abstract void elementClicked(int elementNumber);
+	protected abstract void elementClicked(int elementNumber);
+
+	protected abstract Sprite makeNewSprite();
 
 	@Override
 	public void setWorld(World world) {

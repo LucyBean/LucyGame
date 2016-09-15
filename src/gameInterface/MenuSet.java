@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import helpers.Point;
+import images.Sprite;
 import images.SpriteBuilder;
 import options.GlobalOptions;
 import worlds.World;
@@ -46,7 +47,7 @@ public class MenuSet extends InterfaceElement {
 			currentMenu.mousePressed(button, clickPoint);
 		}
 	}
-	
+
 	@Override
 	public void keyPressed(int keycode) {
 		IEList currentMenu = menus.get(currentActive);
@@ -77,8 +78,12 @@ public class MenuSet extends InterfaceElement {
 			int state) {
 		Menu subMenu = menus.get(state);
 		if (subMenu == null) {
-			subMenu = new Menu(START_POINT, 10,
-					(() -> SpriteBuilder.makeMenuButton("")), this);
+			subMenu = new Menu(START_POINT, 10, this) {
+				@Override
+				protected Sprite makeNewSprite() {
+					return SpriteBuilder.makeMenuButton("");
+				}
+			};
 
 			menus.put(state, subMenu);
 		}

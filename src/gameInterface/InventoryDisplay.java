@@ -17,7 +17,7 @@ public class InventoryDisplay extends IEList {
 	InventoryItem maxItem;
 
 	public InventoryDisplay(Point firstPoint, Inventory i) {
-		super(firstPoint, 4, 2, 4, (() -> new InventoryDisplaySprite()),
+		super(firstPoint, 4, 1, 4,
 				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
 		if (i != null) {
 			inventory = i;
@@ -35,12 +35,12 @@ public class InventoryDisplay extends IEList {
 	}
 
 	@Override
-	public void elementClicked(int elementIndex) {
-		moveUp();
+	protected void elementClicked(int elementIndex) {
+		
 	}
 
 	@Override
-	public void getElementSprite(int elementIndex, Sprite s) {
+	protected void getElementSprite(int elementIndex, Sprite s) {
 		InventoryDisplaySprite ids = (InventoryDisplaySprite) s;
 
 		if (inventory != null && elementIndex >= 0
@@ -63,11 +63,16 @@ public class InventoryDisplay extends IEList {
 	}
 
 	@Override
-	public int getNumElements() {
+	protected int getNumElements() {
 		if (inventory == null) {
 			return 0;
 		} else {
 			return inventory.size();
 		}
+	}
+
+	@Override
+	protected Sprite makeNewSprite() {
+		return new InventoryDisplaySprite();
 	}
 }

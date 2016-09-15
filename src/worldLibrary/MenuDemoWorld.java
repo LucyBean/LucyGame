@@ -17,7 +17,8 @@ public class MenuDemoWorld extends World {
 		MenuSet m = new MenuSet();
 		for (int i = 0; i < 6; i++) {
 			final int w = i;
-			m.add((() -> "Level " + w), s -> s.getWorld().getGame().loadLevel(w));
+			m.add((() -> "Level " + w),
+					s -> s.getWorld().getGame().loadLevel(w));
 		}
 		addObject(m, WorldState.PLAYING);
 	}

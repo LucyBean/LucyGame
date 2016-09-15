@@ -16,7 +16,7 @@ public class Palette extends IEList {
 	List<ItemType> elements;
 
 	public Palette(Point firstPoint) {
-		super(firstPoint, 16, 8, 4, () -> SpriteBuilder.makePaletteBlock());
+		super(firstPoint, 2, 8, 4);
 		setBackground(Color.white);
 		elements = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class Palette extends IEList {
 	}
 
 	@Override
-	public void getElementSprite(int elementIndex, Sprite s) {
+	protected void getElementSprite(int elementIndex, Sprite s) {
 		if (elements != null && elementIndex >= 0
 				&& elementIndex < elements.size()) {
 			ItemType it = elements.get(elementIndex);
@@ -42,17 +42,22 @@ public class Palette extends IEList {
 	}
 
 	@Override
-	public int getNumElements() {
+	protected int getNumElements() {
 		return elements.size();
 	}
 
 	@Override
-	public void elementClicked(int elementNumber) {
+	protected void elementClicked(int elementNumber) {
 		if (elements != null && elementNumber >= 0
 				&& elementNumber < elements.size()) {
 			ItemType it = elements.get(elementNumber);
 			getWorld().getMap().getPainter().setItem(it);
 		}
+	}
+
+	@Override
+	protected Sprite makeNewSprite() {
+		return SpriteBuilder.makePaletteBlock();
 	}
 
 }

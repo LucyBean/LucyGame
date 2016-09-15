@@ -12,14 +12,13 @@ import images.ImageBuilder;
 import images.LayeredImage;
 import images.Sprite;
 
-public class Menu extends IEList {
+public abstract class Menu extends IEList {
 	private List<Supplier<String>> labels;
 	private List<Consumer<Menu>> clickActions;
 	private MenuSet menuSet;
 
-	public Menu(Point firstPoint, int numDisplayElems,
-			Supplier<Sprite> spriteMaker, MenuSet menuSet) {
-		super(firstPoint, numDisplayElems, 1, 4, spriteMaker,
+	public Menu(Point firstPoint, int numDisplayElems, MenuSet menuSet) {
+		super(firstPoint, numDisplayElems, 1, 4,
 				(s -> s.getImage().setLayer(0,
 						ImageBuilder.getMenuButtonSelectedBackground())));
 		labels = new ArrayList<Supplier<String>>();
@@ -27,9 +26,8 @@ public class Menu extends IEList {
 		this.menuSet = menuSet;
 	}
 
-	public Menu(Point firstPoint, int numDisplayElems,
-			Supplier<Sprite> spriteMaker) {
-		this(firstPoint, numDisplayElems, spriteMaker, null);
+	public Menu(Point firstPoint, int numDisplayElems) {
+		this(firstPoint, numDisplayElems, null);
 	}
 
 	public MenuSet getMenuSet() {
@@ -51,7 +49,7 @@ public class Menu extends IEList {
 	}
 
 	@Override
-	public void elementClicked(int elementIndex) {
+	protected void elementClicked(int elementIndex) {
 		if (clickActions != null && elementIndex >= 0
 				&& elementIndex < labels.size()) {
 			Consumer<Menu> ca = clickActions.get(elementIndex);
@@ -60,7 +58,7 @@ public class Menu extends IEList {
 	}
 
 	@Override
-	public void getElementSprite(int elementIndex, Sprite s) {
+	protected void getElementSprite(int elementIndex, Sprite s) {
 		if (labels != null && elementIndex >= 0
 				&& elementIndex < labels.size()) {
 			// There is information to be displayed
@@ -76,7 +74,7 @@ public class Menu extends IEList {
 	}
 
 	@Override
-	public int getNumElements() {
+	protected int getNumElements() {
 		if (labels == null) {
 			return 0;
 		} else {
