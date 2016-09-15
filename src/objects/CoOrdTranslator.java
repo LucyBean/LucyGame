@@ -9,12 +9,17 @@ import worlds.WorldLayer;
 
 public class CoOrdTranslator {	
 	GameObject go;
+	
 	public CoOrdTranslator(GameObject go) {
 		this.go = go;
 	}
 
 	public Point objectToWorldCoOrds(Point point) {
 		return point.move(go.getPosition());
+	}
+	
+	public Point worldToObjectCoOrds(Point point) {
+		return point.move(go.getPosition().neg());
 	}
 
 	public Rectangle objectToWorldCoOrds(Rectangle rect) {
@@ -32,6 +37,26 @@ public class CoOrdTranslator {
 							layer.getParallaxY()).neg()).scale(
 									camera.getScale()
 											* GlobalOptions.GRID_SIZE);
+		} else {
+			return null;
+		}
+	}
+	
+	public Point screenToObjectCoOrds(Point point) {
+		if (go instanceof InterfaceElement) {
+			return worldToObjectCoOrds(point);
+		} else if (go instanceof WorldObject) {
+			Camera camera = go.getWorld().getCamera();
+			WorldLayer layer = ((WorldObject) go).getLayer();
+			int gridSize = GlobalOptions.GRID_SIZE;
+			
+			Point worldCoOrds = point.scale(
+					1 / (camera.getScale() * gridSize)).move(
+							camera.getLocation().scale(
+									layer.getParallaxX(),
+									layer.getParallaxY()));
+			
+			return worldToObjectCoOrds(worldCoOrds);
 		} else {
 			return null;
 		}

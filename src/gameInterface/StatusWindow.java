@@ -46,7 +46,7 @@ class StatusWindow extends InterfaceElement {
 	}
 
 	@Override
-	public void onClick(int button) {
+	public void onClick(int button, Point clickPoint) {
 		getWorld().startWatchSelect();
 	}
 

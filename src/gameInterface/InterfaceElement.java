@@ -28,13 +28,19 @@ public abstract class InterfaceElement extends GameObject {
 		super(null, null);
 	}
 
+	/**
+	 * @param button
+	 *            The button used to click.
+	 * @param clickPoint
+	 *            The position of the mouse click in screen co-ordinates.
+	 */
 	public void mousePressed(int button, Point clickPoint) {
 		Sprite sprite = getSprite();
 		if (sprite != null) {
 			Rectangle rect = sprite.getBoundingRectangle();
-			rect = getCoOrdTranslator().objectToScreenCoOrds(rect);
+			clickPoint = getCoOrdTranslator().screenToObjectCoOrds(clickPoint);
 			if (rect.contains(clickPoint)) {
-				onClick(button);
+				onClick(button, clickPoint);
 			}
 		}
 	}
@@ -86,8 +92,10 @@ public abstract class InterfaceElement extends GameObject {
 	 * 
 	 * @param button
 	 *            The mouse button used to click the object.
+	 * @param clickPoint
+	 *            The position of the mouse click in object co-ordinates.
 	 */
-	public void onClick(int button) {
+	public void onClick(int button, Point clickPoint) {
 
 	}
 

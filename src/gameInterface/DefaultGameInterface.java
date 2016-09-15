@@ -11,7 +11,7 @@ public class DefaultGameInterface extends GameInterface {
 		Button openMenuButton = new Button(
 				new Rectangle(new Point(200, 0), 100, 32)) {
 			@Override
-			public void onClick(int button) {
+			public void onClick(int button, Point clickPoint) {
 				getWorld().openMenu();
 			}
 		};
@@ -21,7 +21,7 @@ public class DefaultGameInterface extends GameInterface {
 		Button closeMenuButton = new Button(
 				new Rectangle(new Point(300, 0), 100, 32)) {
 			@Override
-			public void onClick(int button) {
+			public void onClick(int button, Point clickPoint) {
 				getWorld().closeMenu();
 			}
 		};
@@ -31,7 +31,7 @@ public class DefaultGameInterface extends GameInterface {
 		Button clickToStopSelect = new Button(
 				new Rectangle(new Point(150, 0), 340, 32)) {
 			@Override
-			public void onClick(int button) {
+			public void onClick(int button, Point clickPoint) {
 				getWorld().stopWatchSelect();
 			}
 		};

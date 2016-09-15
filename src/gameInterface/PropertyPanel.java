@@ -6,6 +6,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 
 import helpers.Point;
+import helpers.Rectangle;
 import images.PropertyPanelSprite;
 import images.Sprite;
 
@@ -31,7 +32,7 @@ public class PropertyPanel extends IEList {
 				return (value > 0 && value < 256);
 			}
 		});
-		
+
 		updateSprites();
 	}
 
@@ -54,8 +55,29 @@ public class PropertyPanel extends IEList {
 	}
 
 	@Override
+	public void buttonClicked(int buttonIndex, Point clickPoint) {
+		int minItemDisplayed = getMinItemDisplayed();
+		int elementIndex = buttonIndex + minItemDisplayed;
+		if (elementExists(elementIndex) && clickPoint != null) {
+			Property p = properties.get(elementIndex);
+			Sprite s = getButton(buttonIndex).getSprite();
+			PropertyPanelSprite pps = (PropertyPanelSprite) s;
+			Rectangle plus = pps.getPlusBound();
+			Rectangle minus = pps.getMinusBound();
+
+			if (plus.contains(clickPoint)) {
+				p.increment();
+				updateSprites();
+			} else if (minus.contains(clickPoint)) {
+				p.decrement();
+				updateSprites();
+			}
+		}
+	}
+
+	@Override
 	protected void elementClicked(int elementNumber) {
-		// Need to figure out if the up/down button was clicked??`
+
 	}
 
 	@Override

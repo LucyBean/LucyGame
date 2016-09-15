@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 import helpers.Point;
+import helpers.Rectangle;
 
 public class PropertyPanelSprite extends Sprite {
 	private static LayeredImage makeImage() {
@@ -69,6 +70,20 @@ public class PropertyPanelSprite extends Sprite {
 		LayeredImage limg = getImage();
 		limg.clear(0);
 		limg.clear(1);
+	}
+	
+	public Rectangle getPlusBound() {
+		LayeredImage limg = getImage();
+		Point origin = limg.getLayer(2).getOrigin();
+		Image i = limg.getLayer(2).getImage();
+		return new Rectangle(origin, i.getWidth(), i.getHeight());
+	}
+	
+	public Rectangle getMinusBound() {
+		LayeredImage limg = getImage();
+		Point origin = limg.getLayer(3).getOrigin();
+		Image i = limg.getLayer(3).getImage();
+		return new Rectangle(origin, i.getWidth(), i.getHeight());
 	}
 
 }

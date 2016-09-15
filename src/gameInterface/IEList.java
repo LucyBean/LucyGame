@@ -130,7 +130,7 @@ public abstract class IEList extends InterfaceElement {
 	 * @param elementIndex
 	 * @return
 	 */
-	public boolean elementExists(int elementIndex) {
+	protected boolean elementExists(int elementIndex) {
 		return elementIndex >= 0 && elementIndex < getNumElements();
 	}
 
@@ -175,8 +175,23 @@ public abstract class IEList extends InterfaceElement {
 		}
 	}
 
-	public void buttonClicked(int buttonIndex) {
-		elementClicked(buttonIndex + minItemDisplayed);
+	public void buttonClicked(int buttonIndex, Point clickPoint) {
+		int elementIndex = buttonIndex + minItemDisplayed;
+		if (elementExists(elementIndex)) {
+			elementClicked(buttonIndex + minItemDisplayed);
+		}
+	}
+	
+	protected int getMinItemDisplayed() {
+		return minItemDisplayed;
+	}
+	
+	protected IEListItem getButton(int buttonIndex) {
+		if (buttons != null && buttonIndex >= 0 && buttonIndex < buttons.size()) {
+			return buttons.get(buttonIndex);
+		} else {
+			return null;
+		}
 	}
 
 	/**

@@ -14,7 +14,7 @@ public class IEListItem extends InterfaceElement {
 	}
 
 	@Override
-	public void onClick(int button) {
-		parent.buttonClicked(index);
+	public void onClick(int button, Point clickPoint) {
+		parent.buttonClicked(index, clickPoint);
 	}
 }

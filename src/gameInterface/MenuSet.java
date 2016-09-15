@@ -30,11 +30,6 @@ public class MenuSet extends InterfaceElement {
 	}
 
 	@Override
-	public void onClick(int button) {
-
-	}
-
-	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
 		menus.values().stream().forEach(li -> li.setWorld(world));

@@ -33,6 +33,11 @@ public abstract class Menu extends IEList {
 	public MenuSet getMenuSet() {
 		return menuSet;
 	}
+	
+	@Override
+	public void onClick(int button, Point clickPoint) {
+		
+	}
 
 	/**
 	 * Adds a new entry to the bottom of this Menu.
