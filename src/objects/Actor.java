@@ -23,21 +23,17 @@ public abstract class Actor extends WorldObject {
 	private float vSpeed;
 	private boolean gravityEnabled;
 
-	public Actor(Point origin, WorldLayer layer, Sprite sprite,
+	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite,
 			Collider collider, InteractBox interactBox) {
-		super(origin, layer, sprite, collider, interactBox);
+		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
-	public Actor(Point origin, WorldLayer layer, Sprite sprite) {
-		this(origin, layer, sprite, null, null);
+	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
+		this(origin, layer, itemType, sprite, null, null);
 	}
 	
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
-	}
-
-	public Actor(Point origin, WorldLayer layer) {
-		this(origin, layer, null, null, null);
+		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
 	}
 
 	protected final void resetState() {

@@ -41,7 +41,7 @@ public class ColliderDemoWorld extends World {
 
 class ColliderBox extends Static {
 	public ColliderBox(Point origin) {
-		super(origin, WorldLayer.WORLD, null,
+		super(origin, WorldLayer.WORLD, null, null,
 				new Collider(Point.ZERO, 0.5f, 0.5f),
 				new InteractBox(new Point(0.5f, 0), 0.5f, 0.5f));
 	}

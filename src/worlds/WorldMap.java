@@ -8,13 +8,14 @@ import java.util.Set;
 
 import org.newdawn.slick.GameContainer;
 
+import characters.NPC;
 import helpers.Point;
 import objects.Actor;
 import objects.Lockable;
 import objects.Locker;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
-import options.GlobalOptions;
+import player.Player;
 
 /**
  * The Map is responsible for holding all the objects in a World.
@@ -33,8 +34,15 @@ public class WorldMap {
 	private World world;
 	private Map<Integer, Set<Lockable>> lockablesByID;
 	private Map<Integer, Locker> lockers;
+	private Map<Integer, NPC> npcsByID;
+	private Player player;
 
 	public WorldMap(World world) {
+		reset();
+		this.world = world;
+	}
+	
+	public void reset() {
 		layers = new ObjectLayerSet<>();
 		actors = new HashSet<>();
 		activeActors = new HashSet<>();
@@ -44,11 +52,23 @@ public class WorldMap {
 		mapPainter = new MapPainter(this);
 		lockablesByID = new HashMap<>();
 		lockers = new HashMap<>();
-		this.world = world;
+		npcsByID = new HashMap<>();		
 	}
 
 	public MapPainter getPainter() {
 		return mapPainter;
+	}
+
+	public void addObjects(Collection<WorldObject> objects) {
+		objects.stream().forEach(wo -> addObject(wo));
+	}
+
+	public Collection<WorldObject> getObjects() {
+		Collection<WorldObject> objects = new HashSet<>();
+
+		layers.values().stream().forEach(layer -> objects.addAll(layer));
+
+		return objects;
 	}
 
 	public void addObject(WorldObject go) {
@@ -86,10 +106,22 @@ public class WorldMap {
 			Locker lgo = (Locker) go;
 			int lockID = lgo.getLockID();
 			Locker old = lockers.put(lockID, lgo);
-			if (GlobalOptions.debug() && old != null) {
-				System.err.println("Warning! Locks with duplicate lockIDs.");
+			if (old != null) {
+				removeObject(old);
 			}
-
+		}
+		if (go instanceof Player) {
+			if (player != null) {
+				removeObject(player);
+			}
+			player = (Player) go;
+		}
+		if (go instanceof NPC) {
+			NPC npc = (NPC) go;
+			NPC n = npcsByID.put(npc.getNPCID(), npc);
+			if (n != null) {
+				removeObject(n);
+			}
 		}
 
 		go.setWorld(world);

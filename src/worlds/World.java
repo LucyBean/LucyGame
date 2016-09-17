@@ -31,12 +31,14 @@ public class World {
 	private final LucyGame game;
 	private final String name;
 	private WorldMap map;
+	private boolean ignoringInput;
 
 	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
 	public World(LucyGame game, String name) {
 		this.game = game;
 		this.name = name;
+		map = new WorldMap(this);
 		reset();
 	}
 
@@ -48,10 +50,13 @@ public class World {
 			camera = new Camera();
 			worldState = WorldState.PLAYING;
 			activeQuests = new HashSet<>();
-			map = new WorldMap(this);
+			map.reset();
 
-			setGameInterface(defaultInterface);
+			gameInterface = defaultInterface;
+			gameInterface.setWorld(this);
 			worldInterface = new GameInterface();
+			worldInterface.setWorld(this);
+			ignoringInput = false;
 
 			init();
 
@@ -59,11 +64,6 @@ public class World {
 			System.err.println("Unable to initialise or reset world.");
 			se.printStackTrace();
 		}
-	}
-
-	private void setGameInterface(GameInterface gi) {
-		gameInterface = gi;
-		gi.setWorld(this);
 	}
 
 	protected void enableStatusWindow() {
@@ -163,7 +163,7 @@ public class World {
 	public String getName() {
 		return name;
 	}
-	
+
 	public WorldMap getMap() {
 		return map;
 	}
@@ -236,6 +236,19 @@ public class World {
 
 	public void startBuilding() {
 		worldState = WorldState.BUILDING;
+		ignoreInput(true);
+	}
+
+	public void stopBuilding() {
+		worldState = WorldState.PLAYING;
+	}
+
+	protected void ignoreInput(boolean ignore) {
+		ignoringInput = ignore;
+	}
+	
+	protected boolean isIgnoringInput() {
+		return ignoringInput;
 	}
 
 	/**
@@ -257,24 +270,27 @@ public class World {
 	public void update(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 
-		camera.update(gc, delta);
-		gameInterface.update(gc, delta, getState());
-		worldInterface.update(gc, delta, getState());
-
 		// Reset on D
 		if (input.isKeyDown(Input.KEY_D)) {
 			reset();
 		}
 
-		switch (worldState) {
-			case PLAYING:
-				playingUpdate(gc, delta);
-				break;
-			case BUILDING:
-				buildingUpdate(gc, delta);
-				break;
-			default:
-				break;
+		if (!ignoringInput) {
+
+			camera.update(gc, delta);
+			gameInterface.update(gc, delta, getState());
+			worldInterface.update(gc, delta, getState());
+
+			switch (worldState) {
+				case PLAYING:
+					playingUpdate(gc, delta);
+					break;
+				case BUILDING:
+					buildingUpdate(gc, delta);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 

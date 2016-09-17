@@ -21,7 +21,6 @@ public class GlobalOptions {
 				br.lines().forEach(s -> process(s));
 				br.close();
 			}
-
 		} catch (IOException ioe) {
 			System.err.println("Error reading settitngs.");
 			if (GlobalOptions.debug()) {

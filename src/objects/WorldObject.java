@@ -14,6 +14,7 @@ public abstract class WorldObject extends GameObject {
 	// the top-left point of the collider (for solids) or image (for
 	// non-solids).
 	//
+	private ItemType itemType;
 	private Collider collider;
 	private InteractBox interactBox;
 	private WorldLayer layer;
@@ -34,26 +35,23 @@ public abstract class WorldObject extends GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public WorldObject(Point origin, WorldLayer layer, Sprite sprite,
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite,
 			Collider collider, InteractBox interactBox) {
 		super(origin, sprite);
 		this.collider = collider;
 		this.interactBox = interactBox;
 		this.layer = layer;
+		this.itemType = itemType;
 
 		reset();
 	}
 
-	public WorldObject(Point origin, WorldLayer layer, Sprite sprite) {
-		this(origin, layer, sprite, null, null);
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
+		this(origin, layer, itemType, sprite, null, null);
 	}
 	
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
-	}
-
-	public WorldObject(Point origin, WorldLayer layer) {
-		this(origin, layer, null, null, null);
+		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
 	}
 	
 	public void setColliderFromSprite() {
@@ -98,6 +96,10 @@ public abstract class WorldObject extends GameObject {
 
 	public WorldLayer getLayer() {
 		return layer;
+	}
+	
+	public ItemType getType() {
+		return itemType;
 	}
 
 	/**
@@ -176,5 +178,17 @@ public abstract class WorldObject extends GameObject {
 		} else {
 			return getClass().getSimpleName();
 		}
+	}
+	
+	public int getKeyID() {
+		return 0;
+	}
+	
+	public int getLockID() {
+		return 0;
+	}
+	
+	public int getNPCID() {
+		return 0;
 	}
 }

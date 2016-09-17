@@ -4,6 +4,7 @@ import helpers.Dir;
 import helpers.Point;
 import images.SpriteBuilder;
 import objects.Collider;
+import objects.ItemType;
 import objects.Static;
 import worlds.WorldLayer;
 
@@ -12,7 +13,7 @@ public class Wall extends Static {
 	final int height;
 
 	public Wall(Point origin, int width, int height) {
-		super(origin, WorldLayer.WORLD, null,
+		super(origin, WorldLayer.WORLD, ItemType.WALL, null,
 				new Collider(Point.ZERO, width, height), null);
 		this.width = width;
 		this.height = height;

@@ -3,8 +3,11 @@ package gameInterface;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 
+import characters.NPC;
 import helpers.Point;
 import helpers.Rectangle;
+import objects.Lockable;
+import objects.Locker;
 import objects.WorldObject;
 
 class StatusWindow extends InterfaceElement {
@@ -12,7 +15,7 @@ class StatusWindow extends InterfaceElement {
 	static Point textTopLeft = new Point(5,5);
 
 	public StatusWindow(Point origin) {
-		super(new Rectangle(origin, 300, 200));
+		super(new Rectangle(origin, 200, 200));
 		setBackground(new Color(240, 220, 240, 200));
 	}
 
@@ -36,11 +39,28 @@ class StatusWindow extends InterfaceElement {
 			setText("Watching nothing", textTopLeft);
 		} else {
 			String text = "Watching [" + watching.getClass().getSimpleName() + "]\n";
+			
 			if (watching.isEnabled()) {
 				text += "Pos: " + watching.getPosition() + "\n";
 			} else {
-				text += "Disabled;n";
+				text += "Disabled\n";
 			}
+			
+			if (watching instanceof NPC) {
+				int npcID = watching.getNPCID();
+				text += "NPC ID: " + npcID + "\n";
+			}
+			
+			if (watching instanceof Locker) {
+				int lockID = watching.getLockID();
+				text += "Lock ID: " + lockID + "\n";
+			}
+			
+			if (watching instanceof Lockable) {
+				int lockID = watching.getLockID();
+				text += "Lock ID: " + lockID + "\n";
+			}
+			
 			setText(text, textTopLeft);
 		}
 	}

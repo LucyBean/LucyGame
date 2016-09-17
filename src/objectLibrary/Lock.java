@@ -22,6 +22,11 @@ public class Lock extends Locker {
 		super(lockID, origin, WorldLayer.WORLD, keyIDtoItemType(keyID));
 		this.keyID = keyID;
 	}
+	
+	@Override
+	public int getKeyID() {
+		return keyID;
+	}
 
 	@Override
 	protected void resetStaticState() {

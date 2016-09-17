@@ -11,6 +11,7 @@ import helpers.Point;
 import images.SpriteBuilder;
 import objects.Actor;
 import objects.Collider;
+import objects.ItemType;
 import objects.WorldObject;
 import worlds.WorldLayer;
 
@@ -21,9 +22,9 @@ public class Player extends Actor {
 	Map<Integer, Integer> keys;
 
 	public Player(Point origin) {
-		super(origin, WorldLayer.PLAYER, SpriteBuilder.getCharacterSprite(0),
-				new Collider(Point.ZERO, 0.8f, 1.99f),
-				null);
+		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
+				SpriteBuilder.getCharacterSprite(0),
+				new Collider(Point.ZERO, 0.8f, 1.99f), null);
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class Player extends Actor {
 
 	@Override
 	public void overlapStart(WorldObject wo) {
-		
+
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class Player extends Actor {
 	public boolean has(InventoryItem ii) {
 		return inventory.has(ii);
 	}
-	
+
 	public boolean has(InventoryItem ii, int quantity) {
 		return inventory.has(ii, quantity);
 	}
@@ -92,11 +93,10 @@ public class Player extends Actor {
 
 	public void useKey(int keyID) {
 		InventoryItem key = InventoryItem.getKeyByID(keyID);
-		inventory.remove(key,1);
+		inventory.remove(key, 1);
 	}
 
 	public Inventory getInventory() {
 		return inventory;
 	}
 }
-

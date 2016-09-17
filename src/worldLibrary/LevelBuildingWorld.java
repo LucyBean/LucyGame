@@ -1,5 +1,9 @@
 package worldLibrary;
 
+import java.util.Random;
+
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import gameInterface.Palette;
@@ -24,6 +28,18 @@ public class LevelBuildingWorld extends World {
 		
 		PropertyPanel pp = new PropertyPanel(new Point(300, 300));
 		addObject(pp, WorldState.BUILDING);
+	}
+	
+	@Override
+	public void update(GameContainer gc, int delta) {
+		if (isIgnoringInput()) {
+			Input input = gc.getInput();
+			if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+				ignoreInput(false);
+			}
+		} else {
+			super.update(gc, delta);
+		}
 	}
 
 }

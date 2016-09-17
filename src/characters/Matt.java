@@ -10,20 +10,20 @@ import images.SpriteBuilder;
 import objectLibrary.Gem;
 import objects.Actor;
 import objects.InteractBox;
+import objects.ItemType;
 import player.InventoryItem;
 import player.Player;
 import quests.EventType;
 import quests.Objective;
 import quests.Quest;
-import worlds.WorldLayer;
 
-public class Matt extends Actor {
+public class Matt extends NPC {
 	private Map<Integer, Conversation> conversations;
 	private int state = 0;
 
-	public Matt(Point origin) {
-		super(origin, WorldLayer.WORLD, SpriteBuilder.getCharacterSprite(1),
-				null, new InteractBox(new Point(-1, 0), 3, 2));
+	public Matt(Point origin, int npcID) {
+		super(origin, ItemType.MATT, SpriteBuilder.getCharacterSprite(1),
+				null, new InteractBox(new Point(-1, 0), 3, 2), npcID);
 		useGravity(false);
 
 		buildConversations();

@@ -24,6 +24,7 @@ public class Key extends PickUpItem {
 		setInteractBoxFromSprite();
 	}
 
+	@Override
 	public int getKeyID() {
 		return keyID;
 	}

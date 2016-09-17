@@ -27,19 +27,19 @@ public abstract class Locker extends Static {
 	 * @param collider
 	 * @param interactBox
 	 */
-	public Locker(int lockID, Point origin, WorldLayer layer, Sprite sprite,
-			Collider collider, InteractBox interactBox) {
-		super(origin, layer, sprite, collider, interactBox);
+	public Locker(int lockID, Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite, Collider collider, InteractBox interactBox) {
+		super(origin, layer, itemType, sprite, collider, interactBox);
 		this.lockID = lockID;
 	}
 
 	public Locker(int lockID, Point origin, WorldLayer layer,
 			ItemType itemType) {
-		this(lockID, origin, layer, SpriteBuilder.getWorldItem(itemType), null,
-				null);
+		this(lockID, origin, layer, itemType,
+				SpriteBuilder.getWorldItem(itemType), null, null);
 		setInteractBoxFromSprite();
 	}
-	
+
 	@Override
 	public void addedToWorld(World w) {
 		lock();
@@ -49,6 +49,7 @@ public abstract class Locker extends Static {
 		return locked;
 	}
 
+	@Override
 	public int getLockID() {
 		return lockID;
 	}

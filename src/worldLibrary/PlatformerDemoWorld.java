@@ -44,7 +44,7 @@ public class PlatformerDemoWorld extends World {
 		addObject(Wall.drawWall(new Point(0, 13), Dir.EAST, 5));
 		
 		// Add a Matt
-		Matt matt = new Matt(new Point(12,7));
+		Matt matt = new Matt(new Point(12,7), 1);
 		addObject(matt);
 		
 		// Add a key

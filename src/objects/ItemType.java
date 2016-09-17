@@ -12,7 +12,9 @@ public enum ItemType {
 		RED_LOCK,
 		GREEN_LOCK,
 		DOOR_TOP,
-		DOOR_BTM(DOOR_TOP);
+		DOOR_BTM(DOOR_TOP),
+		PLAYER,
+		MATT;
 	
 	ItemType parent;
 	

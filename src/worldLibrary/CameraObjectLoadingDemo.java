@@ -156,7 +156,7 @@ class CameraBox extends Actor {
 	float speed;
 
 	public CameraBox(Point origin) {
-		super(origin, WorldLayer.PLAYER, sprite, new Collider(Point.ZERO, 2, 1),
+		super(origin, WorldLayer.PLAYER, null, sprite, new Collider(Point.ZERO, 2, 1),
 				null);
 		// TODO Auto-generated constructor stub
 	}
@@ -197,7 +197,7 @@ class WorldSector extends Static {
 	final int y;
 
 	public WorldSector(Point origin, int x, int y) {
-		super(origin, WorldLayer.WORLD, null, null,
+		super(origin, WorldLayer.WORLD, null, null, null,
 				new InteractBox(Point.ZERO, 3, 3));
 		neighbours = new WorldSector[Dir.values().length];
 		this.x = x;

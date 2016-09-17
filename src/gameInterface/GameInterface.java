@@ -40,7 +40,7 @@ public class GameInterface {
 	 * 
 	 * @param w
 	 */
-	public void setWorld(final World w) {
+	public void setWorld(World w) {
 		world = w;
 		interfaces.applyToAllObjects(a -> a.setWorld(w));
 		allStateInterface.applyToAll(a -> a.setWorld(w));
@@ -74,6 +74,7 @@ public class GameInterface {
 		if (ie instanceof MenuSet) {
 			menus.add((MenuSet) ie);
 		}
+		ie.setWorld(world);
 	}
 
 	/**

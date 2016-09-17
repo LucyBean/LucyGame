@@ -6,26 +6,25 @@ import images.SpriteBuilder;
 import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {
-	public Static(Point origin, WorldLayer layer, Sprite sprite, Collider collider, InteractBox interactBox) {
-		super(origin, layer, sprite, collider, interactBox);
+	public Static(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite, Collider collider, InteractBox interactBox) {
+		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
-	
-	public Static(Point origin, WorldLayer layer, Sprite sprite) {
-		this(origin, layer, sprite, null, null);
+
+	public Static(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite) {
+		this(origin, layer, itemType, sprite, null, null);
 	}
-	
+
 	public Static(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, SpriteBuilder.getWorldItem(itemType), null, null);
-	}
-	
-	public Static(Point origin, WorldLayer layer) {
-		this(origin, layer, null, null, null);
+		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
+				null, null);
 	}
 
 	@Override
 	protected final void resetState() {
 		resetStaticState();
 	}
-	
+
 	protected abstract void resetStaticState();
 }
