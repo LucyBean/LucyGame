@@ -35,12 +35,15 @@ public abstract class InterfaceElement extends GameObject {
 	 *            The position of the mouse click in screen co-ordinates.
 	 */
 	public void mousePressed(int button, Point clickPoint) {
-		Sprite sprite = getSprite();
-		if (sprite != null) {
-			Rectangle rect = sprite.getBoundingRectangle();
-			clickPoint = getCoOrdTranslator().screenToObjectCoOrds(clickPoint);
-			if (rect.contains(clickPoint)) {
-				onClick(button, clickPoint);
+		if (isVisible()) {
+			Sprite sprite = getSprite();
+			if (sprite != null) {
+				Rectangle rect = sprite.getBoundingRectangle();
+				clickPoint = getCoOrdTranslator().screenToObjectCoOrds(
+						clickPoint);
+				if (rect.contains(clickPoint)) {
+					onClick(button, clickPoint);
+				}
 			}
 		}
 	}

@@ -148,7 +148,10 @@ public class WorldMap {
 		if (go instanceof Locker) {
 			Locker lgo = (Locker) go;
 			int lockID = lgo.getLockID();
-			lockers.remove(lockID);
+			Locker lock = lockers.get(lockID);
+			if (lgo == lock) {
+				lockers.remove(lockID);
+			}
 		}
 
 		removeFromActiveSets(go);

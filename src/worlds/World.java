@@ -242,6 +242,14 @@ public class World {
 	public void stopBuilding() {
 		worldState = WorldState.PLAYING;
 	}
+	
+	public void openBuildMenu() {
+		worldState = WorldState.BUILDING_MENU;
+	}
+	
+	public void closeBuildMenu() {
+		startBuilding();
+	}
 
 	protected void ignoreInput(boolean ignore) {
 		ignoringInput = ignore;
@@ -343,6 +351,7 @@ public class World {
 				}
 				break;
 			case MENU:
+			case BUILDING_MENU:
 				if (keycode == Input.KEY_ESCAPE) {
 					closeMenu();
 				}

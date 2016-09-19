@@ -8,7 +8,7 @@ import helpers.Rectangle;
 import objects.WorldObject;
 import options.GlobalOptions;
 import options.Option;
-import worlds.WorldMap;
+import worlds.World;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
@@ -24,7 +24,7 @@ public class DefaultGameInterface extends GameInterface {
 		add(openMenuButton, WorldState.PLAYING);
 
 		Button closeMenuButton = new Button(
-				new Rectangle(new Point(300, 0), 100, 32)) {
+				new Rectangle(new Point(200, 0), 100, 32)) {
 			@Override
 			public void onClick(int button, Point clickPoint) {
 				getWorld().closeMenu();
@@ -52,53 +52,89 @@ public class DefaultGameInterface extends GameInterface {
 		play.setTextCentered("Play!");
 		add(play, WorldState.BUILDING);
 
-		Button export = new Button(new Rectangle(new Point(104, 0), 100, 32)) {
-			@Override
-			public void onClick(int button, Point clickPoint) {
-				WorldMap wm = getWorld().getMap();
-				WorldMapImporterExporter.export(wm, "test");
-			}
-		};
-		export.setTextCentered("Export map");
-		add(export, WorldState.BUILDING);
+		// Button export = new Button(new Rectangle(new Point(104, 0), 100, 32))
+		// {
+		// @Override
+		// public void onClick(int button, Point clickPoint) {
+		// WorldMap wm = getWorld().getMap();
+		// WorldMapImporterExporter.export(wm, "test");
+		// }
+		// };
+		// export.setTextCentered("Export map");
+		// add(export, WorldState.BUILDING);
+		//
+		// Button importer = new Button(
+		// new Rectangle(new Point(208, 0), 100, 32)) {
+		// @Override
+		// public void onClick(int button, Point clickPoint) {
+		// Collection<WorldObject> objects =
+		// WorldMapImporterExporter.importObjects(
+		// "test");
+		// getWorld().getMap().reset();
+		// getWorld().getMap().addObjects(objects);
+		// }
+		// };
+		// importer.setTextCentered("Import map");
+		// add(importer, WorldState.BUILDING);
 
-		Button importer = new Button(
-				new Rectangle(new Point(208, 0), 100, 32)) {
+		Button toolsButton = new Button(
+				new Rectangle(new Point(200, 0), 100, 32)) {
 			@Override
 			public void onClick(int button, Point clickPoint) {
-				Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
-						"test");
-				getWorld().getMap().reset();
-				getWorld().getMap().addObjects(objects);
+				World w = getWorld();
+				if (w.getState() == WorldState.BUILDING) {
+					w.openBuildMenu();
+				} else if (w.getState() == WorldState.BUILDING_MENU) {
+					w.closeBuildMenu();
+				}
 			}
 		};
-		add(importer, WorldState.BUILDING);
+		toolsButton.setTextCentered("Tools");
+		add(toolsButton, WorldState.BUILDING);
+		add(toolsButton, WorldState.BUILDING_MENU);
+
+		MenuSet buildingTools = new MenuSet();
+		buildingTools.add(() -> "Export map", s -> {
+			WorldMapImporterExporter.export(s.getWorld().getMap(), "test");
+			s.getWorld().closeBuildMenu();
+		});
+		buildingTools.add(() -> "Import map", s -> {
+			Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
+					"test");
+			s.getWorld().getMap().reset();
+			s.getWorld().getMap().addObjects(objects);
+			s.getWorld().closeBuildMenu();
+		});
+		add(buildingTools, WorldState.BUILDING_MENU);
 
 		//
 		// Root menu
 		//
-		MenuSet m = new MenuSet();
-		m.add(() -> "Main menu", s -> s.getWorld().getGame().loadMainMenu());
-		m.add(() -> "Select watch object",
+		MenuSet gameMenu = new MenuSet();
+		gameMenu.add(() -> "Main menu",
+				s -> s.getWorld().getGame().loadMainMenu());
+		gameMenu.add(() -> "Select watch object",
 				s -> s.getWorld().startWatchSelect());
-		m.add(() -> "Open a sub menu", s -> s.getMenuSet().setSubMenu(1));
-		m.add(() -> "Open options", s -> s.getMenuSet().setSubMenu(2));
-		m.add(() -> "Build!", s -> s.getWorld().startBuilding());
+		gameMenu.add(() -> "Open a sub menu",
+				s -> s.getMenuSet().setSubMenu(1));
+		gameMenu.add(() -> "Open options", s -> s.getMenuSet().setSubMenu(2));
+		gameMenu.add(() -> "Build!", s -> s.getWorld().startBuilding());
 		//
 		// A sub menu
 		//
-		m.add(() -> "Go back", s -> s.getMenuSet().setSubMenu(0), 1);
+		gameMenu.add(() -> "Go back", s -> s.getMenuSet().setSubMenu(0), 1);
 		//
 		// Options
 		//
 		for (Option o : Option.values()) {
-			m.add(() -> o.toString(), s -> {
+			gameMenu.add(() -> o.toString(), s -> {
 				o.setToNextValue();
 				s.updateSprites();
 			}, 2);
 		}
-		m.add(() -> "Store settings", s -> GlobalOptions.saveToFile(), 2);
+		gameMenu.add(() -> "Store settings", s -> GlobalOptions.saveToFile(),
+				2);
 
-		add(m, WorldState.MENU);
+		add(gameMenu, WorldState.MENU);
 	}
 }
