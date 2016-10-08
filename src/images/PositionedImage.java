@@ -1,15 +1,13 @@
 package images;
 
-import org.newdawn.slick.Image;
-
 import helpers.Point;
 import options.GlobalOptions;
 
 public class PositionedImage {
 	Point origin;
-	Image image;
+	LucyImage image;
 
-	public PositionedImage(Point origin, Image image) {
+	public PositionedImage(Point origin, LucyImage image) {
 		this.origin = origin;
 		this.image = image;
 
@@ -46,11 +44,11 @@ public class PositionedImage {
 		return origin;
 	}
 
-	public Image getImage() {
+	public LucyImage getImage() {
 		return image;
 	}
 
-	public void setImage(Image image) {
+	public void setImage(LucyImage image) {
 		this.image = image;
 	}
 

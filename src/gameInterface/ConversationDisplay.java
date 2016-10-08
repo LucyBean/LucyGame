@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import characters.Conversation;
@@ -15,6 +14,7 @@ import helpers.Dir;
 import helpers.Pair;
 import helpers.Point;
 import images.ConversationBlockSprite;
+import images.StaticImage;
 
 public class ConversationDisplay extends InterfaceElement {
 	Iterator<String> wordListIterator;
@@ -73,7 +73,7 @@ public class ConversationDisplay extends InterfaceElement {
 	public void showNextTextLine() {
 		try {
 			ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
-			Image textLayer = cbs.getTextImage();
+			StaticImage textLayer = cbs.getTextImage();
 			Graphics g = textLayer.getGraphics();
 			g.clear();
 			g.setColor(Color.black);

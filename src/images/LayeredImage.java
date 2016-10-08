@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
@@ -31,7 +30,7 @@ public class LayeredImage {
 		this.height = height;
 	}
 
-	public LayeredImage(Image img) {
+	public LayeredImage(LucyImage img) {
 		layers = new LinkedList<PositionedImage>();
 		layers.add(new PositionedImage(Point.ZERO, img));
 		this.numLayers = 1;
@@ -42,7 +41,6 @@ public class LayeredImage {
 	public LayeredImage(List<PositionedImage> imgs) {
 		layers = new LinkedList<PositionedImage>(imgs);
 		numLayers = imgs.size();
-		// TODO: Find the maximum width and height of the biggest layer
 		Optional<Float> w = imgs.stream().map(i -> i.getWidth()).reduce(
 				Float::max);
 		Optional<Float> h = imgs.stream().map(i -> i.getHeight()).reduce(
@@ -103,7 +101,7 @@ public class LayeredImage {
 			if (img == null) {
 				try {
 					img = new PositionedImage(Point.ZERO,
-							new Image(width, height));
+							new StaticImage(width, height));
 					layers.add(z, img);
 				} catch (SlickException se) {
 					System.err.println("Unable to create new layer on image.");
@@ -176,7 +174,7 @@ public class LayeredImage {
 	 * @param layer
 	 * @param img
 	 */
-	public void setLayer(int layer, Image img) {
+	public void setLayer(int layer, LucyImage img) {
 		PositionedImage pimg = layers.get(layer);
 		Point point;
 		if (pimg != null) {
@@ -188,7 +186,8 @@ public class LayeredImage {
 	}
 
 	/**
-	 * Completely fills the layer with the Color c.
+	 * Completely fills the layer with the Color c if it is a static image
+	 * layer.
 	 * 
 	 * @param layer
 	 *            The number of the layer to fill. 0 is the background.
@@ -196,35 +195,46 @@ public class LayeredImage {
 	 *            The color with which to fill the layer.
 	 */
 	public void fillLayer(int layer, Color c) {
-		Image img = getLayer(layer).getImage();
+		LucyImage img = getLayer(layer).getImage();
 		if (img != null) {
-			try {
-				Graphics g = img.getGraphics();
-				g.setColor(c);
-				g.fillRect(0, 0, width, height);
-				g.flush();
-			} catch (SlickException se) {
-				System.err.println("Error while filling layer.");
-				se.printStackTrace();
+			if (img instanceof StaticImage) {
+				try {
+					Graphics g = ((StaticImage) img).getGraphics();
+					g.setColor(c);
+					g.fillRect(0, 0, width, height);
+					g.flush();
+				} catch (SlickException se) {
+					System.err.println("Error while filling layer.");
+					se.printStackTrace();
+				}
+			} else if (GlobalOptions.debug()) {
+				System.err.println(
+						"Attempting to fill a non-static image layer.");
 			}
 		}
 	}
 
 	/**
-	 * Clears the layer, setting the image to be transparent.
+	 * Clears the layer, setting the image to be transparent if it is a static
+	 * image layer.
 	 * 
 	 * @param layer
 	 */
 	public void clear(int layer) {
-		Image img = getLayer(layer).getImage();
+		LucyImage img = getLayer(layer).getImage();
 		if (img != null) {
-			try {
-				Graphics g = img.getGraphics();
-				g.clear();
-				g.flush();
-			} catch (SlickException se) {
-				System.err.println("Error while filling layer.");
-				se.printStackTrace();
+			if (img instanceof StaticImage) {
+				try {
+					Graphics g = ((StaticImage) img).getGraphics();
+					g.clear();
+					g.flush();
+				} catch (SlickException se) {
+					System.err.println("Error while filling layer.");
+					se.printStackTrace();
+				}
+			} else if (GlobalOptions.debug()) {
+				System.err.println(
+						"Attempting to clear a non-static image layer.");
 			}
 		}
 	}
@@ -237,13 +247,18 @@ public class LayeredImage {
 			clear(i);
 		}
 	}
+
 	/**
-	 * 	 Sets the layer to show the text. The text will be aligned with its
+	 * Sets the layer to show the text. The text will be aligned with its
 	 * top-left at the point topLeft. The layer specified will be completely
 	 * cleared before the text is added.
-	 * @param layer The number of the layer to fill. 0 is the background.
-	 * @param text The text to draw.
-	 * @param origin The point at which the text will be drawn.
+	 * 
+	 * @param layer
+	 *            The number of the layer to fill. 0 is the background.
+	 * @param text
+	 *            The text to draw.
+	 * @param origin
+	 *            The point at which the text will be drawn.
 	 * @param hAlign
 	 *            The horizontal alignment for the layer relative to the origin.
 	 *            0 = left, 1 = center, 2 = right
@@ -253,24 +268,29 @@ public class LayeredImage {
 	 */
 	public void setText(int layer, String text, Point origin, int hAlign,
 			int vAlign) {
-		Image img = getLayer(layer).getImage();
+		LucyImage img = getLayer(layer).getImage();
 		if (img == null) {
 			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
 		}
-		try {
-			Graphics g = img.getGraphics();
-			float w = g.getFont().getWidth(text);
-			float h = g.getFont().getHeight(text);
+		if (img instanceof StaticImage) {
+			try {
+				Graphics g = ((StaticImage) img).getGraphics();
+				float w = g.getFont().getWidth(text);
+				float h = g.getFont().getHeight(text);
 
-			float x = origin.getX() - (w * hAlign) / 2;
-			float y = origin.getY() - (h * vAlign) / 2;
+				float x = origin.getX() - (w * hAlign) / 2;
+				float y = origin.getY() - (h * vAlign) / 2;
 
-			setText(layer, text, new Point(x, y));
-		} catch (SlickException se) {
-			System.err.println("Error while adding text to image layer.");
-			if (GlobalOptions.debug()) {
-				se.printStackTrace();
+				setText(layer, text, new Point(x, y));
+			} catch (SlickException se) {
+				System.err.println("Error while adding text to image layer.");
+				if (GlobalOptions.debug()) {
+					se.printStackTrace();
+				}
 			}
+		} else if (GlobalOptions.debug()) {
+			System.err.println(
+					"Attempting to set text to a non-static image layer.");
 		}
 	}
 
@@ -284,19 +304,20 @@ public class LayeredImage {
 	 *            The color with which to fill the layer.
 	 */
 	public void setTextCentered(int layer, String text) {
-		Image img = getLayer(layer).getImage();
+		LucyImage img = getLayer(layer).getImage();
 		if (img == null) {
 			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
 		}
 		float width = img.getWidth();
 		float height = img.getHeight();
-		setText(layer, text, new Point(width/2, height/2), 1, 1);
+		setText(layer, text, new Point(width / 2, height / 2), 1, 1);
 	}
 
 	/**
 	 * Sets the layer to show the text. The text will be aligned with its
 	 * top-left at the point topLeft. The layer specified will be completely
-	 * cleared before the text is added.
+	 * cleared before the text is added. This will only work if the layer is a
+	 * static image layer.
 	 * 
 	 * @param layer
 	 *            The number of the layer to fill. 0 is the background.
@@ -306,20 +327,26 @@ public class LayeredImage {
 	 *            The point at which the topLeft of the text will be.
 	 */
 	public void setText(int layer, String text, Point topLeft) {
-		Image img = getLayer(layer).getImage();
-		if (img != null) {
-			try {
-				Graphics g = img.getGraphics();
-				g.clear();
+		LucyImage img = getLayer(layer).getImage();
+		if (img != null && img instanceof StaticImage) {
+			if (img instanceof StaticImage) {
+				try {
+					Graphics g = ((StaticImage) img).getGraphics();
+					g.clear();
 
-				g.setColor(Color.black);
-				g.drawString(text, topLeft.getX(), topLeft.getY());
-				g.flush();
-			} catch (SlickException se) {
-				System.err.println("Error while adding text to image layer.");
-				if (GlobalOptions.debug()) {
-					se.printStackTrace();
+					g.setColor(Color.black);
+					g.drawString(text, topLeft.getX(), topLeft.getY());
+					g.flush();
+				} catch (SlickException se) {
+					System.err.println(
+							"Error while adding text to image layer.");
+					if (GlobalOptions.debug()) {
+						se.printStackTrace();
+					}
 				}
+			} else if (GlobalOptions.debug()) {
+				System.err.println(
+						"Attempting to set text to a non-static image layer.");
 			}
 		} else if (GlobalOptions.debug()) {
 			System.err.println(

@@ -1,7 +1,6 @@
 package images;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 
 import helpers.Dir;
 import helpers.Point;
@@ -29,21 +28,21 @@ public class InventoryDisplaySprite extends Sprite {
 		Point p = new Point(border, border);
 
 		// Icon
-		Image icon = ImageBuilder.makeRectangle(iconSize, iconSize);
+		LucyImage icon = ImageBuilder.makeRectangle(iconSize, iconSize);
 		img.setLayer(1, new PositionedImage(p, icon));
 		p = p.move(Dir.EAST, iconSize + padding);
 
 		// Text
-		Image textBox = ImageBuilder.makeRectangle(textBoxWidth, iconSize);
+		LucyImage textBox = ImageBuilder.makeRectangle(textBoxWidth, iconSize);
 		img.setLayer(2, new PositionedImage(p, textBox));
 		p = p.move(Dir.EAST, textBoxWidth + padding);
 
 		// Digit one
-		Image digit1 = ImageBuilder.makeRectangle(digitWidth, iconSize);
+		LucyImage digit1 = ImageBuilder.makeRectangle(digitWidth, iconSize);
 		img.setLayer(3, new PositionedImage(p, digit1));
 		p = p.move(Dir.EAST, digitWidth);
 
-		Image digit2 = ImageBuilder.makeRectangle(digitWidth, iconSize);
+		LucyImage digit2 = ImageBuilder.makeRectangle(digitWidth, iconSize);
 		img.setLayer(4, new PositionedImage(p, digit2));
 
 		return img;
@@ -57,7 +56,7 @@ public class InventoryDisplaySprite extends Sprite {
 		getImage().fillLayer(0, new Color(200, 200, 200));
 	}
 
-	private void setIcon(Image i) {
+	private void setIcon(LucyImage i) {
 		getImage().setLayer(1, i);
 	}
 
@@ -78,7 +77,7 @@ public class InventoryDisplaySprite extends Sprite {
 	}
 	
 	public void setTo(InventoryItem ii, int quantity) {
-		Image img = ii.getImage();
+		LucyImage img = ii.getImage();
 		String name = ii.getName();
 		
 		setDeselectedBackground();

@@ -2,7 +2,6 @@ package images;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
@@ -10,10 +9,10 @@ import objects.ItemType;
 import options.GlobalOptions;
 
 public class ImageBuilder {
-	private static Image menuButtonBackground;
-	private static Image menuButtonSelectedBackground;
-	private static Image worldLoaderButtonBackground;
-	private static Image paletteBlockBackground;
+	private static StaticImage menuButtonBackground;
+	private static StaticImage menuButtonSelectedBackground;
+	private static StaticImage worldLoaderButtonBackground;
+	private static StaticImage paletteBlockBackground;
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
@@ -25,10 +24,10 @@ public class ImageBuilder {
 		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
 	}
 
-	public static Image makeRectangle(int width, int height, Color fill,
+	public static StaticImage makeRectangle(int width, int height, Color fill,
 			Color border) {
 		try {
-			Image img = new Image(width, height);
+			StaticImage img = new StaticImage(width, height);
 			Graphics g = img.getGraphics();
 			g.setColor(fill);
 			g.fillRect(0, 0, width, height);
@@ -47,7 +46,7 @@ public class ImageBuilder {
 		return null;
 	}
 
-	public static Image makeRectangle(int width, int height, Color fill) {
+	public static StaticImage makeRectangle(int width, int height, Color fill) {
 		return ImageBuilder.makeRectangle(width, height, fill, fill);
 	}
 
@@ -58,11 +57,11 @@ public class ImageBuilder {
 	 * @param height
 	 * @return
 	 */
-	public static Image makeRectangle(int width, int height) {
+	public static StaticImage makeRectangle(int width, int height) {
 		return ImageBuilder.makeRectangle(width, height, new Color(0, 0, 0, 0));
 	}
 
-	public static Image getMenuButtonBackground() {
+	public static StaticImage getMenuButtonBackground() {
 		if (menuButtonBackground == null) {
 			menuButtonBackground = makeRectangle(280, 32,
 					new Color(240, 120, 180));
@@ -71,7 +70,7 @@ public class ImageBuilder {
 		return menuButtonBackground;
 	}
 
-	public static Image getMenuButtonSelectedBackground() {
+	public static StaticImage getMenuButtonSelectedBackground() {
 		if (menuButtonSelectedBackground == null) {
 			menuButtonSelectedBackground = makeRectangle(280, 32,
 					new Color(240, 240, 180));
@@ -80,7 +79,7 @@ public class ImageBuilder {
 		return menuButtonSelectedBackground;
 	}
 
-	public static Image getWorldButtonBackground() {
+	public static StaticImage getWorldButtonBackground() {
 		if (worldLoaderButtonBackground == null) {
 			worldLoaderButtonBackground = makeRectangle(400, 32,
 					new Color(200, 100, 200));
@@ -89,7 +88,7 @@ public class ImageBuilder {
 		return worldLoaderButtonBackground;
 	}
 
-	public static Image getKeyImg(int keyID) {
+	public static StaticImage getKeyImg(int keyID) {
 		if (keyID > 0) {
 			keyID = (keyID % 4) + 1;
 		}
@@ -97,7 +96,7 @@ public class ImageBuilder {
 		return getItemImage(itemID);
 	}
 
-	public static Image getLockImg(int keyID) {
+	public static StaticImage getLockImg(int keyID) {
 		if (keyID <= 0 || keyID > 4) {
 			keyID = 1;
 		}
@@ -105,23 +104,23 @@ public class ImageBuilder {
 		return getItemImage(itemID);
 	}
 
-	public static Image getConversationCharacterImg(int id) {
+	public static StaticImage getConversationCharacterImg(int id) {
 		if (id >= 0 && id < 4) {
-			return conversationCharacters.getSprite(id, 0);
+			return new StaticImage(conversationCharacters.getSprite(id, 0));
 		} else {
 			return null;
 		}
 	}
 
-	public static Image getCharacterImg(int id) {
+	public static StaticImage getCharacterImg(int id) {
 		if (id >= 0 && id < 4) {
-			return characters.getSprite(id, 0);
+			return new StaticImage(characters.getSprite(id, 0));
 		} else {
 			return null;
 		}
 	}
 
-	public static Image getPaletteBlockBackground() {
+	public static StaticImage getPaletteBlockBackground() {
 		if (paletteBlockBackground == null) {
 			paletteBlockBackground = ImageBuilder.makeRectangle(32, 32);
 		}
@@ -129,13 +128,13 @@ public class ImageBuilder {
 		return paletteBlockBackground;
 	}
 
-	public static Image getItemImage(int id) {
+	public static StaticImage getItemImage(int id) {
 		int col = id % 8;
 		int row = id / 8;
-		return worldObjects.getSprite(col, row);
+		return new StaticImage(worldObjects.getSprite(col, row));
 	}
 
-	public static Image getItemImage(ItemType it) {
+	public static StaticImage getItemImage(ItemType it) {
 		int id = it.ordinal();
 		return getItemImage(id);
 	}

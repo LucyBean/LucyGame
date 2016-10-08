@@ -1,7 +1,5 @@
 package images;
 
-import org.newdawn.slick.Image;
-
 import helpers.Point;
 import helpers.Rectangle;
 import objects.CoOrdTranslator;
@@ -14,7 +12,7 @@ import objects.CoOrdTranslator;
  *
  */
 public class Sprite {
-	LayeredImage[] image;
+	LayeredImage image;
 	Rectangle boundingRectangle;
 	Rectangle imageBoundingRectangle;
 	int tileX;
@@ -50,8 +48,7 @@ public class Sprite {
 	 */
 	public Sprite(LayeredImage img, Point origin, int tileX, int tileY,
 			int gridSize) {
-		image = new LayeredImage[1];
-		image[0] = img;
+		image = img;
 		imageBoundingRectangle = new Rectangle(origin,
 				((float) img.getWidth()) / gridSize,
 				((float) img.getHeight()) / gridSize);
@@ -68,15 +65,15 @@ public class Sprite {
 		this(img, Point.ZERO, 1, 1, gridSize);
 	}
 	
-	public Sprite(Image img, Point origin, int tileX, int tileY, int gridSize) {
+	public Sprite(LucyImage img, Point origin, int tileX, int tileY, int gridSize) {
 		this(new LayeredImage(img), origin, tileX, tileY, gridSize);
 	}
 	
-	public Sprite(Image img, Point origin, int gridSize) {
+	public Sprite(LucyImage img, Point origin, int gridSize) {
 		this(img, origin, 1, 1, gridSize);
 	}
 	
-	public Sprite(Image img, int gridSize) {
+	public Sprite(LucyImage img, int gridSize) {
 		this(img, Point.ZERO, 1, 1, gridSize);
 	}
 
@@ -85,7 +82,7 @@ public class Sprite {
 	}
 
 	public LayeredImage getImage() {
-		return image[0];
+		return image;
 	}
 
 	public void draw(CoOrdTranslator cot) {

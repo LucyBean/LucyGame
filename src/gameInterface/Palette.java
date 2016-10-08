@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 
 import helpers.Point;
 import images.ImageBuilder;
+import images.LucyImage;
 import images.Sprite;
 import images.SpriteBuilder;
 import objects.ItemType;
@@ -34,7 +34,7 @@ public class Palette extends IEList {
 		if (elements != null && elementIndex >= 0
 				&& elementIndex < elements.size()) {
 			ItemType it = elements.get(elementIndex);
-			Image img = ImageBuilder.getItemImage(it);
+			LucyImage img = ImageBuilder.getItemImage(it);
 			s.getImage().setLayer(1, img);
 		} else {
 			s.getImage().clear(1);

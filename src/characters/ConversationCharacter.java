@@ -1,22 +1,21 @@
 package characters;
 
-import org.newdawn.slick.Image;
-
 import images.ImageBuilder;
+import images.LucyImage;
 
 public enum ConversationCharacter {
 	LUCY(ImageBuilder.getConversationCharacterImg(0),"Lucy"),
 	MATT (ImageBuilder.getConversationCharacterImg(1), "Matt");
 	
-	Image img;
+	LucyImage img;
 	String name;
 	
-	ConversationCharacter(Image img, String name) {
+	ConversationCharacter(LucyImage img, String name) {
 		this.img = img;
 		this.name= name;
 	}
 	
-	public Image getImage() {
+	public LucyImage getImage() {
 		return img;
 	}
 	

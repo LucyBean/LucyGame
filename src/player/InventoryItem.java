@@ -3,16 +3,15 @@ package player;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.newdawn.slick.Image;
-
 import images.ImageBuilder;
+import images.LucyImage;
 import objects.ItemType;
 
 public class InventoryItem implements Comparable<InventoryItem> {
 	String name;
-	Image img;
+	LucyImage img;
 	
-	protected InventoryItem(String name, Image img) {
+	protected InventoryItem(String name, LucyImage img) {
 		this.name = name;
 		this.img = img;
 	}
@@ -22,7 +21,7 @@ public class InventoryItem implements Comparable<InventoryItem> {
 		return getName();
 	}
 	
-	public Image getImage() {
+	public LucyImage getImage() {
 		return img;
 	}
 	

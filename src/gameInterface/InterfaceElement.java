@@ -1,11 +1,11 @@
 package gameInterface;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
 import images.LayeredImage;
+import images.LucyImage;
 import images.Sprite;
 import images.SpriteBuilder;
 import objects.GameObject;
@@ -59,7 +59,7 @@ public abstract class InterfaceElement extends GameObject {
 		limg.fillLayer(0, c);
 	}
 
-	protected void setBackground(Image img) {
+	protected void setBackground(LucyImage img) {
 		LayeredImage limg = getSprite().getImage();
 		limg.setLayer(0, img);
 	}

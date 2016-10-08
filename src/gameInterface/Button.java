@@ -2,10 +2,10 @@ package gameInterface;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
+import images.LucyImage;
 
 public abstract class Button extends InterfaceElement {
 	public Button(Rectangle button) {
@@ -13,7 +13,7 @@ public abstract class Button extends InterfaceElement {
 		setBackground(new Color(240, 120, 180));
 	}
 
-	public Button(Point origin, Image backgroundImage) {
+	public Button(Point origin, LucyImage backgroundImage) {
 		super(new Rectangle(origin, backgroundImage.getWidth(),
 				backgroundImage.getHeight()));
 		setBackground(backgroundImage);

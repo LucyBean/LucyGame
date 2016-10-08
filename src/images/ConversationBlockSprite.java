@@ -1,7 +1,6 @@
 package images;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 
 import characters.ConversationCharacter;
 import helpers.Point;
@@ -76,11 +75,11 @@ public class ConversationBlockSprite extends Sprite {
 		super(makeImage(), 1);
 	}
 
-	public Image getTextImage() {
+	public StaticImage getTextImage() {
 		if (getImage() != null) {
 			PositionedImage pi = getImage().getLayer(3);
 			if (pi != null) {
-				return pi.getImage();
+				return (StaticImage) pi.getImage();
 			}
 		}
 

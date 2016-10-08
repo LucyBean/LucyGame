@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.newdawn.slick.Image;
-
 import helpers.Point;
 import images.ImageBuilder;
 import images.LayeredImage;
+import images.LucyImage;
 import images.Sprite;
 
 public abstract class Menu extends IEList {
@@ -73,7 +72,7 @@ public abstract class Menu extends IEList {
 			limg.setTextCentered(1, label);
 		} else {
 			LayeredImage limg = s.getImage();
-			limg.setLayer(0, (Image) null);
+			limg.setLayer(0, (LucyImage) null);
 			limg.clear(1);
 		}
 	}

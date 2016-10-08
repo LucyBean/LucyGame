@@ -1,7 +1,6 @@
 package images;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -33,7 +32,7 @@ public class SpriteBuilder {
 			Color border) {
 		int width = (int) (r.getWidth() * scale);
 		int height = (int) (r.getHeight() * scale);
-		Image img = ImageBuilder.makeRectangle(width, height, fill, border);
+		LucyImage img = ImageBuilder.makeRectangle(width, height, fill, border);
 		return new Sprite(img, r.getTopLeft(), scale);
 	}
 
@@ -90,11 +89,11 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite drawWall(int width, int height) {
-		Image img = ImageBuilder.getItemImage(ItemType.WALL);
+		LucyImage img = ImageBuilder.getItemImage(ItemType.WALL);
 		return new Sprite(img, Point.ZERO, width, height, GRID_SIZE);
 	}
 
-	public static Sprite interfaceElement(Image background, String text) {
+	public static Sprite interfaceElement(LucyImage background, String text) {
 		LayeredImage limg = new LayeredImage(background);
 		limg.addLayers(1);
 		limg.setTextCentered(1, text);
@@ -108,8 +107,8 @@ public class SpriteBuilder {
 
 	private static Sprite getDoorSprite() {
 		LayeredImage limg = new LayeredImage(32, 64, 2);
-		Image top = ImageBuilder.getItemImage(ItemType.DOOR_TOP);
-		Image btm = ImageBuilder.getItemImage(ItemType.DOOR_BTM);
+		LucyImage top = ImageBuilder.getItemImage(ItemType.DOOR_TOP);
+		LucyImage btm = ImageBuilder.getItemImage(ItemType.DOOR_BTM);
 		limg.setLayer(0, top);
 		limg.setLayer(1, new PositionedImage(new Point(0, 32), btm));
 
@@ -126,7 +125,7 @@ public class SpriteBuilder {
 			return getDoorSprite();
 		}
 		if (it.isPaintable()) {
-			Image img = ImageBuilder.getItemImage(it);
+			LucyImage img = ImageBuilder.getItemImage(it);
 			return new Sprite(img, Point.ZERO, GRID_SIZE);
 		} else {
 			return getWorldItem(it.getParent());
@@ -134,7 +133,7 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite makeMenuButton(String text) {
-		Image bg = ImageBuilder.getMenuButtonBackground();
+		LucyImage bg = ImageBuilder.getMenuButtonBackground();
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 		limg.setTextCentered(limg.getTopLayerNumber(), text);
@@ -143,7 +142,7 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite makePaletteBlock() {
-		Image bg = ImageBuilder.getPaletteBlockBackground();
+		LucyImage bg = ImageBuilder.getPaletteBlockBackground();
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 
