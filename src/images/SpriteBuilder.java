@@ -115,9 +115,15 @@ public class SpriteBuilder {
 		return new Sprite(limg, GRID_SIZE);
 	}
 
+	/**
+	 * Returns the character sprite for the given ID. This will have an origin
+	 * of (0,0).
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public static Sprite getCharacterSprite(int id) {
-		return new Sprite(ImageBuilder.getCharacterImg(id),
-				new Point(-0.25f, -0.5f), GRID_SIZE);
+		return new Sprite(ImageBuilder.getCharacterImg(id), GRID_SIZE);
 	}
 
 	public static Sprite getWorldItem(ItemType it) {

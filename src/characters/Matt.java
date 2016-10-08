@@ -25,6 +25,7 @@ public class Matt extends NPC {
 		super(origin, ItemType.MATT, SpriteBuilder.getCharacterSprite(1),
 				null, new InteractBox(new Point(-1, 0), 3, 2), npcID);
 		useGravity(false);
+		getSprite().setOrigin(new Point(-0.25f, -0.5f));
 
 		buildConversations();
 	}

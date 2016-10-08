@@ -140,7 +140,9 @@ public abstract class GameObject {
 	 *            The change in time.
 	 */
 	public void update(GameContainer gc, int delta) {
-
+		if (getSprite() != null) {
+			getSprite().update(delta);
+		}
 	}
 
 	/**

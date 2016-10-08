@@ -415,6 +415,7 @@ public abstract class Actor extends WorldObject {
 	// Update
 	//
 	final public void update(GameContainer gc, int delta) {
+		super.update(gc, delta);
 		if (isEnabled()) {
 			act(gc, delta);
 			checkForInteractions();

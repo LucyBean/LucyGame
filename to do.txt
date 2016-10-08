@@ -2,9 +2,6 @@
 ==  THINGS TO DO  ==
 ====================
 
-Creating other types of map objects
-	Unlocked lock sprite
-	
 Add a pet that follows me
 Add a Matt quest
 	
@@ -14,6 +11,8 @@ Platformer moves
 
 Animations
 
+Sprite constructors: remove those that specify a Point?
+
 =============
 ==  IDEAS  ==
 =============
@@ -21,10 +20,6 @@ Animations
 Build the game interface
 	Make options saving automatic
 	Make options file a little more human-readable.
-		
-Make interface drawing more efficient
-	Every menu element image currently has its own image buffer, even though they share
-	a background.
 	
 Interactions
 	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.

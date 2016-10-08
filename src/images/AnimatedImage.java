@@ -1,0 +1,44 @@
+package images;
+
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
+
+public class AnimatedImage implements LucyImage {
+	private SpriteSheet sprites;
+	private int animationInterval = 32;
+	private int currentImage = 0;
+	private int currentDisplayDuration = 0;
+	
+	public AnimatedImage(SpriteSheet sprites) {
+		this.sprites = sprites;
+	}
+	
+	public void update(int delta) {
+		currentDisplayDuration += delta;
+		if (currentDisplayDuration > animationInterval) {
+			currentImage++;
+			currentDisplayDuration -= animationInterval;
+			
+			if (currentImage >= sprites.getHorizontalCount()) {
+				currentImage = 0;
+			}
+		}
+	}
+
+	@Override
+	public void draw(float x, float y, float scale) {
+		Image img = sprites.getSubImage(currentImage, 0);
+		img.draw(x,y,scale);
+	}
+
+	@Override
+	public int getWidth() {
+		return sprites.getWidth() / sprites.getHorizontalCount();
+	}
+
+	@Override
+	public int getHeight() {
+		return sprites.getHeight() / sprites.getVerticalCount();
+	}
+
+}

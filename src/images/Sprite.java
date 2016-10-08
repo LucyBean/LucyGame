@@ -60,25 +60,36 @@ public class Sprite {
 	public Sprite(LayeredImage img, Point origin, int gridSize) {
 		this(img, origin, 1, 1, gridSize);
 	}
-	
+
 	public Sprite(LayeredImage img, int gridSize) {
 		this(img, Point.ZERO, 1, 1, gridSize);
 	}
-	
-	public Sprite(LucyImage img, Point origin, int tileX, int tileY, int gridSize) {
+
+	public Sprite(LucyImage img, Point origin, int tileX, int tileY,
+			int gridSize) {
 		this(new LayeredImage(img), origin, tileX, tileY, gridSize);
 	}
-	
+
 	public Sprite(LucyImage img, Point origin, int gridSize) {
 		this(img, origin, 1, 1, gridSize);
 	}
-	
+
 	public Sprite(LucyImage img, int gridSize) {
 		this(img, Point.ZERO, 1, 1, gridSize);
 	}
 
 	public Point getOrigin() {
 		return boundingRectangle.getTopLeft();
+	}
+
+	public void setOrigin(Point newOrigin) {
+		imageBoundingRectangle = new Rectangle(newOrigin,
+				imageBoundingRectangle.getWidth(),
+				imageBoundingRectangle.getHeight());
+		
+		boundingRectangle = new Rectangle(newOrigin,
+				boundingRectangle.getWidth(),
+				boundingRectangle.getHeight());
 	}
 
 	public LayeredImage getImage() {
@@ -99,5 +110,14 @@ public class Sprite {
 
 	public Rectangle getBoundingRectangle() {
 		return boundingRectangle;
+	}
+
+	/**
+	 * Must be called to update animated sprites.
+	 * 
+	 * @param delta
+	 */
+	public void update(int delta) {
+		image.update(delta);
 	}
 }

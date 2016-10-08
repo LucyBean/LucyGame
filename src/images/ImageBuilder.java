@@ -16,12 +16,15 @@ public class ImageBuilder {
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
+	private static SpriteSheet beanSpriteSheet;
 
 	public static void initSpriteSheets() throws SlickException {
 		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
 				64);
 		characters = new SpriteSheet("data/characters.png", 40, 80);
 		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
+		beanSpriteSheet = new SpriteSheet("data/char spritesheets/bean.png", 48,
+				71);
 	}
 
 	public static StaticImage makeRectangle(int width, int height, Color fill,
@@ -112,8 +115,10 @@ public class ImageBuilder {
 		}
 	}
 
-	public static StaticImage getCharacterImg(int id) {
-		if (id >= 0 && id < 4) {
+	public static LucyImage getCharacterImg(int id) {
+		if (id == 0) {
+			return new AnimatedImage(beanSpriteSheet);
+		} else if (id > 0 && id < 4) {
 			return new StaticImage(characters.getSprite(id, 0));
 		} else {
 			return null;

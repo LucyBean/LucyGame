@@ -25,6 +25,12 @@ public class Player extends Actor {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
 				SpriteBuilder.getCharacterSprite(0),
 				new Collider(Point.ZERO, 0.8f, 1.99f), null);
+
+		// Set position of Player's sprite such that bottom-middle points of
+		// sprite and collider coincide.
+		float newX = (getCollider().getWidth() - getSprite().getBoundingRectangle().getWidth()) / 2;
+		float newY = (getCollider().getHeight() - getSprite().getBoundingRectangle().getHeight());
+		getSprite().setOrigin(new Point(newX, newY));
 	}
 
 	@Override

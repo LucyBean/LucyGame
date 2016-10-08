@@ -354,6 +354,17 @@ public class LayeredImage {
 		}
 	}
 
+	/**
+	 * Must be called to update animated sprites;
+	 * 
+	 * @param delta
+	 */
+	public void update(int delta) {
+		layers.stream().filter(i -> i != null).map(i -> i.getImage()).filter(
+				i -> i != null && i instanceof AnimatedImage).map(
+						i -> (AnimatedImage) i).forEach(i -> i.update(delta));
+	}
+
 	@Override
 	public String toString() {
 		List<PositionedImage> images = layers.subList(0, numLayers);
