@@ -12,11 +12,11 @@ import objects.CoOrdTranslator;
  *
  */
 public class Sprite {
-	LayeredImage image;
-	Rectangle boundingRectangle;
-	Rectangle imageBoundingRectangle;
-	int tileX;
-	int tileY;
+	private LayeredImage image;
+	private Rectangle boundingRectangle;
+	private Rectangle imageBoundingRectangle;
+	private int tileX;
+	private int tileY;
 
 	/**
 	 * 
@@ -90,6 +90,10 @@ public class Sprite {
 		boundingRectangle = new Rectangle(newOrigin,
 				boundingRectangle.getWidth(),
 				boundingRectangle.getHeight());
+	}
+	
+	public void setMirrored(boolean mirrored) {
+			image.setMirrored(mirrored);
 	}
 
 	public LayeredImage getImage() {

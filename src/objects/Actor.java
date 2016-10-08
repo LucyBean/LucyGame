@@ -71,6 +71,12 @@ public abstract class Actor extends WorldObject {
 	// Move, with collision checking
 	//
 	public void move(Dir d, float amount) {
+		if (d == Dir.EAST) {
+			getSprite().setMirrored(false);
+		} else if (d == Dir.WEST) {
+			getSprite().setMirrored(true);
+		}
+		
 		if (getCollider() == null) {
 			setPosition(getPosition().move(d, amount));
 		} else {

@@ -8,27 +8,35 @@ public class AnimatedImage implements LucyImage {
 	private int animationInterval = 32;
 	private int currentImage = 0;
 	private int currentDisplayDuration = 0;
-	
+	private boolean mirrored;
+
 	public AnimatedImage(SpriteSheet sprites) {
 		this.sprites = sprites;
 	}
-	
+
 	public void update(int delta) {
 		currentDisplayDuration += delta;
 		if (currentDisplayDuration > animationInterval) {
 			currentImage++;
 			currentDisplayDuration -= animationInterval;
-			
+
 			if (currentImage >= sprites.getHorizontalCount()) {
 				currentImage = 0;
 			}
 		}
 	}
 
+	public void setMirrored(boolean mirrored) {
+		this.mirrored = mirrored;
+	}
+
 	@Override
 	public void draw(float x, float y, float scale) {
 		Image img = sprites.getSubImage(currentImage, 0);
-		img.draw(x,y,scale);
+		if (mirrored) {
+			img = img.getFlippedCopy(true, false);
+		}
+		img.draw(x, y, scale);
 	}
 
 	@Override

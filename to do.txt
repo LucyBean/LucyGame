@@ -11,7 +11,12 @@ Platformer moves
 
 Animations
 
+==============
+==  ISSUES  ==
+==============
 Sprite constructors: remove those that specify a Point?
+
+Why can the camera not zoom when it is tracking?
 
 =============
 ==  IDEAS  ==
@@ -23,3 +28,5 @@ Build the game interface
 	
 Interactions
 	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
+
+Use high-quality sprites to facilitate zooming?

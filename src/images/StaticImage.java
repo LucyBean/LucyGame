@@ -6,6 +6,8 @@ import org.newdawn.slick.SlickException;
 
 public class StaticImage implements LucyImage {
 	Image myImage;
+	boolean mirrored;
+	
 	public StaticImage(int width, int height) throws SlickException {
 		myImage = new Image(width, height);
 	}
@@ -20,7 +22,11 @@ public class StaticImage implements LucyImage {
 	
 	@Override
 	public void draw(float x, float y, float scale) {
-		myImage.draw(x,y,scale);
+		Image img = myImage;
+		if (mirrored) {
+			img = myImage.getFlippedCopy(true, false);
+		}
+		img.draw(x,y,scale);
 		
 	}
 	@Override
@@ -30,5 +36,10 @@ public class StaticImage implements LucyImage {
 	@Override
 	public int getHeight() {
 		return myImage.getHeight();
+	}
+
+	@Override
+	public void setMirrored(boolean mirrored) {
+		this.mirrored = mirrored;
 	}
 }

@@ -22,6 +22,7 @@ public class LayeredImage {
 	private int width;
 	private int height;
 	private int numLayers = 0;
+	private boolean mirrored = false;
 
 	public LayeredImage(int width, int height, int numLayers) {
 		layers = new LinkedList<PositionedImage>();
@@ -363,6 +364,20 @@ public class LayeredImage {
 		layers.stream().filter(i -> i != null).map(i -> i.getImage()).filter(
 				i -> i != null && i instanceof AnimatedImage).map(
 						i -> (AnimatedImage) i).forEach(i -> i.update(delta));
+	}
+
+	/**
+	 * Mirrors the image horizontally.
+	 * 
+	 * @param mirrored
+	 */
+	public void setMirrored(boolean mirrored) {
+		if (this.mirrored != mirrored) {
+			layers.stream().filter(i -> i != null).map(
+					i -> i.getImage()).filter(i -> i != null).forEach(
+							i -> i.setMirrored(mirrored));
+			this.mirrored = mirrored;
+		}
 	}
 
 	@Override
