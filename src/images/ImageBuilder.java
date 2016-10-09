@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
+import helpers.Rectangle;
 import objects.ItemType;
 import options.GlobalOptions;
 
@@ -17,6 +18,10 @@ public class ImageBuilder {
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
 	private static SpriteSheet beanSpriteSheet;
+
+	private static RectangleImageStore colliderImages = new RectangleImageStore();
+	private static RectangleImageStore interactBoxImages = new RectangleImageStore();
+	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
 	public static void initSpriteSheets() throws SlickException {
 		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
@@ -142,5 +147,53 @@ public class ImageBuilder {
 	public static StaticImage getItemImage(ItemType it) {
 		int id = it.ordinal();
 		return getItemImage(id);
+	}
+
+	/**
+	 * Creates a new image for a collider for the given Rectangle.
+	 * 
+	 * @param collider
+	 * @return
+	 */
+	public static LayeredImage makeColliderImage(Rectangle collider) {
+		// check if a collider of this size has been made already
+		int w = (int) (collider.getWidth() * GRID_SIZE);
+		int h = (int) (collider.getHeight() * GRID_SIZE);
+		LucyImage s = colliderImages.get(w, h);
+
+		if (s == null) {
+			// Create a new image
+			Color fill = new Color(50, 135, 220, 130);
+			Color border = fill.darker(0.5f);
+			border.a = 220;
+			s = ImageBuilder.makeRectangle(w, h, fill, border);
+			colliderImages.store(s);
+		}
+
+		return new LayeredImage(s);
+	}
+
+	/**
+	 * Creates a new image for an interact box for the given Rectangle.
+	 * 
+	 * @param interactBox
+	 * @return
+	 */
+	public static LayeredImage makeInteractBoxImage(Rectangle interactBox) {
+		// check if a collider of this size has been made already
+		int w = (int) (interactBox.getWidth() * GRID_SIZE);
+		int h = (int) (interactBox.getHeight() * GRID_SIZE);
+		LucyImage s = interactBoxImages.get(w, h);
+
+		if (s == null) {
+
+			Color fill = new Color(50, 220, 135, 130);
+			Color border = fill.darker(0.5f);
+			border.a = 220;
+			s = ImageBuilder.makeRectangle(w, h, fill, border);
+			interactBoxImages.store(s);
+		}
+
+		return new LayeredImage(s);
 	}
 }

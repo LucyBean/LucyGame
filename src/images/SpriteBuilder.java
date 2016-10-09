@@ -16,9 +16,6 @@ import options.GlobalOptions;
 public class SpriteBuilder {
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
-	private static RectangleSpriteStore colliderImages = new RectangleSpriteStore();
-	private static RectangleSpriteStore interactBoxImages = new RectangleSpriteStore();
-
 	/**
 	 * Creates a new rectangular sprite of the given colour.
 	 * 
@@ -38,54 +35,6 @@ public class SpriteBuilder {
 
 	public static Sprite createRectangle(Rectangle r, int scale, Color fill) {
 		return createRectangle(r, scale, fill, fill.darker(0.5f));
-	}
-
-	/**
-	 * Creates a new image for a collider for the given Rectangle.
-	 * 
-	 * @param collider
-	 * @return
-	 */
-	public static Sprite makeColliderImage(Rectangle collider) {
-		// check if a collider of this size has been made already
-		int w = (int) (collider.getWidth() * GRID_SIZE);
-		int h = (int) (collider.getHeight() * GRID_SIZE);
-		Sprite s = colliderImages.get(w, h);
-
-		if (s == null) {
-			// Create a new image
-			Color fill = new Color(50, 135, 220, 130);
-			Color border = fill.darker(0.5f);
-			border.a = 220;
-			s = createRectangle(collider, GRID_SIZE, fill, border);
-			colliderImages.store(s);
-		}
-
-		return s;
-	}
-
-	/**
-	 * Creates a new image for an interact box for the given Rectangle.
-	 * 
-	 * @param interactBox
-	 * @return
-	 */
-	public static Sprite makeInteractBoxImage(Rectangle interactBox) {
-		// check if a collider of this size has been made already
-		int w = (int) (interactBox.getWidth() * GRID_SIZE);
-		int h = (int) (interactBox.getHeight() * GRID_SIZE);
-		Sprite s = interactBoxImages.get(w, h);
-
-		if (s == null) {
-
-			Color fill = new Color(50, 220, 135, 130);
-			Color border = fill.darker(0.5f);
-			border.a = 220;
-			s = createRectangle(interactBox, GRID_SIZE, fill, border);
-			interactBoxImages.store(s);
-		}
-
-		return s;
 	}
 
 	public static Sprite drawWall(int width, int height) {

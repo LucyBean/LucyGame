@@ -3,20 +3,20 @@ package images;
 import java.util.HashMap;
 import java.util.Map;
 
-class RectangleSpriteStore {
-	private Map<Integer, Map<Integer, Sprite>> store;
+class RectangleImageStore {
+	private Map<Integer, Map<Integer, LucyImage>> store;
 
-	public RectangleSpriteStore() {
-		store = new HashMap<Integer, Map<Integer, Sprite>>();
+	public RectangleImageStore() {
+		store = new HashMap<>();
 	}
 
-	public Sprite get(int width, int height) {
+	public LucyImage get(int width, int height) {
 		// look up by width first
-		Map<Integer, Sprite> m = store.get(width);
+		Map<Integer, LucyImage> m = store.get(width);
 
 		if (m != null) {
 			// look up by height
-			Sprite r = m.get(height);
+			LucyImage r = m.get(height);
 
 			if (r != null) {
 				return r;
@@ -26,12 +26,12 @@ class RectangleSpriteStore {
 		return null;
 	}
 	
-	public void store(Sprite s) {
-		int width = s.getImage().getWidth();
-		int height = s.getImage().getHeight();
+	public void store(LucyImage s) {
+		int width = s.getWidth();
+		int height = s.getHeight();
 		
-		store.putIfAbsent(width, new HashMap<Integer, Sprite>());
-		Map<Integer, Sprite> m = store.get(width);
+		store.putIfAbsent(width, new HashMap<>());
+		Map<Integer, LucyImage> m = store.get(width);
 		m.put(height, s);
 	}
 }

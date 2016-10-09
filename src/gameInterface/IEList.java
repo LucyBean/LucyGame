@@ -64,7 +64,7 @@ public abstract class IEList extends InterfaceElement {
 		int column = 0;
 		for (int i = 0; i < numDisplayElems; i++) {
 			Sprite s = makeNewSprite();
-			Rectangle r = s.getBoundingRectangle();
+			Rectangle r = s.getRectangle();
 			IEListItem ieli = new IEListItem(this, i, nextPosition, s);
 			getElementSprite(i, s);
 			buttons.add(ieli);
@@ -109,7 +109,7 @@ public abstract class IEList extends InterfaceElement {
 		if (buttons.size() > 0) {
 			if (getSprite() == null) {
 				Rectangle spriteBound = buttons.get(
-						0).getSprite().getBoundingRectangle();
+						0).getSprite().getRectangle();
 				int w = (int) (spriteBound.getWidth() * width
 						+ padding * (width + 1));
 				int h = (int) (spriteBound.getHeight() * height

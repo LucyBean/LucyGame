@@ -2,24 +2,37 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
-import images.Sprite;
+import images.LayeredImage;
 
-public abstract class WOAttachment {
-	Sprite sprite;
+public abstract class Attachment {
 	private Rectangle rect;
 	
-	public WOAttachment(Point topLeft, float width, float height) {
+	public Attachment(Point topLeft, float width, float height) {
 		rect = new Rectangle(topLeft, width, height);
 	}
 	
-	public WOAttachment(Rectangle rect) {
+	public Attachment(Rectangle rect) {
 		this.rect = rect;
 	}
+	
+	protected Attachment() {
+		
+	}
+	
+	protected void setRectangle(Rectangle rect) {
+		this.rect = rect;
+	}
+	
+	public void setOrigin(Point newOrigin) {
+		rect = new Rectangle(newOrigin, rect.getWidth(), rect.getHeight());
+	}
 
-	protected abstract Sprite getSprite();
+	protected abstract LayeredImage getImage();
 	
 	public void draw(CoOrdTranslator cot) {
-		getSprite().draw(cot);
+		Point newOrigin = cot.objectToScreenCoOrds(rect.getTopLeft());
+		float drawScale = cot.getDrawScale();
+		getImage().draw(newOrigin.getX(), newOrigin.getY(),drawScale);
 	}
 
 	public Point getTopLeft() {

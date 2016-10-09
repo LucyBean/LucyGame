@@ -2,10 +2,12 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
-import images.Sprite;
-import images.SpriteBuilder;
+import images.ImageBuilder;
+import images.LayeredImage;
 
-public class InteractBox extends WOAttachment {
+public class InteractBox extends Attachment {
+	private LayeredImage image;
+	
 	/**
 	 * Creates a new InteractBox to be attached to a GameObject.
 	 * 
@@ -31,11 +33,11 @@ public class InteractBox extends WOAttachment {
 	}
 
 	@Override
-	public Sprite getSprite() {
-		if (sprite == null) {
-			sprite = SpriteBuilder.makeInteractBoxImage(getRectangle());
+	public LayeredImage getImage() {
+		if (image == null) {
+			image = ImageBuilder.makeInteractBoxImage(getRectangle());
 		}
 
-		return sprite;
+		return image;
 	}
 }

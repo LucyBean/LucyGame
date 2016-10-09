@@ -156,7 +156,7 @@ public abstract class GameObject {
 	public Rectangle getSpriteRectangleScreenCoOrds() {
 		if (sprite != null) {
 			Rectangle r = getCoOrdTranslator().objectToScreenCoOrds(
-					getSprite().getBoundingRectangle());
+					getSprite().getRectangle());
 			return r;
 		} else {
 			return null;

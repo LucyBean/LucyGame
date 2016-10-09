@@ -38,7 +38,7 @@ public abstract class InterfaceElement extends GameObject {
 		if (isVisible()) {
 			Sprite sprite = getSprite();
 			if (sprite != null) {
-				Rectangle rect = sprite.getBoundingRectangle();
+				Rectangle rect = sprite.getRectangle();
 				clickPoint = getCoOrdTranslator().screenToObjectCoOrds(
 						clickPoint);
 				if (rect.contains(clickPoint)) {

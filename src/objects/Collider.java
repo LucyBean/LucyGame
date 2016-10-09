@@ -2,10 +2,11 @@ package objects;
 
 import helpers.Point;
 import helpers.Rectangle;
-import images.Sprite;
-import images.SpriteBuilder;
+import images.ImageBuilder;
+import images.LayeredImage;
 
-public class Collider extends WOAttachment {
+public class Collider extends Attachment {
+	private LayeredImage image;
 	/**
 	 * Creates a new Collider object.
 	 * 
@@ -31,11 +32,11 @@ public class Collider extends WOAttachment {
 	}
 	
 	@Override
-	public Sprite getSprite()  {
-		if (sprite == null) {
-			sprite = SpriteBuilder.makeColliderImage(getRectangle());
+	public LayeredImage getImage()  {
+		if (image == null) {
+			image = ImageBuilder.makeColliderImage(getRectangle());
 		}
 
-		return sprite;
+		return image;
 	}
 }
