@@ -278,22 +278,11 @@ public abstract class Actor extends WorldObject {
 				getPosition());
 		Collection<WorldObject> interactables = getWorld().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
-		Iterator<WorldObject> ii = interactables.iterator();
-		while (ii.hasNext()) {
-			WorldObject go = ii.next();
-			if (go != this && go.isEnabled()) {
-				// Get interaction rectangle in relative co-ordinates
-				Rectangle rectRel = go.getInteractBox().getRectangle();
-				// Translate to world co-ords.
-				Rectangle rectWorld = rectRel.translate(go.getPosition());
-				// If the interaction overlaps with wholeArea, add to
-				// activeInteractables list.
-				if (rectWorld.overlaps(thisArea)) {
-					nowActive.add(go);
-				}
-			}
-		}
-
+		interactables.stream().filter(
+				go -> go != this && go.isEnabled()).filter(go -> 
+						go.getInteractBox().getRectangle().translate(
+								go.getPosition()).overlaps(thisArea)).forEach(
+										go -> nowActive.add(go));
 		return nowActive;
 	}
 
@@ -327,29 +316,12 @@ public abstract class Actor extends WorldObject {
 
 			// Call overlapStart and overlapEnd on these newly active/inactive
 			// objects
-			Iterator<WorldObject> ii = newlyActive.iterator();
-			while (ii.hasNext()) {
-				WorldObject go = ii.next();
-				overlapStart(go);
-
-				// If the overlapping WorldObject is an Actor it will detect the
-				// overlap
-				// and trigger overlapStart itself. Otherwise, it must be
-				// triggered by
-				// the newly overlapping Actor
-				if (!(go instanceof Actor)) {
-					go.overlapStart(this);
-				}
-			}
-
-			ii = newlyInactive.iterator();
-			while (ii.hasNext()) {
-				WorldObject go = ii.next();
-				overlapEnd(go);
-				if (!(go instanceof Actor)) {
-					go.overlapEnd(this);
-				}
-			}
+			newlyActive.stream().forEach(go -> overlapStart(go));
+			newlyActive.stream().filter(go -> !(go instanceof Actor)).forEach(
+					go -> go.overlapStart(this));
+			newlyInactive.stream().forEach(go -> overlapEnd(go));
+			newlyInactive.stream().filter(go -> !(go instanceof Actor)).forEach(
+					go -> go.overlapEnd(this));
 
 			activeInteractables = nowActive;
 		}
