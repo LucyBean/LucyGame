@@ -6,7 +6,7 @@ import helpers.Dir;
 import helpers.Point;
 import player.InventoryItem;
 
-public class InventoryDisplaySprite extends Sprite {
+public class InventoryDisplaySprite extends SingleSprite {
 	private final static Point vTextAlign = new Point(0, 8);
 
 	private static LayeredImage makeImage() {

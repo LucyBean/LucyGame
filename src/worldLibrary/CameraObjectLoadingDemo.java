@@ -8,7 +8,7 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
-import images.Sprite;
+import images.SingleSprite;
 import images.SpriteBuilder;
 import objects.Actor;
 import objects.Collider;
@@ -151,7 +151,7 @@ public class CameraObjectLoadingDemo extends World {
 }
 
 class CameraBox extends Actor {
-	static Sprite sprite = SpriteBuilder.createRectangle(
+	static SingleSprite sprite = SpriteBuilder.createRectangle(
 			new Rectangle(Point.ZERO, 2, 1), 32, new Color(190, 80, 190));
 	float speed;
 
@@ -186,9 +186,9 @@ class CameraBox extends Actor {
 
 class WorldSector extends Static {
 	static Rectangle spriteRect = new Rectangle(Point.ZERO, 3, 3);
-	static Sprite active = SpriteBuilder.createRectangle(spriteRect,
+	static SingleSprite active = SpriteBuilder.createRectangle(spriteRect,
 			GlobalOptions.GRID_SIZE, new Color(100, 240, 100));
-	static Sprite inactive = SpriteBuilder.createRectangle(spriteRect,
+	static SingleSprite inactive = SpriteBuilder.createRectangle(spriteRect,
 			GlobalOptions.GRID_SIZE, new Color(240, 100, 100));
 
 	boolean activeSector;

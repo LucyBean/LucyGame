@@ -5,7 +5,7 @@ import org.newdawn.slick.Color;
 import helpers.Point;
 import helpers.Rectangle;
 
-public class PropertyPanelSprite extends Sprite {
+public class PropertyPanelSprite extends SingleSprite {
 	private static LayeredImage makeImage() {
 		final int elementHeight = 20;
 		final int textBoxWidth = 60;

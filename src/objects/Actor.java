@@ -10,7 +10,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
-import images.Sprite;
+import images.SingleSprite;
 import images.SpriteBuilder;
 import quests.EventInfo;
 import quests.EventType;
@@ -25,12 +25,12 @@ public abstract class Actor extends WorldObject {
 	private ActorState state;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Collider collider, InteractBox interactBox) {
+			SingleSprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite) {
+			SingleSprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
 

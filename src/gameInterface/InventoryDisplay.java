@@ -6,7 +6,7 @@ import org.newdawn.slick.Color;
 
 import helpers.Point;
 import images.InventoryDisplaySprite;
-import images.Sprite;
+import images.SingleSprite;
 import player.Inventory;
 import player.InventoryItem;
 
@@ -40,7 +40,7 @@ public class InventoryDisplay extends IEList {
 	}
 
 	@Override
-	protected void getElementSprite(int elementIndex, Sprite s) {
+	protected void getElementSprite(int elementIndex, SingleSprite s) {
 		InventoryDisplaySprite ids = (InventoryDisplaySprite) s;
 
 		if (inventory != null && elementIndex >= 0
@@ -72,7 +72,7 @@ public class InventoryDisplay extends IEList {
 	}
 
 	@Override
-	protected Sprite makeNewSprite() {
+	protected SingleSprite makeNewSprite() {
 		return new InventoryDisplaySprite();
 	}
 }

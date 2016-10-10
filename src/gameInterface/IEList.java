@@ -11,7 +11,7 @@ import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
 import images.LayeredImage;
-import images.Sprite;
+import images.SingleSprite;
 import worlds.World;
 
 public abstract class IEList extends InterfaceElement {
@@ -19,7 +19,7 @@ public abstract class IEList extends InterfaceElement {
 	private List<IEListItem> buttons;
 	private int minItemDisplayed;
 	private Point selectedPoint;
-	private Consumer<Sprite> setSelectedSprite;
+	private Consumer<SingleSprite> setSelectedSprite;
 	private boolean usingSelection;
 	private int width;
 	private int height;
@@ -47,7 +47,7 @@ public abstract class IEList extends InterfaceElement {
 	 *            display that the corresponding button has been selected.
 	 */
 	public IEList(Point firstPoint, int height, int width, int padding,
-			Consumer<Sprite> setSelectedSprite) {
+			Consumer<SingleSprite> setSelectedSprite) {
 		nextPosition = firstPoint;
 		buttons = new ArrayList<IEListItem>();
 		minItemDisplayed = 0;
@@ -63,7 +63,7 @@ public abstract class IEList extends InterfaceElement {
 
 		int column = 0;
 		for (int i = 0; i < numDisplayElems; i++) {
-			Sprite s = makeNewSprite();
+			SingleSprite s = makeNewSprite();
 			Rectangle r = s.getRectangle();
 			IEListItem ieli = new IEListItem(this, i, nextPosition, s);
 			getElementSprite(i, s);
@@ -96,7 +96,7 @@ public abstract class IEList extends InterfaceElement {
 	 * 
 	 * @param s
 	 */
-	public void setBackground(Sprite s) {
+	public void setBackground(SingleSprite s) {
 		setSprite(s);
 	}
 
@@ -117,7 +117,7 @@ public abstract class IEList extends InterfaceElement {
 				Point origin = new Point(-padding, -padding);
 
 				LayeredImage limg = new LayeredImage(w, h, 1);
-				setSprite(new Sprite(limg, origin, 1));
+				setSprite(new SingleSprite(limg, origin, 1));
 			}
 
 			getSprite().getImage().fillLayer(0, c);
@@ -200,7 +200,7 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	final public void updateSprites() {
 		for (int i = 0; i < buttons.size(); i++) {
-			Sprite s = buttons.get(i).getSprite();
+			SingleSprite s = buttons.get(i).getSprite();
 			getElementSprite(i + minItemDisplayed, s);
 		}
 		setSelectedButton(selectedPoint);
@@ -262,7 +262,7 @@ public abstract class IEList extends InterfaceElement {
 	 *            modified to show information for the correct element in its
 	 *            unselected state.
 	 */
-	protected abstract void getElementSprite(int elementIndex, Sprite s);
+	protected abstract void getElementSprite(int elementIndex, SingleSprite s);
 
 	/**
 	 * @return The number of elements within the list being displayed.
@@ -271,7 +271,7 @@ public abstract class IEList extends InterfaceElement {
 
 	protected abstract void elementClicked(int elementNumber);
 
-	protected abstract Sprite makeNewSprite();
+	protected abstract SingleSprite makeNewSprite();
 
 	@Override
 	public void setWorld(World world) {

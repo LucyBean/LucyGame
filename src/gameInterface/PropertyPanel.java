@@ -8,7 +8,7 @@ import org.newdawn.slick.Color;
 import helpers.Point;
 import helpers.Rectangle;
 import images.PropertyPanelSprite;
-import images.Sprite;
+import images.SingleSprite;
 import worlds.PainterProperty;
 
 public class PropertyPanel extends IEList {
@@ -28,7 +28,7 @@ public class PropertyPanel extends IEList {
 	}
 
 	@Override
-	protected void getElementSprite(int elementIndex, Sprite s) {
+	protected void getElementSprite(int elementIndex, SingleSprite s) {
 		PropertyPanelSprite pps = (PropertyPanelSprite) s;
 		if (properties != null && elementIndex >= 0
 				&& elementIndex < properties.size()) {
@@ -51,7 +51,7 @@ public class PropertyPanel extends IEList {
 		int elementIndex = buttonIndex + minItemDisplayed;
 		if (elementExists(elementIndex) && clickPoint != null) {
 			PainterProperty p = properties.get(elementIndex);
-			Sprite s = getButton(buttonIndex).getSprite();
+			SingleSprite s = getButton(buttonIndex).getSprite();
 			PropertyPanelSprite pps = (PropertyPanelSprite) s;
 			Rectangle plus = pps.getPlusBound();
 			Rectangle minus = pps.getMinusBound();
@@ -70,7 +70,7 @@ public class PropertyPanel extends IEList {
 	}
 
 	@Override
-	protected Sprite makeNewSprite() {
+	protected SingleSprite makeNewSprite() {
 		return new PropertyPanelSprite();
 	}
 

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import helpers.Point;
-import images.Sprite;
+import images.SingleSprite;
 import images.SpriteBuilder;
 import options.GlobalOptions;
 import worlds.World;
@@ -75,7 +75,7 @@ public class MenuSet extends InterfaceElement {
 		if (subMenu == null) {
 			subMenu = new Menu(START_POINT, 10, this) {
 				@Override
-				protected Sprite makeNewSprite() {
+				protected SingleSprite makeNewSprite() {
 					return SpriteBuilder.makeMenuButton("");
 				}
 			};

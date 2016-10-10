@@ -1,18 +1,18 @@
 package objects;
 
 import helpers.Point;
-import images.Sprite;
+import images.SingleSprite;
 import images.SpriteBuilder;
 import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {
 	public Static(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Collider collider, InteractBox interactBox) {
+			SingleSprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
 	public Static(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite) {
+			SingleSprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
 

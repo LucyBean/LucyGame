@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Point;
 import images.ImageBuilder;
-import images.Sprite;
+import images.SingleSprite;
 import objectLibrary.Door;
 import objectLibrary.Key;
 import objectLibrary.Lock;
@@ -70,7 +70,7 @@ public class HiddenObjectDemoWorld extends World {
 
 class HiddenSquare extends Static {
 	private final static int gridSize = GlobalOptions.GRID_SIZE;
-	private final static Sprite sprite = new Sprite(
+	private final static SingleSprite sprite = new SingleSprite(
 			ImageBuilder.makeRectangle(gridSize * 2, gridSize * 2,
 					new Color(190, 60, 190)),
 			gridSize);

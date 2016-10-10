@@ -6,7 +6,7 @@ import characters.ConversationCharacter;
 import helpers.Point;
 import options.GlobalOptions;
 
-public class ConversationBlockSprite extends Sprite {
+public class ConversationBlockSprite extends SingleSprite {
 	private static final int spriteSize = 64;
 	private static final int border = 10;
 	private static final int padding = 4;

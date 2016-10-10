@@ -5,15 +5,7 @@ import helpers.Rectangle;
 import objects.Attachment;
 import objects.CoOrdTranslator;
 
-/**
- * Sprite class for displaying objects on the world. Can handle static images.
- * Will support animations in future.
- * 
- * @author Lucy
- *
- */
-public class Sprite extends Attachment {
-	private LayeredImage image;
+public abstract class Sprite extends Attachment {
 	private int tileX;
 	private int tileY;
 
@@ -45,41 +37,15 @@ public class Sprite extends Attachment {
 	 *            The GameObject to which the Sprite is attached. This is
 	 *            required for drawing.
 	 */
-	public Sprite(LayeredImage img, Point origin, int tileX, int tileY,
+	public Sprite(Rectangle boundingRectangle, int tileX, int tileY,
 			int gridSize) {
-		image = img;
-		Rectangle imageBoundingRectangle = new Rectangle(origin,
-				((float) img.getWidth()) / gridSize,
-				((float) img.getHeight()) / gridSize);
-		Rectangle boundingRectangle = imageBoundingRectangle.scale(tileX, tileY);
-		setRectangle(boundingRectangle);
+		setRectangle(boundingRectangle.scale(tileX, tileY));
 		this.tileX = tileX;
 		this.tileY = tileY;
 	}
-
-	public Sprite(LayeredImage img, Point origin, int gridSize) {
-		this(img, origin, 1, 1, gridSize);
-	}
-
-	public Sprite(LayeredImage img, int gridSize) {
-		this(img, Point.ZERO, 1, 1, gridSize);
-	}
-
-	public Sprite(LucyImage img, Point origin, int tileX, int tileY,
-			int gridSize) {
-		this(new LayeredImage(img), origin, tileX, tileY, gridSize);
-	}
-
-	public Sprite(LucyImage img, Point origin, int gridSize) {
-		this(img, origin, 1, 1, gridSize);
-	}
-
-	public Sprite(LucyImage img, int gridSize) {
-		this(img, Point.ZERO, 1, 1, gridSize);
-	}
 	
-	public void setMirrored(boolean mirrored) {
-			image.setMirrored(mirrored);
+	public Sprite(Rectangle boundingRectangle, int gridSize) {
+		this(boundingRectangle, 1, 1, gridSize);
 	}
 
 	public void draw(CoOrdTranslator cot) {
@@ -101,12 +67,6 @@ public class Sprite extends Attachment {
 	 * 
 	 * @param delta
 	 */
-	public void update(int delta) {
-		image.update(delta);
-	}
-
-	@Override
-	public LayeredImage getImage() {
-		return image;
-	}
+	protected abstract void update(int delta);
+	public abstract void setMirrored(boolean mirrored);
 }

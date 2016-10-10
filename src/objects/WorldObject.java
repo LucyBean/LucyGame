@@ -1,7 +1,7 @@
 package objects;
 
 import helpers.Point;
-import images.Sprite;
+import images.SingleSprite;
 import images.SpriteBuilder;
 import options.GlobalOptions;
 import worlds.WorldLayer;
@@ -35,7 +35,7 @@ public abstract class WorldObject extends GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite,
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, SingleSprite sprite,
 			Collider collider, InteractBox interactBox) {
 		super(origin, sprite);
 		this.collider = collider;
@@ -46,7 +46,7 @@ public abstract class WorldObject extends GameObject {
 		reset();
 	}
 
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, SingleSprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
 	
