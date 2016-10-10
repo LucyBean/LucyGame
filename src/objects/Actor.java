@@ -12,6 +12,7 @@ import helpers.Point;
 import helpers.Rectangle;
 import images.Sprite;
 import images.SpriteBuilder;
+import images.StatedSprite;
 import quests.EventInfo;
 import quests.EventType;
 import worlds.WorldLayer;
@@ -426,6 +427,11 @@ public abstract class Actor extends WorldObject {
 			if (gravityEnabled()) {
 				calculateVSpeed(delta);
 				move(Dir.SOUTH, vSpeed * delta);
+			}
+			
+			// Updated sprite according to Actor's state
+			if (getSprite() instanceof StatedSprite) {
+				((StatedSprite) getSprite()).setState(state.ordinal());
 			}
 		}
 	}

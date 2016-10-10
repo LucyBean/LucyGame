@@ -25,27 +25,25 @@ public class SpriteBuilder {
 	 * @param border
 	 * @return
 	 */
-	public static Sprite createRectangle(Rectangle r, int scale,
-			Color fill, Color border) {
+	public static Sprite createRectangle(Rectangle r, int scale, Color fill,
+			Color border) {
 		int width = (int) (r.getWidth() * scale);
 		int height = (int) (r.getHeight() * scale);
 		LucyImage img = ImageBuilder.makeRectangle(width, height, fill, border);
 		return new SingleSprite(new LayeredImage(img), r.getTopLeft(), scale);
 	}
 
-	public static Sprite createRectangle(Rectangle r, int scale,
-			Color fill) {
+	public static Sprite createRectangle(Rectangle r, int scale, Color fill) {
 		return createRectangle(r, scale, fill, fill.darker(0.5f));
 	}
 
 	public static Sprite drawWall(int width, int height) {
 		LucyImage img = ImageBuilder.getItemImage(ItemType.WALL);
-		return new TiledSprite(new LayeredImage(img), Point.ZERO, width,
-				height, GRID_SIZE);
+		return new TiledSprite(new LayeredImage(img), Point.ZERO, width, height,
+				GRID_SIZE);
 	}
 
-	public static Sprite interfaceElement(LucyImage background,
-			String text) {
+	public static Sprite interfaceElement(LucyImage background, String text) {
 		LayeredImage limg = new LayeredImage(background);
 		limg.addLayers(1);
 		limg.setTextCentered(1, text);
@@ -76,6 +74,14 @@ public class SpriteBuilder {
 	 * @return
 	 */
 	public static Sprite getCharacterSprite(int id) {
+		if (id == 0) {
+			StatedSprite ss = new StatedSprite(ImageBuilder.getCharacterImg(0),
+					0, GRID_SIZE);
+			ss.setImage(
+					new LayeredImage(ImageBuilder.getItemImage(ItemType.GEM)),
+					1);
+			return ss;
+		}
 		return new SingleSprite(ImageBuilder.getCharacterImg(id), GRID_SIZE);
 	}
 
