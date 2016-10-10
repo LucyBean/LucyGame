@@ -97,7 +97,7 @@ public class ImageBuilder {
 	}
 
 	public static StaticImage getKeyImg(int keyID) {
-		if (keyID > 0) {
+		if (keyID > 4) {
 			keyID = (keyID % 4) + 1;
 		}
 		int itemID = (keyID - 1) + ItemType.YELLOW_KEY.ordinal();
