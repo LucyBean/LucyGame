@@ -5,13 +5,14 @@ import org.newdawn.slick.SpriteSheet;
 
 public class AnimatedImage implements LucyImage {
 	private SpriteSheet sprites;
-	private int animationInterval = 32;
+	private int animationInterval;
 	private int currentImage = 0;
 	private int currentDisplayDuration = 0;
 	private boolean mirrored;
 
-	public AnimatedImage(SpriteSheet sprites) {
+	public AnimatedImage(SpriteSheet sprites, int animationInterval) {
 		this.sprites = sprites;
+		this.animationInterval = animationInterval;
 	}
 
 	public void update(int delta) {

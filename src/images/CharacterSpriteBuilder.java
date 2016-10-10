@@ -1,6 +1,9 @@
 package images;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,29 +19,59 @@ public class CharacterSpriteBuilder {
 	private static Map<Integer, LayeredImage> beanAnims;
 
 	public static void initSpriteSheets() {
-		beanAnims = new HashMap<>();
-		for (ActorState a : ActorState.values()) {
+		beanAnims = importAnimation("BEAN");
+	}
+
+	private static Map<Integer, LayeredImage> importAnimation(String name) {
+		Map<Integer, LayeredImage> map = new HashMap<>();
+		int[] timings = new int[ActorState.values().length];
+		for (int i = 0; i < timings.length; i++) {
+			timings[i] = 32;
+		}
+		try {
+			File timingsFile = new File("data/chars/" + name + "/timings");
+			if (timingsFile.exists()) {
+				BufferedReader br = new BufferedReader(
+						new FileReader(timingsFile));
+				String[] times = br.readLine().split(",");
+				for (int i = 0; i < times.length && i < timings.length; i++) {
+					if (times[i].matches("\\d+")) {
+						Integer n = Integer.valueOf(times[i]);
+						timings[i] = n;
+					}
+				}
+				br.close();
+			}
+		} catch (IOException ioe) {
+			System.err.println("Error while reading timings file.");
+			ioe.printStackTrace();
+		}
+		for (int i = 0; i < ActorState.values().length; i++) {
+			ActorState a = ActorState.values()[i];
 			try {
 				File f = new File(
-						"data/char spritesheets/BEAN-" + a.toString() + ".png");
+						"data/chars/" + name + "/" + a.toString() + ".png");
 				if (f.exists()) {
-					Image i = new Image(f.getPath());
-					int frameWidth = i.getWidth() / 24;
-					SpriteSheet s = new SpriteSheet(i, frameWidth,
-							i.getHeight());
-					LayeredImage limg = new LayeredImage(new AnimatedImage(s));
-					beanAnims.put(a.ordinal(), limg);
+					Image img = new Image(f.getPath());
+					int frameWidth = img.getWidth() / 24;
+					SpriteSheet s = new SpriteSheet(img, frameWidth,
+							img.getHeight());
+					LayeredImage limg = new LayeredImage(
+							new AnimatedImage(s, timings[i]));
+					map.put(a.ordinal(), limg);
 				} else if (a == ActorState.IDLE) {
-					System.err.println("No idle animation for BEAN.");
+					System.err.println("No idle animation for " + name);
 				}
 			} catch (SlickException se) {
 				se.printStackTrace();
 			}
 		}
+		return map;
 	}
 
 	public static Sprite getBeanSprite() {
-		StatedSprite ss = new StatedSprite(beanAnims.get(ActorState.IDLE.ordinal()),
+		StatedSprite ss = new StatedSprite(
+				beanAnims.get(ActorState.IDLE.ordinal()),
 				ActorState.IDLE.ordinal(), GRID_SIZE);
 		ss.setImages(beanAnims);
 		return ss;

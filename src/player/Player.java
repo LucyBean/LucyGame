@@ -42,24 +42,30 @@ public class Player extends Actor {
 	@Override
 	public void act(GameContainer gc, int delta) {
 		Input input = gc.getInput();
+		
+		float moveAmount = speed * delta;
+		if (input.isKeyDown(Input.KEY_LSHIFT)) {
+			moveAmount *= 0.5f;
+		}
+		
 		if (gravityEnabled()) {
 			if (input.isKeyDown(Input.KEY_SPACE)) {
 				jump(jumpStrength);
 			}
 		} else {
 			if (input.isKeyDown(Input.KEY_COMMA)) {
-				move(Dir.NORTH, speed * delta);
+				move(Dir.NORTH, moveAmount);
 			}
 			if (input.isKeyDown(Input.KEY_O)) {
-				move(Dir.SOUTH, speed * delta);
+				move(Dir.SOUTH, moveAmount);
 			}
 		}
 
 		if (input.isKeyDown(Input.KEY_A)) {
-			move(Dir.WEST, speed * delta);
+			move(Dir.WEST, moveAmount);
 		}
 		if (input.isKeyDown(Input.KEY_E)) {
-			move(Dir.EAST, speed * delta);
+			move(Dir.EAST, moveAmount);
 		}
 		if (input.isKeyDown(Input.KEY_PERIOD)) {
 			interactWithAll();

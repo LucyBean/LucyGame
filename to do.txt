@@ -10,6 +10,7 @@ Map sector object loading
 Platformer moves
 
 Animations
+	Compile each animation folder to a single file
 
 ==============
 ==  ISSUES  ==
