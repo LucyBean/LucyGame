@@ -21,6 +21,10 @@ public class StatedSprite extends Sprite {
 	public void setImage(LayeredImage image, int state) {
 		images.put(state, image);
 	}
+	
+	public void setImages(Map<Integer, LayeredImage> toAdd) {
+		toAdd.entrySet().stream().forEach(i -> images.put(i.getKey(), i.getValue()));
+	}
 
 	public void setState(int state) {
 		LayeredImage newImage = images.get(state);

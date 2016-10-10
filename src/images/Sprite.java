@@ -6,6 +6,7 @@ import objects.Attachment;
 import objects.CoOrdTranslator;
 
 public abstract class Sprite extends Attachment {
+	private int gridSize;
 	/**
 	 * 
 	 * 
@@ -35,7 +36,13 @@ public abstract class Sprite extends Attachment {
 	 *            required for drawing.
 	 */
 	public Sprite(Rectangle boundingRectangle, int gridSize) {
-		setRectangle(boundingRectangle.scale(1.0f / gridSize));
+		this.gridSize = gridSize;
+		setRectangle(boundingRectangle);
+	}
+	
+	@Override
+	public void setRectangle(Rectangle r) {
+		super.setRectangle(r.scale(1.0f/gridSize));
 	}
 
 	public void draw(CoOrdTranslator cot) {

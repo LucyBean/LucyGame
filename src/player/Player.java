@@ -10,6 +10,7 @@ import helpers.Dir;
 import helpers.Point;
 import images.SpriteBuilder;
 import objects.Actor;
+import objects.ActorState;
 import objects.Collider;
 import objects.ItemType;
 import objects.WorldObject;
@@ -25,7 +26,10 @@ public class Player extends Actor {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
 				SpriteBuilder.getCharacterSprite(0),
 				new Collider(Point.ZERO, 0.8f, 1.99f), null);
+		setSpritePosition();
+	}
 
+	private void setSpritePosition() {
 		// Set position of Player's sprite such that bottom-middle points of
 		// sprite and collider coincide.
 		float newX = (getCollider().getWidth()
@@ -73,6 +77,12 @@ public class Player extends Actor {
 		if (ii != null) {
 			inventory.add(ii);
 		}
+	}
+	
+	@Override
+	public void stateChanged(ActorState from, ActorState to) {
+		super.stateChanged(from, to);
+		setSpritePosition();
 	}
 
 	@Override

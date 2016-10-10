@@ -17,7 +17,6 @@ public class ImageBuilder {
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
-	private static SpriteSheet beanSpriteSheet;
 
 	private static RectangleImageStore colliderImages = new RectangleImageStore();
 	private static RectangleImageStore interactBoxImages = new RectangleImageStore();
@@ -28,8 +27,8 @@ public class ImageBuilder {
 				64);
 		characters = new SpriteSheet("data/characters.png", 40, 80);
 		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
-		beanSpriteSheet = new SpriteSheet("data/char spritesheets/bean.png", 48,
-				71);
+
+		CharacterSpriteBuilder.initSpriteSheets();
 	}
 
 	public static StaticImage makeRectangle(int width, int height, Color fill,
@@ -121,10 +120,9 @@ public class ImageBuilder {
 	}
 
 	public static LayeredImage getCharacterImg(int id) {
-		if (id == 0) {
-			return new LayeredImage(new AnimatedImage(beanSpriteSheet));
-		} else if (id > 0 && id < 4) {
-			return new LayeredImage(new StaticImage(characters.getSprite(id, 0)));
+		if (id > 0 && id < 4) {
+			return new LayeredImage(
+					new StaticImage(characters.getSprite(id, 0)));
 		} else {
 			return null;
 		}

@@ -75,12 +75,7 @@ public class SpriteBuilder {
 	 */
 	public static Sprite getCharacterSprite(int id) {
 		if (id == 0) {
-			StatedSprite ss = new StatedSprite(ImageBuilder.getCharacterImg(0),
-					0, GRID_SIZE);
-			ss.setImage(
-					new LayeredImage(ImageBuilder.getItemImage(ItemType.GEM)),
-					1);
-			return ss;
+			return CharacterSpriteBuilder.getBeanSprite();
 		}
 		return new SingleSprite(ImageBuilder.getCharacterImg(id), GRID_SIZE);
 	}

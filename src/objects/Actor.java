@@ -23,6 +23,7 @@ public abstract class Actor extends WorldObject {
 	private final static float GRAVITY = 0.0001f;
 	private float vSpeed;
 	private boolean gravityEnabled;
+	private ActorState lastState;
 	private ActorState state;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
@@ -44,6 +45,7 @@ public abstract class Actor extends WorldObject {
 		activeInteractables = new ArrayList<WorldObject>();
 		vSpeed = 0.0f;
 		gravityEnabled = true;
+		lastState = ActorState.IDLE;
 		state = ActorState.IDLE;
 		resetActorState();
 	}
@@ -82,16 +84,10 @@ public abstract class Actor extends WorldObject {
 	public void move(Dir d, float amount) {
 		if (d == Dir.EAST) {
 			getSprite().setMirrored(false);
-			if (state != ActorState.FALLING
-					&& getState() != ActorState.JUMPING) {
-				state = ActorState.WALK_RIGHT;
-			}
+			state = ActorState.WALK;
 		} else if (d == Dir.WEST) {
 			getSprite().setMirrored(true);
-			if (state != ActorState.FALLING
-					&& getState() != ActorState.JUMPING) {
-				state = ActorState.WALK_LEFT;
-			}
+			state = ActorState.WALK;
 		}
 
 		if (getCollider() == null) {
@@ -428,15 +424,23 @@ public abstract class Actor extends WorldObject {
 				calculateVSpeed(delta);
 				move(Dir.SOUTH, vSpeed * delta);
 			}
-			
-			// Updated sprite according to Actor's state
-			if (getSprite() instanceof StatedSprite) {
-				((StatedSprite) getSprite()).setState(state.ordinal());
-			}
 		}
+
+		if (lastState != state) {
+			stateChanged(lastState, state);
+		}
+
+		lastState = state;
 	}
 
 	public abstract void act(GameContainer gc, int delta);
+
+	public void stateChanged(ActorState from, ActorState to) {
+		// Updated sprite according to Actor's state
+		if (getSprite() instanceof StatedSprite) {
+			((StatedSprite) getSprite()).setState(state.ordinal());
+		}
+	}
 
 	public void interactWithAll() {
 		if (activeInteractables.isEmpty()) {
