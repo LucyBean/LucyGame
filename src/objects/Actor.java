@@ -22,24 +22,28 @@ public abstract class Actor extends WorldObject {
 	private final static float GRAVITY = 0.0001f;
 	private float vSpeed;
 	private boolean gravityEnabled;
+	private ActorState state;
 
-	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite,
-			Collider collider, InteractBox interactBox) {
+	public Actor(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
-	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
+	public Actor(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
-	
+
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
+		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
+				null, null);
 	}
 
 	protected final void resetState() {
 		activeInteractables = new ArrayList<WorldObject>();
 		vSpeed = 0.0f;
 		gravityEnabled = true;
+		state = ActorState.IDLE;
 		resetActorState();
 	}
 
@@ -60,6 +64,10 @@ public abstract class Actor extends WorldObject {
 		return gravityEnabled;
 	}
 
+	public ActorState getState() {
+		return state;
+	}
+
 	//
 	// Setters
 	//
@@ -73,10 +81,18 @@ public abstract class Actor extends WorldObject {
 	public void move(Dir d, float amount) {
 		if (d == Dir.EAST) {
 			getSprite().setMirrored(false);
+			if (state != ActorState.FALLING
+					&& getState() != ActorState.JUMPING) {
+				state = ActorState.WALK_RIGHT;
+			}
 		} else if (d == Dir.WEST) {
 			getSprite().setMirrored(true);
+			if (state != ActorState.FALLING
+					&& getState() != ActorState.JUMPING) {
+				state = ActorState.WALK_LEFT;
+			}
 		}
-		
+
 		if (getCollider() == null) {
 			setPosition(getPosition().move(d, amount));
 		} else {
@@ -304,8 +320,10 @@ public abstract class Actor extends WorldObject {
 			// activeInteractables is the list of interactables active last
 			// iteration
 			// nowActive is the list of interactables active this iteration
-			Collection<WorldObject> newlyActive = subtract(nowActive, prevActive);
-			Collection<WorldObject> newlyInactive = subtract(prevActive, nowActive);
+			Collection<WorldObject> newlyActive = subtract(nowActive,
+					prevActive);
+			Collection<WorldObject> newlyInactive = subtract(prevActive,
+					nowActive);
 
 			// Call overlapStart and overlapEnd on these newly active/inactive
 			// objects
@@ -358,7 +376,8 @@ public abstract class Actor extends WorldObject {
 		bottomEdge = bottomEdge.translate(new Point(0, 0.001f));
 
 		// See if it collides with any objects
-		Collection<WorldObject> collidingSolids = getCollidingSolids(bottomEdge);
+		Collection<WorldObject> collidingSolids = getCollidingSolids(
+				bottomEdge);
 		return !collidingSolids.isEmpty();
 	}
 
@@ -393,6 +412,11 @@ public abstract class Actor extends WorldObject {
 				vSpeed = 0.0f;
 			} else {
 				vSpeed += GRAVITY * delta;
+				if (vSpeed > 0) {
+					state = ActorState.FALLING;
+				} else {
+					state = ActorState.JUMPING;
+				}
 			}
 		}
 	}
@@ -417,12 +441,13 @@ public abstract class Actor extends WorldObject {
 
 	}
 
-	// TODO
+	//
 	// Update
 	//
 	final public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
 		if (isEnabled()) {
+			state = ActorState.IDLE;
 			act(gc, delta);
 			checkForInteractions();
 
@@ -442,7 +467,8 @@ public abstract class Actor extends WorldObject {
 			while (aii.hasNext()) {
 				WorldObject go = aii.next();
 				go.interactedBy(this);
-				getWorld().signalEvent(new EventInfo(EventType.INTERACT, this, go));
+				getWorld().signalEvent(
+						new EventInfo(EventType.INTERACT, this, go));
 			}
 		}
 	}

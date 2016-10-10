@@ -6,6 +6,8 @@ import org.newdawn.slick.GameContainer;
 import characters.NPC;
 import helpers.Point;
 import helpers.Rectangle;
+import objects.Actor;
+import objects.ActorState;
 import objects.Lockable;
 import objects.Locker;
 import objects.WorldObject;
@@ -44,6 +46,11 @@ class StatusWindow extends InterfaceElement {
 				text += "Pos: " + watching.getPosition() + "\n";
 			} else {
 				text += "Disabled\n";
+			}
+			
+			if (watching instanceof Actor) {
+				ActorState state = ((Actor) watching).getState();
+				text += "State: " + state;
 			}
 			
 			if (watching instanceof NPC) {
