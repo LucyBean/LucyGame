@@ -27,7 +27,7 @@ public abstract class Attachment {
 		rect = new Rectangle(newOrigin, rect.getWidth(), rect.getHeight());
 	}
 
-	protected abstract LayeredImage getImage();
+	public abstract LayeredImage getImage();
 	
 	public void draw(CoOrdTranslator cot) {
 		Point newOrigin = cot.objectToScreenCoOrds(rect.getTopLeft());

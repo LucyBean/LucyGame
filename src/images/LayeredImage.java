@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
+import helpers.Rectangle;
 import options.GlobalOptions;
 
 /**
@@ -62,6 +63,10 @@ public class LayeredImage {
 
 	public int getHeight() {
 		return height;
+	}
+	
+	public Rectangle getRectangle() {
+		return new Rectangle(Point.ZERO, width, height);
 	}
 
 	public int getTopLayerNumber() {

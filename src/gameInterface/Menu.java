@@ -9,7 +9,7 @@ import helpers.Point;
 import images.ImageBuilder;
 import images.LayeredImage;
 import images.LucyImage;
-import images.SingleSprite;
+import images.Sprite;
 
 public abstract class Menu extends IEList {
 	private List<Supplier<String>> labels;
@@ -62,7 +62,7 @@ public abstract class Menu extends IEList {
 	}
 
 	@Override
-	protected void getElementSprite(int elementIndex, SingleSprite s) {
+	protected void getElementSprite(int elementIndex, Sprite s) {
 		if (labels != null && elementIndex >= 0
 				&& elementIndex < labels.size()) {
 			// There is information to be displayed

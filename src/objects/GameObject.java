@@ -4,19 +4,19 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import helpers.Rectangle;
-import images.SingleSprite;
+import images.Sprite;
 import worlds.World;
 
 public abstract class GameObject {
 	private Point position;
-	private SingleSprite sprite;
+	private Sprite sprite;
 	private World world;
 	private final CoOrdTranslator cot;
 
 	private boolean enabled = true;
 	private boolean visible = true;
 
-	public GameObject(Point position, SingleSprite sprite) {
+	public GameObject(Point position, Sprite sprite) {
 		this.position = position;
 		this.sprite = sprite;
 		cot = new CoOrdTranslator(this);
@@ -29,7 +29,7 @@ public abstract class GameObject {
 		return world;
 	}
 
-	public SingleSprite getSprite() {
+	public Sprite getSprite() {
 		return sprite;
 	}
 
@@ -83,7 +83,7 @@ public abstract class GameObject {
 		this.position = position;
 	}
 
-	public void setSprite(SingleSprite sprite) {
+	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 

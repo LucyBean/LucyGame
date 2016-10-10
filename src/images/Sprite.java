@@ -6,9 +6,6 @@ import objects.Attachment;
 import objects.CoOrdTranslator;
 
 public abstract class Sprite extends Attachment {
-	private int tileX;
-	private int tileY;
-
 	/**
 	 * 
 	 * 
@@ -37,29 +34,14 @@ public abstract class Sprite extends Attachment {
 	 *            The GameObject to which the Sprite is attached. This is
 	 *            required for drawing.
 	 */
-	public Sprite(Rectangle boundingRectangle, int tileX, int tileY,
-			int gridSize) {
-		setRectangle(boundingRectangle.scale(tileX, tileY));
-		this.tileX = tileX;
-		this.tileY = tileY;
-	}
-	
 	public Sprite(Rectangle boundingRectangle, int gridSize) {
-		this(boundingRectangle, 1, 1, gridSize);
+		setRectangle(boundingRectangle.scale(1.0f / gridSize));
 	}
 
 	public void draw(CoOrdTranslator cot) {
 		Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
-		Rectangle bounding = getRectangle();
-		Rectangle imageBoundingRectangle = bounding.scale(1.0f/tileX, 1.0f/tileY);
-		Rectangle offset = cot.objectToScreenCoOrds(imageBoundingRectangle);
-		for (int y = 0; y < tileY; y++) {
-			for (int x = 0; x < tileX; x++) {
-				getImage().draw(imageCoOrds.getX() + offset.getWidth() * x,
-						imageCoOrds.getY() + offset.getHeight() * y,
-						cot.getDrawScale());
-			}
-		}
+		getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
+				cot.getDrawScale());
 	}
 
 	/**
@@ -67,6 +49,7 @@ public abstract class Sprite extends Attachment {
 	 * 
 	 * @param delta
 	 */
-	protected abstract void update(int delta);
+	public abstract void update(int delta);
+
 	public abstract void setMirrored(boolean mirrored);
 }

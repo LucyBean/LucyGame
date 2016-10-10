@@ -6,20 +6,20 @@ import helpers.Point;
 import helpers.Rectangle;
 import images.LayeredImage;
 import images.LucyImage;
-import images.SingleSprite;
+import images.Sprite;
 import images.SpriteBuilder;
 import objects.GameObject;
 
 public abstract class InterfaceElement extends GameObject {
 	Rectangle rect;
 
-	public InterfaceElement(Point point, SingleSprite sprite) {
+	public InterfaceElement(Point point, Sprite sprite) {
 		super(point, sprite);
 	}
 
 	public InterfaceElement(Rectangle rect) {
 		super(rect.getTopLeft(), null);
-		SingleSprite sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
+		Sprite sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
 				(int) rect.getHeight());
 		setSprite(sprite);
 	}
@@ -36,7 +36,7 @@ public abstract class InterfaceElement extends GameObject {
 	 */
 	public void mousePressed(int button, Point clickPoint) {
 		if (isVisible()) {
-			SingleSprite sprite = getSprite();
+			Sprite sprite = getSprite();
 			if (sprite != null) {
 				Rectangle rect = sprite.getRectangle();
 				clickPoint = getCoOrdTranslator().screenToObjectCoOrds(

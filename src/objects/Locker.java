@@ -3,7 +3,7 @@ package objects;
 import java.util.Collection;
 
 import helpers.Point;
-import images.SingleSprite;
+import images.Sprite;
 import images.SpriteBuilder;
 import player.Player;
 import worlds.World;
@@ -28,7 +28,7 @@ public abstract class Locker extends Static {
 	 * @param interactBox
 	 */
 	public Locker(int lockID, Point origin, WorldLayer layer, ItemType itemType,
-			SingleSprite sprite, Collider collider, InteractBox interactBox) {
+			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 		this.lockID = lockID;
 	}

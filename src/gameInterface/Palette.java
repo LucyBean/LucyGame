@@ -8,7 +8,7 @@ import org.newdawn.slick.Color;
 import helpers.Point;
 import images.ImageBuilder;
 import images.LucyImage;
-import images.SingleSprite;
+import images.Sprite;
 import images.SpriteBuilder;
 import objects.ItemType;
 
@@ -30,7 +30,7 @@ public class Palette extends IEList {
 	}
 
 	@Override
-	protected void getElementSprite(int elementIndex, SingleSprite s) {
+	protected void getElementSprite(int elementIndex, Sprite s) {
 		if (elements != null && elementIndex >= 0
 				&& elementIndex < elements.size()) {
 			ItemType it = elements.get(elementIndex);
@@ -56,7 +56,7 @@ public class Palette extends IEList {
 	}
 
 	@Override
-	protected SingleSprite makeNewSprite() {
+	protected Sprite makeNewSprite() {
 		return SpriteBuilder.makePaletteBlock();
 	}
 

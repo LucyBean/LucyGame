@@ -10,7 +10,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
-import images.SingleSprite;
+import images.Sprite;
 import images.SpriteBuilder;
 import quests.EventInfo;
 import quests.EventType;
@@ -25,12 +25,12 @@ public abstract class Actor extends WorldObject {
 	private ActorState state;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
-			SingleSprite sprite, Collider collider, InteractBox interactBox) {
+			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
-			SingleSprite sprite) {
+			Sprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
 
@@ -279,8 +279,8 @@ public abstract class Actor extends WorldObject {
 		Collection<WorldObject> interactables = getWorld().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
 		interactables.stream().filter(
-				go -> go != this && go.isEnabled()).filter(go -> 
-						go.getInteractBox().getRectangle().translate(
+				go -> go != this && go.isEnabled()).filter(
+						go -> go.getInteractBox().getRectangle().translate(
 								go.getPosition()).overlaps(thisArea)).forEach(
 										go -> nowActive.add(go));
 		return nowActive;

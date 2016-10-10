@@ -1,11 +1,10 @@
 package images;
 
 import helpers.Point;
-import helpers.Rectangle;
 
 /**
- * Sprite class for displaying objects on the world. Can handle static images.
- * Will support animations in future.
+ * Sprite class for displaying objects on the world. Can handle a single,
+ * untiled image.
  * 
  * @author Lucy
  *
@@ -41,37 +40,17 @@ public class SingleSprite extends Sprite {
 	 *            The GameObject to which the Sprite is attached. This is
 	 *            required for drawing.
 	 */
-	public SingleSprite(LayeredImage img, Point origin, int tileX, int tileY,
-			int gridSize) {
-		super(new Rectangle(origin,
-				((float) img.getWidth()) / gridSize,
-				((float) img.getHeight()) / gridSize), tileX, tileY, gridSize);
+	public SingleSprite(LayeredImage img, Point origin, int gridSize) {
+		super(img.getRectangle().translate(origin), gridSize);
 		image = img;
 	}
-
-	public SingleSprite(LayeredImage img, Point origin, int gridSize) {
-		this(img, origin, 1, 1, gridSize);
-	}
-
-	public SingleSprite(LayeredImage img, int gridSize) {
-		this(img, Point.ZERO, 1, 1, gridSize);
-	}
-
-	public SingleSprite(LucyImage img, Point origin, int tileX, int tileY,
-			int gridSize) {
-		this(new LayeredImage(img), origin, tileX, tileY, gridSize);
-	}
-
-	public SingleSprite(LucyImage img, Point origin, int gridSize) {
-		this(img, origin, 1, 1, gridSize);
-	}
-
-	public SingleSprite(LucyImage img, int gridSize) {
-		this(img, Point.ZERO, 1, 1, gridSize);
-	}
 	
+	public SingleSprite(LayeredImage img, int gridSize) {
+		this(img, Point.ZERO, gridSize);
+	}
+
 	public void setMirrored(boolean mirrored) {
-			image.setMirrored(mirrored);
+		image.setMirrored(mirrored);
 	}
 
 	/**

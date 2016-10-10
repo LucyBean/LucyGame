@@ -120,11 +120,11 @@ public class ImageBuilder {
 		}
 	}
 
-	public static LucyImage getCharacterImg(int id) {
+	public static LayeredImage getCharacterImg(int id) {
 		if (id == 0) {
-			return new AnimatedImage(beanSpriteSheet);
+			return new LayeredImage(new AnimatedImage(beanSpriteSheet));
 		} else if (id > 0 && id < 4) {
-			return new StaticImage(characters.getSprite(id, 0));
+			return new LayeredImage(new StaticImage(characters.getSprite(id, 0)));
 		} else {
 			return null;
 		}
