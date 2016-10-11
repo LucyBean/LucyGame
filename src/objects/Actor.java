@@ -22,6 +22,7 @@ public abstract class Actor extends WorldObject {
 	private Dir lastDirectionMoved;
 	private final static float GRAVITY = 0.0001f;
 	private float vSpeed;
+	private float moveSpeed = 0.01f;
 	private boolean gravityEnabled;
 	private ActorState lastState;
 	private ActorState state;
@@ -78,16 +79,51 @@ public abstract class Actor extends WorldObject {
 		gravityEnabled = gravity;
 	}
 
+	protected void setMoveSpeed(float moveSpeed) {
+		this.moveSpeed = moveSpeed;
+	}
+
 	//
-	// Move, with collision checking
+	// Movement
 	//
-	public void move(Dir d, float amount) {
+	/**
+	 * Moves in a direction at the walk speed. Updates the Actor state.
+	 * 
+	 * @param d
+	 * @param delta
+	 */
+	public void walk(Dir d, int delta) {
+		float moveAmount = moveSpeed * delta * 0.5f;
+		move(d, moveAmount);
+		state = ActorState.WALK;
+	}
+
+	/**
+	 * Moves in a direction at the run speed. Updates the Actor state.
+	 * 
+	 * @param d
+	 * @param delta
+	 */
+	public void run(Dir d, int delta) {
+		float moveAmount = moveSpeed * delta;
+		move(d, moveAmount);
+		state = ActorState.RUN;
+	}
+
+	/**
+	 * Moves a direction, preventing this Actor's Collider from overlapping with
+	 * any other Colliders. Does not set ActorState.
+	 * 
+	 * @param d
+	 * @param amount
+	 */
+	private void move(Dir d, float amount) {
 		if (d == Dir.EAST) {
 			getSprite().setMirrored(false);
-			state = ActorState.WALK;
+			state = ActorState.RUN;
 		} else if (d == Dir.WEST) {
 			getSprite().setMirrored(true);
-			state = ActorState.WALK;
+			state = ActorState.RUN;
 		}
 
 		if (getCollider() == null) {
@@ -382,9 +418,9 @@ public abstract class Actor extends WorldObject {
 			} else {
 				vSpeed += GRAVITY * delta;
 				if (vSpeed > 0) {
-					state = ActorState.FALLING;
+					state = ActorState.FALL;
 				} else {
-					state = ActorState.JUMPING;
+					state = ActorState.JUMP;
 				}
 			}
 		}
@@ -434,6 +470,10 @@ public abstract class Actor extends WorldObject {
 	}
 
 	public abstract void act(GameContainer gc, int delta);
+
+	protected void setState(ActorState newState) {
+		state = newState;
+	}
 
 	public void stateChanged(ActorState from, ActorState to) {
 		// Updated sprite according to Actor's state
