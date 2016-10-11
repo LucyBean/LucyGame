@@ -1,5 +1,8 @@
 package objects;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import helpers.Point;
 import images.Sprite;
 import images.SpriteBuilder;
@@ -17,6 +20,7 @@ public abstract class WorldObject extends GameObject {
 	private ItemType itemType;
 	private Collider collider;
 	private InteractBox interactBox;
+	private Set<Sensor> sensors;
 	private WorldLayer layer;
 
 	/**
@@ -42,6 +46,7 @@ public abstract class WorldObject extends GameObject {
 		this.interactBox = interactBox;
 		this.layer = layer;
 		this.itemType = itemType;
+		sensors = new HashSet<>();
 
 		reset();
 	}
@@ -54,16 +59,20 @@ public abstract class WorldObject extends GameObject {
 		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
 	}
 	
-	public void setColliderFromSprite() {
+	protected void setColliderFromSprite() {
 		if (getSprite() != null) {
 			collider = new Collider(getSprite().getRectangle());
 		}
 	}
 	
-	public void setInteractBoxFromSprite() {
+	protected void setInteractBoxFromSprite() {
 		if (getSprite() != null) {
 			interactBox = new InteractBox(getSprite().getRectangle());
 		}
+	}
+	
+	protected void addSensor(Sensor s) {
+		sensors.add(s);
 	}
 
 	/**
@@ -168,6 +177,9 @@ public abstract class WorldObject extends GameObject {
 		}
 		if (interactBox != null && GlobalOptions.drawInteractBoxes()) {
 			getInteractBox().draw(getCoOrdTranslator());
+		}
+		if (GlobalOptions.drawSensors()) {
+			sensors.stream().forEach(s -> s.draw(getCoOrdTranslator()));
 		}
 	}
 

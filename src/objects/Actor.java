@@ -26,10 +26,14 @@ public abstract class Actor extends WorldObject {
 	private boolean gravityEnabled;
 	private ActorState lastState;
 	private ActorState state;
+	private Sensor floorSensor;
+	private Sensor eastWallSensor;
+	private Sensor westWallSensor;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
+		addSensors();
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
@@ -40,6 +44,30 @@ public abstract class Actor extends WorldObject {
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
 		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
 				null, null);
+	}
+
+	private void addSensors() {
+		if (getCollider() != null) {
+			float sensorSize = 0.5f;
+
+			floorSensor = new Sensor(getCollider().getBottomRight(),
+					getCollider().getWidth(), sensorSize);
+			eastWallSensor = new Sensor(getCollider().getTopRight(), sensorSize,
+					getCollider().getHeight());
+			westWallSensor = new Sensor(
+					getCollider().getTopLeft().move(Dir.WEST, sensorSize),
+					sensorSize, getCollider().getHeight());
+
+			addSensor(floorSensor);
+			addSensor(eastWallSensor);
+			addSensor(westWallSensor);
+		}
+	}
+
+	@Override
+	protected void setColliderFromSprite() {
+		super.setColliderFromSprite();
+		addSensors();
 	}
 
 	protected final void resetState() {
@@ -83,6 +111,17 @@ public abstract class Actor extends WorldObject {
 		this.moveSpeed = moveSpeed;
 	}
 
+	private void setFloorSensorLocation(Dir d) {
+		if (floorSensor != null) {
+			if (d == Dir.EAST) {
+				floorSensor.setOrigin(getCollider().getBottomRight());
+			} else if (d == Dir.WEST) {
+				floorSensor.setOrigin(getCollider().getBottomLeft().move(
+						Dir.WEST, floorSensor.getWidth()));
+			}
+		}
+	}
+
 	//
 	// Movement
 	//
@@ -94,8 +133,22 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void walk(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta * 0.5f;
-		move(d, moveAmount);
-		state = ActorState.WALK;
+		setFloorSensorLocation(d);
+
+		// Check for floor ahead
+		Collection<WorldObject> solids = null;
+		if (floorSensor != null && isOnGround()) {
+			solids = getCollidingSolids(
+					getCoOrdTranslator().objectToWorldCoOrds(
+							floorSensor.getRectangle()));
+		}
+
+		if (solids == null || !solids.isEmpty()) {
+			boolean moved = move(d, moveAmount);
+			if (moved) {
+				state = ActorState.WALK;
+			}
+		}
 	}
 
 	/**
@@ -106,8 +159,11 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void run(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta;
-		move(d, moveAmount);
-		state = ActorState.RUN;
+		setFloorSensorLocation(d);
+		boolean moved = move(d, moveAmount);
+		if (moved) {
+			state = ActorState.RUN;
+		}
 	}
 
 	/**
@@ -116,23 +172,30 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param d
 	 * @param amount
+	 * @return Whether or not the character actually moved.
 	 */
-	private void move(Dir d, float amount) {
+	public boolean move(Dir d, float amount) {
 		if (d == Dir.EAST) {
 			getSprite().setMirrored(false);
-			state = ActorState.RUN;
 		} else if (d == Dir.WEST) {
 			getSprite().setMirrored(true);
-			state = ActorState.RUN;
 		}
 
 		if (getCollider() == null) {
 			setPosition(getPosition().move(d, amount));
+			lastDirectionMoved = d;
+			return true;
 		} else {
 			Point newPos = findNewPosition(d, amount);
+			Point oldPos = getPosition();
 			setPosition(newPos);
+			if (newPos.equals(oldPos)) {
+				return false;
+			} else {
+				lastDirectionMoved = d;
+				return true;
+			}
 		}
-		lastDirectionMoved = d;
 	}
 
 	/**

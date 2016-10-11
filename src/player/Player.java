@@ -14,6 +14,7 @@ import objects.Actor;
 import objects.ActorState;
 import objects.Collider;
 import objects.ItemType;
+import objects.Sensor;
 import objects.WorldObject;
 import worlds.WorldLayer;
 
@@ -21,6 +22,7 @@ public class Player extends Actor {
 	float jumpStrength = 0.03f;
 	Inventory inventory;
 	Map<Integer, Integer> keys;
+	Sensor floorSensor;
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,

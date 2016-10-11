@@ -89,6 +89,10 @@ public class GlobalOptions {
 	public static boolean drawInteractBoxes() {
 		return Option.DRAW_INTERACT_BOXES.getValue() == 1;
 	}
+	
+	public static boolean drawSensors() {
+		return Option.DRAW_SENSORS.getValue() == 1;
+	}
 
 	public static boolean debug() {
 		return Option.DEBUG.getValue() == 1;

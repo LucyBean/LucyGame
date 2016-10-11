@@ -98,4 +98,22 @@ public class Point {
 		return "(" + String.format("%.2f", getX()) + ","
 				+ String.format("%.2f", getY()) + ")";
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		
+		if (o == null) {
+			return false;
+		}
+		
+		if (o instanceof Point) {
+			Point p = (Point) o;
+			return (getX() == p.getX() && getY() == p.getY());
+		}
+		
+		return false;
+	}
 }
