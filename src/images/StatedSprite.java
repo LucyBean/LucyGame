@@ -29,7 +29,7 @@ public class StatedSprite extends Sprite {
 	public void setState(int state) {
 		LayeredImage newImage = images.get(state);
 		if (currentImage != newImage) {
-			// TODO: Reset animation if new state
+			getImage().resetAnimations();
 			currentImage = images.get(state);
 			setRectangle(getImage().getRectangle());
 			getImage().setMirrored(mirrored);

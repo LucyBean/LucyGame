@@ -43,17 +43,14 @@ public class LayeredImage {
 	public LayeredImage(List<PositionedImage> imgs) {
 		layers = new LinkedList<PositionedImage>(imgs);
 		numLayers = imgs.size();
-		Optional<Float> w = imgs.stream().map(i -> i.getWidth()).reduce(
-				Float::max);
-		Optional<Float> h = imgs.stream().map(i -> i.getHeight()).reduce(
-				Float::max);
+		Optional<Float> w = imgs.stream().map(i -> i.getWidth()).reduce(Float::max);
+		Optional<Float> h = imgs.stream().map(i -> i.getHeight()).reduce(Float::max);
 
 		if (w.isPresent() && h.isPresent()) {
 			this.width = (int) ((float) w.get());
 			this.height = (int) ((float) h.get());
 		} else if (GlobalOptions.debug()) {
-			System.err.println("Attempted to create a new LayeredImage "
-					+ "from an empty list of images.");
+			System.err.println("Attempted to create a new LayeredImage " + "from an empty list of images.");
 		}
 	}
 
@@ -64,7 +61,7 @@ public class LayeredImage {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public Rectangle getRectangle() {
 		return new Rectangle(Point.ZERO, width, height);
 	}
@@ -75,8 +72,7 @@ public class LayeredImage {
 
 	public void draw(float x, float y, float scale) {
 		layers.stream().filter(i -> i != null && i.getImage() != null).forEach(
-				i -> i.getImage().draw(x + i.getOrigin().getX() * scale,
-						y + i.getOrigin().getY() * scale, scale));
+				i -> i.getImage().draw(x + i.getOrigin().getX() * scale, y + i.getOrigin().getY() * scale, scale));
 	}
 
 	/**
@@ -106,8 +102,7 @@ public class LayeredImage {
 			PositionedImage img = layers.get(z);
 			if (img == null) {
 				try {
-					img = new PositionedImage(Point.ZERO,
-							new StaticImage(width, height));
+					img = new PositionedImage(Point.ZERO, new StaticImage(width, height));
 					layers.add(z, img);
 				} catch (SlickException se) {
 					System.err.println("Unable to create new layer on image.");
@@ -130,19 +125,16 @@ public class LayeredImage {
 	 */
 	public void setLayer(int layer, PositionedImage img) {
 		if (layer >= 0 && layer < numLayers) {
-			if (GlobalOptions.debug()
-					&& (img.getWidth() > width || img.getHeight() > height)) {
-				System.err.println("Incorrectly sized image " + img.getWidth()
-						+ "x" + img.getHeight() + " added to image of size "
-						+ width + "x" + height);
+			if (GlobalOptions.debug() && (img.getWidth() > width || img.getHeight() > height)) {
+				System.err.println("Incorrectly sized image " + img.getWidth() + "x" + img.getHeight()
+						+ " added to image of size " + width + "x" + height);
 			}
 			if (layers.get(layer) != null) {
 				layers.remove(layer);
 			}
 			layers.add(layer, img);
 		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to add an image to an invalid layer " + layer);
+			System.err.println("Attempting to add an image to an invalid layer " + layer);
 		}
 	}
 
@@ -156,10 +148,8 @@ public class LayeredImage {
 	 */
 	public void setLayerPosition(int layer, Point p) {
 		if (layer >= 0 && layer < numLayers) {
-			if (GlobalOptions.debug()
-					&& (p.getX() > width || p.getY() > height)) {
-				System.err.println("Incorrect image position " + p
-						+ " on image of size " + width + "x" + height);
+			if (GlobalOptions.debug() && (p.getX() > width || p.getY() > height)) {
+				System.err.println("Incorrect image position " + p + " on image of size " + width + "x" + height);
 			}
 			PositionedImage pi = layers.get(layer);
 			if (pi != null) {
@@ -168,8 +158,7 @@ public class LayeredImage {
 				layers.add(layer, new PositionedImage(p, null));
 			}
 		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to add an image to an invalid layer " + layer);
+			System.err.println("Attempting to add an image to an invalid layer " + layer);
 		}
 	}
 
@@ -214,8 +203,7 @@ public class LayeredImage {
 					se.printStackTrace();
 				}
 			} else if (GlobalOptions.debug()) {
-				System.err.println(
-						"Attempting to fill a non-static image layer.");
+				System.err.println("Attempting to fill a non-static image layer.");
 			}
 		}
 	}
@@ -239,8 +227,7 @@ public class LayeredImage {
 					se.printStackTrace();
 				}
 			} else if (GlobalOptions.debug()) {
-				System.err.println(
-						"Attempting to clear a non-static image layer.");
+				System.err.println("Attempting to clear a non-static image layer.");
 			}
 		}
 	}
@@ -272,8 +259,7 @@ public class LayeredImage {
 	 *            The vertical alignment for the layer relative to the origin. 0
 	 *            = top, 1 = middle, 2 = bottom
 	 */
-	public void setText(int layer, String text, Point origin, int hAlign,
-			int vAlign) {
+	public void setText(int layer, String text, Point origin, int hAlign, int vAlign) {
 		LucyImage img = getLayer(layer).getImage();
 		if (img == null) {
 			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
@@ -295,8 +281,7 @@ public class LayeredImage {
 				}
 			}
 		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to set text to a non-static image layer.");
+			System.err.println("Attempting to set text to a non-static image layer.");
 		}
 	}
 
@@ -344,19 +329,16 @@ public class LayeredImage {
 					g.drawString(text, topLeft.getX(), topLeft.getY());
 					g.flush();
 				} catch (SlickException se) {
-					System.err.println(
-							"Error while adding text to image layer.");
+					System.err.println("Error while adding text to image layer.");
 					if (GlobalOptions.debug()) {
 						se.printStackTrace();
 					}
 				}
 			} else if (GlobalOptions.debug()) {
-				System.err.println(
-						"Attempting to set text to a non-static image layer.");
+				System.err.println("Attempting to set text to a non-static image layer.");
 			}
 		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to add text to uninitialised layer.");
+			System.err.println("Attempting to add text to uninitialised layer.");
 		}
 	}
 
@@ -366,9 +348,9 @@ public class LayeredImage {
 	 * @param delta
 	 */
 	public void update(int delta) {
-		layers.stream().filter(i -> i != null).map(i -> i.getImage()).filter(
-				i -> i != null && i instanceof AnimatedImage).map(
-						i -> (AnimatedImage) i).forEach(i -> i.update(delta));
+		layers.stream().filter(i -> i != null).map(i -> i.getImage())
+				.filter(i -> i != null && i instanceof AnimatedImage).map(i -> (AnimatedImage) i)
+				.forEach(i -> i.update(delta));
 	}
 
 	/**
@@ -378,9 +360,8 @@ public class LayeredImage {
 	 */
 	public void setMirrored(boolean mirrored) {
 		if (this.mirrored != mirrored) {
-			layers.stream().filter(i -> i != null).map(
-					i -> i.getImage()).filter(i -> i != null).forEach(
-							i -> i.setMirrored(mirrored));
+			layers.stream().filter(i -> i != null).map(i -> i.getImage()).filter(i -> i != null)
+					.forEach(i -> i.setMirrored(mirrored));
 			this.mirrored = mirrored;
 		}
 	}
@@ -389,5 +370,11 @@ public class LayeredImage {
 	public String toString() {
 		List<PositionedImage> images = layers.subList(0, numLayers);
 		return images.toString();
+	}
+
+	public void resetAnimations() {
+		layers.stream().filter(i -> i != null).map(i -> i.getImage())
+				.filter(i -> i != null && i instanceof AnimatedImage).map(i -> (AnimatedImage) i)
+				.forEach(i -> i.resetAnimation());
 	}
 }
