@@ -3,7 +3,10 @@ package images;
 import java.util.HashMap;
 import java.util.Map;
 
+import objects.ActorState;
+
 public class StatedSprite extends Sprite {
+	int currentState;
 	LayeredImage defaultImage;
 	LayeredImage currentImage;
 	Map<Integer, LayeredImage> images;
@@ -14,6 +17,7 @@ public class StatedSprite extends Sprite {
 		super(defaultImage.getRectangle(), gridSize);
 		this.defaultImage = defaultImage;
 		currentImage = defaultImage;
+		currentState = defaultState;
 		images = new HashMap<>();
 		images.put(defaultState, defaultImage);
 	}
@@ -26,14 +30,22 @@ public class StatedSprite extends Sprite {
 		toAdd.entrySet().stream().forEach(i -> images.put(i.getKey(), i.getValue()));
 	}
 
-	public void setState(int state) {
-		LayeredImage newImage = images.get(state);
-		if (currentImage != newImage) {
+	public void setState(int newState) {
+		if (needToChangeSprite(newState)) {
 			getImage().resetAnimations();
-			currentImage = images.get(state);
+			currentImage = images.get(newState);
 			setRectangle(getImage().getRectangle());
 			getImage().setMirrored(mirrored);
 		}
+		currentState = newState;
+	}
+	
+	private boolean needToChangeSprite(int newState) {
+		if (currentState == ActorState.JUMP.ordinal() && newState == ActorState.FALL.ordinal()) {
+			return false;
+		}
+		
+		return (currentState != newState);
 	}
 
 	@Override
