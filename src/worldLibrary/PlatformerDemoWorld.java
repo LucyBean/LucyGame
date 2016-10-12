@@ -35,8 +35,9 @@ public class PlatformerDemoWorld extends World {
 //		};
 //		addObject(background);
 
-		Actor gravityPlayer = new Player(new Point(3, 2));
-		addObject(gravityPlayer);
+		Actor player = new Player(new Point(3, 2));
+		addObject(player);
+		getCamera().setTarget(player);
 
 		// Add some walls
 		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 20));

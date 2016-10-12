@@ -9,6 +9,7 @@ public class StatedSprite extends Sprite {
 	int currentState;
 	LayeredImage defaultImage;
 	LayeredImage currentImage;
+	LayeredImage queuedImage;
 	Map<Integer, LayeredImage> images;
 	boolean mirrored;
 
@@ -32,12 +33,19 @@ public class StatedSprite extends Sprite {
 
 	public void setState(int newState) {
 		if (needToChangeSprite(newState)) {
-			getImage().resetAnimations();
-			currentImage = images.get(newState);
-			setRectangle(getImage().getRectangle());
-			getImage().setMirrored(mirrored);
+			LayeredImage newImage = images.get(newState);
+			changeImage(newImage);
+		} else if (needToQueueSpriteChange(newState)) {
+			queuedImage = images.get(newState);
 		}
 		currentState = newState;
+	}
+	
+	private void changeImage(LayeredImage newImage) {
+		getImage().resetAnimations();
+		currentImage = newImage;
+		setRectangle(getImage().getRectangle());
+		getImage().setMirrored(mirrored);		
 	}
 	
 	private boolean needToChangeSprite(int newState) {
@@ -47,10 +55,27 @@ public class StatedSprite extends Sprite {
 		
 		return (currentState != newState);
 	}
+	
+	private boolean needToQueueSpriteChange(int newState) {
+		if (currentState == ActorState.JUMP.ordinal() && newState == ActorState.FALL.ordinal()) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	@Override
 	public void update(int delta) {
 		getImage().update(delta);
+		
+		LucyImage img = getImage().getLayer(0).getImage();
+		if (img instanceof AnimatedImage) {
+			AnimatedImage ai = (AnimatedImage) img;
+			if (ai.isFinished() && queuedImage != null) {
+				changeImage(queuedImage);
+				queuedImage = null;
+			}
+		}
 	}
 
 	@Override
