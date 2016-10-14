@@ -35,6 +35,7 @@ public abstract class Actor extends WorldObject {
 			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 		addSensors();
+		autoAlignSprite();
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
@@ -45,6 +46,22 @@ public abstract class Actor extends WorldObject {
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
 		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
 				null, null);
+	}
+
+	/**
+	 * Sets the bottom-middle point of this Actor's Sprite to coincide with the
+	 * bottom-middle point of its collider.
+	 */
+	private void autoAlignSprite() {
+		if (getSprite() != null && getCollider() != null) {
+			// Set position of Player's sprite such that bottom-middle points of
+			// sprite and collider coincide.
+			float newX = (getCollider().getWidth()
+					- getSprite().getRectangle().getWidth()) / 2;
+			float newY = (getCollider().getHeight()
+					- getSprite().getRectangle().getHeight());
+			getSprite().setOrigin(new Point(newX, newY));
+		}
 	}
 
 	private void addSensors() {
@@ -545,6 +562,11 @@ public abstract class Actor extends WorldObject {
 		if (getSprite() instanceof StatedSprite) {
 			((StatedSprite) getSprite()).setState(state.ordinal());
 		}
+	}
+
+	@Override
+	public void statedSpriteImageChange() {
+		autoAlignSprite();
 	}
 
 	public void interactWithAll() {

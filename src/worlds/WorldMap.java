@@ -41,7 +41,7 @@ public class WorldMap {
 		reset();
 		this.world = world;
 	}
-	
+
 	public void reset() {
 		layers = new ObjectLayerSet<>();
 		actors = new HashSet<>();
@@ -52,7 +52,7 @@ public class WorldMap {
 		mapPainter = new MapPainter(this);
 		lockablesByID = new HashMap<>();
 		lockers = new HashMap<>();
-		npcsByID = new HashMap<>();		
+		npcsByID = new HashMap<>();
 	}
 
 	public MapPainter getPainter() {
@@ -72,59 +72,61 @@ public class WorldMap {
 	}
 
 	public void addObject(WorldObject go) {
-		WorldLayer layer = go.getLayer();
-		layers.add(go, layer.ordinal());
+		if (go != null) {
+			WorldLayer layer = go.getLayer();
+			layers.add(go, layer.ordinal());
 
-		// Adds the object to any extra lists.
-		if (go instanceof Actor) {
-			actors.add((Actor) go);
-		}
-		if (go.isSolid()) {
-			solids.add(go);
-		}
-		if (go.isInteractable()) {
-			interactables.add(go);
-		}
-		if (go.isEnabled()) {
-			addToActiveSets(go);
-		}
-		if (go instanceof Lockable) {
-			Lockable lgo = (Lockable) go;
-			int lockID = lgo.getLockID();
-			lockablesByID.putIfAbsent(lockID, new HashSet<Lockable>());
-			lockablesByID.get(lockID).add(lgo);
-			Locker locker = lockers.get(lockID);
-			if (locker != null) {
-				if (locker.isLocked()) {
-					lgo.lock();
-				} else {
-					lgo.unlock();
+			// Adds the object to any extra lists.
+			if (go instanceof Actor) {
+				actors.add((Actor) go);
+			}
+			if (go.isSolid()) {
+				solids.add(go);
+			}
+			if (go.isInteractable()) {
+				interactables.add(go);
+			}
+			if (go.isEnabled()) {
+				addToActiveSets(go);
+			}
+			if (go instanceof Lockable) {
+				Lockable lgo = (Lockable) go;
+				int lockID = lgo.getLockID();
+				lockablesByID.putIfAbsent(lockID, new HashSet<Lockable>());
+				lockablesByID.get(lockID).add(lgo);
+				Locker locker = lockers.get(lockID);
+				if (locker != null) {
+					if (locker.isLocked()) {
+						lgo.lock();
+					} else {
+						lgo.unlock();
+					}
 				}
 			}
-		}
-		if (go instanceof Locker) {
-			Locker lgo = (Locker) go;
-			int lockID = lgo.getLockID();
-			Locker old = lockers.put(lockID, lgo);
-			if (old != null) {
-				removeObject(old);
+			if (go instanceof Locker) {
+				Locker lgo = (Locker) go;
+				int lockID = lgo.getLockID();
+				Locker old = lockers.put(lockID, lgo);
+				if (old != null) {
+					removeObject(old);
+				}
 			}
-		}
-		if (go instanceof Player) {
-			if (player != null) {
-				removeObject(player);
+			if (go instanceof Player) {
+				if (player != null) {
+					removeObject(player);
+				}
+				player = (Player) go;
 			}
-			player = (Player) go;
-		}
-		if (go instanceof NPC) {
-			NPC npc = (NPC) go;
-			NPC n = npcsByID.put(npc.getNPCID(), npc);
-			if (n != null) {
-				removeObject(n);
+			if (go instanceof NPC) {
+				NPC npc = (NPC) go;
+				NPC n = npcsByID.put(npc.getNPCID(), npc);
+				if (n != null) {
+					removeObject(n);
+				}
 			}
-		}
 
-		go.setWorld(world);
+			go.setWorld(world);
+		}
 	}
 
 	public void removeObject(WorldObject go) {

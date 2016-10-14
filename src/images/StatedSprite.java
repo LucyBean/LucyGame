@@ -4,14 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import objects.ActorState;
+import objects.GameObject;
 
 public class StatedSprite extends Sprite {
-	int currentState;
-	LayeredImage defaultImage;
-	LayeredImage currentImage;
-	LayeredImage queuedImage;
-	Map<Integer, LayeredImage> images;
-	boolean mirrored;
+	private int currentState;
+	private LayeredImage defaultImage;
+	private LayeredImage currentImage;
+	private LayeredImage queuedImage;
+	private Map<Integer, LayeredImage> images;
+	private boolean mirrored;
+	private GameObject myGO;
 
 	public StatedSprite(LayeredImage defaultImage, int defaultState,
 			int gridSize) {
@@ -21,6 +23,14 @@ public class StatedSprite extends Sprite {
 		currentState = defaultState;
 		images = new HashMap<>();
 		images.put(defaultState, defaultImage);
+	}
+	
+	/**
+	 * Sets the GameObject to which this sprite is attached.
+	 * @param go
+	 */
+	public void setGameObject(GameObject go) {
+		myGO = go;
 	}
 
 	public void setImage(LayeredImage image, int state) {
@@ -45,7 +55,10 @@ public class StatedSprite extends Sprite {
 		getImage().resetAnimations();
 		currentImage = newImage;
 		setRectangle(getImage().getRectangle());
-		getImage().setMirrored(mirrored);		
+		getImage().setMirrored(mirrored);
+		if (myGO != null) {
+			myGO.statedSpriteImageChange();
+		}
 	}
 	
 	private boolean needToChangeSprite(int newState) {

@@ -28,30 +28,19 @@ public class Player extends Actor {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
 				SpriteBuilder.getCharacterSprite(0),
 				new Collider(Point.ZERO, 0.8f, 1.99f), null);
-		setSpritePosition();
-	}
-
-	private void setSpritePosition() {
-		// Set position of Player's sprite such that bottom-middle points of
-		// sprite and collider coincide.
-		float newX = (getCollider().getWidth()
-				- getSprite().getRectangle().getWidth()) / 2;
-		float newY = (getCollider().getHeight()
-				- getSprite().getRectangle().getHeight());
-		getSprite().setOrigin(new Point(newX, newY));
 	}
 
 	@Override
 	public void act(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		Consumer<Dir> mf;
-		
+
 		if (input.isKeyDown(Input.KEY_LSHIFT)) {
 			mf = (d -> walk(d, delta));
 		} else {
 			mf = (d -> run(d, delta));
 		}
-		
+
 		if (gravityEnabled()) {
 			if (input.isKeyDown(Input.KEY_SPACE)) {
 				jump(jumpStrength);
@@ -87,11 +76,10 @@ public class Player extends Actor {
 			inventory.add(ii);
 		}
 	}
-	
+
 	@Override
 	public void stateChanged(ActorState from, ActorState to) {
 		super.stateChanged(from, to);
-		setSpritePosition();
 	}
 
 	@Override
