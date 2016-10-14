@@ -92,6 +92,17 @@ public abstract class IEList extends InterfaceElement {
 		this(firstPoint, height, width, padding, null);
 	}
 
+	@Override
+	public void setPosition(Point position) {
+		if (buttons != null && getPosition() != null) {
+			// move all elements
+			Point offset = position.move(getPosition().neg());
+			buttons.stream().forEach(
+					i -> i.setPosition(i.getPosition().move(offset)));
+		}
+		super.setPosition(position);
+	}
+
 	/**
 	 * Sets the background to be the given sprite.
 	 * 
@@ -109,12 +120,8 @@ public abstract class IEList extends InterfaceElement {
 	public void setBackground(Color c) {
 		if (buttons.size() > 0) {
 			if (getSprite() == null) {
-				Rectangle spriteBound = buttons.get(
-						0).getSprite().getRectangle();
-				int w = (int) (spriteBound.getWidth() * width
-						+ padding * (width + 1));
-				int h = (int) (spriteBound.getHeight() * height
-						+ padding * (height + 1));
+				int w = getWidthPixels() + padding*2;
+				int h = getHeightPixels() + padding*2;
 				Point origin = new Point(-padding, -padding);
 
 				LayeredImage limg = new LayeredImage(w, h, 1);
@@ -182,13 +189,14 @@ public abstract class IEList extends InterfaceElement {
 			elementClicked(buttonIndex + minItemDisplayed);
 		}
 	}
-	
+
 	protected int getMinItemDisplayed() {
 		return minItemDisplayed;
 	}
-	
+
 	protected IEListItem getButton(int buttonIndex) {
-		if (buttons != null && buttonIndex >= 0 && buttonIndex < buttons.size()) {
+		if (buttons != null && buttonIndex >= 0
+				&& buttonIndex < buttons.size()) {
 			return buttons.get(buttonIndex);
 		} else {
 			return null;
@@ -315,6 +323,37 @@ public abstract class IEList extends InterfaceElement {
 			getSprite().draw(getCoOrdTranslator());
 		}
 		buttons.stream().forEach(s -> s.render());
+	}
+
+	/**
+	 *
+	 * @return The width of the elemnt in pixels
+	 */
+	public int getWidthPixels() {
+		if (getSprite() != null) {
+			return (int) getSprite().getRectangle().getWidth();
+		} else if (buttons != null && !buttons.isEmpty()) {
+			Rectangle spriteBound = buttons.get(0).getSprite().getRectangle();
+			return (int) (spriteBound.getWidth() * width
+					+ padding * (width - 1));
+		}
+		
+		return 0;
+	}
+
+	/**
+	 * @return The height of the element in pixels
+	 */
+	public int getHeightPixels() {
+		if (getSprite() != null) {
+			return (int) getSprite().getRectangle().getHeight();
+		} else if (buttons != null && !buttons.isEmpty()) {
+			Rectangle spriteBound = buttons.get(0).getSprite().getRectangle();
+			return (int) (spriteBound.getHeight() * height
+					+ padding * (height - 1));
+		}
+		
+		return 0;
 	}
 
 }

@@ -101,9 +101,11 @@ public class DefaultGameInterface extends GameInterface {
 		buildingTools.add(() -> "Import map", s -> {
 			Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
 					"test");
-			s.getWorld().getMap().reset();
-			s.getWorld().getMap().addObjects(objects);
-			s.getWorld().closeBuildMenu();
+			if (objects != null) {
+				s.getWorld().getMap().reset();
+				s.getWorld().getMap().addObjects(objects);
+				s.getWorld().closeBuildMenu();
+			}
 		});
 		add(buildingTools, WorldState.BUILDING_MENU);
 

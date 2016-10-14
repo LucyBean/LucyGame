@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import gameInterface.Palette;
 import gameInterface.PropertyPanel;
 import helpers.Point;
+import options.GlobalOptions;
 import worlds.LucyGame;
 import worlds.World;
 import worlds.WorldState;
@@ -16,18 +17,23 @@ public class LevelBuildingWorld extends World {
 	public LevelBuildingWorld(LucyGame game) {
 		super(game, "Level building world");
 	}
-	
+
 	@Override
 	public void init() throws SlickException {
 		startBuilding();
-		
-		Palette p = new Palette(new Point(0,406));
+
+		Palette p = new Palette(Point.ZERO);
+		p.setPosition(new Point(0,
+				GlobalOptions.WINDOW_HEIGHT - p.getHeightPixels()));
 		addObject(p, WorldState.BUILDING);
-		
-		PropertyPanel pp = new PropertyPanel(new Point(300, 300));
+
+		PropertyPanel pp = new PropertyPanel(Point.ZERO);
+		pp.setPosition(
+				new Point(GlobalOptions.WINDOW_WIDTH - pp.getWidthPixels(),
+						GlobalOptions.WINDOW_HEIGHT - pp.getHeightPixels()));
 		addObject(pp, WorldState.BUILDING);
 	}
-	
+
 	@Override
 	public void update(GameContainer gc, int delta) {
 		if (isIgnoringInput()) {
