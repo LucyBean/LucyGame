@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import helpers.Point;
-import objects.ItemType;
-import objects.ObjectMaker;
 import objects.WorldObject;
 import options.GlobalOptions;
 import worlds.WorldMap;
@@ -41,7 +38,7 @@ public class WorldMapImporterExporter {
 		try {
 			File file = new File("data/" + filename + ".map");
 			FileInputStream in = new FileInputStream(file);
-			byte[] buffer = new byte[8];
+			byte[] buffer = new byte[24];
 			in.read(buffer);
 			int fileVersion = readHeader(buffer);
 
@@ -69,68 +66,25 @@ public class WorldMapImporterExporter {
 	}
 
 	private static void writeHeader(FileOutputStream out) {
-		PackedLong header = new PackedLong();
-		header.setBits(0, 4, version);
-		exportPackedLong(header, out);
+		byte[] header = new byte[24];
+		header[0] = version;
+		ObjectByter hob = new ObjectByter(header);
+		hob.writeToFile(out);
 	}
 
 	private static int readHeader(byte[] bytes) {
-		PackedLong pl = new PackedLong(bytes);
-
-		int version = (int) pl.getBits(0, 4);
+		int version = 15 & bytes[0];
 		return version;
 	}
 
 	private static WorldObject readItem(byte[] bytes) {
-		PackedLong pl = new PackedLong(bytes);
-
-		int itemTypeNum = (int) pl.getBits(56, 8);
-		int x = (int) pl.getBits(40, 16);
-		int y = (int) pl.getBits(24, 16);
-		int lockID = (int) pl.getBits(20, 4);
-		int npcID = (int) pl.getBits(8, 8);
-
-		if (itemTypeNum >= 0 && itemTypeNum < ItemType.values().length) {
-			ItemType itemType = ItemType.values()[itemTypeNum];
-			return ObjectMaker.makeFromType(itemType, new Point(x, y), lockID,
-					npcID);
-		} else {
-			return null;
-		}
+		ObjectByter ob = new ObjectByter(bytes);
+		return ob.getAsWorldObject();
 	}
 
 	private static void exportObject(WorldObject object, FileOutputStream out) {
-		ItemType it = object.getType();
-		if (it != null) {
-			int itemType = it.ordinal();
-			int x = (int) object.getPosition().getX();
-			int y = (int) object.getPosition().getY();
-			int lockID = object.getLockID();
-			int keyID = object.getKeyID();
-			int npcID = object.getNPCID();
-
-			PackedLong pl = new PackedLong();
-			pl.setBits(8, 8, npcID);
-			pl.setBits(16, 4, keyID);
-			pl.setBits(20, 4, lockID);
-			pl.setBits(24, 16, y);
-			pl.setBits(40, 16, x);
-			pl.setBits(56, 8, itemType);
-
-			exportPackedLong(pl, out);
-		} else {
-			System.err.println("Unexportable object " + object);
-		}
+		ObjectByter ob = new ObjectByter(object);
+		ob.writeToFile(out);
 	}
 
-	private static void exportPackedLong(PackedLong pl, FileOutputStream out) {
-		try {
-			out.write(pl.getBytes());
-		} catch (IOException ioe) {
-			System.err.println("Error exporting object.");
-			if (GlobalOptions.debug()) {
-				ioe.printStackTrace();
-			}
-		}
-	}
 }

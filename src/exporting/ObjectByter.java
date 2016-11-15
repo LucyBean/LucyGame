@@ -1,82 +1,90 @@
 package exporting;
 
-public class PackedLong {
-	private long number;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
-	public void setBit(int position, boolean on) {
-		if (position >= 0 && position < 64) {
-			if (on) {
-				long mask = 1L << position;
-				number = number | mask;
-			} else {
-				long mask = ~(1L << position);
-				number = number & mask;
-			}
-		}
-	}
+import helpers.Point;
+import objects.ItemType;
+import objects.ObjectMaker;
+import objects.WorldObject;
+import options.GlobalOptions;
 
-	public void setBits(int startPosition, int numBits, long set) {
-		for (int i = 0; i < numBits; i++) {
-			long mask = 1 << i;
-			long bit = mask & set;
-			setBit(startPosition + i, (bit != 0));
-		}
-	}
-
-	public long getBits(int startPosition, int numBits) {
-		long mask = 0L;
-		for (int i = 0; i < numBits; i++) {
-			mask = mask | 1L << startPosition + i;
-		}
-
-		long bits = number & mask;
-		// Shift back-and-forth for sign extension.
-		bits = bits << 64 - (startPosition + numBits);
-		bits = bits >> 64 - numBits;
-
-		return bits;
-	}
+public class ObjectByter {
+	private ByteBuffer byteBuffer;
 
 	@Override
 	public String toString() {
-		return getBitString();
+		byte[] bytes = byteBuffer.array();
+		String ret = "";
+		for (byte b : bytes) {
+			ret += String.format("0x%x ", b);
+		}
+		return ret;
 	}
-	
-	public String getBitString() {
-		long bit = 1;
-		String asBits = "";
 
-		for (int i = 0; i < 64; i++) {
-			long thisBit = number & bit;
-			if (thisBit == 0) {
-				asBits = "0" + asBits;
-			} else {
-				asBits = "1" + asBits;
+	private byte[] getBytes() {
+		return byteBuffer.array();
+	}
+
+	public void writeToFile(FileOutputStream out) {
+		try {
+			out.write(getBytes());
+		} catch (IOException ioe) {
+			System.err.println("Error exporting object.");
+			if (GlobalOptions.debug()) {
+				ioe.printStackTrace();
 			}
-			if (i % 8 == 7) asBits = " " + asBits;
-			bit = bit << 1;
 		}
-		return asBits;
 	}
-	
-	public byte[] getBytes() {
-		byte[] bytes = new byte[8];
-		for(int i = 0; i < 8; i++) {
-			bytes[i] = (byte) (number >> i*8);
+
+	public ObjectByter() {
+		byteBuffer = ByteBuffer.allocate(24);
+	}
+
+	public ObjectByter(byte[] bytes) {
+		this();
+		this.byteBuffer = ByteBuffer.wrap(bytes);
+	}
+
+	public ObjectByter(WorldObject object) {
+		this();
+		ItemType it = object.getType();
+		if (it != null) {
+			int itemType = it.ordinal();
+			float x = object.getPosition().getX();
+			float y = object.getPosition().getY();
+			int lockID = object.getLockID();
+			int keyID = object.getKeyID();
+			int npcID = object.getNPCID();
+
+			byteBuffer.position(0);
+			byteBuffer.putInt(itemType);
+			byteBuffer.putFloat(x);
+			byteBuffer.putFloat(y);
+			byteBuffer.putInt(lockID);
+			byteBuffer.putInt(keyID);
+			byteBuffer.putInt(npcID);
+		} else {
+			System.err.println("Unexportable object " + object);
 		}
-		return bytes;
 	}
-	
-	public PackedLong() {
-		number = 0L;
-	}
-	
-	public PackedLong(byte[] bytes) {
-		number = 0L;
-		if (bytes.length == 8) {
-			for(int i = 0; i < 8; i++) {
-				number = number | (((long) bytes[i]) << i*8);
-			}
+
+	public WorldObject getAsWorldObject() {
+		byteBuffer.position(0);
+		int itemTypeNum = byteBuffer.getInt();
+		float x = byteBuffer.getFloat();
+		float y = byteBuffer.getFloat();
+		int lockID = byteBuffer.getInt();
+		int keyID = byteBuffer.getInt(); // This is not actually used
+		int npcID = byteBuffer.getInt();
+
+		if (itemTypeNum >= 0 && itemTypeNum < ItemType.values().length) {
+			ItemType itemType = ItemType.values()[itemTypeNum];
+			return ObjectMaker.makeFromType(itemType, new Point(x, y), lockID,
+					npcID);
+		} else {
+			return null;
 		}
 	}
 }
