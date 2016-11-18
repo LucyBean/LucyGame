@@ -26,10 +26,6 @@ Why can the camera not zoom when it is tracking?
 Tie Sprite to ItemType? E.g. when creating an object have to specify the ItemType
 	and how to get the Sprite. Surely the type of Sprite can be specified from
 	the ItemType.
-	
-Refactor Sensors
-	Allow them to be queried for overlapping solids directly rather than having
-	to calculate this within the Actor class
 
 Build the game interface
 	Make options saving automatic

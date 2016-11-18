@@ -70,12 +70,12 @@ public abstract class Actor extends WorldObject {
 			float sensorSize = 0.5f;
 
 			floorSensor = new Sensor(getCollider().getBottomRight(),
-					getCollider().getWidth(), sensorSize);
+					getCollider().getWidth(), sensorSize, this);
 			eastWallSensor = new Sensor(getCollider().getTopRight(), sensorSize,
-					getCollider().getHeight());
+					getCollider().getHeight(), this);
 			westWallSensor = new Sensor(
 					getCollider().getTopLeft().move(Dir.WEST, sensorSize),
-					sensorSize, getCollider().getHeight());
+					sensorSize, getCollider().getHeight(), this);
 
 			addSensor(floorSensor);
 			addSensor(eastWallSensor);
@@ -128,6 +128,7 @@ public abstract class Actor extends WorldObject {
 
 	/**
 	 * Sets the move speed of the actor. The default value is 0.01f.
+	 * 
 	 * @param moveSpeed
 	 */
 	protected void setMoveSpeed(float moveSpeed) {
@@ -144,23 +145,9 @@ public abstract class Actor extends WorldObject {
 			}
 		}
 	}
-
-	/**
-	 * Can be used to determine whether there is any solid objects in the
-	 * rectangle that represents the floor sensor.
-	 * 
-	 * @return
-	 */
-	// TODO: This needs to be refactored to move it into the Sensor class
-	protected boolean floorAhead() {
-		Collection<WorldObject> solids = null;
-		if (floorSensor != null && isOnGround()) {
-			solids = getCollidingSolids(
-					getCoOrdTranslator().objectToWorldCoOrds(
-							floorSensor.getRectangle()));
-		}
-		
-		return solids == null || !solids.isEmpty();
+	
+	public Sensor getFloorSensor() {
+		return floorSensor;
 	}
 
 	//
@@ -175,25 +162,26 @@ public abstract class Actor extends WorldObject {
 	public void walk(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta * walkSpeed;
 		setFloorSensorLocation(d);
-		
-		if (floorAhead()) {
+
+		if (floorSensor.isOverlappingSolid()) {
 			boolean moved = move(d, moveAmount);
 			if (moved) {
 				state = ActorState.WALK;
 			}
 		}
 	}
-	
+
 	/**
-	 * Sets the walk speed of this actor. This is measured relative to the
-	 * run speed (e.g. walkSpeed of 0.5f means the Actor will walk half as
-	 * fast as they run)
+	 * Sets the walk speed of this actor. This is measured relative to the run
+	 * speed (e.g. walkSpeed of 0.5f means the Actor will walk half as fast as
+	 * they run)
+	 * 
 	 * @param walkSpeed
 	 */
 	protected void setWalkSpeed(float walkSpeed) {
 		this.walkSpeed = walkSpeed;
 	}
-	
+
 	/**
 	 * Moves in a direction at the run speed. Updates the Actor state.
 	 * 
@@ -273,8 +261,6 @@ public abstract class Actor extends WorldObject {
 		else {
 			origin = getCollider().getTopRight();
 		}
-		// Translate the origin from object to world co-ords
-		origin = getCoOrdTranslator().objectToWorldCoOrds(origin);
 
 		float width;
 		float height;
@@ -289,26 +275,17 @@ public abstract class Actor extends WorldObject {
 		return new Rectangle(origin, width, height);
 	}
 
-	protected Collection<WorldObject> getCollidingSolids(Rectangle rect) {
-		Collection<WorldObject> solids = getWorld().getActiveSolids();
-		Collection<WorldObject> collidingSolids = new ArrayList<WorldObject>();
-		Iterator<WorldObject> si = solids.iterator();
-		while (si.hasNext()) {
-			WorldObject go = si.next();
-			if (go != this && go.getCollider().isSolid()) {
-				// Get collider rectangle in relative co-ordinates
-				Rectangle rectRel = go.getCollider().getRectangle();
-				// Translate to world co-ords.
-				Rectangle rectWorld = rectRel.translate(go.getPosition());
-				// If the collider overlaps with wholeArea, add to activeSolids
-				// list.
-				if (rectWorld.overlaps(rect)) {
-					collidingSolids.add(go);
-				}
-			}
-		}
-
-		return collidingSolids;
+	/**
+	 * Finds the Colliders that are solid that overlap with the given rectangle.
+	 * 
+	 * @param rect
+	 *            The rectangle to check in the Actor's co-ordinates.
+	 * @return
+	 */
+	protected Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
+		rect = getCoOrdTranslator().objectToWorldCoOrds(rect);
+		Collection<WorldObject> solids = getWorld().getOverlappingSolids(rect);
+		return solids;
 	}
 
 	/**
@@ -323,7 +300,7 @@ public abstract class Actor extends WorldObject {
 			amount = -amount;
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
-		Collection<WorldObject> activeSolids = getCollidingSolids(moveArea);
+		Collection<WorldObject> activeSolids = getOverlappingSolids(moveArea);
 
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
@@ -483,11 +460,11 @@ public abstract class Actor extends WorldObject {
 		// solid objects.
 		Collider c = getCollider();
 		Rectangle bottomEdge = new Rectangle(c.getBottomLeft(), c.getWidth(),
-				0.001f).translate(getPosition());
-		bottomEdge = bottomEdge.translate(new Point(0, 0.001f));
+				0.01f);
+		bottomEdge = bottomEdge.translate(new Point(0, 0.01f));
 
 		// See if it collides with any objects
-		Collection<WorldObject> collidingSolids = getCollidingSolids(
+		Collection<WorldObject> collidingSolids = getOverlappingSolids(
 				bottomEdge);
 		return !collidingSolids.isEmpty();
 	}
@@ -505,12 +482,11 @@ public abstract class Actor extends WorldObject {
 		// Check a very narrow rectangle at the top of the actor for any solid
 		// objects.
 		Collider c = getCollider();
-		Rectangle topEdge = new Rectangle(c.getTopLeft(), c.getWidth(),
-				0.001f).translate(getPosition());
-		topEdge = topEdge.translate(new Point(0, -0.001f));
+		Rectangle topEdge = new Rectangle(c.getTopLeft(), c.getWidth(), 0.01f);
+		topEdge = topEdge.translate(new Point(0, -0.01f));
 
 		// See if it collides with any objects
-		Collection<WorldObject> collidingSolids = getCollidingSolids(topEdge);
+		Collection<WorldObject> collidingSolids = getOverlappingSolids(topEdge);
 		return !collidingSolids.isEmpty();
 	}
 

@@ -1,7 +1,9 @@
 package worlds;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,6 +16,7 @@ import gameInterface.GameInterface;
 import gameInterface.InterfaceElement;
 import helpers.Dir;
 import helpers.Point;
+import helpers.Rectangle;
 import objectLibrary.Wall;
 import objects.WorldObject;
 import options.GlobalOptions;
@@ -132,8 +135,37 @@ public class World {
 	 * 
 	 * @return
 	 */
-	public Collection<WorldObject> getActiveSolids() {
+	private Collection<WorldObject> getActiveSolids() {
 		return map.getActiveSolids();
+	}
+
+	/**
+	 * Finds the Colliders that are solid that overlap with the given rectangle.
+	 * 
+	 * @param rect
+	 * @return
+	 */
+	public Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
+		Collection<WorldObject> solids = getActiveSolids();
+		Collection<WorldObject> collidingSolids = new ArrayList<WorldObject>();
+		Iterator<WorldObject> si = solids.iterator();
+		while (si.hasNext()) {
+			WorldObject go = si.next();
+			if (go.getCollider().isSolid()) {
+				// Get collider rectangle in relative co-ordinates
+				Rectangle rectRel = go.getCollider().getRectangle();
+				// Translate to world co-ords.
+				Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(
+						rectRel);
+				// If the collider overlaps with wholeArea, add to activeSolids
+				// list.
+				if (rectWorld.overlaps(rect)) {
+					collidingSolids.add(go);
+				}
+			}
+		}
+
+		return collidingSolids;
 	}
 
 	public WorldState getState() {
@@ -242,11 +274,11 @@ public class World {
 	public void stopBuilding() {
 		worldState = WorldState.PLAYING;
 	}
-	
+
 	public void openBuildMenu() {
 		worldState = WorldState.BUILDING_MENU;
 	}
-	
+
 	public void closeBuildMenu() {
 		startBuilding();
 	}
@@ -254,7 +286,7 @@ public class World {
 	protected void ignoreInput(boolean ignore) {
 		ignoringInput = ignore;
 	}
-	
+
 	protected boolean isIgnoringInput() {
 		return ignoringInput;
 	}

@@ -23,7 +23,7 @@ public class DogEnemy extends Enemy {
 	public void act(GameContainer gc, int delta) {
 		walk(facing, delta);
 		
-		if (!floorAhead()) {
+		if (!getFloorSensor().isOverlappingSolid()) {
 			facing = facing.neg();
 		}
 	}
