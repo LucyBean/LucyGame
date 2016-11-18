@@ -14,7 +14,8 @@ public enum ItemType {
 		DOOR_TOP,
 		DOOR_BTM(DOOR_TOP),
 		PLAYER,
-		MATT;
+		MATT,
+		DOG_ENEMY;
 	
 	ItemType parent;
 	

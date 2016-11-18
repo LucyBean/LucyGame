@@ -24,6 +24,7 @@ public abstract class Actor extends WorldObject {
 	private final static float TERMINAL_FALL_VELOCITY = 0.5f;
 	private float vSpeed;
 	private float moveSpeed = 0.01f;
+	private float walkSpeed = 0.5f;
 	private boolean gravityEnabled;
 	private ActorState lastState;
 	private ActorState state;
@@ -125,6 +126,10 @@ public abstract class Actor extends WorldObject {
 		gravityEnabled = gravity;
 	}
 
+	/**
+	 * Sets the move speed of the actor. The default value is 0.01f.
+	 * @param moveSpeed
+	 */
 	protected void setMoveSpeed(float moveSpeed) {
 		this.moveSpeed = moveSpeed;
 	}
@@ -140,6 +145,24 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
+	/**
+	 * Can be used to determine whether there is any solid objects in the
+	 * rectangle that represents the floor sensor.
+	 * 
+	 * @return
+	 */
+	// TODO: This needs to be refactored to move it into the Sensor class
+	protected boolean floorAhead() {
+		Collection<WorldObject> solids = null;
+		if (floorSensor != null && isOnGround()) {
+			solids = getCollidingSolids(
+					getCoOrdTranslator().objectToWorldCoOrds(
+							floorSensor.getRectangle()));
+		}
+		
+		return solids == null || !solids.isEmpty();
+	}
+
 	//
 	// Movement
 	//
@@ -150,25 +173,27 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	public void walk(Dir d, int delta) {
-		float moveAmount = moveSpeed * delta * 0.5f;
+		float moveAmount = moveSpeed * delta * walkSpeed;
 		setFloorSensorLocation(d);
-
-		// Check for floor ahead
-		Collection<WorldObject> solids = null;
-		if (floorSensor != null && isOnGround()) {
-			solids = getCollidingSolids(
-					getCoOrdTranslator().objectToWorldCoOrds(
-							floorSensor.getRectangle()));
-		}
-
-		if (solids == null || !solids.isEmpty()) {
+		
+		if (floorAhead()) {
 			boolean moved = move(d, moveAmount);
 			if (moved) {
 				state = ActorState.WALK;
 			}
 		}
 	}
-
+	
+	/**
+	 * Sets the walk speed of this actor. This is measured relative to the
+	 * run speed (e.g. walkSpeed of 0.5f means the Actor will walk half as
+	 * fast as they run)
+	 * @param walkSpeed
+	 */
+	protected void setWalkSpeed(float walkSpeed) {
+		this.walkSpeed = walkSpeed;
+	}
+	
 	/**
 	 * Moves in a direction at the run speed. Updates the Actor state.
 	 * 
@@ -270,7 +295,7 @@ public abstract class Actor extends WorldObject {
 		Iterator<WorldObject> si = solids.iterator();
 		while (si.hasNext()) {
 			WorldObject go = si.next();
-			if (go != this) {
+			if (go != this && go.getCollider().isSolid()) {
 				// Get collider rectangle in relative co-ordinates
 				Rectangle rectRel = go.getCollider().getRectangle();
 				// Translate to world co-ords.

@@ -7,6 +7,7 @@ import images.LayeredImage;
 
 public class Collider extends Attachment {
 	private LayeredImage image;
+	private boolean solid = false;
 	/**
 	 * Creates a new Collider object.
 	 * 
@@ -29,6 +30,14 @@ public class Collider extends Attachment {
 	 */
 	public Collider(Rectangle rect) {
 		super(rect);
+	}
+	
+	public void setSolid(boolean solid) {
+		this.solid = solid;
+	}
+	
+	public boolean isSolid() {
+		return solid;
 	}
 	
 	@Override

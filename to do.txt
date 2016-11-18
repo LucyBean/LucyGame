@@ -23,11 +23,20 @@ Why can the camera not zoom when it is tracking?
 ==  IDEAS  ==
 =============
 
+Tie Sprite to ItemType? E.g. when creating an object have to specify the ItemType
+	and how to get the Sprite. Surely the type of Sprite can be specified from
+	the ItemType.
+	
+Refactor Sensors
+	Allow them to be queried for overlapping solids directly rather than having
+	to calculate this within the Actor class
+
 Build the game interface
 	Make options saving automatic
 	Make options file a little more human-readable.
 	
 Interactions
-	Allow an object to check if it is currently overlapping a certain object? Not sure if that would be necessary and may take up too much space.
+	Allow an object to check if it is currently overlapping a certain object?
+	Not sure if that would be necessary and may take up too much space.
 
 Use high-quality sprites to facilitate zooming?

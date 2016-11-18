@@ -18,6 +18,7 @@ public class Wall extends Static {
 		this.width = width;
 		this.height = height;
 		setSprite(SpriteBuilder.drawWall(width, height));
+		getCollider().setSolid(true);
 	}
 	
 	public Wall(Point origin) {

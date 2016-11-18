@@ -4,7 +4,10 @@ import java.util.Collection;
 
 import org.newdawn.slick.SlickException;
 
+import characters.DogEnemy;
+import characters.Enemy;
 import exporting.WorldMapImporterExporter;
+import helpers.Point;
 import objects.WorldObject;
 import player.Player;
 import worlds.LucyGame;
@@ -27,6 +30,9 @@ public class EnemyArena extends World {
 		if (p != null) {
 			getCamera().setTarget(p);
 		}
+		
+		Enemy de = new DogEnemy(new Point(14, 0));
+		addObject(de);
 	}
 
 }
