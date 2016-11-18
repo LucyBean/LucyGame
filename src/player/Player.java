@@ -19,7 +19,7 @@ import objects.WorldObject;
 import worlds.WorldLayer;
 
 public class Player extends Actor {
-	float jumpStrength = 0.02f;
+	float jumpStrength = 0.021f;
 	Inventory inventory;
 	Map<Integer, Integer> keys;
 	Sensor floorSensor;

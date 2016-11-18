@@ -52,31 +52,6 @@ public class DefaultGameInterface extends GameInterface {
 		play.setTextCentered("Play!");
 		add(play, WorldState.BUILDING);
 
-		// Button export = new Button(new Rectangle(new Point(104, 0), 100, 32))
-		// {
-		// @Override
-		// public void onClick(int button, Point clickPoint) {
-		// WorldMap wm = getWorld().getMap();
-		// WorldMapImporterExporter.export(wm, "test");
-		// }
-		// };
-		// export.setTextCentered("Export map");
-		// add(export, WorldState.BUILDING);
-		//
-		// Button importer = new Button(
-		// new Rectangle(new Point(208, 0), 100, 32)) {
-		// @Override
-		// public void onClick(int button, Point clickPoint) {
-		// Collection<WorldObject> objects =
-		// WorldMapImporterExporter.importObjects(
-		// "test");
-		// getWorld().getMap().reset();
-		// getWorld().getMap().addObjects(objects);
-		// }
-		// };
-		// importer.setTextCentered("Import map");
-		// add(importer, WorldState.BUILDING);
-
 		Button toolsButton = new Button(
 				new Rectangle(new Point(200, 0), 100, 32)) {
 			@Override

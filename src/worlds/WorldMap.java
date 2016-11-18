@@ -70,6 +70,10 @@ public class WorldMap {
 
 		return objects;
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
 
 	public void addObject(WorldObject go) {
 		if (go != null) {

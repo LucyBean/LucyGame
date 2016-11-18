@@ -76,6 +76,7 @@ public class ObjectByter {
 		float x = byteBuffer.getFloat();
 		float y = byteBuffer.getFloat();
 		int lockID = byteBuffer.getInt();
+		@SuppressWarnings("unused")
 		int keyID = byteBuffer.getInt(); // This is not actually used
 		int npcID = byteBuffer.getInt();
 

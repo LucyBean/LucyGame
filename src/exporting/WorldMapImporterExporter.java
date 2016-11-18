@@ -16,7 +16,7 @@ public class WorldMapImporterExporter {
 
 	public static void export(WorldMap wm, String filename) {
 		try {
-			File file = new File("data/" + filename + ".map");
+			File file = new File("data/maps/" + filename + ".map");
 			file.createNewFile();
 			FileOutputStream out = new FileOutputStream(file);
 
@@ -36,7 +36,7 @@ public class WorldMapImporterExporter {
 
 	public static Collection<WorldObject> importObjects(String filename) {
 		try {
-			File file = new File("data/" + filename + ".map");
+			File file = new File("data/maps/" + filename + ".map");
 			FileInputStream in = new FileInputStream(file);
 			byte[] buffer = new byte[24];
 			in.read(buffer);

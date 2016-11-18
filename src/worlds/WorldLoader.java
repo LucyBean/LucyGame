@@ -1,7 +1,7 @@
 package worlds;
 
-import worldLibrary.CameraObjectLoadingDemo;
 import worldLibrary.ColliderDemoWorld;
+import worldLibrary.EnemyArena;
 import worldLibrary.HiddenObjectDemoWorld;
 import worldLibrary.LevelBuildingWorld;
 import worldLibrary.MapImportingDemo;
@@ -22,7 +22,7 @@ public class WorldLoader {
 	public World getLevel(int i) {
 		switch(i) {
 			case 0:
-				return new CameraObjectLoadingDemo(game);
+				return new EnemyArena(game);
 			case 1:
 				return new ColliderDemoWorld(game);
 			case 2:
