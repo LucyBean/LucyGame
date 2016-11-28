@@ -21,7 +21,7 @@ import worlds.WorldLayer;
 public abstract class Actor extends WorldObject {
 	private Collection<WorldObject> activeInteractables;
 	private Dir lastDirectionMoved;
-	private final static float GRAVITY = 0.00005f;
+	private final static float GRAVITY = 0.00007f;
 	private final static float TERMINAL_FALL_VELOCITY = 0.5f;
 	private float vSpeed;
 	private float moveSpeed = 0.01f;
@@ -33,6 +33,7 @@ public abstract class Actor extends WorldObject {
 	private Sensor floorSensor;
 	private Sensor ceilingSensor;
 	private Sensor wallAheadSensor;
+	private boolean canMidAirJump = true;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite, Collider collider,
 			InteractBox interactBox) {
@@ -154,27 +155,6 @@ public abstract class Actor extends WorldObject {
 		return floorAheadSensor;
 	}
 
-	//
-	// Movement
-	//
-	/**
-	 * Moves in a direction at the walk speed. Updates the Actor state.
-	 * 
-	 * @param d
-	 * @param delta
-	 */
-	public void walk(Dir d, int delta) {
-		float moveAmount = moveSpeed * delta * walkSpeed;
-		setFloorSensorLocation(d);
-
-		if (floorAheadSensor.isOverlappingSolid()) {
-			boolean moved = move(d, moveAmount);
-			if (moved) {
-				state = ActorState.WALK;
-			}
-		}
-	}
-
 	/**
 	 * Sets the walk speed of this actor. This is measured relative to the run
 	 * speed (e.g. walkSpeed of 0.5f means the Actor will walk half as fast as
@@ -184,21 +164,6 @@ public abstract class Actor extends WorldObject {
 	 */
 	protected void setWalkSpeed(float walkSpeed) {
 		this.walkSpeed = walkSpeed;
-	}
-
-	/**
-	 * Moves in a direction at the run speed. Updates the Actor state.
-	 * 
-	 * @param d
-	 * @param delta
-	 */
-	public void run(Dir d, int delta) {
-		float moveAmount = moveSpeed * delta;
-		setFloorSensorLocation(d);
-		boolean moved = move(d, moveAmount);
-		if (moved) {
-			state = ActorState.RUN;
-		}
 	}
 
 	/**
@@ -249,7 +214,7 @@ public abstract class Actor extends WorldObject {
 			d = d.neg();
 			amount = -amount;
 		}
-
+	
 		// Calculate the whole area through which the Actor moves excluding its
 		// original box
 		Point origin;
@@ -265,7 +230,7 @@ public abstract class Actor extends WorldObject {
 		else {
 			origin = getCollider().getTopRight();
 		}
-
+	
 		float width;
 		float height;
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
@@ -275,7 +240,7 @@ public abstract class Actor extends WorldObject {
 			width = amount;
 			height = getCollider().getHeight();
 		}
-
+	
 		return new Rectangle(origin, width, height);
 	}
 
@@ -305,7 +270,7 @@ public abstract class Actor extends WorldObject {
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
 		Collection<WorldObject> activeSolids = getOverlappingSolids(moveArea);
-
+	
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
 			return getPosition().move(d.asPoint().scale(amount));
@@ -329,9 +294,9 @@ public abstract class Actor extends WorldObject {
 				}
 				toMove = getPosition().getY() - maxSouth;
 				break;
-
+	
 			}
-
+	
 			case SOUTH: {
 				go = asi.next();
 				float maxNorth = go.getCollider().getTopLeft().move(go.getPosition()).getY();
@@ -346,7 +311,7 @@ public abstract class Actor extends WorldObject {
 				toMove = maxNorth - getPosition().getY() - getCollider().getHeight();
 				break;
 			}
-
+	
 			case EAST: {
 				go = asi.next();
 				float maxWest = go.getCollider().getTopLeft().move(go.getPosition()).getX();
@@ -361,7 +326,7 @@ public abstract class Actor extends WorldObject {
 				toMove = maxWest - getPosition().getX() - getCollider().getWidth();
 				break;
 			}
-
+	
 			case WEST: {
 				go = asi.next();
 				float maxEast = go.getCollider().getTopRight().move(go.getPosition()).getX();
@@ -377,8 +342,107 @@ public abstract class Actor extends WorldObject {
 				break;
 			}
 			}
-
+	
 			return getPosition().move(d, toMove);
+		}
+	}
+
+	//
+	// Movement
+	//
+	/**
+	 * Moves in a direction at the walk speed. Updates the Actor state.
+	 * 
+	 * @param d
+	 * @param delta
+	 */
+	public void walk(Dir d, int delta) {
+		float moveAmount = moveSpeed * delta * walkSpeed;
+		setFloorSensorLocation(d);
+	
+		if (floorAheadSensor.isOverlappingSolid()) {
+			boolean moved = move(d, moveAmount);
+			if (moved) {
+				state = ActorState.WALK;
+			}
+		}
+	}
+
+	/**
+	 * Moves in a direction at the run speed. Updates the Actor state.
+	 * 
+	 * @param d
+	 * @param delta
+	 */
+	public void run(Dir d, int delta) {
+		float moveAmount = moveSpeed * delta;
+		setFloorSensorLocation(d);
+		boolean moved = move(d, moveAmount);
+		if (moved) {
+			state = ActorState.RUN;
+		}
+	}
+
+	protected void jump(float strength) {
+		if (gravityEnabled()) {
+			if (isOnGround()) {
+				// If on the ground then single jump
+				vSpeed = -strength;
+			} else if (canMidAirJump && vSpeed > 0) {
+				// If falling then mid-air jump
+				vSpeed = -strength * 0.8f;
+				canMidAirJump = false;
+			}
+		}
+	}
+
+	private void calculateVSpeed(int delta) {
+		if (gravityEnabled()) {
+			if (isOnGround() && vSpeed >= 0.0f) {
+				// If player is on the ground and is falling, stop them.
+				// Also reset mid-air jump ability
+				vSpeed = 0.0f;
+				canMidAirJump = true;
+			} else if (isOnCeiling() && vSpeed < 0.0f) {
+				vSpeed = 0.0f;
+			} else {
+				vSpeed += GRAVITY * delta;
+				vSpeed = Math.min(TERMINAL_FALL_VELOCITY, vSpeed);
+				if (vSpeed > 0) {
+					state = ActorState.FALL;
+				} else {
+					state = ActorState.JUMP;
+				}
+			}
+		}
+	}
+
+	//
+	// #JustGravityThings
+	//
+	/**
+	 * Checks whether this Actor is on the floor.
+	 * 
+	 * @return
+	 */
+	protected boolean isOnGround() {
+		if (getCollider() == null) {
+			return false;
+		} else {
+			return floorSensor.isOverlappingSolid();
+		}
+	}
+
+	/**
+	 * Checks whether this Actor has hit the ceiling.
+	 * 
+	 * @return
+	 */
+	protected boolean isOnCeiling() {
+		if (getCollider() == null) {
+			return false;
+		} else {
+			return ceilingSensor.isOverlappingSolid();
 		}
 	}
 
@@ -427,60 +491,6 @@ public abstract class Actor extends WorldObject {
 			newlyInactive.stream().filter(go -> !(go instanceof Actor)).forEach(go -> go.overlapEnd(this));
 
 			activeInteractables = nowActive;
-		}
-	}
-
-	//
-	// #JustGravityThings
-	//
-	/**
-	 * Checks whether this Actor is on the floor.
-	 * 
-	 * @return
-	 */
-	protected boolean isOnGround() {
-		if (getCollider() == null) {
-			return false;
-		} else {
-			return floorSensor.isOverlappingSolid();
-		}
-	}
-
-	/**
-	 * Checks whether this Actor has hit the ceiling.
-	 * 
-	 * @return
-	 */
-	protected boolean isOnCeiling() {
-		if (getCollider() == null) {
-			return false;
-		} else {
-			return ceilingSensor.isOverlappingSolid();
-		}
-	}
-
-	private void calculateVSpeed(int delta) {
-		if (gravityEnabled()) {
-			// If player is on the ground and is falling, stop them.
-			if (isOnGround() && vSpeed >= 0.0f) {
-				vSpeed = 0.0f;
-			} else if (isOnCeiling() && vSpeed < 0.0f) {
-				vSpeed = 0.0f;
-			} else {
-				vSpeed += GRAVITY * delta;
-				vSpeed = Math.min(TERMINAL_FALL_VELOCITY, vSpeed);
-				if (vSpeed > 0) {
-					state = ActorState.FALL;
-				} else {
-					state = ActorState.JUMP;
-				}
-			}
-		}
-	}
-
-	protected void jump(float strength) {
-		if (gravityEnabled() && isOnGround()) {
-			vSpeed = -strength;
 		}
 	}
 
