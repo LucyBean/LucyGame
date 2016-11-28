@@ -98,7 +98,7 @@ public abstract class Actor extends WorldObject {
 		vSpeed = 0.0f;
 		gravityEnabled = true;
 		lastState = ActorState.IDLE;
-		state = ActorState.IDLE;
+		setState(ActorState.IDLE);
 		resetActorState();
 	}
 
@@ -363,7 +363,7 @@ public abstract class Actor extends WorldObject {
 		if (floorAheadSensor.isOverlappingSolid()) {
 			boolean moved = move(d, moveAmount);
 			if (moved) {
-				state = ActorState.WALK;
+				setState(ActorState.WALK);
 			}
 		}
 	}
@@ -379,7 +379,7 @@ public abstract class Actor extends WorldObject {
 		setFloorSensorLocation(d);
 		boolean moved = move(d, moveAmount);
 		if (moved) {
-			state = ActorState.RUN;
+			setState(ActorState.RUN);
 		}
 	}
 
@@ -409,9 +409,9 @@ public abstract class Actor extends WorldObject {
 				vSpeed += GRAVITY * delta;
 				vSpeed = Math.min(TERMINAL_FALL_VELOCITY, vSpeed);
 				if (vSpeed > 0) {
-					state = ActorState.FALL;
+					setState(ActorState.FALL);
 				} else {
-					state = ActorState.JUMP;
+					setState(ActorState.JUMP);
 				}
 			}
 		}
@@ -514,7 +514,7 @@ public abstract class Actor extends WorldObject {
 	final public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
 		if (isEnabled()) {
-			state = ActorState.IDLE;
+			setState(ActorState.IDLE);
 			act(gc, delta);
 			checkForInteractions();
 

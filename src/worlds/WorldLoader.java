@@ -4,9 +4,9 @@ import worldLibrary.ColliderDemoWorld;
 import worldLibrary.EnemyArena;
 import worldLibrary.HiddenObjectDemoWorld;
 import worldLibrary.LevelBuildingWorld;
-import worldLibrary.MapImportingDemo;
 import worldLibrary.MenuDemoWorld;
 import worldLibrary.PlatformerDemoWorld;
+import worldLibrary.QuestDemoWorld;
 
 public class WorldLoader {
 	LucyGame game;
@@ -28,9 +28,9 @@ public class WorldLoader {
 			case 2:
 				return new HiddenObjectDemoWorld(game);
 			case 3:
-				return new MapImportingDemo(game);
-			case 4:
 				return new PlatformerDemoWorld(game);
+			case 4:
+				return new QuestDemoWorld(game);
 			case 5:
 				return new LevelBuildingWorld(game);
 			default:

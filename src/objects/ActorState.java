@@ -1,5 +1,5 @@
 package objects;
 
 public enum ActorState {
-	IDLE, WALK, RUN, JUMP, FALL;
+	IDLE, WALK, RUN, JUMP, FALL, WALL_SLIDE;
 }

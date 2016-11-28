@@ -1,59 +1,32 @@
 package worldLibrary;
 
+import java.util.Collection;
+
 import org.newdawn.slick.SlickException;
 
-import characters.Matt;
-import helpers.Dir;
-import helpers.Point;
-import objectLibrary.Gem;
-import objectLibrary.Key;
-import objectLibrary.Wall;
-import objects.Actor;
+import exporting.WorldMapImporterExporter;
+import objects.WorldObject;
 import player.Player;
 import worlds.LucyGame;
 import worlds.World;
 
-/**
- * A demo of a basic platform game.
- * 
- * @author Lucy
- *
- */
 public class PlatformerDemoWorld extends World {
+
 	public PlatformerDemoWorld(LucyGame game) {
-		super(game, "Platformer demo");
+		super(game, "Platformer Demo");
 	}
 
 	@Override
 	public void init() throws SlickException {
-//		WorldObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
-//				new Sprite(new Image("data/Desert.jpg"), Point.ZERO, 1)) {
-//			@Override
-//			protected void resetStaticState() {
-//
-//			}
-//		};
-//		addObject(background);
-
-		Actor player = new Player(new Point(3, 2));
-		addObject(player);
-		getCamera().setTarget(player);
-
-		// Add some walls
-		addObject(Wall.drawWall(new Point(2, 10), Dir.EAST, 20));
-		addObject(Wall.drawWall(new Point(11, 9), Dir.EAST, 3));
-		addObject(Wall.drawWall(new Point(0, 13), Dir.EAST, 5));
+		// Import from file
+		Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
+				"platformer");
+		getMap().addObjects(objects);
 		
-		// Add a Matt
-		Matt matt = new Matt(new Point(12,7), 1);
-		addObject(matt);
-		
-		// Add a key
-		Key k = new Key(new Point(4,12), 1);
-		addObject(k);
-		
-		// Add a gem
-		Gem g = new Gem(new Point(18,8));
-		addObject(g);
+		Player p = getMap().getPlayer();
+		if (p != null) {
+			getCamera().setTarget(p);
+		}
 	}
+
 }

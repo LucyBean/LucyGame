@@ -33,8 +33,7 @@ public class CharacterSpriteBuilder {
 		try {
 			File timingsFile = new File("data/chars/" + name + "/timings");
 			if (timingsFile.exists()) {
-				BufferedReader br = new BufferedReader(
-						new FileReader(timingsFile));
+				BufferedReader br = new BufferedReader(new FileReader(timingsFile));
 				String timesLine = br.readLine();
 				if (timesLine != null) {
 					String[] times = timesLine.split(",");
@@ -64,16 +63,20 @@ public class CharacterSpriteBuilder {
 		for (int i = 0; i < ActorState.values().length; i++) {
 			ActorState a = ActorState.values()[i];
 			try {
-				File f = new File(
-						"data/chars/" + name + "/" + a.toString() + ".png");
+				File f = new File("data/chars/" + name + "/" + a.toString() + ".png");
 				if (f.exists()) {
 					Image img = new Image(f.getPath());
-					int frameWidth = img.getWidth() / 24;
-					SpriteSheet s = new SpriteSheet(img, frameWidth,
-							img.getHeight());
-					LayeredImage limg = new LayeredImage(
-							new AnimatedImage(s, timings[i], looping[i]));
-					map.put(a.ordinal(), limg);
+					if (timings[i] != 0) {
+						// This is an animated sprite with 24 images
+						int frameWidth = img.getWidth() / 24;
+						SpriteSheet s = new SpriteSheet(img, frameWidth, img.getHeight());
+						LayeredImage limg = new LayeredImage(new AnimatedImage(s, timings[i], looping[i]));
+						map.put(a.ordinal(), limg);
+					} else {
+						// This is a static sprite
+						LayeredImage limg = new LayeredImage(new StaticImage(img));
+						map.put(a.ordinal(), limg);
+					}
 				} else if (a == ActorState.IDLE) {
 					System.err.println("No idle animation for " + name);
 				}
