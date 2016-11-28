@@ -1,7 +1,5 @@
 package player;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
@@ -14,15 +12,13 @@ import objects.Actor;
 import objects.ActorState;
 import objects.Collider;
 import objects.ItemType;
-import objects.Sensor;
 import objects.WorldObject;
 import worlds.WorldLayer;
 
 public class Player extends Actor {
-	float jumpStrength = 0.021f;
-	Inventory inventory;
-	Map<Integer, Integer> keys;
-	Sensor floorSensor;
+	private float jumpStrength = 0.019f;
+	private Inventory inventory;
+	private boolean jumpNextAct = false;
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
@@ -33,42 +29,50 @@ public class Player extends Actor {
 	@Override
 	public void act(GameContainer gc, int delta) {
 		Input input = gc.getInput();
-		Consumer<Dir> mf;
+		Consumer<Dir> moveFunction;
 
 		if (input.isKeyDown(Input.KEY_LSHIFT)) {
-			mf = (d -> walk(d, delta));
+			moveFunction = (d -> walk(d, delta));
 		} else {
-			mf = (d -> run(d, delta));
+			moveFunction = (d -> run(d, delta));
 		}
 
 		if (gravityEnabled()) {
-			if (input.isKeyDown(Input.KEY_SPACE)) {
+			if (jumpNextAct) {
 				jump(jumpStrength);
+				jumpNextAct = false;
 			}
 		} else {
 			if (input.isKeyDown(Input.KEY_COMMA)) {
-				mf.accept(Dir.NORTH);
+				moveFunction.accept(Dir.NORTH);
 			}
 			if (input.isKeyDown(Input.KEY_O)) {
-				mf.accept(Dir.SOUTH);
+				moveFunction.accept(Dir.SOUTH);
 			}
 		}
 
 		if (input.isKeyDown(Input.KEY_A)) {
-			mf.accept(Dir.WEST);
+			moveFunction.accept(Dir.WEST);
 		}
 		if (input.isKeyDown(Input.KEY_E)) {
-			mf.accept(Dir.EAST);
+			moveFunction.accept(Dir.EAST);
 		}
+		
 		if (input.isKeyDown(Input.KEY_PERIOD)) {
 			interactWithAll();
+		}
+	}
+	
+	@Override
+	public void keyPressed (int keycode) {
+		if (keycode == Input.KEY_SPACE) {
+			jumpNextAct = true;
 		}
 	}
 
 	@Override
 	protected void resetActorState() {
 		inventory = new Inventory();
-		keys = new HashMap<Integer, Integer>();
 	}
 
 	public void addToInventory(InventoryItem ii) {

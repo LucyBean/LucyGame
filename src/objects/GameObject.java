@@ -182,4 +182,14 @@ public abstract class GameObject {
 	public void statedSpriteImageChange() {
 		
 	}
+
+	/**
+	 * This is called for the object when a key is pressed.
+	 * 
+	 * @param keycode
+	 *            The keycode of the key pressed.
+	 */
+	public void keyPressed(int keycode) {
+
+	}
 }

@@ -404,6 +404,7 @@ public class World {
 
 		gameInterface.keyPressed(keycode, worldState);
 		worldInterface.keyPressed(keycode, worldState);
+		map.keyPressed(keycode);
 	}
 
 	public void mousePressed(int button, int x, int y) {

@@ -206,5 +206,13 @@ public class WorldMap {
 	public WorldObject findClickedObject(Point clickPoint) {
 		return layers.findClickedObject(clickPoint);
 	}
+	
+	/**
+	 * Propagates keyPressed signal to all objects on the map
+	 * @param keycode
+	 */
+	public void keyPressed (int keycode) {
+		layers.applyToAllObjects(c -> c.keyPressed(keycode));
+	}
 
 }

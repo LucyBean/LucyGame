@@ -21,7 +21,7 @@ import worlds.WorldLayer;
 public abstract class Actor extends WorldObject {
 	private Collection<WorldObject> activeInteractables;
 	private Dir lastDirectionMoved;
-	private final static float GRAVITY = 0.00007f;
+	private final static float GRAVITY = 0.00005f;
 	private final static float TERMINAL_FALL_VELOCITY = 0.5f;
 	private float vSpeed;
 	private float moveSpeed = 0.01f;
