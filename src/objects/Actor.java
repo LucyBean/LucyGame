@@ -20,9 +20,10 @@ import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {
 	private Collection<WorldObject> activeInteractables;
-	private Dir lastDirectionMoved;
+	private Dir lastEastWestMoved;
 	private final static float GRAVITY = 0.00005f;
 	private final static float TERMINAL_FALL_VELOCITY = 0.5f;
+	private final static float TERMINAL_WALL_SLIDE_VELOCITY = 0.005f;
 	private float vSpeed;
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
@@ -48,7 +49,7 @@ public abstract class Actor extends WorldObject {
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
 		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
 	}
-	
+
 	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
@@ -71,14 +72,14 @@ public abstract class Actor extends WorldObject {
 
 	private void addSensors() {
 		if (getCollider() != null) {
-			float aheadSensorSize = 0.5f;
 			float sensorSize = 0.05f;
 
 			floorSensor = new Sensor(getCollider().getBottomLeft(), getCollider().getWidth(), sensorSize, this);
 			ceilingSensor = new Sensor(getCollider().getTopLeft().move(Dir.NORTH, sensorSize), getCollider().getWidth(),
 					sensorSize, this);
-			floorAheadSensor = new Sensor(getCollider().getBottomRight(), getCollider().getWidth(), aheadSensorSize, this);
-			wallAheadSensor = new Sensor(getCollider().getTopRight(), aheadSensorSize, getCollider().getHeight(), this);
+			floorAheadSensor = new Sensor(getCollider().getBottomRight(), getCollider().getWidth(), sensorSize,
+					this);
+			wallAheadSensor = new Sensor(getCollider().getTopRight(), sensorSize, getCollider().getHeight(), this);
 
 			addSensor(floorSensor);
 			addSensor(ceilingSensor);
@@ -112,7 +113,7 @@ public abstract class Actor extends WorldObject {
 	// Getters
 	//
 	public Dir getLastDirectionMoved() {
-		return lastDirectionMoved;
+		return lastEastWestMoved;
 	}
 
 	public boolean gravityEnabled() {
@@ -139,7 +140,7 @@ public abstract class Actor extends WorldObject {
 		this.moveSpeed = moveSpeed;
 	}
 
-	private void setFloorSensorLocation(Dir d) {
+	private void setAheadSensorLocation(Dir d) {
 		if (floorAheadSensor != null) {
 			if (d == Dir.EAST) {
 				floorAheadSensor.setOrigin(getCollider().getBottomRight());
@@ -180,22 +181,33 @@ public abstract class Actor extends WorldObject {
 		} else if (d == Dir.WEST) {
 			getSprite().setMirrored(true);
 		}
+		
+		boolean moved = true;
 
 		if (getCollider() == null) {
+			// This object has no collider so moves immediately without
+			// collision checking
 			setPosition(getPosition().move(d, amount));
-			lastDirectionMoved = d;
-			return true;
+			lastEastWestMoved = d;
 		} else {
+			// This object moves with collision checking
 			Point newPos = findNewPosition(d, amount);
 			Point oldPos = getPosition();
 			setPosition(newPos);
 			if (newPos.equals(oldPos)) {
-				return false;
+				moved = false;
 			} else {
-				lastDirectionMoved = d;
-				return true;
+				if (d == Dir.EAST || d == Dir.WEST){
+					lastEastWestMoved = d;					
+				}
+			}
+			if (canWallSlide(d)) {
+				// Start wall sliding if this Actor moves towards the wall
+				setState(ActorState.WALL_SLIDE);
 			}
 		}
+		
+		return moved;
 	}
 
 	/**
@@ -214,7 +226,7 @@ public abstract class Actor extends WorldObject {
 			d = d.neg();
 			amount = -amount;
 		}
-	
+
 		// Calculate the whole area through which the Actor moves excluding its
 		// original box
 		Point origin;
@@ -230,7 +242,7 @@ public abstract class Actor extends WorldObject {
 		else {
 			origin = getCollider().getTopRight();
 		}
-	
+
 		float width;
 		float height;
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
@@ -240,7 +252,7 @@ public abstract class Actor extends WorldObject {
 			width = amount;
 			height = getCollider().getHeight();
 		}
-	
+
 		return new Rectangle(origin, width, height);
 	}
 
@@ -270,7 +282,7 @@ public abstract class Actor extends WorldObject {
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
 		Collection<WorldObject> activeSolids = getOverlappingSolids(moveArea);
-	
+
 		// If there are no active solids, move to that position immediately.
 		if (activeSolids.isEmpty()) {
 			return getPosition().move(d.asPoint().scale(amount));
@@ -294,9 +306,9 @@ public abstract class Actor extends WorldObject {
 				}
 				toMove = getPosition().getY() - maxSouth;
 				break;
-	
+
 			}
-	
+
 			case SOUTH: {
 				go = asi.next();
 				float maxNorth = go.getCollider().getTopLeft().move(go.getPosition()).getY();
@@ -311,7 +323,7 @@ public abstract class Actor extends WorldObject {
 				toMove = maxNorth - getPosition().getY() - getCollider().getHeight();
 				break;
 			}
-	
+
 			case EAST: {
 				go = asi.next();
 				float maxWest = go.getCollider().getTopLeft().move(go.getPosition()).getX();
@@ -326,7 +338,7 @@ public abstract class Actor extends WorldObject {
 				toMove = maxWest - getPosition().getX() - getCollider().getWidth();
 				break;
 			}
-	
+
 			case WEST: {
 				go = asi.next();
 				float maxEast = go.getCollider().getTopRight().move(go.getPosition()).getX();
@@ -342,7 +354,7 @@ public abstract class Actor extends WorldObject {
 				break;
 			}
 			}
-	
+
 			return getPosition().move(d, toMove);
 		}
 	}
@@ -358,11 +370,11 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void walk(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta * walkSpeed;
-		setFloorSensorLocation(d);
-	
+		setAheadSensorLocation(d);
+
 		if (floorAheadSensor.isOverlappingSolid()) {
 			boolean moved = move(d, moveAmount);
-			if (moved) {
+			if (moved && isOnGround()) {
 				setState(ActorState.WALK);
 			}
 		}
@@ -376,9 +388,9 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void run(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta;
-		setFloorSensorLocation(d);
+		setAheadSensorLocation(d);
 		boolean moved = move(d, moveAmount);
-		if (moved) {
+		if (moved && isOnGround()) {
 			setState(ActorState.RUN);
 		}
 	}
@@ -397,15 +409,21 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void calculateVSpeed(int delta) {
-		if (gravityEnabled()) {
+		if (gravityEnabled()) {			
 			if (isOnGround() && vSpeed >= 0.0f) {
 				// If player is on the ground and is falling, stop them.
 				// Also reset mid-air jump ability
 				vSpeed = 0.0f;
 				canMidAirJump = true;
 			} else if (isOnCeiling() && vSpeed < 0.0f) {
+				// Stop jumping if touching the ceiling
 				vSpeed = 0.0f;
+			} else if (getState() == ActorState.WALL_SLIDE){
+				// Fall at wall slide speed
+				vSpeed += GRAVITY * delta;
+				vSpeed = Math.min(TERMINAL_WALL_SLIDE_VELOCITY, vSpeed);
 			} else {
+				// Fall
 				vSpeed += GRAVITY * delta;
 				vSpeed = Math.min(TERMINAL_FALL_VELOCITY, vSpeed);
 				if (vSpeed > 0) {
@@ -443,6 +461,23 @@ public abstract class Actor extends WorldObject {
 			return false;
 		} else {
 			return ceilingSensor.isOverlappingSolid();
+		}
+	}
+	
+	private boolean canWallSlide(Dir d) {
+		return vSpeed > 0 && (d == Dir.EAST || d == Dir.WEST) && wallAheadSensor.isOverlappingSolid();
+	}
+	
+	/**
+	 * Checks whether the Actor should be Wall Sliding
+	 */
+	private void checkWallSlide() {
+		// Check for continuing a wall slide
+		// This happens when the Actor was previously wall sliding
+		// and has not since tried to move away from the wall
+		Dir d = lastEastWestMoved;
+		if (lastState == ActorState.WALL_SLIDE && canWallSlide(d)) {
+			setState(ActorState.WALL_SLIDE);
 		}
 	}
 
@@ -519,6 +554,7 @@ public abstract class Actor extends WorldObject {
 			checkForInteractions();
 
 			if (gravityEnabled()) {
+				checkWallSlide();
 				calculateVSpeed(delta);
 				move(Dir.SOUTH, vSpeed * delta);
 			}
