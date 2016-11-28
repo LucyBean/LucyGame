@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Rsrc-Class-Path: ./ ibxm.jar jinput.jar lwjgl.jar slick.jar
+Class-Path: .
+Main-Class: worlds.LucyGame
+

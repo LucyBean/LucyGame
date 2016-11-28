@@ -65,7 +65,7 @@ public class Rectangle {
 	}
 
 	/**
-	 * Detects whether two Rectangles overlap. Shared boundaries will NOT count
+	 * Detect whether two Rectangles overlap. Shared boundaries will NOT count
 	 * as an overlap.
 	 * 
 	 * @param r
@@ -73,9 +73,9 @@ public class Rectangle {
 	 * @return Whether the two Rectangles overlap.
 	 */
 	public boolean overlaps(Rectangle r) {
+		// Case 1:
 		// The rectangles overlap if one rectangle's corner is within the other.
-		// When the point is
-		// on the boundary it will not be counted as contained.
+		// When the point is on the boundary it will not be counted as contained.
 
 		// Check if this.bottom-edge and r.top-edge overlap
 		if (getBottomLeft().getY() != r.getTopLeft().getY()) {
@@ -101,16 +101,13 @@ public class Rectangle {
 					return true;
 		}
 
-		// Checks for '+' and 'T' overlap
-		if (getTopLeft().getY() <= r.getTopLeft().getY()
-				&& getBottomLeft().getY() >= r.getBottomLeft().getY())
-			if (getTopLeft().getX() >= r.getTopLeft().getX()
-					&& getTopRight().getX() <= r.getTopRight().getX())
+		// Case 2:
+		// '+' and 'T' overlap
+		if (getTopLeft().getY() <= r.getTopLeft().getY() && getBottomLeft().getY() >= r.getBottomLeft().getY())
+			if (getTopLeft().getX() >= r.getTopLeft().getX() && getTopRight().getX() <= r.getTopRight().getX())
 				return true;
-		if (r.getTopLeft().getY() <= getTopLeft().getY()
-				&& r.getBottomLeft().getY() >= getBottomLeft().getY())
-			if (r.getTopLeft().getX() >= getTopLeft().getX()
-					&& r.getTopRight().getX() <= getTopRight().getX())
+		if (r.getTopLeft().getY() <= getTopLeft().getY() && r.getBottomLeft().getY() >= getBottomLeft().getY())
+			if (r.getTopLeft().getX() >= getTopLeft().getX() && r.getTopRight().getX() <= getTopRight().getX())
 				return true;
 
 		return false;
@@ -123,13 +120,11 @@ public class Rectangle {
 	 * @return
 	 */
 	public boolean contains(Rectangle r) {
-		if (r.getTopLeft().getX() >= getTopLeft().getX()
-				&& r.getTopRight().getX() <= getTopRight().getX()
-				&& r.getTopLeft().getY() >= getTopLeft().getY()
-				&& r.getBottomLeft().getY() <= getBottomLeft().getY()) {
+		if (r.getTopLeft().getX() >= getTopLeft().getX() && r.getTopRight().getX() <= getTopRight().getX()
+				&& r.getTopLeft().getY() >= getTopLeft().getY() && r.getBottomLeft().getY() <= getBottomLeft().getY()) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -150,19 +145,20 @@ public class Rectangle {
 	 * @return
 	 */
 	public Rectangle scaleAboutOrigin(float scale) {
-		return new Rectangle(topLeft.scale(scale), width * scale,
-				height * scale);
+		return new Rectangle(topLeft.scale(scale), width * scale, height * scale);
 	}
-	
+
 	/**
-	 * Scales the width and height of the Rectangle without affecting the origin.
+	 * Scales the width and height of the Rectangle without affecting the
+	 * origin.
+	 * 
 	 * @param scale
 	 * @return
 	 */
 	public Rectangle scale(float scaleX, float scaleY) {
-		return new Rectangle(topLeft, width* scaleX, height * scaleY);
+		return new Rectangle(topLeft, width * scaleX, height * scaleY);
 	}
-	
+
 	public Rectangle scale(float scale) {
 		return scale(scale, scale);
 	}

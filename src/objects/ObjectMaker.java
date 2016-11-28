@@ -61,6 +61,10 @@ public class ObjectMaker {
 			case PLAYER:
 				wo = new Player(position);
 				break;
+		case DOG_ENEMY:
+			break;
+		default:
+			break;
 		}
 		
 		return wo;

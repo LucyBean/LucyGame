@@ -15,6 +15,7 @@ import images.SpriteBuilder;
 import images.StatedSprite;
 import quests.EventInfo;
 import quests.EventType;
+import worlds.World;
 import worlds.WorldLayer;
 
 public abstract class Actor extends WorldObject {
@@ -28,25 +29,29 @@ public abstract class Actor extends WorldObject {
 	private boolean gravityEnabled;
 	private ActorState lastState;
 	private ActorState state;
+	private Sensor floorAheadSensor;
 	private Sensor floorSensor;
-	private Sensor eastWallSensor;
-	private Sensor westWallSensor;
+	private Sensor ceilingSensor;
+	private Sensor wallAheadSensor;
 
-	public Actor(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Collider collider, InteractBox interactBox) {
+	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite, Collider collider,
+			InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
-		addSensors();
 		autoAlignSprite();
 	}
 
-	public Actor(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite) {
+	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
-				null, null);
+		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
+	}
+	
+	@Override
+	public void setWorld(World world) {
+		super.setWorld(world);
+		addSensors();
 	}
 
 	/**
@@ -57,29 +62,27 @@ public abstract class Actor extends WorldObject {
 		if (getSprite() != null && getCollider() != null) {
 			// Set position of Player's sprite such that bottom-middle points of
 			// sprite and collider coincide.
-			float newX = (getCollider().getWidth()
-					- getSprite().getRectangle().getWidth()) / 2;
-			float newY = (getCollider().getHeight()
-					- getSprite().getRectangle().getHeight());
+			float newX = (getCollider().getWidth() - getSprite().getRectangle().getWidth()) / 2;
+			float newY = (getCollider().getHeight() - getSprite().getRectangle().getHeight());
 			getSprite().setOrigin(new Point(newX, newY));
 		}
 	}
 
 	private void addSensors() {
 		if (getCollider() != null) {
-			float sensorSize = 0.5f;
+			float aheadSensorSize = 0.5f;
+			float sensorSize = 0.05f;
 
-			floorSensor = new Sensor(getCollider().getBottomRight(),
-					getCollider().getWidth(), sensorSize, this);
-			eastWallSensor = new Sensor(getCollider().getTopRight(), sensorSize,
-					getCollider().getHeight(), this);
-			westWallSensor = new Sensor(
-					getCollider().getTopLeft().move(Dir.WEST, sensorSize),
-					sensorSize, getCollider().getHeight(), this);
+			floorSensor = new Sensor(getCollider().getBottomLeft(), getCollider().getWidth(), sensorSize, this);
+			ceilingSensor = new Sensor(getCollider().getTopLeft().move(Dir.NORTH, sensorSize), getCollider().getWidth(),
+					sensorSize, this);
+			floorAheadSensor = new Sensor(getCollider().getBottomRight(), getCollider().getWidth(), aheadSensorSize, this);
+			wallAheadSensor = new Sensor(getCollider().getTopRight(), aheadSensorSize, getCollider().getHeight(), this);
 
 			addSensor(floorSensor);
-			addSensor(eastWallSensor);
-			addSensor(westWallSensor);
+			addSensor(ceilingSensor);
+			addSensor(floorAheadSensor);
+			addSensor(wallAheadSensor);
 		}
 	}
 
@@ -136,18 +139,19 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void setFloorSensorLocation(Dir d) {
-		if (floorSensor != null) {
+		if (floorAheadSensor != null) {
 			if (d == Dir.EAST) {
-				floorSensor.setOrigin(getCollider().getBottomRight());
+				floorAheadSensor.setOrigin(getCollider().getBottomRight());
+				wallAheadSensor.setOrigin(getCollider().getTopRight());
 			} else if (d == Dir.WEST) {
-				floorSensor.setOrigin(getCollider().getBottomLeft().move(
-						Dir.WEST, floorSensor.getWidth()));
+				floorAheadSensor.setOrigin(getCollider().getBottomLeft().move(Dir.WEST, floorAheadSensor.getWidth()));
+				wallAheadSensor.setOrigin(getCollider().getTopLeft().move(Dir.WEST, wallAheadSensor.getWidth()));
 			}
 		}
 	}
-	
+
 	public Sensor getFloorSensor() {
-		return floorSensor;
+		return floorAheadSensor;
 	}
 
 	//
@@ -163,7 +167,7 @@ public abstract class Actor extends WorldObject {
 		float moveAmount = moveSpeed * delta * walkSpeed;
 		setFloorSensorLocation(d);
 
-		if (floorSensor.isOverlappingSolid()) {
+		if (floorAheadSensor.isOverlappingSolid()) {
 			boolean moved = move(d, moveAmount);
 			if (moved) {
 				state = ActorState.WALK;
@@ -312,76 +316,66 @@ public abstract class Actor extends WorldObject {
 			Iterator<WorldObject> asi = activeSolids.iterator();
 			WorldObject go;
 			switch (d) {
-				case NORTH: {
+			case NORTH: {
+				go = asi.next();
+				float maxSouth = go.getCollider().getBottomLeft().move(go.getPosition()).getY();
+				while (asi.hasNext()) {
 					go = asi.next();
-					float maxSouth = go.getCollider().getBottomLeft().move(
-							go.getPosition()).getY();
-					while (asi.hasNext()) {
-						go = asi.next();
-						Point bl = go.getCollider().getBottomLeft().move(
-								go.getPosition());
-						// If this is WEST-most object set as new origin
-						if (bl.getY() > maxSouth) {
-							maxSouth = bl.getY();
-						}
+					Point bl = go.getCollider().getBottomLeft().move(go.getPosition());
+					// If this is WEST-most object set as new origin
+					if (bl.getY() > maxSouth) {
+						maxSouth = bl.getY();
 					}
-					toMove = getPosition().getY() - maxSouth;
-					break;
-
 				}
+				toMove = getPosition().getY() - maxSouth;
+				break;
 
-				case SOUTH: {
+			}
+
+			case SOUTH: {
+				go = asi.next();
+				float maxNorth = go.getCollider().getTopLeft().move(go.getPosition()).getY();
+				while (asi.hasNext()) {
 					go = asi.next();
-					float maxNorth = go.getCollider().getTopLeft().move(
-							go.getPosition()).getY();
-					while (asi.hasNext()) {
-						go = asi.next();
-						Point tl = go.getCollider().getTopLeft().move(
-								go.getPosition());
-						// If this is WEST-most object set as new origin
-						if (tl.getY() < maxNorth) {
-							maxNorth = tl.getY();
-						}
+					Point tl = go.getCollider().getTopLeft().move(go.getPosition());
+					// If this is WEST-most object set as new origin
+					if (tl.getY() < maxNorth) {
+						maxNorth = tl.getY();
 					}
-					toMove = maxNorth - getPosition().getY()
-							- getCollider().getHeight();
-					break;
 				}
+				toMove = maxNorth - getPosition().getY() - getCollider().getHeight();
+				break;
+			}
 
-				case EAST: {
+			case EAST: {
+				go = asi.next();
+				float maxWest = go.getCollider().getTopLeft().move(go.getPosition()).getX();
+				while (asi.hasNext()) {
 					go = asi.next();
-					float maxWest = go.getCollider().getTopLeft().move(
-							go.getPosition()).getX();
-					while (asi.hasNext()) {
-						go = asi.next();
-						Point tl = go.getCollider().getTopLeft().move(
-								go.getPosition());
-						// If this is WEST-most object set as new origin
-						if (tl.getX() < maxWest) {
-							maxWest = tl.getX();
-						}
+					Point tl = go.getCollider().getTopLeft().move(go.getPosition());
+					// If this is WEST-most object set as new origin
+					if (tl.getX() < maxWest) {
+						maxWest = tl.getX();
 					}
-					toMove = maxWest - getPosition().getX()
-							- getCollider().getWidth();
-					break;
 				}
+				toMove = maxWest - getPosition().getX() - getCollider().getWidth();
+				break;
+			}
 
-				case WEST: {
+			case WEST: {
+				go = asi.next();
+				float maxEast = go.getCollider().getTopRight().move(go.getPosition()).getX();
+				while (asi.hasNext()) {
 					go = asi.next();
-					float maxEast = go.getCollider().getTopRight().move(
-							go.getPosition()).getX();
-					while (asi.hasNext()) {
-						go = asi.next();
-						Point tr = go.getCollider().getTopRight().move(
-								go.getPosition());
-						// If this is WEST-most object set as new origin
-						if (tr.getX() > maxEast) {
-							maxEast = tr.getX();
-						}
+					Point tr = go.getCollider().getTopRight().move(go.getPosition());
+					// If this is WEST-most object set as new origin
+					if (tr.getX() > maxEast) {
+						maxEast = tr.getX();
 					}
-					toMove = getPosition().getX() - maxEast;
-					break;
 				}
+				toMove = getPosition().getX() - maxEast;
+				break;
+			}
 			}
 
 			return getPosition().move(d, toMove);
@@ -390,15 +384,12 @@ public abstract class Actor extends WorldObject {
 
 	private Collection<WorldObject> findInteractablesHere() {
 		// Check for any interactables that are at the Actor's current position
-		Rectangle thisArea = getCollider().getRectangle().translate(
-				getPosition());
+		Rectangle thisArea = getCollider().getRectangle().translate(getPosition());
 		Collection<WorldObject> interactables = getWorld().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
-		interactables.stream().filter(
-				go -> go != this && go.isEnabled()).filter(
-						go -> go.getInteractBox().getRectangle().translate(
-								go.getPosition()).overlaps(thisArea)).forEach(
-										go -> nowActive.add(go));
+		interactables.stream().filter(go -> go != this && go.isEnabled())
+				.filter(go -> go.getInteractBox().getRectangle().translate(go.getPosition()).overlaps(thisArea))
+				.forEach(go -> nowActive.add(go));
 		return nowActive;
 	}
 
@@ -425,19 +416,15 @@ public abstract class Actor extends WorldObject {
 			// activeInteractables is the list of interactables active last
 			// iteration
 			// nowActive is the list of interactables active this iteration
-			Collection<WorldObject> newlyActive = subtract(nowActive,
-					prevActive);
-			Collection<WorldObject> newlyInactive = subtract(prevActive,
-					nowActive);
+			Collection<WorldObject> newlyActive = subtract(nowActive, prevActive);
+			Collection<WorldObject> newlyInactive = subtract(prevActive, nowActive);
 
 			// Call overlapStart and overlapEnd on these newly active/inactive
 			// objects
 			newlyActive.stream().forEach(go -> overlapStart(go));
-			newlyActive.stream().filter(go -> !(go instanceof Actor)).forEach(
-					go -> go.overlapStart(this));
+			newlyActive.stream().filter(go -> !(go instanceof Actor)).forEach(go -> go.overlapStart(this));
 			newlyInactive.stream().forEach(go -> overlapEnd(go));
-			newlyInactive.stream().filter(go -> !(go instanceof Actor)).forEach(
-					go -> go.overlapEnd(this));
+			newlyInactive.stream().filter(go -> !(go instanceof Actor)).forEach(go -> go.overlapEnd(this));
 
 			activeInteractables = nowActive;
 		}
@@ -454,19 +441,9 @@ public abstract class Actor extends WorldObject {
 	protected boolean isOnGround() {
 		if (getCollider() == null) {
 			return false;
+		} else {
+			return floorSensor.isOverlappingSolid();
 		}
-
-		// Check a very narrow rectangle at the bottom of the actor for any
-		// solid objects.
-		Collider c = getCollider();
-		Rectangle bottomEdge = new Rectangle(c.getBottomLeft(), c.getWidth(),
-				0.01f);
-		bottomEdge = bottomEdge.translate(new Point(0, 0.01f));
-
-		// See if it collides with any objects
-		Collection<WorldObject> collidingSolids = getOverlappingSolids(
-				bottomEdge);
-		return !collidingSolids.isEmpty();
 	}
 
 	/**
@@ -477,17 +454,9 @@ public abstract class Actor extends WorldObject {
 	protected boolean isOnCeiling() {
 		if (getCollider() == null) {
 			return false;
+		} else {
+			return ceilingSensor.isOverlappingSolid();
 		}
-
-		// Check a very narrow rectangle at the top of the actor for any solid
-		// objects.
-		Collider c = getCollider();
-		Rectangle topEdge = new Rectangle(c.getTopLeft(), c.getWidth(), 0.01f);
-		topEdge = topEdge.translate(new Point(0, -0.01f));
-
-		// See if it collides with any objects
-		Collection<WorldObject> collidingSolids = getOverlappingSolids(topEdge);
-		return !collidingSolids.isEmpty();
 	}
 
 	private void calculateVSpeed(int delta) {
@@ -577,8 +546,7 @@ public abstract class Actor extends WorldObject {
 			while (aii.hasNext()) {
 				WorldObject go = aii.next();
 				go.interactedBy(this);
-				getWorld().signalEvent(
-						new EventInfo(EventType.INTERACT, this, go));
+				getWorld().signalEvent(new EventInfo(EventType.INTERACT, this, go));
 			}
 		}
 	}
