@@ -37,6 +37,13 @@ public class Player extends Actor {
 			moveFunction = (d -> run(d, delta));
 		}
 
+		if (input.isKeyDown(Input.KEY_A)) {
+			moveFunction.accept(Dir.WEST);
+		}
+		if (input.isKeyDown(Input.KEY_E)) {
+			moveFunction.accept(Dir.EAST);
+		}
+
 		if (gravityEnabled()) {
 			if (jumpNextAct) {
 				jump(jumpStrength);
@@ -50,14 +57,6 @@ public class Player extends Actor {
 				moveFunction.accept(Dir.SOUTH);
 			}
 		}
-
-		if (input.isKeyDown(Input.KEY_A)) {
-			moveFunction.accept(Dir.WEST);
-		}
-		if (input.isKeyDown(Input.KEY_E)) {
-			moveFunction.accept(Dir.EAST);
-		}
-		
 		if (input.isKeyDown(Input.KEY_PERIOD)) {
 			interactWithAll();
 		}

@@ -215,7 +215,7 @@ class WorldSector extends Static {
 			CameraBox cb = (CameraBox) a;
 			// activate neighbour sectors
 			CameraObjectLoadingDemo cw = (CameraObjectLoadingDemo) getWorld();
-			cw.loadSectors(cb.getLastDirectionMoved(), x, y);
+			//cw.loadSectors(cb.getLastDirectionMoved(), x, y);
 		}
 	}
 
@@ -225,7 +225,7 @@ class WorldSector extends Static {
 			CameraBox cb = (CameraBox) a;
 			// deactivate neighbour sectors
 			CameraObjectLoadingDemo cw = (CameraObjectLoadingDemo) getWorld();
-			cw.unloadSectors(cb.getLastDirectionMoved(), x, y);
+			//cw.unloadSectors(cb.getLastDirectionMoved(), x, y);
 		}
 	}
 
