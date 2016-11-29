@@ -401,7 +401,7 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void run(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta;
-		if (!isOnGround()) {
+		if (lastState == ActorState.FALL || lastState == ActorState.JUMP) {
 			moveAmount *= 0.2f;
 		}
 		boolean moved = move(d, moveAmount);
@@ -583,19 +583,7 @@ public abstract class Actor extends WorldObject {
 			setState(ActorState.IDLE);
 			act(gc, delta);
 			checkForInteractions();
-
-			if (gravityEnabled()) {
-				checkWallSlide();
-				calculateVSpeed(delta);
-
-				if (getState() == ActorState.JUMP || getState() == ActorState.FALL
-						|| getState() == ActorState.WALL_SLIDE) {
-					move(Dir.SOUTH, vSpeed * delta);
-					// Move E/W according to jump direction
-					float moveAmount = jumpHSpeed * delta;
-					move(Dir.EAST, moveAmount);
-				}
-			}
+			jumpMovement(delta);
 		}
 
 		if (lastState != state) {
@@ -605,6 +593,25 @@ public abstract class Actor extends WorldObject {
 		lastState = state;
 		lastPositionDelta = thisPositionDelta;
 		lastTimeDelta = delta;
+	}
+	
+	private void jumpMovement(int delta) {
+		if (gravityEnabled()) {
+			checkWallSlide();
+			calculateVSpeed(delta);
+
+			if (getState() == ActorState.JUMP || getState() == ActorState.FALL
+					|| getState() == ActorState.WALL_SLIDE) {
+				move(Dir.SOUTH, vSpeed * delta);
+				// Move E/W according to jump direction
+				float moveAmount = jumpHSpeed * delta;
+				move(Dir.EAST, moveAmount);
+				// If hit a wall then set to zero
+				if (wallAheadSensor.isOverlappingSolid()) {
+					jumpHSpeed = 0;
+				}
+			}
+		}
 	}
 
 	public abstract void act(GameContainer gc, int delta);
