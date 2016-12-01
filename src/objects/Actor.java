@@ -421,12 +421,12 @@ public abstract class Actor extends WorldObject {
 				// If wall sliding then single jump
 				// away from the wall
 				vSpeed = -strength;
-				facing = facing.neg();
+				//facing = facing.neg();
 				jumpHSpeed = moveSpeed * 0.8f;
 				if (facing == Dir.WEST){
 					jumpHSpeed *= -1;
 				}
-			} else if (canMidAirJump && vSpeed > 0) {
+			} else if (canMidAirJump && vSpeed > -0.1f) {
 				// If falling then mid-air jump
 				vSpeed = -strength * 0.8f;
 				canMidAirJump = false;

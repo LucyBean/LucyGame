@@ -2,12 +2,12 @@
 ==  THINGS TO DO  ==
 ====================
 
+Platformer moves
+
+
+
 Add a pet that follows me
 Add a Matt quest
-	
-Map sector object loading
-
-Platformer moves
 
 Animations
 	Compile each animation folder to a single file
