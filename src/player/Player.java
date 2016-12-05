@@ -18,7 +18,6 @@ import worlds.WorldLayer;
 public class Player extends Actor {
 	private float jumpStrength = 0.019f;
 	private Inventory inventory;
-	private boolean jumpNextAct = false;
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
@@ -44,12 +43,7 @@ public class Player extends Actor {
 			moveFunction.accept(Dir.EAST);
 		}
 
-		if (gravityEnabled()) {
-			if (jumpNextAct) {
-				jump(jumpStrength);
-				jumpNextAct = false;
-			}
-		} else {
+		if (!gravityEnabled()) {
 			if (input.isKeyDown(Input.KEY_COMMA)) {
 				moveFunction.accept(Dir.NORTH);
 			}
@@ -64,8 +58,8 @@ public class Player extends Actor {
 	
 	@Override
 	public void keyPressed (int keycode) {
-		if (keycode == Input.KEY_SPACE) {
-			jumpNextAct = true;
+		if (gravityEnabled() && keycode == Input.KEY_SPACE) {
+			signalJump(jumpStrength);
 		}
 	}
 

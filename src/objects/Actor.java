@@ -36,9 +36,8 @@ public abstract class Actor extends WorldObject {
 	private Sensor ceilingSensor;
 	private Sensor wallAheadSensor;
 	private boolean canMidAirJump = true;
-	private Point thisPositionDelta;
-	private Point lastPositionDelta;
-	private int lastTimeDelta;
+	private Point positionDelta;
+	private float nextJumpStrength = 0.0f;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite, Collider collider,
 			InteractBox interactBox) {
@@ -101,8 +100,7 @@ public abstract class Actor extends WorldObject {
 		activeInteractables = new ArrayList<WorldObject>();
 		vSpeed = 0.0f;
 		jumpHSpeed = 0.0f;
-		thisPositionDelta = Point.ZERO;
-		lastPositionDelta = Point.ZERO;
+		positionDelta = Point.ZERO;
 		lastState = ActorState.IDLE;
 		setState(ActorState.IDLE);
 		resetActorState();
@@ -199,12 +197,12 @@ public abstract class Actor extends WorldObject {
 			// This object has no collider so moves immediately without
 			// collision checking
 			setPosition(getPosition().move(d, amount));
-			thisPositionDelta = thisPositionDelta.move(d, amount);
+			positionDelta = positionDelta.move(d, amount);
 		} else {
 			// This object moves with collision checking
 			Point newPos = findNewPosition(d, amount);
 			Point oldPos = getPosition();
-			thisPositionDelta = thisPositionDelta.move(newPos).move(oldPos.neg());
+			positionDelta = positionDelta.move(newPos).move(oldPos.neg());
 			setPosition(newPos);
 			if (newPos.equals(oldPos)) {
 				moved = false;
@@ -409,14 +407,22 @@ public abstract class Actor extends WorldObject {
 			setState(ActorState.RUN);
 		}
 	}
+	
+	/**
+	 * Sends a signal to the Actor to jump at the end of the next frame.
+	 * @param strength
+	 */
+	public void signalJump(float strength) {
+		nextJumpStrength = strength;
+	}
 
-	protected void jump(float strength) {
+	private void jump(float strength, int delta) {
 		if (gravityEnabled()) {
 			if (isOnGround()) {
 				// If on ground then single jump
 				// in the direction of travel
 				vSpeed = -strength;
-				jumpHSpeed = lastPositionDelta.getX() / lastTimeDelta * 0.8f;
+				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
 			} else if (lastState == ActorState.WALL_SLIDE) {
 				// If wall sliding then single jump
 				// away from the wall
@@ -579,10 +585,14 @@ public abstract class Actor extends WorldObject {
 	final public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
 		if (isEnabled()) {
-			thisPositionDelta = Point.ZERO;
+			positionDelta = Point.ZERO;
 			setState(ActorState.IDLE);
 			act(gc, delta);
 			checkForInteractions();
+			if (nextJumpStrength != 0.0f) {
+				jump(nextJumpStrength, delta);
+				nextJumpStrength = 0.0f;
+			}
 			jumpMovement(delta);
 		}
 
@@ -591,8 +601,6 @@ public abstract class Actor extends WorldObject {
 		}
 
 		lastState = state;
-		lastPositionDelta = thisPositionDelta;
-		lastTimeDelta = delta;
 	}
 	
 	private void jumpMovement(int delta) {
