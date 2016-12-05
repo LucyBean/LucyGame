@@ -16,7 +16,6 @@ import objects.WorldObject;
 import worlds.WorldLayer;
 
 public class Player extends Actor {
-	private float jumpStrength = 0.019f;
 	private Inventory inventory;
 
 	public Player(Point origin) {
@@ -59,7 +58,7 @@ public class Player extends Actor {
 	@Override
 	public void keyPressed (int keycode) {
 		if (gravityEnabled() && keycode == Input.KEY_SPACE) {
-			signalJump(jumpStrength);
+			signalJump();
 		}
 	}
 

@@ -28,6 +28,7 @@ public abstract class Actor extends WorldObject {
 	private float jumpHSpeed;
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
+	private float jumpStrength = 0.02f;
 	private boolean gravityEnabled = true;
 	private ActorState lastState;
 	private ActorState state;
@@ -38,7 +39,7 @@ public abstract class Actor extends WorldObject {
 	private Sensor wallAheadSensorBtm;
 	private boolean canMidAirJump = true;
 	private Point positionDelta;
-	private float nextJumpStrength = 0.0f;
+	private boolean jumpNextFrame = false;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -115,6 +116,7 @@ public abstract class Actor extends WorldObject {
 		activeInteractables = new ArrayList<WorldObject>();
 		vSpeed = 0.0f;
 		jumpHSpeed = 0.0f;
+		jumpNextFrame = false;
 		positionDelta = Point.ZERO;
 		lastState = ActorState.IDLE;
 		setState(ActorState.IDLE);
@@ -233,10 +235,6 @@ public abstract class Actor extends WorldObject {
 				if (d == Dir.EAST || d == Dir.WEST) {
 					facing = d;
 				}
-			}
-			if (canWallSlide(d)) {
-				// Start wall sliding if this Actor moves towards the wall
-				setState(ActorState.WALL_SLIDE);
 			}
 		}
 
@@ -439,6 +437,11 @@ public abstract class Actor extends WorldObject {
 		if (isOnGround() && moved) {
 			setState(ActorState.RUN);
 		}
+
+		if (!isOnGround() && canWallSlide(d)) {
+			// Start wall sliding if this Actor moves towards the wall
+			setState(ActorState.WALL_SLIDE);
+		}
 	}
 
 	/**
@@ -446,21 +449,21 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param strength
 	 */
-	public void signalJump(float strength) {
-		nextJumpStrength = strength;
+	public void signalJump() {
+		jumpNextFrame = true;
 	}
 
-	private void jump(float strength, int delta) {
+	private void jump(int delta) {
 		if (gravityEnabled()) {
 			if (isOnGround()) {
 				// If on ground then single jump
 				// in the direction of travel
-				vSpeed = -strength;
+				vSpeed = -jumpStrength;
 				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
 			} else if (lastState == ActorState.WALL_SLIDE) {
 				// If wall sliding then single jump
 				// away from the wall
-				vSpeed = -strength;
+				vSpeed = -jumpStrength;
 				facing = facing.neg();
 				jumpHSpeed = moveSpeed * 0.8f;
 				if (facing == Dir.WEST) {
@@ -468,7 +471,7 @@ public abstract class Actor extends WorldObject {
 				}
 			} else if (canMidAirJump && vSpeed > -0.1f) {
 				// If falling then mid-air jump
-				vSpeed = -strength * 0.8f;
+				vSpeed = -jumpStrength * 0.8f;
 				canMidAirJump = false;
 			}
 		}
@@ -632,9 +635,9 @@ public abstract class Actor extends WorldObject {
 			setState(ActorState.IDLE);
 			act(gc, delta);
 			checkForInteractions();
-			if (nextJumpStrength != 0.0f) {
-				jump(nextJumpStrength, delta);
-				nextJumpStrength = 0.0f;
+			if (jumpNextFrame) {
+				jump(delta);
+				jumpNextFrame = false;
 			}
 			jumpMovement(delta);
 		}
@@ -658,7 +661,8 @@ public abstract class Actor extends WorldObject {
 				float moveAmount = jumpHSpeed * delta;
 				move(Dir.EAST, moveAmount);
 				// If hit a wall then set to zero
-				if (wallAheadSensorTop.isOverlappingSolid()) {
+				if (wallAheadSensorTop.isOverlappingSolid()
+						|| wallAheadSensorBtm.isOverlappingSolid()) {
 					jumpHSpeed = 0;
 				}
 			}
