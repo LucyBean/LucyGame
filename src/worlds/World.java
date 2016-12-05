@@ -36,6 +36,7 @@ public class World {
 	private WorldMap map;
 	private boolean ignoringInput;
 	private boolean paused;
+	private boolean stepFrame;
 
 	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
@@ -292,13 +293,27 @@ public class World {
 	protected boolean isIgnoringInput() {
 		return ignoringInput;
 	}
-	
+
+	/**
+	 * Set the paused state of the World. If the world is paused then the map
+	 * will not update but the game interface will.
+	 * 
+	 * @param paused
+	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
 	}
-	
+
 	public boolean isPaused() {
 		return paused;
+	}
+
+	/**
+	 * If the game is paused then advances the paused elements by one frame.
+	 * This has no effect if the game is not paused.
+	 */
+	public void step() {
+		stepFrame = true;
 	}
 
 	/**
@@ -331,7 +346,7 @@ public class World {
 			gameInterface.update(gc, delta, getState());
 			worldInterface.update(gc, delta, getState());
 
-			if (!paused) {
+			if (!paused || stepFrame) {
 				switch (worldState) {
 					case PLAYING:
 						playingUpdate(gc, delta);
@@ -342,6 +357,7 @@ public class World {
 					default:
 						break;
 				}
+				stepFrame = false;
 			}
 		}
 	}
@@ -385,7 +401,7 @@ public class World {
 	}
 
 	public void keyPressed(int keycode) {
-		
+
 		switch (worldState) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {

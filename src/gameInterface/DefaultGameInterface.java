@@ -89,6 +89,9 @@ public class DefaultGameInterface extends GameInterface {
 			boolean paused = s.getWorld().isPaused();
 			s.getWorld().setPaused(!paused);
 		});
+		debugTools.add(() -> "Step", s -> {
+			s.getWorld().step();
+		});
 		add(debugTools, WorldState.PLAYING);
 
 		//
