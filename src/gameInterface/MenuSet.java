@@ -13,12 +13,18 @@ import worlds.World;
 
 public class MenuSet extends InterfaceElement {
 	private Map<Integer, Menu> menus;
-	private static final Point START_POINT = new Point(
-			(GlobalOptions.WINDOW_WIDTH - 360) / 2, 100);
+	private Point startPoint;
 	private int currentActive;
+	private boolean useSelection = true;
 
 	public MenuSet() {
+		this(new Point((GlobalOptions.WINDOW_WIDTH - 360) / 2, 100), true);
+	}
+
+	public MenuSet(Point startPoint, boolean useSelection) {
 		menus = new HashMap<Integer, Menu>();
+		this.useSelection = useSelection;
+		this.startPoint = startPoint;
 		reset();
 	}
 
@@ -73,7 +79,7 @@ public class MenuSet extends InterfaceElement {
 			int state) {
 		Menu subMenu = menus.get(state);
 		if (subMenu == null) {
-			subMenu = new Menu(START_POINT, 10, this) {
+			subMenu = new Menu(startPoint, 10, this, useSelection) {
 				@Override
 				protected Sprite makeNewSprite() {
 					return SpriteBuilder.makeMenuButton("");

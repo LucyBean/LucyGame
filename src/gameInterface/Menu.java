@@ -16,13 +16,16 @@ public abstract class Menu extends IEList {
 	private List<Consumer<Menu>> clickActions;
 	private MenuSet menuSet;
 
-	public Menu(Point firstPoint, int numDisplayElems, MenuSet menuSet) {
-		super(firstPoint, numDisplayElems, 1, 4,
-				(s -> s.getImage().setLayer(0,
-						ImageBuilder.getMenuButtonSelectedBackground())));
+	public Menu(Point firstPoint, int numDisplayElems, MenuSet menuSet, boolean useSelection) {
+		super(firstPoint, numDisplayElems, 1, 4, (useSelection) ? (s -> s.getImage().setLayer(0,
+				ImageBuilder.getMenuButtonSelectedBackground())) : null);
 		labels = new ArrayList<Supplier<String>>();
 		clickActions = new ArrayList<Consumer<Menu>>();
 		this.menuSet = menuSet;
+	}
+	
+	public Menu(Point firstPoint, int numDisplayElems, MenuSet menuSet) {
+		this(firstPoint, numDisplayElems, menuSet, true);
 	}
 
 	public Menu(Point firstPoint, int numDisplayElems) {
@@ -32,10 +35,10 @@ public abstract class Menu extends IEList {
 	public MenuSet getMenuSet() {
 		return menuSet;
 	}
-	
+
 	@Override
 	public void onClick(int button, Point clickPoint) {
-		
+
 	}
 
 	/**
@@ -57,7 +60,9 @@ public abstract class Menu extends IEList {
 		if (clickActions != null && elementIndex >= 0
 				&& elementIndex < labels.size()) {
 			Consumer<Menu> ca = clickActions.get(elementIndex);
-			ca.accept(this);
+			if (ca != null) {
+				ca.accept(this);
+			}
 		}
 	}
 

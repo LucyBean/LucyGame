@@ -35,6 +35,7 @@ public class World {
 	private final String name;
 	private WorldMap map;
 	private boolean ignoringInput;
+	private boolean paused;
 
 	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
@@ -60,6 +61,7 @@ public class World {
 			worldInterface = new GameInterface();
 			worldInterface.setWorld(this);
 			ignoringInput = false;
+			paused = false;
 
 			init();
 
@@ -290,6 +292,14 @@ public class World {
 	protected boolean isIgnoringInput() {
 		return ignoringInput;
 	}
+	
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+	
+	public boolean isPaused() {
+		return paused;
+	}
 
 	/**
 	 * Renders the world.
@@ -321,15 +331,17 @@ public class World {
 			gameInterface.update(gc, delta, getState());
 			worldInterface.update(gc, delta, getState());
 
-			switch (worldState) {
-				case PLAYING:
-					playingUpdate(gc, delta);
-					break;
-				case BUILDING:
-					buildingUpdate(gc, delta);
-					break;
-				default:
-					break;
+			if (!paused) {
+				switch (worldState) {
+					case PLAYING:
+						playingUpdate(gc, delta);
+						break;
+					case BUILDING:
+						buildingUpdate(gc, delta);
+						break;
+					default:
+						break;
+				}
 			}
 		}
 	}
@@ -373,6 +385,7 @@ public class World {
 	}
 
 	public void keyPressed(int keycode) {
+		
 		switch (worldState) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {
@@ -380,6 +393,9 @@ public class World {
 				}
 				if (keycode == Input.KEY_I) {
 					openInventoryDisplay();
+				}
+				if (keycode == Input.KEY_P) {
+					setPaused(!isPaused());
 				}
 				break;
 			case MENU:

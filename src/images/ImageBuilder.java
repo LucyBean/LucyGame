@@ -71,7 +71,7 @@ public class ImageBuilder {
 
 	public static StaticImage getMenuButtonBackground() {
 		if (menuButtonBackground == null) {
-			menuButtonBackground = makeRectangle(280, 32,
+			menuButtonBackground = makeRectangle(240, 32,
 					new Color(240, 120, 180));
 		}
 

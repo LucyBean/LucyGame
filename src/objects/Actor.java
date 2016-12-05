@@ -178,13 +178,12 @@ public abstract class Actor extends WorldObject {
 			return false;
 		}
 		
-		if (d == Dir.EAST || d == Dir.WEST){
+		if (Math.abs(amount) > 0 && d == Dir.EAST || d == Dir.WEST){
 			if (amount >= 0) {
 				facing = d;
 			} else {
 				facing = d.neg();
 			}
-			
 			setAheadSensorLocation(facing);
 		}
 
@@ -383,6 +382,7 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void walk(Dir d, int delta) {
 		if (isOnGround()) {
+			setAheadSensorLocation(d);
 			float moveAmount = moveSpeed * delta * walkSpeed;
 			if (floorAheadSensor.isOverlappingSolid()) {
 				boolean moved = move(d, moveAmount);
@@ -421,7 +421,7 @@ public abstract class Actor extends WorldObject {
 				// If wall sliding then single jump
 				// away from the wall
 				vSpeed = -strength;
-				//facing = facing.neg();
+				facing = facing.neg();
 				jumpHSpeed = moveSpeed * 0.8f;
 				if (facing == Dir.WEST){
 					jumpHSpeed *= -1;

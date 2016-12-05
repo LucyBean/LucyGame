@@ -83,6 +83,13 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		});
 		add(buildingTools, WorldState.BUILDING_MENU);
+		
+		MenuSet debugTools = new MenuSet(new Point(360,0), false);
+		debugTools.add(() -> "Play/pause", s -> {
+			boolean paused = s.getWorld().isPaused();
+			s.getWorld().setPaused(!paused);
+		});
+		add(debugTools, WorldState.PLAYING);
 
 		//
 		// Root menu
