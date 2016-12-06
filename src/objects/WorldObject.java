@@ -2,7 +2,6 @@ package objects;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import helpers.Point;
 import images.Sprite;
@@ -22,7 +21,8 @@ public abstract class WorldObject extends GameObject {
 	private ItemType itemType;
 	private Collider collider;
 	private InteractBox interactBox;
-	private Set<Sensor> sensors;
+	private Collection<Sensor> sensors;
+	private Collection<AttackBox> activeAttacks;
 	private WorldLayer layer;
 	private Collection<Attachment> attachments;
 
@@ -49,6 +49,7 @@ public abstract class WorldObject extends GameObject {
 		this.itemType = itemType;
 		sensors = new HashSet<>();
 		attachments = new HashSet<>();
+		activeAttacks = new HashSet<>();
 		attach(collider);
 		attach(interactBox);
 
@@ -90,6 +91,27 @@ public abstract class WorldObject extends GameObject {
 			if (a instanceof Sensor) {
 				addSensor((Sensor) a);
 			}
+			if (a instanceof AttackBox) {
+				addAttackBox((AttackBox) a);
+			}
+		}
+	}
+	
+	protected void detach(Attachment a) {
+		if (a != null) {
+			attachments.remove(a);
+			if (a instanceof Collider) {
+				setCollider(null);
+			}
+			if (a instanceof InteractBox) {
+				setInteractBox(null);
+			}
+			if (a instanceof Sensor) {
+				removeSensor((Sensor) a);
+			}
+			if (a instanceof AttackBox) {
+				removeAttackBox((AttackBox) a);
+			}
 		}
 	}
 
@@ -120,6 +142,28 @@ public abstract class WorldObject extends GameObject {
 			sensors.add(s);
 			s.setObject(this);
 			attachments.add(s);
+		}
+	}
+	
+	private void removeSensor(Sensor s) {
+		if (s != null) {
+			sensors.remove(s);
+			attachments.remove(s);
+		}
+	}
+
+	private void addAttackBox(AttackBox a) {
+		if (a != null) {
+			activeAttacks.add(a);
+			a.setObject(this);
+			attachments.add(a);
+		}
+	}
+	
+	private void removeAttackBox(AttackBox a) {
+		if (a != null) {
+			activeAttacks.remove(a);
+			attachments.remove(a);
 		}
 	}
 
@@ -228,6 +272,9 @@ public abstract class WorldObject extends GameObject {
 		}
 		if (GlobalOptions.drawSensors()) {
 			sensors.stream().forEach(s -> s.draw(getCoOrdTranslator()));
+		}
+		if (GlobalOptions.drawAttackBoxes()) {
+			activeAttacks.stream().forEach(s -> s.draw(getCoOrdTranslator()));
 		}
 	}
 

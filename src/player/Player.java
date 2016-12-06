@@ -10,6 +10,7 @@ import helpers.Point;
 import images.SpriteBuilder;
 import objects.Actor;
 import objects.ActorState;
+import objects.AttackBox;
 import objects.Collider;
 import objects.ItemType;
 import objects.WorldObject;
@@ -17,11 +18,14 @@ import worlds.WorldLayer;
 
 public class Player extends Actor {
 	private Inventory inventory;
+	private AttackBox fallAttack;
 
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
 				SpriteBuilder.getCharacterSprite(0),
 				new Collider(Point.ZERO, 0.8f, 1.95f), null);
+
+		fallAttack = new AttackBox(getCollider().getBottomLeft(), getCollider().getWidth(), 0.5f);
 	}
 
 	@Override
@@ -76,6 +80,15 @@ public class Player extends Actor {
 	@Override
 	public void stateChanged(ActorState from, ActorState to) {
 		super.stateChanged(from, to);
+		
+		if (to == ActorState.FALL) {
+			// Add the fall attack box
+			attach(fallAttack);
+		}
+		
+		if (from == ActorState.FALL) {
+			detach(fallAttack);
+		}
 	}
 
 	@Override

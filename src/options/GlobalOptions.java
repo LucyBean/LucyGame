@@ -93,6 +93,10 @@ public class GlobalOptions {
 	public static boolean drawSensors() {
 		return Option.DRAW_SENSORS.getValue() == 1;
 	}
+	
+	public static boolean drawAttackBoxes() {
+		return Option.DRAW_ATTACK_BOXES.getValue() == 1;
+	}
 
 	public static boolean debug() {
 		return Option.DEBUG.getValue() == 1;

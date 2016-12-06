@@ -11,18 +11,18 @@ import images.LayeredImage;
 public class AttackBox extends Attachment {
 	private LayeredImage image;
 	
-	public AttackBox(Rectangle rect, Actor myActor) {
-		super(rect, myActor);
+	public AttackBox(Rectangle rect) {
+		super(rect, null);
 	}
 
-	public AttackBox(Point topLeft, float width, float height, Actor myActor) {
-		this(new Rectangle(topLeft, width, height), myActor);
+	public AttackBox(Point topLeft, float width, float height) {
+		this(new Rectangle(topLeft, width, height));
 	}
 
 	@Override
 	public LayeredImage getImage() {
 		if (image == null) {
-			image = ImageBuilder.makeSensorImage(getRectangle());
+			image = ImageBuilder.makeAttackBoxImage(getRectangle());
 		}
 
 		return image;
