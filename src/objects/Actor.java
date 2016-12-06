@@ -98,11 +98,11 @@ public abstract class Actor extends WorldObject {
 							wallSensorHeight),
 					sensorSize, wallSensorHeight, this);
 
-			addSensor(floorSensor);
-			addSensor(ceilingSensor);
-			addSensor(floorAheadSensor);
-			addSensor(wallAheadSensorTop);
-			addSensor(wallAheadSensorTop);
+			attach(floorSensor);
+			attach(ceilingSensor);
+			attach(floorAheadSensor);
+			attach(wallAheadSensorTop);
+			attach(wallAheadSensorBtm);
 		}
 	}
 

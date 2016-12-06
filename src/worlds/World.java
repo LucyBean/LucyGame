@@ -170,6 +170,10 @@ public class World {
 
 		return collidingSolids;
 	}
+	
+	public <T extends WorldObject> Collection<T> getOverlapping(Rectangle rect, Class<T> t) {
+		return map.getOverlappingColliders(rect, t);
+	}
 
 	public WorldState getState() {
 		return worldState;

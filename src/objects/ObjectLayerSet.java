@@ -1,6 +1,8 @@
 package objects;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
@@ -35,7 +37,13 @@ public class ObjectLayerSet<T extends GameObject>
 	}
 
 	public void applyToAllLayers(Consumer<ObjectLayer<T>> f) {
-		entrySet().stream().forEach(a -> f.accept(a.getValue()));
+		values().stream().forEach(a -> f.accept(a));
+	}
+
+	public Collection<T> getAll() {
+		Collection<T> objects = new HashSet<T>();
+		values().stream().forEach(a -> objects.addAll(a));
+		return objects;
 	}
 
 	/**

@@ -4,7 +4,9 @@
 
 Platformer moves
 
-
+Refactor 'getOverlappingSolids'. Currently confused between what is a solid.
+Have added a generic way of getting all objects of a given class who have an
+overlapping rectangle. Might be a good idea to use that for overlapping solid?
 
 Add a pet that follows me
 Add a Matt quest

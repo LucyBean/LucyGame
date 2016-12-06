@@ -3,6 +3,7 @@ package worlds;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import org.newdawn.slick.GameContainer;
 
 import characters.NPC;
 import helpers.Point;
+import helpers.Rectangle;
 import objects.Actor;
 import objects.Lockable;
 import objects.Locker;
@@ -70,7 +72,7 @@ public class WorldMap {
 
 		return objects;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
@@ -84,7 +86,7 @@ public class WorldMap {
 			if (go instanceof Actor) {
 				actors.add((Actor) go);
 			}
-			if (go.isSolid()) {
+			if (go.hasCollider()) {
 				solids.add(go);
 			}
 			if (go.isInteractable()) {
@@ -140,7 +142,7 @@ public class WorldMap {
 			actors.remove(go);
 		}
 
-		if (go.isSolid()) {
+		if (go.hasCollider()) {
 			solids.remove(go);
 		}
 		if (go.isInteractable()) {
@@ -177,7 +179,7 @@ public class WorldMap {
 		if (go instanceof Actor) {
 			activeActors.remove((Actor) go);
 		}
-		if (go.isSolid()) {
+		if (go.hasCollider()) {
 			activeSolids.remove(go);
 		}
 	}
@@ -186,7 +188,7 @@ public class WorldMap {
 		if (go instanceof Actor) {
 			activeActors.add((Actor) go);
 		}
-		if (go.isSolid()) {
+		if (go.hasCollider()) {
 			activeSolids.add(go);
 		}
 	}
@@ -206,13 +208,50 @@ public class WorldMap {
 	public WorldObject findClickedObject(Point clickPoint) {
 		return layers.findClickedObject(clickPoint);
 	}
-	
+
 	/**
 	 * Propagates keyPressed signal to all objects on the map
+	 * 
 	 * @param keycode
 	 */
-	public void keyPressed (int keycode) {
+	public void keyPressed(int keycode) {
 		layers.applyToAllObjects(c -> c.keyPressed(keycode));
+	}
+
+	public <T extends WorldObject> Collection<T> getAll(Rectangle rect,
+			Class<T> t) {
+		Collection<WorldObject> objects = layers.getAll();
+		Collection<T> ts = new HashSet<T>();
+		objects.stream().filter(a -> t.isInstance(a)).map(
+				a -> t.cast(a)).forEach(a -> ts.add(a));
+		return ts;
+
+	}
+
+	/**
+	 * Gets all WorldObjects of the type T whose collider's overlap with the
+	 * given rectangle.
+	 * 
+	 * @param rect
+	 * @param t
+	 * @return
+	 */
+	public <T extends WorldObject> Collection<T> getOverlappingColliders(Rectangle rect,
+			Class<T> t) {
+		Collection<T> ts = getAll(rect, t);
+		Collection<T> overlapping = new HashSet<T>();
+		Iterator<T> si = ts.iterator();
+		while (si.hasNext()) {
+			T go = si.next();
+			if (go.hasCollider()) {
+				Rectangle rectRel = go.getCollider().getRectangle();
+				Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(rectRel);
+				if (rectWorld.overlaps(rect)) {
+					overlapping.add(go);
+				}
+			}
+		}
+		return overlapping;
 	}
 
 }

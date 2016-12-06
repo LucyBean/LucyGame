@@ -90,6 +90,7 @@ public abstract class GameObject {
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
+		sprite.setObject(this);
 	}
 
 	/**

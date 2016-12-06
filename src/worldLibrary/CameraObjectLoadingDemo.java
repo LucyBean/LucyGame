@@ -14,7 +14,6 @@ import objects.Actor;
 import objects.Collider;
 import objects.InteractBox;
 import objects.Static;
-import objects.WorldObject;
 import options.GlobalOptions;
 import worlds.LucyGame;
 import worlds.World;
@@ -208,7 +207,7 @@ class WorldSector extends Static {
 	protected void resetStaticState() {
 		deactivate();
 	}
-
+/*
 	@Override
 	public void overlapStart(WorldObject a) {
 		if (a instanceof CameraBox) {
@@ -228,7 +227,7 @@ class WorldSector extends Static {
 			//cw.unloadSectors(cb.getLastDirectionMoved(), x, y);
 		}
 	}
-
+*/
 	public void activate() {
 		activeSector = true;
 		setSprite(active);

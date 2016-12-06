@@ -21,6 +21,7 @@ public class ImageBuilder {
 	private static RectangleImageStore colliderImages = new RectangleImageStore();
 	private static RectangleImageStore interactBoxImages = new RectangleImageStore();
 	private static RectangleImageStore sensorImages = new RectangleImageStore();
+	private static RectangleImageStore attackBoxImages = new RectangleImageStore();
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
 	public static void initSpriteSheets() throws SlickException {
@@ -197,7 +198,7 @@ public class ImageBuilder {
 	}
 	
 	public static LayeredImage makeSensorImage(Rectangle sensor) {
-		// check if a collider of this size has been made already
+		// check if a sensor image of this size has been made already
 		int w = (int) (sensor.getWidth() * GRID_SIZE);
 		int h = (int) (sensor.getHeight() * GRID_SIZE);
 		LucyImage s = sensorImages.get(w, h);
@@ -209,6 +210,24 @@ public class ImageBuilder {
 			border.a = 220;
 			s = ImageBuilder.makeRectangle(w, h, fill, border);
 			sensorImages.store(s);
+		}
+
+		return new LayeredImage(s);
+	}
+	
+	public static LayeredImage makeAttackBoxImage(Rectangle attackBox) {
+		// check if a sensor image of this size has been made already
+		int w = (int) (attackBox.getWidth() * GRID_SIZE);
+		int h = (int) (attackBox.getHeight() * GRID_SIZE);
+		LucyImage s = attackBoxImages.get(w, h);
+
+		if (s == null) {
+
+			Color fill = new Color(220, 40, 40, 130);
+			Color border = fill.darker(0.5f);
+			border.a = 220;
+			s = ImageBuilder.makeRectangle(w, h, fill, border);
+			attackBoxImages.store(s);
 		}
 
 		return new LayeredImage(s);

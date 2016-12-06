@@ -45,7 +45,8 @@ public abstract class Sprite extends Attachment {
 		super.setRectangle(r.scale(1.0f/gridSize));
 	}
 
-	public void draw(CoOrdTranslator cot) {
+	public void draw() {
+		CoOrdTranslator cot = getCoOrdTranslator();
 		Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
 		getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
 				cot.getDrawScale());

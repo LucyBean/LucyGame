@@ -20,7 +20,7 @@ public class Collider extends Attachment {
 	 *            Height of the Collider.
 	 */
 	public Collider(Point topLeft, float width, float height) {
-		super(topLeft, width, height);
+		super(topLeft, width, height, null);
 	}
 	
 	/**
@@ -29,7 +29,7 @@ public class Collider extends Attachment {
 	 * @param rect
 	 */
 	public Collider(Rectangle rect) {
-		super(rect);
+		super(rect, null);
 	}
 	
 	public void setSolid(boolean solid) {

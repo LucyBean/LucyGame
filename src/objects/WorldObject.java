@@ -1,5 +1,6 @@
 package objects;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import helpers.Point;
 import images.Sprite;
 import images.SpriteBuilder;
 import options.GlobalOptions;
+import worlds.World;
 import worlds.WorldLayer;
 
 public abstract class WorldObject extends GameObject {
@@ -22,6 +24,7 @@ public abstract class WorldObject extends GameObject {
 	private InteractBox interactBox;
 	private Set<Sensor> sensors;
 	private WorldLayer layer;
+	private Collection<Attachment> attachments;
 
 	/**
 	 * Creates a new GameObject. Origin points for sprite, collider, and
@@ -39,40 +42,85 @@ public abstract class WorldObject extends GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite,
-			Collider collider, InteractBox interactBox) {
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, sprite);
-		this.collider = collider;
-		this.interactBox = interactBox;
 		this.layer = layer;
 		this.itemType = itemType;
 		sensors = new HashSet<>();
+		attachments = new HashSet<>();
+		attach(collider);
+		attach(interactBox);
 
 		reset();
 	}
 
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
-	
+
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
+		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
+				null, null);
 	}
-	
+
 	protected void setColliderFromSprite() {
 		if (getSprite() != null) {
-			collider = new Collider(getSprite().getRectangle());
+			attach(new Collider(getSprite().getRectangle()));
 		}
 	}
-	
+
 	protected void setInteractBoxFromSprite() {
 		if (getSprite() != null) {
-			interactBox = new InteractBox(getSprite().getRectangle());
+			attach(new InteractBox(getSprite().getRectangle()));
 		}
 	}
-	
-	protected void addSensor(Sensor s) {
-		sensors.add(s);
+
+	protected void attach(Attachment a) {
+		if (a != null) {
+			attachments.add(a);
+
+			if (a instanceof Collider) {
+				setCollider((Collider) a);
+			}
+			if (a instanceof InteractBox) {
+				setInteractBox((InteractBox) a);
+			}
+			if (a instanceof Sensor) {
+				addSensor((Sensor) a);
+			}
+		}
+	}
+
+	private void setCollider(Collider c) {
+		if (collider != null) {
+			attachments.remove(collider);
+		}
+		collider = c;
+		if (collider != null) {
+			collider.setObject(this);
+			attachments.add(collider);
+		}
+	}
+
+	private void setInteractBox(InteractBox ib) {
+		if (interactBox != null) {
+			attachments.remove(interactBox);
+		}
+		interactBox = ib;
+		if (interactBox != null) {
+			interactBox.setObject(this);
+			attachments.add(interactBox);
+		}
+	}
+
+	private void addSensor(Sensor s) {
+		if (s != null) {
+			sensors.add(s);
+			s.setObject(this);
+			attachments.add(s);
+		}
 	}
 
 	/**
@@ -87,12 +135,12 @@ public abstract class WorldObject extends GameObject {
 	// TODO
 	// Getters
 	//
-	public boolean isSolid() {
-		return collider != null;
+	public boolean hasCollider() {
+		return getCollider() != null;
 	}
 
 	public boolean isInteractable() {
-		return interactBox != null;
+		return getInteractBox() != null;
 	}
 
 	public Collider getCollider() {
@@ -106,7 +154,7 @@ public abstract class WorldObject extends GameObject {
 	public WorldLayer getLayer() {
 		return layer;
 	}
-	
+
 	public ItemType getType() {
 		return itemType;
 	}
@@ -175,7 +223,7 @@ public abstract class WorldObject extends GameObject {
 				getCollider().draw(getCoOrdTranslator());
 			}
 		}
-		if (interactBox != null && GlobalOptions.drawInteractBoxes()) {
+		if (getInteractBox() != null && GlobalOptions.drawInteractBoxes()) {
 			getInteractBox().draw(getCoOrdTranslator());
 		}
 		if (GlobalOptions.drawSensors()) {
@@ -191,16 +239,22 @@ public abstract class WorldObject extends GameObject {
 			return getClass().getSimpleName();
 		}
 	}
-	
+
 	public int getKeyID() {
 		return 0;
 	}
-	
+
 	public int getLockID() {
 		return 0;
 	}
-	
+
 	public int getNPCID() {
 		return 0;
+	}
+
+	@Override
+	public void setWorld(World w) {
+		super.setWorld(w);
+		attachments.stream().forEach(a -> a.setWorld(w));
 	}
 }
