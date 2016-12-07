@@ -12,11 +12,19 @@ public class AttackBox extends Attachment {
 	private LayeredImage image;
 	
 	public AttackBox(Rectangle rect) {
-		super(rect);
+		super(rect, null);
+	}
+	
+	public AttackBox(Rectangle rect, GameObject myObject) {
+		super(rect, myObject);
 	}
 
 	public AttackBox(Point topLeft, float width, float height) {
 		this(new Rectangle(topLeft, width, height));
+	}
+	
+	public AttackBox(Point topLeft, float width, float height, GameObject myObject) {
+		this(new Rectangle(topLeft, width, height), myObject);
 	}
 
 	@Override

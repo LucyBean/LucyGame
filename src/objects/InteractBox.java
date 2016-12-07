@@ -9,7 +9,8 @@ public class InteractBox extends Attachment {
 	private LayeredImage image;
 	
 	/**
-	 * Creates a new InteractBox to be attached to a GameObject.
+	 * Creates a new InteractBox to be attached to a GameObject. The GameObject should be
+	 * set later using the setObject method.
 	 * 
 	 * @param topLeft
 	 *            Co-ordinates of the InteractBox relative to the GameObject's
@@ -22,14 +23,23 @@ public class InteractBox extends Attachment {
 	public InteractBox(Point topLeft, float width, float height) {
 		this(new Rectangle(topLeft, width, height));
 	}
+	
+	public InteractBox(Point topLeft, float width, float height, GameObject myObject) {
+		this(new Rectangle(topLeft, width, height), myObject);
+	}
 
 	/**
-	 * Creates a new InteractBox using the specified Rectangle.
+	 * Creates a new InteractBox using the specified Rectangle. The GameObject
+	 * should be set later using the setObject method.
 	 * 
 	 * @param rect
 	 */
 	public InteractBox(Rectangle rect) {
-		super(rect);
+		this(rect, null);
+	}
+	
+	public InteractBox(Rectangle rect, GameObject myObject) {
+		super(rect, myObject);
 	}
 
 	@Override
