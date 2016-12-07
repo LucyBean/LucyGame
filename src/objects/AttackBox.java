@@ -12,7 +12,7 @@ public class AttackBox extends Attachment {
 	private LayeredImage image;
 	
 	public AttackBox(Rectangle rect) {
-		super(rect, null);
+		super(rect);
 	}
 
 	public AttackBox(Point topLeft, float width, float height) {

@@ -12,12 +12,20 @@ public abstract class Attachment {
 			GameObject myObject) {
 		this(new Rectangle(topLeft, width, height), myObject);
 	}
+	
+	public Attachment(Point topLeft, float width, float height) {
+		this(topLeft, width, height, null);
+	}
 
 	public Attachment(Rectangle rect, GameObject myObject) {
 		this.rect = rect;
 		if (myObject != null) {
 			this.myObject = myObject;
 		}
+	}
+	
+	public Attachment(Rectangle rect) {
+		this(rect, null);
 	}
 
 	protected Attachment(GameObject myObject) {

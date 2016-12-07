@@ -20,7 +20,7 @@ public class InteractBox extends Attachment {
 	 *            Height of the InteractBox.
 	 */
 	public InteractBox(Point topLeft, float width, float height) {
-		super(topLeft, width, height, null);
+		this(new Rectangle(topLeft, width, height));
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class InteractBox extends Attachment {
 	 * @param rect
 	 */
 	public InteractBox(Rectangle rect) {
-		super(rect, null);
+		super(rect);
 	}
 
 	@Override
