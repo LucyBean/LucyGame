@@ -264,17 +264,17 @@ public abstract class WorldObject extends GameObject {
 			if (GlobalOptions.drawAllColliders()
 					|| GlobalOptions.drawInvisObjColliders()
 							&& (getSprite() == null || !isVisible())) {
-				getCollider().draw(getCoOrdTranslator());
+				getCollider().draw();
 			}
 		}
 		if (getInteractBox() != null && GlobalOptions.drawInteractBoxes()) {
-			getInteractBox().draw(getCoOrdTranslator());
+			getInteractBox().draw();
 		}
 		if (GlobalOptions.drawSensors()) {
-			sensors.stream().forEach(s -> s.draw(getCoOrdTranslator()));
+			sensors.stream().forEach(s -> s.draw());
 		}
 		if (GlobalOptions.drawAttackBoxes()) {
-			activeAttacks.stream().forEach(s -> s.draw(getCoOrdTranslator()));
+			activeAttacks.stream().forEach(s -> s.draw());
 		}
 	}
 
@@ -302,6 +302,5 @@ public abstract class WorldObject extends GameObject {
 	@Override
 	public void setWorld(World w) {
 		super.setWorld(w);
-		attachments.stream().forEach(a -> a.setWorld(w));
 	}
 }

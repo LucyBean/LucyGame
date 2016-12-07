@@ -5,7 +5,6 @@ import org.newdawn.slick.GameContainer;
 import helpers.Point;
 import helpers.Rectangle;
 import images.Sprite;
-import images.StatedSprite;
 import worlds.World;
 
 public abstract class GameObject {
@@ -19,12 +18,8 @@ public abstract class GameObject {
 
 	public GameObject(Point position, Sprite sprite) {
 		this.position = position;
-		this.sprite = sprite;
+		setSprite(sprite);
 		cot = new CoOrdTranslator(this);
-		
-		if (sprite instanceof StatedSprite) {
-			((StatedSprite) sprite).setGameObject(this);
-		}
 	}
 
 	//
@@ -90,7 +85,9 @@ public abstract class GameObject {
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
-		sprite.setObject(this);
+		if (sprite != null) {
+			sprite.setObject(this);
+		}
 	}
 
 	/**
@@ -134,7 +131,7 @@ public abstract class GameObject {
 	 */
 	protected void draw() {
 		if (isVisible() && sprite != null) {
-			sprite.draw(cot);
+			sprite.draw();
 		}
 	}
 
@@ -168,20 +165,21 @@ public abstract class GameObject {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Called when this GameObject has been added to the World.
+	 * 
 	 * @param w
 	 */
 	public void addedToWorld(World w) {
-		
+
 	}
-	
+
 	/**
 	 * Called when this GameObject's Sprite has changed image.
 	 */
 	public void statedSpriteImageChange() {
-		
+
 	}
 
 	/**

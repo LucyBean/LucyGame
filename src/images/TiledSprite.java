@@ -18,7 +18,8 @@ public class TiledSprite extends Sprite {
 	}
 	
 	@Override
-	public void draw(CoOrdTranslator cot) {
+	public void draw() {
+		CoOrdTranslator cot = getObject().getCoOrdTranslator();
 		Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
 		Rectangle bounding = getRectangle();
 		Rectangle imageBoundingRectangle = bounding.scale(1.0f/tileX, 1.0f/tileY);

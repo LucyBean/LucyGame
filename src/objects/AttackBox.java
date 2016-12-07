@@ -29,10 +29,10 @@ public class AttackBox extends Attachment {
 	}
 
 	public Collection<Enemy> getOverlappingEnemies() {
-		Rectangle rect = getCoOrdTranslator().objectToWorldCoOrds(
+		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 				getRectangle());
 		Class<Enemy> ec = Enemy.class;
-		return getWorld().getOverlapping(rect, ec);
+		return getObject().getWorld().getOverlapping(rect, ec);
 	}
 
 }

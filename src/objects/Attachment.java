@@ -3,12 +3,9 @@ package objects;
 import helpers.Point;
 import helpers.Rectangle;
 import images.LayeredImage;
-import worlds.World;
 
 public abstract class Attachment {
 	private Rectangle rect;
-	private World world;
-	private CoOrdTranslator cot;
 	private GameObject myObject;
 
 	public Attachment(Point topLeft, float width, float height,
@@ -20,7 +17,6 @@ public abstract class Attachment {
 		this.rect = rect;
 		if (myObject != null) {
 			this.myObject = myObject;
-			cot = myObject.getCoOrdTranslator();
 		}
 	}
 
@@ -42,7 +38,8 @@ public abstract class Attachment {
 
 	public abstract LayeredImage getImage();
 
-	public void draw(CoOrdTranslator cot) {
+	public void draw() {
+		CoOrdTranslator cot = getObject().getCoOrdTranslator();
 		Point newOrigin = cot.objectToScreenCoOrds(rect.getTopLeft());
 		float drawScale = cot.getDrawScale();
 		getImage().draw(newOrigin.getX(), newOrigin.getY(), drawScale);
@@ -76,18 +73,8 @@ public abstract class Attachment {
 		return rect;
 	}
 
-	public World getWorld() {
-		return world;
-	}
-
-	public void setWorld(World w) {
-		world = w;
-	}
-
 	public void setObject(GameObject go) {
 		myObject = go;
-		setWorld(go.getWorld());
-		cot = go.getCoOrdTranslator();
 	}
 
 	/**
@@ -98,11 +85,7 @@ public abstract class Attachment {
 	protected GameObject getObject() {
 		return myObject;
 	}
-
-	protected CoOrdTranslator getCoOrdTranslator() {
-		return cot;
-	}
-
+	
 	@Override
 	public String toString() {
 		return rect.toString();

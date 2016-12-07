@@ -67,6 +67,7 @@ public abstract class IEList extends InterfaceElement {
 			Sprite s = makeNewSprite();
 			Rectangle r = s.getRectangle();
 			IEListItem ieli = new IEListItem(this, i, nextPosition, s);
+			s.setObject(ieli);
 			getElementSprite(i, s);
 			buttons.add(ieli);
 
@@ -320,7 +321,7 @@ public abstract class IEList extends InterfaceElement {
 	@Override
 	protected void draw() {
 		if (getSprite() != null) {
-			getSprite().draw(getCoOrdTranslator());
+			getSprite().draw();
 		}
 		buttons.stream().forEach(s -> s.render());
 	}

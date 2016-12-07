@@ -7,6 +7,7 @@ import objects.CoOrdTranslator;
 
 public abstract class Sprite extends Attachment {
 	private int gridSize;
+
 	/**
 	 * 
 	 * 
@@ -39,17 +40,21 @@ public abstract class Sprite extends Attachment {
 		this.gridSize = gridSize;
 		setRectangle(boundingRectangle);
 	}
-	
+
 	@Override
 	public void setRectangle(Rectangle r) {
-		super.setRectangle(r.scale(1.0f/gridSize));
+		super.setRectangle(r.scale(1.0f / gridSize));
 	}
 
 	public void draw() {
-		CoOrdTranslator cot = getCoOrdTranslator();
-		Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
-		getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
-				cot.getDrawScale());
+		if (getObject() != null) {
+			CoOrdTranslator cot = getObject().getCoOrdTranslator();
+			Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
+			getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
+					cot.getDrawScale());
+		} else {
+			System.err.println("Object is null for " + this);
+		}
 	}
 
 	/**
