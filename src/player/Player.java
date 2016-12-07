@@ -25,7 +25,12 @@ public class Player extends Actor {
 				SpriteBuilder.getCharacterSprite(0),
 				new Collider(Point.ZERO, 0.8f, 1.95f), null);
 
-		fallAttack = new AttackBox(getCollider().getBottomLeft(), getCollider().getWidth(), 0.5f);
+		fallAttack = new AttackBox(getCollider().getBottomLeft(), getCollider().getWidth(), 0.5f) {
+			@Override
+			public void attackEffectOnPlayer() {
+				signalJump(0.5f);
+			}
+		};
 	}
 
 	@Override

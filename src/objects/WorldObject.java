@@ -3,6 +3,8 @@ package objects;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.newdawn.slick.GameContainer;
+
 import helpers.Point;
 import images.Sprite;
 import images.SpriteBuilder;
@@ -96,7 +98,7 @@ public abstract class WorldObject extends GameObject {
 			}
 		}
 	}
-	
+
 	protected void detach(Attachment a) {
 		if (a != null) {
 			attachments.remove(a);
@@ -144,7 +146,7 @@ public abstract class WorldObject extends GameObject {
 			attachments.add(s);
 		}
 	}
-	
+
 	private void removeSensor(Sensor s) {
 		if (s != null) {
 			sensors.remove(s);
@@ -159,7 +161,7 @@ public abstract class WorldObject extends GameObject {
 			attachments.add(a);
 		}
 	}
-	
+
 	private void removeAttackBox(AttackBox a) {
 		if (a != null) {
 			activeAttacks.remove(a);
@@ -302,5 +304,11 @@ public abstract class WorldObject extends GameObject {
 	@Override
 	public void setWorld(World w) {
 		super.setWorld(w);
+	}
+
+	@Override
+	public void update(GameContainer gc, int delta) {
+		super.update(gc, delta);
+		activeAttacks.stream().forEach(a -> a.checkAttack());
 	}
 }

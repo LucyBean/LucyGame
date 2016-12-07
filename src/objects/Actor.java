@@ -28,7 +28,8 @@ public abstract class Actor extends WorldObject {
 	private float jumpHSpeed;
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
-	private float jumpStrength = 0.02f;
+	private float defaultJumpStrength = 0.02f;
+	private float nextJumpStrength = 0.02f;
 	private boolean gravityEnabled = true;
 	private ActorState lastState;
 	private ActorState state;
@@ -296,7 +297,8 @@ public abstract class Actor extends WorldObject {
 	 */
 	protected Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
 		rect = getCoOrdTranslator().objectToWorldCoOrds(rect);
-		Collection<WorldObject> solids = getWorld().getMap().getOverlappingSolids(rect);
+		Collection<WorldObject> solids = getWorld().getMap().getOverlappingSolids(
+				rect);
 		return solids;
 	}
 
@@ -453,17 +455,29 @@ public abstract class Actor extends WorldObject {
 		jumpNextFrame = true;
 	}
 
+	/**
+	 * Signals a jump that is of a relative strength to a standard jump.
+	 * 
+	 * @param nextJumpStrengthRelative
+	 */
+	public void signalJump(float nextJumpStrengthRelative) {
+		this.nextJumpStrength = defaultJumpStrength * nextJumpStrengthRelative;
+		signalJump();
+	}
+
 	private void jump(int delta) {
 		if (gravityEnabled()) {
 			if (isOnGround()) {
 				// If on ground then single jump
 				// in the direction of travel
-				vSpeed = -jumpStrength;
+				vSpeed = -nextJumpStrength;
+				nextJumpStrength = defaultJumpStrength;
 				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
 			} else if (lastState == ActorState.WALL_SLIDE) {
 				// If wall sliding then single jump
 				// away from the wall
-				vSpeed = -jumpStrength;
+				vSpeed = -nextJumpStrength;
+				nextJumpStrength = defaultJumpStrength;
 				facing = facing.neg();
 				jumpHSpeed = moveSpeed * 0.8f;
 				if (facing == Dir.WEST) {
@@ -471,7 +485,8 @@ public abstract class Actor extends WorldObject {
 				}
 			} else if (canMidAirJump && vSpeed > -0.1f) {
 				// If falling then mid-air jump
-				vSpeed = -jumpStrength * 0.8f;
+				vSpeed = -nextJumpStrength * 0.8f;
+				nextJumpStrength = defaultJumpStrength;
 				canMidAirJump = false;
 			}
 		}
