@@ -27,9 +27,8 @@ import player.Player;
  */
 public class WorldMap {
 	private Collection<Actor> actors;
-	private Set<Actor> activeActors;
-	private Collection<WorldObject> solids;
-	private Set<WorldObject> activeSolids;
+	private Collection<Actor> activeActors;
+	private Collection<WorldObject> objectsWithColliders;
 	private Collection<WorldObject> interactables;
 	private ObjectLayerSet<WorldObject> layers;
 	private MapPainter mapPainter;
@@ -48,8 +47,7 @@ public class WorldMap {
 		layers = new ObjectLayerSet<>();
 		actors = new HashSet<>();
 		activeActors = new HashSet<>();
-		solids = new HashSet<>();
-		activeSolids = new HashSet<>();
+		objectsWithColliders = new HashSet<>();
 		interactables = new HashSet<>();
 		mapPainter = new MapPainter(this);
 		lockablesByID = new HashMap<>();
@@ -87,7 +85,7 @@ public class WorldMap {
 				actors.add((Actor) go);
 			}
 			if (go.hasCollider()) {
-				solids.add(go);
+				objectsWithColliders.add(go);
 			}
 			if (go.isInteractable()) {
 				interactables.add(go);
@@ -143,7 +141,7 @@ public class WorldMap {
 		}
 
 		if (go.hasCollider()) {
-			solids.remove(go);
+			objectsWithColliders.remove(go);
 		}
 		if (go.isInteractable()) {
 			interactables.remove(go);
@@ -168,7 +166,10 @@ public class WorldMap {
 	public Collection<WorldObject> getActiveSolids() {
 		// Currently returns all solid objects in the world.
 		// Modify to keep track of on screen objects.
-		return activeSolids;
+		Collection<WorldObject> solids = new HashSet<>();
+		objectsWithColliders.stream().filter(
+				wo -> wo.getCollider().isSolid()).forEach(wo -> solids.add(wo));
+		return solids;
 	}
 
 	public Collection<WorldObject> getAllInteractables() {
@@ -180,7 +181,7 @@ public class WorldMap {
 			activeActors.remove((Actor) go);
 		}
 		if (go.hasCollider()) {
-			activeSolids.remove(go);
+			objectsWithColliders.remove(go);
 		}
 	}
 
@@ -189,7 +190,7 @@ public class WorldMap {
 			activeActors.add((Actor) go);
 		}
 		if (go.hasCollider()) {
-			activeSolids.add(go);
+			objectsWithColliders.add(go);
 		}
 	}
 
@@ -218,34 +219,59 @@ public class WorldMap {
 		layers.applyToAllObjects(c -> c.keyPressed(keycode));
 	}
 
-	public <T extends WorldObject> Collection<T> getAll(Rectangle rect,
+	public <T extends WorldObject> Collection<T> getAllObjectsOfType(
 			Class<T> t) {
 		Collection<WorldObject> objects = layers.getAll();
 		Collection<T> ts = new HashSet<T>();
 		objects.stream().filter(a -> t.isInstance(a)).map(
 				a -> t.cast(a)).forEach(a -> ts.add(a));
 		return ts;
+	}
 
+	public Collection<WorldObject> getAllObjects() {
+		Collection<WorldObject> objects = layers.getAll();
+		return objects;
 	}
 
 	/**
 	 * Gets all WorldObjects of the type T whose collider's overlap with the
 	 * given rectangle.
 	 * 
-	 * @param rect
+	 * @param rectWorld
+	 *            The rectangle to check in world co-ords
 	 * @param t
+	 *            The type of objects that should be returned
 	 * @return
 	 */
-	public <T extends WorldObject> Collection<T> getOverlappingColliders(Rectangle rect,
-			Class<T> t) {
-		Collection<T> ts = getAll(rect, t);
+	public <T extends WorldObject> Collection<T> getOverlappingObjectsOfType(
+			Rectangle rectWorld, Class<T> t) {
+		Collection<T> ts = getAllObjectsOfType(t);
+		return findOverlappingObjects(rectWorld, ts, t);
+	}
+
+	/**
+	 * Gets all WorldObjects with solid Colliders that overlap with the given
+	 * rectangle.
+	 * 
+	 * @param rectWorld
+	 *            The rectangle to check in world co-ords
+	 * @return All solid Colliders that overlap.
+	 */
+	public Collection<WorldObject> getOverlappingSolids(Rectangle rectWorld) {
+		Collection<WorldObject> solids = getActiveSolids();
+		return findOverlappingObjects(rectWorld, solids, WorldObject.class);
+	}
+
+	private <T extends WorldObject> Collection<T> findOverlappingObjects(
+			Rectangle rect, Collection<T> candidates, Class<T> t) {
 		Collection<T> overlapping = new HashSet<T>();
-		Iterator<T> si = ts.iterator();
+		Iterator<T> si = candidates.iterator();
 		while (si.hasNext()) {
 			T go = si.next();
 			if (go.hasCollider()) {
 				Rectangle rectRel = go.getCollider().getRectangle();
-				Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(rectRel);
+				Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(
+						rectRel);
 				if (rectWorld.overlaps(rect)) {
 					overlapping.add(go);
 				}
@@ -253,5 +279,4 @@ public class WorldMap {
 		}
 		return overlapping;
 	}
-
 }

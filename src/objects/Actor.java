@@ -296,7 +296,7 @@ public abstract class Actor extends WorldObject {
 	 */
 	protected Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
 		rect = getCoOrdTranslator().objectToWorldCoOrds(rect);
-		Collection<WorldObject> solids = getWorld().getOverlappingSolids(rect);
+		Collection<WorldObject> solids = getWorld().getMap().getOverlappingSolids(rect);
 		return solids;
 	}
 
@@ -560,7 +560,7 @@ public abstract class Actor extends WorldObject {
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(
 				getPosition());
-		Collection<WorldObject> interactables = getWorld().getAllInteractables();
+		Collection<WorldObject> interactables = getWorld().getMap().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
 		interactables.stream().filter(
 				go -> go != this && go.isEnabled()).filter(

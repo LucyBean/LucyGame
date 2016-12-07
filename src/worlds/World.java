@@ -1,9 +1,7 @@
 package worlds;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -16,7 +14,6 @@ import gameInterface.GameInterface;
 import gameInterface.InterfaceElement;
 import helpers.Dir;
 import helpers.Point;
-import helpers.Rectangle;
 import objectLibrary.Wall;
 import objects.WorldObject;
 import options.GlobalOptions;
@@ -133,62 +130,8 @@ public class World {
 	//
 	// Getters
 	//
-	/**
-	 * Returns all active solid objects in the world.
-	 * 
-	 * @return
-	 */
-	private Collection<WorldObject> getActiveSolids() {
-		return map.getActiveSolids();
-	}
-
-	/**
-	 * Finds the Colliders that are solid that overlap with the given rectangle.
-	 * 
-	 * @param rect
-	 * @return
-	 */
-	public Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
-		Collection<WorldObject> solids = getActiveSolids();
-		Collection<WorldObject> collidingSolids = new ArrayList<WorldObject>();
-		Iterator<WorldObject> si = solids.iterator();
-		while (si.hasNext()) {
-			WorldObject go = si.next();
-			if (go.getCollider().isSolid()) {
-				// Get collider rectangle in relative co-ordinates
-				Rectangle rectRel = go.getCollider().getRectangle();
-				// Translate to world co-ords.
-				Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(
-						rectRel);
-				// If the collider overlaps with wholeArea, add to activeSolids
-				// list.
-				if (rectWorld.overlaps(rect)) {
-					collidingSolids.add(go);
-				}
-			}
-		}
-
-		return collidingSolids;
-	}
-	
-	public <T extends WorldObject> Collection<T> getOverlapping(Rectangle rect, Class<T> t) {
-		return map.getOverlappingColliders(rect, t);
-	}
-
 	public WorldState getState() {
 		return worldState;
-	}
-
-	/**
-	 * Returns all interactable objects in the world.
-	 * 
-	 * @return
-	 */
-	public Collection<WorldObject> getAllInteractables() {
-		// TODO
-		// Currently returns all interactables in the world.
-		// Modify to keep track of on screen objects.
-		return map.getAllInteractables();
 	}
 
 	public Camera getCamera() {

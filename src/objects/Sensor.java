@@ -30,7 +30,7 @@ public class Sensor extends Attachment {
 	public boolean isOverlappingSolid() {
 		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 				getRectangle());
-		Collection<WorldObject> solids = getObject().getWorld().getOverlappingSolids(
+		Collection<WorldObject> solids = getObject().getWorld().getMap().getOverlappingSolids(
 				rect);
 		return solids == null || !solids.isEmpty();
 	}
