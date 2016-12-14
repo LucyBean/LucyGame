@@ -53,7 +53,6 @@ public class WorldMapImporterExporter {
 				WorldObject wo = readItem(buffer);
 				objects.add(wo);
 			}
-
 			in.close();
 			return objects;
 		} catch (IOException ioe) {

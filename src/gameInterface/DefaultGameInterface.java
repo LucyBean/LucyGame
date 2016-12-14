@@ -123,5 +123,16 @@ public class DefaultGameInterface extends GameInterface {
 				2);
 
 		add(gameMenu, WorldState.MENU);
+		
+		Palette p = new Palette(Point.ZERO);
+		p.setPosition(new Point(0,
+				GlobalOptions.WINDOW_HEIGHT - p.getHeightPixels()));
+		add(p, WorldState.BUILDING);
+
+		PropertyPanel pp = new PropertyPanel(Point.ZERO);
+		pp.setPosition(
+				new Point(GlobalOptions.WINDOW_WIDTH - pp.getWidthPixels(),
+						GlobalOptions.WINDOW_HEIGHT - pp.getHeightPixels()));
+		add(pp, WorldState.BUILDING);
 	}
 }
