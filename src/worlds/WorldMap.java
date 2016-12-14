@@ -17,6 +17,7 @@ import objects.Lockable;
 import objects.Locker;
 import objects.ObjectLayerSet;
 import objects.WorldObject;
+import options.GlobalOptions;
 import player.Player;
 
 /**
@@ -60,7 +61,12 @@ public class WorldMap {
 	}
 
 	public void addObjects(Collection<WorldObject> objects) {
-		objects.stream().forEach(wo -> addObject(wo));
+		if (objects != null) {
+			objects.stream().forEach(wo -> addObject(wo));
+		} else if (GlobalOptions.debug()) {
+			System.err.println(
+					"Attempting to add a null collection of objects.");
+		}
 	}
 
 	public Collection<WorldObject> getObjects() {

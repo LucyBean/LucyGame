@@ -82,19 +82,23 @@ public abstract class WorldObject extends GameObject {
 
 	protected void attach(Attachment a) {
 		if (a != null) {
-			attachments.add(a);
+			if (a instanceof Sprite) {
+				setSprite((Sprite) a);
+			} else {
+				attachments.add(a);
 
-			if (a instanceof Collider) {
-				setCollider((Collider) a);
-			}
-			if (a instanceof InteractBox) {
-				setInteractBox((InteractBox) a);
-			}
-			if (a instanceof Sensor) {
-				addSensor((Sensor) a);
-			}
-			if (a instanceof AttackBox) {
-				addAttackBox((AttackBox) a);
+				if (a instanceof Collider) {
+					setCollider((Collider) a);
+				}
+				if (a instanceof InteractBox) {
+					setInteractBox((InteractBox) a);
+				}
+				if (a instanceof Sensor) {
+					addSensor((Sensor) a);
+				}
+				if (a instanceof AttackBox) {
+					addAttackBox((AttackBox) a);
+				}
 			}
 		}
 	}

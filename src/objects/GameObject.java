@@ -143,7 +143,7 @@ public abstract class GameObject {
 	 *            The change in time.
 	 */
 	public void update(GameContainer gc, int delta) {
-		if (getSprite() != null) {
+		if (sprite != null) {
 			getSprite().update(delta);
 		}
 	}
@@ -152,8 +152,6 @@ public abstract class GameObject {
 	 * Gives this GameObject's Sprite's bounding rectangle in screen
 	 * co-ordinates.
 	 * 
-	 * @param camera
-	 *            The current Camera.
 	 * @return The Sprite's bounding rectangle in screen co-ordinates.
 	 */
 	public Rectangle getSpriteRectangleScreenCoOrds() {

@@ -216,7 +216,7 @@ public class ImageBuilder {
 	}
 	
 	public static LayeredImage makeAttackBoxImage(Rectangle attackBox) {
-		// check if a sensor image of this size has been made already
+		// check if an attack box image of this size has been made already
 		int w = (int) (attackBox.getWidth() * GRID_SIZE);
 		int h = (int) (attackBox.getHeight() * GRID_SIZE);
 		LucyImage s = attackBoxImages.get(w, h);

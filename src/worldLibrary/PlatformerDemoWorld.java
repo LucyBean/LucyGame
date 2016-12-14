@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.newdawn.slick.SlickException;
 
 import exporting.WorldMapImporterExporter;
+import helpers.Point;
+import objects.ClimbingWallMarker;
 import objects.WorldObject;
 import player.Player;
 import worlds.LucyGame;
@@ -27,6 +29,9 @@ public class PlatformerDemoWorld extends World {
 		if (p != null) {
 			getCamera().setTarget(p);
 		}
+		
+		ClimbingWallMarker cw = new ClimbingWallMarker(new Point(19, 4), 8);
+		addObject(cw);
 	}
 
 }

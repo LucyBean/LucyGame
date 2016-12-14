@@ -4,9 +4,8 @@
 
 Platformer moves
 
-Refactor 'getOverlappingSolids'. Currently confused between what is a solid.
-Have added a generic way of getting all objects of a given class who have an
-overlapping rectangle. Might be a good idea to use that for overlapping solid?
+Refactor RectangleImageStore to accept a colour in the constructor and make 'get'
+automatically create or retrieve the correct rectangle.
 
 A major refactor is in order.
 	Remove reference to GameObject in Attachment constructor? Almost all seem to use null then
