@@ -18,10 +18,10 @@ public class ImageBuilder {
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
 
-	private static RectangleImageStore colliderImages = new RectangleImageStore();
-	private static RectangleImageStore interactBoxImages = new RectangleImageStore();
-	private static RectangleImageStore sensorImages = new RectangleImageStore();
-	private static RectangleImageStore attackBoxImages = new RectangleImageStore();
+	private static RectangleImageStore colliderImages = new RectangleImageStore(new Color(50, 135, 220, 130));
+	private static RectangleImageStore interactBoxImages = new RectangleImageStore(new Color(50, 220, 135, 130));
+	private static RectangleImageStore sensorImages = new RectangleImageStore(new Color(220, 220, 40, 130));
+	private static RectangleImageStore attackBoxImages = new RectangleImageStore(new Color(220, 220, 40, 130));
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
 	public static void initSpriteSheets() throws SlickException {
@@ -156,20 +156,9 @@ public class ImageBuilder {
 	 * @return
 	 */
 	public static LayeredImage makeColliderImage(Rectangle collider) {
-		// check if a collider of this size has been made already
 		int w = (int) (collider.getWidth() * GRID_SIZE);
 		int h = (int) (collider.getHeight() * GRID_SIZE);
 		LucyImage s = colliderImages.get(w, h);
-
-		if (s == null) {
-			// Create a new image
-			Color fill = new Color(50, 135, 220, 130);
-			Color border = fill.darker(0.5f);
-			border.a = 220;
-			s = ImageBuilder.makeRectangle(w, h, fill, border);
-			colliderImages.store(s);
-		}
-
 		return new LayeredImage(s);
 	}
 
@@ -184,16 +173,6 @@ public class ImageBuilder {
 		int w = (int) (interactBox.getWidth() * GRID_SIZE);
 		int h = (int) (interactBox.getHeight() * GRID_SIZE);
 		LucyImage s = interactBoxImages.get(w, h);
-
-		if (s == null) {
-
-			Color fill = new Color(50, 220, 135, 130);
-			Color border = fill.darker(0.5f);
-			border.a = 220;
-			s = ImageBuilder.makeRectangle(w, h, fill, border);
-			interactBoxImages.store(s);
-		}
-
 		return new LayeredImage(s);
 	}
 	
@@ -202,16 +181,6 @@ public class ImageBuilder {
 		int w = (int) (sensor.getWidth() * GRID_SIZE);
 		int h = (int) (sensor.getHeight() * GRID_SIZE);
 		LucyImage s = sensorImages.get(w, h);
-
-		if (s == null) {
-
-			Color fill = new Color(220, 220, 40, 130);
-			Color border = fill.darker(0.5f);
-			border.a = 220;
-			s = ImageBuilder.makeRectangle(w, h, fill, border);
-			sensorImages.store(s);
-		}
-
 		return new LayeredImage(s);
 	}
 	
@@ -220,16 +189,6 @@ public class ImageBuilder {
 		int w = (int) (attackBox.getWidth() * GRID_SIZE);
 		int h = (int) (attackBox.getHeight() * GRID_SIZE);
 		LucyImage s = attackBoxImages.get(w, h);
-
-		if (s == null) {
-
-			Color fill = new Color(220, 40, 40, 130);
-			Color border = fill.darker(0.5f);
-			border.a = 220;
-			s = ImageBuilder.makeRectangle(w, h, fill, border);
-			attackBoxImages.store(s);
-		}
-
 		return new LayeredImage(s);
 	}
 }
