@@ -179,6 +179,21 @@ public abstract class Actor extends WorldObject {
 	}
 
 	/**
+	 * @return the facing
+	 */
+	private Dir getFacing() {
+		return facing;
+	}
+
+	/**
+	 * @param facing the facing to set
+	 */
+	private void setFacing(Dir facing) {
+		this.facing = facing;
+		setAheadSensorLocation(facing);
+	}
+
+	/**
 	 * Sets the walk speed of this actor. This is measured relative to the run
 	 * speed (e.g. walkSpeed of 0.5f means the Actor will walk half as fast as
 	 * they run)
@@ -204,16 +219,16 @@ public abstract class Actor extends WorldObject {
 
 		if (Math.abs(amount) > 0 && d == Dir.EAST || d == Dir.WEST) {
 			if (amount >= 0) {
-				facing = d;
+				setFacing(d);
 			} else {
-				facing = d.neg();
+				setFacing(d.neg());
 			}
-			setAheadSensorLocation(facing);
+			setAheadSensorLocation(getFacing());
 		}
 
-		if (facing == Dir.EAST) {
+		if (getFacing() == Dir.EAST) {
 			getSprite().setMirrored(false);
-		} else if (facing == Dir.WEST) {
+		} else if (getFacing() == Dir.WEST) {
 			getSprite().setMirrored(true);
 		}
 
@@ -234,7 +249,7 @@ public abstract class Actor extends WorldObject {
 				moved = false;
 			} else {
 				if (d == Dir.EAST || d == Dir.WEST) {
-					facing = d;
+					setFacing(d);
 				}
 			}
 		}
@@ -444,6 +459,10 @@ public abstract class Actor extends WorldObject {
 			// Start wall sliding if this Actor moves towards the wall
 			setState(ActorState.WALL_SLIDE);
 		}
+		
+		if (canClimb(d)) {
+			setState(ActorState.CLIMB);
+		}
 	}
 
 	/**
@@ -473,14 +492,14 @@ public abstract class Actor extends WorldObject {
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
 				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
-			} else if (lastState == ActorState.WALL_SLIDE) {
-				// If wall sliding then single jump
+			} else if (lastState == ActorState.WALL_SLIDE || lastState == ActorState.CLIMB) {
+				// If wall sliding or climbing then single jump
 				// away from the wall
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
-				facing = facing.neg();
+				setFacing(getFacing().neg());
 				jumpHSpeed = moveSpeed * 0.8f;
-				if (facing == Dir.WEST) {
+				if (getFacing() == Dir.WEST) {
 					jumpHSpeed *= -1;
 				}
 			} else if (canMidAirJump && vSpeed > -0.1f) {
@@ -558,6 +577,12 @@ public abstract class Actor extends WorldObject {
 				&& wallAheadSensorBtm.isOverlappingSolid();
 	}
 
+	private boolean canClimb(Dir d) {
+		return (d == Dir.EAST || d == Dir.WEST)
+				&& wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)
+				&& wallAheadSensorBtm.isOverlapping(ClimbingWallMarker.class);
+	}
+
 	/**
 	 * Checks whether the Actor should be Wall Sliding
 	 */
@@ -565,9 +590,22 @@ public abstract class Actor extends WorldObject {
 		// Check for continuing a wall slide
 		// This happens when the Actor was previously wall sliding
 		// and has not since tried to move away from the wall
-		Dir d = facing;
+		Dir d = getFacing();
 		if (lastState == ActorState.WALL_SLIDE && canWallSlide(d)) {
 			setState(ActorState.WALL_SLIDE);
+		}
+	}
+	
+	/**
+	 * Checks whether the Actor should be Climbing
+	 */
+	private void checkClimb() {
+		// Check for continuing a climb
+		// This happens when the Actor was previously climbing
+		// and has not since tried to move away from the wall
+		Dir d = getFacing();
+		if (lastState == ActorState.CLIMB && canClimb(d)) {
+			setState(ActorState.CLIMB);
 		}
 	}
 
@@ -665,7 +703,8 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void jumpMovement(int delta) {
-		if (gravityEnabled()) {
+		checkClimb();
+		if (gravityEnabled() && getState() != ActorState.CLIMB) {
 			checkWallSlide();
 			calculateVSpeed(delta);
 
@@ -694,6 +733,11 @@ public abstract class Actor extends WorldObject {
 		// Updated sprite according to Actor's state
 		if (getSprite() instanceof StatedSprite) {
 			((StatedSprite) getSprite()).setState(state.ordinal());
+		}
+		
+		if (to == ActorState.CLIMB) {
+			// Reset vSpeed if start climbing
+			vSpeed = 0;
 		}
 	}
 

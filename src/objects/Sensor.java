@@ -35,4 +35,12 @@ public class Sensor extends Attachment {
 		return solids == null || !solids.isEmpty();
 	}
 
+	public <T extends WorldObject> boolean isOverlapping(Class<T> t) {
+		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
+				getRectangle());
+		Collection<T> ts = getObject().getWorld().getMap().getOverlappingObjectsOfType(
+				rect, t);
+		return ts == null || !ts.isEmpty();
+	}
+
 }
