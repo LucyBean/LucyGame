@@ -58,6 +58,13 @@ public class Player extends Actor {
 			if (input.isKeyDown(Input.KEY_O)) {
 				moveFunction.accept(Dir.SOUTH);
 			}
+		} else if (getState() == ActorState.CLIMB) {
+			if (input.isKeyDown(Input.KEY_COMMA)) {
+				climb(Dir.NORTH, delta);
+			}
+			if (input.isKeyDown(Input.KEY_O)) {
+				climb(Dir.SOUTH, delta);
+			}
 		}
 		if (input.isKeyDown(Input.KEY_PERIOD)) {
 			interactWithAll();

@@ -134,8 +134,13 @@ public abstract class Actor extends WorldObject {
 		return gravityEnabled;
 	}
 
+	/**
+	 * Returns the state of the Actor at the end of the previous frame.
+	 * 
+	 * @return
+	 */
 	public ActorState getState() {
-		return state;
+		return lastState;
 	}
 
 	//
@@ -186,7 +191,8 @@ public abstract class Actor extends WorldObject {
 	}
 
 	/**
-	 * @param facing the facing to set
+	 * @param facing
+	 *            the facing to set
 	 */
 	private void setFacing(Dir facing) {
 		this.facing = facing;
@@ -459,9 +465,40 @@ public abstract class Actor extends WorldObject {
 			// Start wall sliding if this Actor moves towards the wall
 			setState(ActorState.WALL_SLIDE);
 		}
-		
+
 		if (canClimb(d)) {
 			setState(ActorState.CLIMB);
+		}
+	}
+
+	/**
+	 * Moves the Actor up or down at the climbing speed. This does not check
+	 * whether this Actor's state is CLIMB.
+	 * 
+	 * @param d
+	 *            The direction to move (EAST and WEST have no effect)
+	 * @param delta
+	 */
+	public void climb(Dir d, int delta) {
+		if (d == Dir.NORTH || d == Dir.SOUTH) {
+			float moveAmount = moveSpeed * delta * walkSpeed;
+			boolean moved = move(d, moveAmount);
+			if (moved) {
+				// TODO: Animate climbing sprite
+			}
+			if (!wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)) {
+				// This Actor has now climbed to the top of the this
+				// ClimbingWallMarker.
+				// Set them to the top of the wall by setting the bottom left of
+				// the
+				// player's collider to the location of the wallAheadSensorTop's
+				// bottom left co-ordinate
+				Point btmLeft = getCoOrdTranslator().objectToWorldCoOrds(
+						wallAheadSensorTop.getBottomLeft());
+				Point topLeft = btmLeft.move(Dir.NORTH, getCollider().getHeight());
+				setPosition(topLeft);
+
+			}
 		}
 	}
 
@@ -492,7 +529,8 @@ public abstract class Actor extends WorldObject {
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
 				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
-			} else if (lastState == ActorState.WALL_SLIDE || lastState == ActorState.CLIMB) {
+			} else if (lastState == ActorState.WALL_SLIDE
+					|| lastState == ActorState.CLIMB) {
 				// If wall sliding or climbing then single jump
 				// away from the wall
 				vSpeed = -nextJumpStrength;
@@ -526,7 +564,7 @@ public abstract class Actor extends WorldObject {
 		} else if (isOnCeiling() && vSpeed < 0.0f) {
 			// Stop jumping if touching the ceiling
 			vSpeed = 0.0f;
-		} else if (getState() == ActorState.WALL_SLIDE) {
+		} else if (state == ActorState.WALL_SLIDE) {
 			// Fall at wall slide speed
 			vSpeed += GRAVITY * delta;
 			vSpeed = Math.min(TERMINAL_WALL_SLIDE_VELOCITY, vSpeed);
@@ -595,7 +633,7 @@ public abstract class Actor extends WorldObject {
 			setState(ActorState.WALL_SLIDE);
 		}
 	}
-	
+
 	/**
 	 * Checks whether the Actor should be Climbing
 	 */
@@ -704,12 +742,12 @@ public abstract class Actor extends WorldObject {
 
 	private void jumpMovement(int delta) {
 		checkClimb();
-		if (gravityEnabled() && getState() != ActorState.CLIMB) {
+		if (gravityEnabled() && state != ActorState.CLIMB) {
 			checkWallSlide();
 			calculateVSpeed(delta);
 
-			if (getState() == ActorState.JUMP || getState() == ActorState.FALL
-					|| getState() == ActorState.WALL_SLIDE) {
+			if (state == ActorState.JUMP || state == ActorState.FALL
+					|| state == ActorState.WALL_SLIDE) {
 				move(Dir.SOUTH, vSpeed * delta);
 				// Move E/W according to jump direction
 				float moveAmount = jumpHSpeed * delta;
@@ -734,7 +772,7 @@ public abstract class Actor extends WorldObject {
 		if (getSprite() instanceof StatedSprite) {
 			((StatedSprite) getSprite()).setState(state.ordinal());
 		}
-		
+
 		if (to == ActorState.CLIMB) {
 			// Reset vSpeed if start climbing
 			vSpeed = 0;

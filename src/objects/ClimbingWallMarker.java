@@ -4,7 +4,7 @@ import helpers.Point;
 import worlds.WorldLayer;
 
 public class ClimbingWallMarker extends Static {
-	private static final float width = 0.5f;
+	private static final float width = 0.3f;
 
 	public ClimbingWallMarker(Point top, float length) {
 		super(top, WorldLayer.WORLD, ItemType.CLIMBING_WALL_MARKER, null,
