@@ -4,15 +4,17 @@
 
 Platformer moves
 
-Refactor RectangleImageStore to accept a colour in the constructor and make 'get'
-automatically create or retrieve the correct rectangle.
+Add the ability to place climbing markers using the world builder
 
-A major refactor is in order.
-	Remove reference to GameObject in Attachment constructor? Almost all seem to use null then
-		assign the GameObject when it is attached to the GameObject.
+Add "object sticker" attachments. These can be added to objects and when
+	other Actors (of a certain type only?) are within the "object sticker" they
+	will move with that object
 
 Add a pet that follows me
-Add a Matt quest
+
+Expand the quest system
+	Add a platformer tutorial quest
+	Add a Matt quest
 
 Animations
 	Compile each animation folder to a single file
@@ -21,9 +23,6 @@ Animations
 ==  ISSUES  ==
 ==============
 Sprite constructors: remove those that specify a Point?
-
-Why can the camera not zoom when it is tracking?
-
 =============
 ==  IDEAS  ==
 =============
