@@ -28,13 +28,13 @@ public class Player extends Actor {
 
 		fallAttack = new AttackBox(getCollider().getBottomLeft(), getCollider().getWidth(), 0.5f) {
 			@Override
-			public void attackEffectOnPlayer() {
+			public void effectOnPlayer() {
 				resetMidAirJump();
 				signalJump(0.5f);
 			}
 			
 			@Override
-			public void attackEffectOnEnemy(Enemy e) {
+			public void effectOnEnemy(Enemy e) {
 				e.damage(1);
 			}
 		};
@@ -51,10 +51,10 @@ public class Player extends Actor {
 			moveFunction = (d -> run(d, delta));
 		}
 
-		if (input.isKeyDown(Input.KEY_A)) {
+		if (input.isKeyDown(Input.KEY_A) && !input.isKeyDown(Input.KEY_E)) {
 			moveFunction.accept(Dir.WEST);
 		}
-		if (input.isKeyDown(Input.KEY_E)) {
+		if (input.isKeyDown(Input.KEY_E) && !input.isKeyDown(Input.KEY_A)) {
 			moveFunction.accept(Dir.EAST);
 		}
 

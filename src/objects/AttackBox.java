@@ -47,19 +47,18 @@ public class AttackBox extends Attachment {
 	public void checkAttack() {
 		Collection<Enemy> enemies = getOverlappingEnemies();
 		if (!enemies.isEmpty()) {
-			attackEffectOnPlayer();
+			effectOnPlayer();
 			enemies.stream().filter(
-					e -> !damagedByThisAttack.contains(e)).forEach(e ->
-							{
-								attackEffectOnEnemy(e);
-								damagedByThisAttack.add(e);
-							});
+					e -> !damagedByThisAttack.contains(e)).forEach(e -> {
+						effectOnEnemy(e);
+						damagedByThisAttack.add(e);
+					});
 		}
 	}
-	
+
 	/**
 	 * Resets the targets of this AttackBox. This will allow this AttackBox to
-	 * damage an enemy again.
+	 * damage a single enemy multiple times.
 	 */
 	public void resetTargets() {
 		damagedByThisAttack = new HashSet<>();
@@ -77,17 +76,18 @@ public class AttackBox extends Attachment {
 	 * enemies. Override this to allow the attack to have an effect on the
 	 * player if it hits.
 	 */
-	public void attackEffectOnPlayer() {
+	public void effectOnPlayer() {
 
 	}
 
 	/**
 	 * This is called once for every enemy that overlaps with the Attackbox.
+	 * This will only be called once on the enemy until resetTargets is called.
 	 * Override this to allow the attack to have an effect on the enemies hit.
 	 * 
 	 * @param e
 	 */
-	public void attackEffectOnEnemy(Enemy e) {
+	public void effectOnEnemy(Enemy e) {
 
 	}
 
