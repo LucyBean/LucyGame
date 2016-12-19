@@ -59,11 +59,8 @@ public class Camera {
 			Rectangle tsc = target.getCoOrdTranslator().objectToScreenCoOrds(
 					target.getCollider().getRectangle());
 
-			// Check if it is completely inside the no-scroll region
-			if (noScrollRegion.contains(tsc)) {
-				// do nothing
-				return;
-			} else {
+			// Check if it the object is outside the noScrollRegion
+			if (!noScrollRegion.contains(tsc)) {
 				// determine direction
 				// x
 				if (tsc.getTopLeft().getX() < SCROLL_RECTANGLE_WIDTH) {
