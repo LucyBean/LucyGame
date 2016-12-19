@@ -8,6 +8,7 @@ import objects.ItemType;
 
 public class DogEnemy extends Enemy {
 	private Dir facing;
+	private int health = 2;
 
 	public DogEnemy(Point origin) {
 		super(origin, ItemType.DOG_ENEMY);
@@ -25,6 +26,14 @@ public class DogEnemy extends Enemy {
 		
 		if (!getFloorSensor().isOverlappingSolid()) {
 			facing = facing.neg();
+		}
+	}
+	
+	@Override
+	public void damage(int amount) {
+		health--;
+		if (health <= 0) {
+			disable();
 		}
 	}
 

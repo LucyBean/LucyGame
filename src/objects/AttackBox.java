@@ -1,6 +1,7 @@
 package objects;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import characters.Enemy;
 import helpers.Point;
@@ -10,13 +11,15 @@ import images.LayeredImage;
 
 public class AttackBox extends Attachment {
 	private LayeredImage image;
+	private Collection<Enemy> damagedByThisAttack = new HashSet<>();
 
 	public AttackBox(Rectangle rect) {
-		super(rect, null);
+		this(rect, null);
 	}
 
 	public AttackBox(Rectangle rect, GameObject myObject) {
 		super(rect, myObject);
+
 	}
 
 	public AttackBox(Point topLeft, float width, float height) {
@@ -39,14 +42,27 @@ public class AttackBox extends Attachment {
 
 	/**
 	 * Checks whether this attack overlaps any enemies. Will fire the
-	 * attackEffect... methods if the attack overlaps any enemies.
+	 * attackEffect... methods on any enemies for which it overlaps.
 	 */
 	public void checkAttack() {
 		Collection<Enemy> enemies = getOverlappingEnemies();
 		if (!enemies.isEmpty()) {
 			attackEffectOnPlayer();
-			enemies.stream().forEach(e -> attackEffectOnEnemy(e));
+			enemies.stream().filter(
+					e -> !damagedByThisAttack.contains(e)).forEach(e ->
+							{
+								attackEffectOnEnemy(e);
+								damagedByThisAttack.add(e);
+							});
 		}
+	}
+	
+	/**
+	 * Resets the targets of this AttackBox. This will allow this AttackBox to
+	 * damage an enemy again.
+	 */
+	public void resetTargets() {
+		damagedByThisAttack = new HashSet<>();
 	}
 
 	private Collection<Enemy> getOverlappingEnemies() {

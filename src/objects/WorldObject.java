@@ -162,6 +162,7 @@ public abstract class WorldObject extends GameObject {
 		if (a != null) {
 			activeAttacks.add(a);
 			a.setObject(this);
+			a.resetTargets();
 			attachments.add(a);
 		}
 	}

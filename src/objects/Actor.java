@@ -454,7 +454,7 @@ public abstract class Actor extends WorldObject {
 	public void run(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta;
 		if (lastState == ActorState.FALL || lastState == ActorState.JUMP) {
-			moveAmount *= 0.2f;
+			moveAmount *= 0.3f;
 		}
 		boolean moved = move(d, moveAmount);
 		if (isOnGround() && moved) {
@@ -520,6 +520,10 @@ public abstract class Actor extends WorldObject {
 		this.nextJumpStrength = defaultJumpStrength * nextJumpStrengthRelative;
 		signalJump();
 	}
+	
+	protected void resetMidAirJump() {
+		canMidAirJump = true;
+	}
 
 	private void jump(int delta) {
 		if (gravityEnabled()) {
@@ -536,7 +540,7 @@ public abstract class Actor extends WorldObject {
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
 				setFacing(getFacing().neg());
-				jumpHSpeed = moveSpeed * 0.8f;
+				jumpHSpeed = moveSpeed * 0.7f;
 				if (getFacing() == Dir.WEST) {
 					jumpHSpeed *= -1;
 				}
@@ -560,7 +564,7 @@ public abstract class Actor extends WorldObject {
 			// If player is on the ground and is falling, stop them.
 			// Also reset mid-air jump ability
 			vSpeed = 0.0f;
-			canMidAirJump = true;
+			resetMidAirJump();
 		} else if (isOnCeiling() && vSpeed < 0.0f) {
 			// Stop jumping if touching the ceiling
 			vSpeed = 0.0f;

@@ -21,5 +21,7 @@ public abstract class Enemy extends Actor {
 		setColliderFromSprite();
 	}
 	
+	public abstract void damage(int amount);
+	
 
 }

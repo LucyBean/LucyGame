@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 
+import characters.Enemy;
 import helpers.Dir;
 import helpers.Point;
 import images.SpriteBuilder;
@@ -28,7 +29,13 @@ public class Player extends Actor {
 		fallAttack = new AttackBox(getCollider().getBottomLeft(), getCollider().getWidth(), 0.5f) {
 			@Override
 			public void attackEffectOnPlayer() {
+				resetMidAirJump();
 				signalJump(0.5f);
+			}
+			
+			@Override
+			public void attackEffectOnEnemy(Enemy e) {
+				e.damage(1);
 			}
 		};
 	}

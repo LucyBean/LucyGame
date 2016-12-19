@@ -229,7 +229,7 @@ public class WorldMap {
 			Class<T> t) {
 		Collection<WorldObject> objects = layers.getAll();
 		Collection<T> ts = new HashSet<T>();
-		objects.stream().filter(a -> t.isInstance(a)).map(
+		objects.stream().filter(a -> a.isEnabled()).filter(a -> t.isInstance(a)).map(
 				a -> t.cast(a)).forEach(a -> ts.add(a));
 		return ts;
 	}
