@@ -24,6 +24,7 @@ public abstract class Actor extends WorldObject {
 	private final static float GRAVITY = 0.00005f;
 	private final static float TERMINAL_FALL_VELOCITY = 0.5f;
 	private final static float TERMINAL_WALL_SLIDE_VELOCITY = 0.005f;
+	private final static float FEET_COLLISION_THRESHOLD = 0.01f;
 	private float vSpeed;
 	private float jumpHSpeed;
 	private float moveSpeed = 0.01f;
@@ -335,16 +336,46 @@ public abstract class Actor extends WorldObject {
 			amount = -amount;
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
-		Collection<WorldObject> activeSolids = getOverlappingSolids(moveArea);
+		Collection<WorldObject> overlappingSolids = getOverlappingSolids(
+				moveArea);
+
+		// If moving left/right allow the Actor to 'climb' onto solids which
+		// have a
+		// small "feet collision". The Actor will be nudged NORTH slightly in
+		// order
+		// to avoid colliding with these solids.
+		if (d == Dir.EAST || d == Dir.WEST) {
+			float northNudge = 0.0f;
+			// feet collisions are one in which the vertically colliding
+			// distance is small
+			Iterator<WorldObject> osi = overlappingSolids.iterator();
+			while (osi.hasNext()) {
+				WorldObject solid = osi.next();
+				float actorBtm = getCoOrdTranslator().objectToWorldCoOrds(
+						getCollider().getBottomLeft()).getY();
+				float solidTop = solid.getCoOrdTranslator().objectToWorldCoOrds(
+						solid.getCollider().getTopLeft()).getY();
+				float overlap = actorBtm - solidTop;
+				if (overlap > 0 && overlap < FEET_COLLISION_THRESHOLD) {
+					northNudge = Math.max(overlap, northNudge);
+				}
+			}
+			if (northNudge > 0) {
+				northNudge += 0.0001f;
+				move(Dir.NORTH, northNudge);
+				moveArea = calculateMoveArea(d, amount);
+				overlappingSolids = getOverlappingSolids(moveArea);
+			}
+		}
 
 		// If there are no active solids, move to that position immediately.
-		if (activeSolids.isEmpty()) {
+		if (overlappingSolids.isEmpty()) {
 			return getPosition().move(d.asPoint().scale(amount));
 		}
 		// Else move to edge of the d.neg()-most point
 		else {
 			float toMove = 0.0f;
-			Iterator<WorldObject> asi = activeSolids.iterator();
+			Iterator<WorldObject> asi = overlappingSolids.iterator();
 			WorldObject go;
 			switch (d) {
 				case NORTH: {
@@ -495,7 +526,8 @@ public abstract class Actor extends WorldObject {
 				// bottom left co-ordinate
 				Point btmLeft = getCoOrdTranslator().objectToWorldCoOrds(
 						wallAheadSensorTop.getBottomLeft());
-				Point topLeft = btmLeft.move(Dir.NORTH, getCollider().getHeight());
+				Point topLeft = btmLeft.move(Dir.NORTH,
+						getCollider().getHeight());
 				setPosition(topLeft);
 
 			}
@@ -520,7 +552,7 @@ public abstract class Actor extends WorldObject {
 		this.nextJumpStrength = defaultJumpStrength * nextJumpStrengthRelative;
 		signalJump();
 	}
-	
+
 	protected void resetMidAirJump() {
 		canMidAirJump = true;
 	}
@@ -780,6 +812,8 @@ public abstract class Actor extends WorldObject {
 		if (to == ActorState.CLIMB) {
 			// Reset vSpeed if start climbing
 			vSpeed = 0;
+		} else if (to == ActorState.WALL_SLIDE) {
+			canMidAirJump = false;
 		}
 	}
 
