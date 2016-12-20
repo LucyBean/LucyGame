@@ -22,7 +22,29 @@ public class InheritanceTest {
 		foo(c);
 		foo(cs);
 		
+		Class<?> cls = cs.getClass();
+
+		System.out.println("cs class: " + cls);
+		System.out.println("Is anon? " + cls.isAnonymousClass());
+		System.out.println("Superclass: " + cls.getSuperclass());
+		
 		s.sayHi();
+		
+		Child canon = new Child(){
+			@Override
+			void sayHi() {
+				System.out.println("nope!");
+			}
+		};
+		
+		cls = canon.getClass();
+		System.out.println("canon class: " + cls);
+		System.out.println("Is anon? " + cls.isAnonymousClass());
+		System.out.println("Superclass: " + cls.getSuperclass());
+		
+		System.out.println(Super.class.isAssignableFrom(Child.class));
+		System.out.println(Super.class.isAssignableFrom(Super.class));
+		System.out.println(Child.class.isAssignableFrom(Super.class));
 	}
 }
 

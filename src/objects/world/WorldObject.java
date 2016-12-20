@@ -1,7 +1,6 @@
 package objects.world;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.newdawn.slick.GameContainer;
 
@@ -9,6 +8,7 @@ import helpers.Point;
 import objects.GameObject;
 import objects.attachments.ActorSticker;
 import objects.attachments.Attachment;
+import objects.attachments.AttachmentSet;
 import objects.attachments.AttackBox;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
@@ -30,11 +30,8 @@ public abstract class WorldObject extends GameObject {
 	private ItemType itemType;
 	private Collider collider;
 	private InteractBox interactBox;
-	private Collection<Sensor> sensors;
-	private Collection<AttackBox> activeAttacks;
-	private Collection<ActorSticker> actorStickers;
 	private WorldLayer layer;
-	private Collection<Attachment> attachments;
+	private AttachmentSet attachments;
 
 	/**
 	 * Creates a new GameObject. Origin points for sprite, collider, and
@@ -57,10 +54,7 @@ public abstract class WorldObject extends GameObject {
 		super(origin, sprite);
 		this.layer = layer;
 		this.itemType = itemType;
-		sensors = new HashSet<>();
-		attachments = new HashSet<>();
-		activeAttacks = new HashSet<>();
-		actorStickers = new HashSet<>();
+		attachments = new AttachmentSet();
 		attach(collider);
 		attach(interactBox);
 
@@ -91,47 +85,31 @@ public abstract class WorldObject extends GameObject {
 
 	protected void attach(Attachment a) {
 		if (a != null) {
+			a.setObject(this);
+			attachments.add(a);
+
 			if (a instanceof Sprite) {
 				setSprite((Sprite) a);
-			} else {
-				attachments.add(a);
-
-				if (a instanceof Collider) {
-					setCollider((Collider) a);
-				}
-				if (a instanceof InteractBox) {
-					setInteractBox((InteractBox) a);
-				}
-				if (a instanceof Sensor) {
-					addSensor((Sensor) a);
-				}
-				if (a instanceof AttackBox) {
-					addAttackBox((AttackBox) a);
-				}
-				if (a instanceof ActorSticker) {
-					addActorSticker((ActorSticker) a);
-				}
+			} else if (a instanceof Collider) {
+				setCollider((Collider) a);
+			} else if (a instanceof InteractBox) {
+				setInteractBox((InteractBox) a);
+			} else if (a instanceof AttackBox) {
+				((AttackBox) a).resetTargets();
 			}
 		}
 	}
 
 	protected void detach(Attachment a) {
 		if (a != null) {
-			attachments.remove(a);
+			a.setObject(null);
+
 			if (a instanceof Collider) {
 				setCollider(null);
-			}
-			if (a instanceof InteractBox) {
+			} else if (a instanceof InteractBox) {
 				setInteractBox(null);
-			}
-			if (a instanceof Sensor) {
-				removeSensor((Sensor) a);
-			}
-			if (a instanceof AttackBox) {
-				removeAttackBox((AttackBox) a);
-			}
-			if (a instanceof ActorSticker) {
-				removeActorSticker((ActorSticker) a);
+			} else {
+				attachments.remove(a);
 			}
 		}
 	}
@@ -142,7 +120,6 @@ public abstract class WorldObject extends GameObject {
 		}
 		collider = c;
 		if (collider != null) {
-			collider.setObject(this);
 			attachments.add(collider);
 		}
 	}
@@ -153,57 +130,7 @@ public abstract class WorldObject extends GameObject {
 		}
 		interactBox = ib;
 		if (interactBox != null) {
-			interactBox.setObject(this);
 			attachments.add(interactBox);
-		}
-	}
-
-	private void addSensor(Sensor s) {
-		if (s != null) {
-			sensors.add(s);
-			s.setObject(this);
-			attachments.add(s);
-		}
-	}
-
-	private void removeSensor(Sensor s) {
-		if (s != null) {
-			sensors.remove(s);
-			attachments.remove(s);
-			s.setObject(null);
-		}
-	}
-
-	private void addAttackBox(AttackBox a) {
-		if (a != null) {
-			activeAttacks.add(a);
-			a.setObject(this);
-			a.resetTargets();
-			attachments.add(a);
-		}
-	}
-
-	private void removeAttackBox(AttackBox a) {
-		if (a != null) {
-			activeAttacks.remove(a);
-			attachments.remove(a);
-			a.setObject(null);
-		}
-	}
-	
-	private void addActorSticker(ActorSticker as) {
-		if (as != null) {
-			actorStickers.add(as);
-			as.setObject(this);
-			attachments.add(as);
-		}
-	}
-	
-	private void removeActorSticker(ActorSticker as) {
-		if (as != null) {
-			actorStickers.remove(as);
-			attachments.remove(as);
-			as.setObject(null);
 		}
 	}
 
@@ -242,9 +169,9 @@ public abstract class WorldObject extends GameObject {
 	public ItemType getType() {
 		return itemType;
 	}
-	
+
 	protected Collection<ActorSticker> getActorStickers() {
-		return actorStickers;
+		return attachments.getByType(ActorSticker.class);
 	}
 
 	/**
@@ -315,9 +242,12 @@ public abstract class WorldObject extends GameObject {
 			getInteractBox().draw();
 		}
 		if (GlobalOptions.drawSensors()) {
+			Collection<Sensor> sensors = attachments.getByType(Sensor.class);
 			sensors.stream().forEach(s -> s.draw());
 		}
 		if (GlobalOptions.drawAttackBoxes()) {
+			Collection<AttackBox> activeAttacks = attachments.getByType(
+					AttackBox.class);
 			activeAttacks.stream().forEach(s -> s.draw());
 		}
 	}
@@ -351,6 +281,7 @@ public abstract class WorldObject extends GameObject {
 	@Override
 	public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
-		activeAttacks.stream().forEach(a -> a.checkAttack());
+		attachments.getByType(AttackBox.class).stream().forEach(
+				a -> a.checkAttack());
 	}
 }
