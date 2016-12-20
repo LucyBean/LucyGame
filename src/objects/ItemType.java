@@ -16,7 +16,8 @@ public enum ItemType {
 		PLAYER,
 		MATT,
 		DOG_ENEMY,
-		CLIMBING_WALL_MARKER;
+		CLIMBING_WALL_MARKER,
+		MOVING_WALL;
 	
 	ItemType parent;
 	

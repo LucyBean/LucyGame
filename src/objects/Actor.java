@@ -646,13 +646,14 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private boolean canWallSlide(Dir d) {
-		return vSpeed > 0 && (d == Dir.EAST || d == Dir.WEST)
+		return getCollider() != null && vSpeed > 0
+				&& (d == Dir.EAST || d == Dir.WEST)
 				&& wallAheadSensorTop.isOverlappingSolid()
 				&& wallAheadSensorBtm.isOverlappingSolid();
 	}
 
 	private boolean canClimb(Dir d) {
-		return (d == Dir.EAST || d == Dir.WEST)
+		return (getCollider() != null && d == Dir.EAST || d == Dir.WEST)
 				&& wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)
 				&& wallAheadSensorBtm.isOverlapping(ClimbingWallMarker.class);
 	}
@@ -789,7 +790,8 @@ public abstract class Actor extends WorldObject {
 				float moveAmount = jumpHSpeed * delta;
 				move(Dir.EAST, moveAmount);
 				// If hit a wall then set to zero
-				if (wallAheadSensorTop.isOverlappingSolid()
+				if (getCollider() != null
+						&& wallAheadSensorTop.isOverlappingSolid()
 						|| wallAheadSensorBtm.isOverlappingSolid()) {
 					jumpHSpeed = 0;
 				}

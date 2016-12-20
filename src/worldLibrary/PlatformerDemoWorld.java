@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 
 import exporting.WorldMapImporterExporter;
 import helpers.Point;
+import objectLibrary.MovingPlatform;
 import objects.ClimbingWallMarker;
 import objects.WorldObject;
 import player.Player;
@@ -32,6 +33,9 @@ public class PlatformerDemoWorld extends World {
 		
 		ClimbingWallMarker cw = new ClimbingWallMarker(new Point(19, 4), 8);
 		addObject(cw);
+		
+		MovingPlatform mp = new MovingPlatform(new Point(22, 4));
+		addObject(mp);
 	}
 
 }
