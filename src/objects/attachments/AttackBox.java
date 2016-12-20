@@ -46,7 +46,7 @@ public class AttackBox extends Attachment {
 	 * attackEffect... methods on any enemies for which it overlaps.
 	 */
 	public void checkAttack() {
-		Collection<Enemy> enemies = getOverlappingEnemies();
+		Collection<Enemy> enemies = getOverlappingObjectsOfType(Enemy.class);
 		if (!enemies.isEmpty()) {
 			effectOnPlayer();
 			enemies.stream().filter(
@@ -63,13 +63,6 @@ public class AttackBox extends Attachment {
 	 */
 	public void resetTargets() {
 		damagedByThisAttack = new HashSet<>();
-	}
-
-	private Collection<Enemy> getOverlappingEnemies() {
-		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
-				getRectangle());
-		return getObject().getWorld().getMap().getOverlappingObjectsOfType(rect,
-				Enemy.class);
 	}
 
 	/**

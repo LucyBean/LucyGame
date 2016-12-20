@@ -1,10 +1,13 @@
 package objects.attachments;
 
+import java.util.Collection;
+
 import helpers.Point;
 import helpers.Rectangle;
 import objects.CoOrdTranslator;
 import objects.GameObject;
 import objects.images.LayeredImage;
+import objects.world.WorldObject;
 
 public abstract class Attachment {
 	private Rectangle rect;
@@ -99,5 +102,16 @@ public abstract class Attachment {
 	@Override
 	public String toString() {
 		return rect.toString();
+	}
+	
+	public <T extends WorldObject> Collection<T> getOverlappingObjectsOfType(Class<T> t) {
+		if (getObject() != null) {
+			Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
+					getRectangle());
+			return getObject().getWorld().getMap().getOverlappingObjectsOfType(rect,
+					t);
+		} else {
+			return null;
+		}
 	}
 }

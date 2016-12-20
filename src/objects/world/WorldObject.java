@@ -7,6 +7,7 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import objects.GameObject;
+import objects.attachments.ActorSticker;
 import objects.attachments.Attachment;
 import objects.attachments.AttackBox;
 import objects.attachments.Collider;
@@ -31,6 +32,7 @@ public abstract class WorldObject extends GameObject {
 	private InteractBox interactBox;
 	private Collection<Sensor> sensors;
 	private Collection<AttackBox> activeAttacks;
+	private Collection<ActorSticker> actorStickers;
 	private WorldLayer layer;
 	private Collection<Attachment> attachments;
 
@@ -58,6 +60,7 @@ public abstract class WorldObject extends GameObject {
 		sensors = new HashSet<>();
 		attachments = new HashSet<>();
 		activeAttacks = new HashSet<>();
+		actorStickers = new HashSet<>();
 		attach(collider);
 		attach(interactBox);
 
@@ -105,6 +108,9 @@ public abstract class WorldObject extends GameObject {
 				if (a instanceof AttackBox) {
 					addAttackBox((AttackBox) a);
 				}
+				if (a instanceof ActorSticker) {
+					addActorSticker((ActorSticker) a);
+				}
 			}
 		}
 	}
@@ -123,6 +129,9 @@ public abstract class WorldObject extends GameObject {
 			}
 			if (a instanceof AttackBox) {
 				removeAttackBox((AttackBox) a);
+			}
+			if (a instanceof ActorSticker) {
+				removeActorSticker((ActorSticker) a);
 			}
 		}
 	}
@@ -161,6 +170,7 @@ public abstract class WorldObject extends GameObject {
 		if (s != null) {
 			sensors.remove(s);
 			attachments.remove(s);
+			s.setObject(null);
 		}
 	}
 
@@ -177,6 +187,23 @@ public abstract class WorldObject extends GameObject {
 		if (a != null) {
 			activeAttacks.remove(a);
 			attachments.remove(a);
+			a.setObject(null);
+		}
+	}
+	
+	private void addActorSticker(ActorSticker as) {
+		if (as != null) {
+			actorStickers.add(as);
+			as.setObject(this);
+			attachments.add(as);
+		}
+	}
+	
+	private void removeActorSticker(ActorSticker as) {
+		if (as != null) {
+			actorStickers.remove(as);
+			attachments.remove(as);
+			as.setObject(null);
 		}
 	}
 
@@ -214,6 +241,10 @@ public abstract class WorldObject extends GameObject {
 
 	public ItemType getType() {
 		return itemType;
+	}
+	
+	protected Collection<ActorSticker> getActorStickers() {
+		return actorStickers;
 	}
 
 	/**

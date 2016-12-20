@@ -1,4 +1,4 @@
-package worlds.library;
+package worlds.lib;
 
 import org.newdawn.slick.SlickException;
 

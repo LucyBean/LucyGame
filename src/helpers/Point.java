@@ -92,6 +92,22 @@ public class Point {
 	public float getY() {
 		return y;
 	}
+	
+	public float getDir(Dir d) {
+		switch(d) {
+			case EAST:
+				return getX();
+			case NORTH:
+				return -getY();
+			case SOUTH:
+				return getY();
+			case WEST:
+				return -getX();
+			default:
+				return 0.0f;
+			
+		}
+	}
 
 	@Override
 	public String toString() {

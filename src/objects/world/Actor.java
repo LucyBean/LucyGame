@@ -248,16 +248,21 @@ public abstract class Actor extends WorldObject {
 			// This object has no collider so moves immediately without
 			// collision checking
 			setPosition(getPosition().move(d, amount));
+			getActorStickers().stream().forEach(a -> a.moveStuckActors(d, amount));
 			positionDelta = positionDelta.move(d, amount);
 		} else {
 			// This object moves with collision checking
 			Point newPos = findNewPosition(d, amount);
 			Point oldPos = getPosition();
-			positionDelta = positionDelta.move(newPos).move(oldPos.neg());
+			Point posChange = newPos.move(oldPos.neg());
+			positionDelta = positionDelta.move(posChange);
 			setPosition(newPos);
 			if (newPos.equals(oldPos)) {
 				moved = false;
 			} else {
+				float moveAmount = posChange.getDir(d);
+				getActorStickers().stream().forEach(a -> a.moveStuckActors(d, moveAmount));
+				
 				if (d == Dir.EAST || d == Dir.WEST) {
 					setFacing(d);
 				}

@@ -18,10 +18,14 @@ public class ImageBuilder {
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
 
-	private static RectangleImageStore colliderImages = new RectangleImageStore(new Color(50, 135, 220, 130));
-	private static RectangleImageStore interactBoxImages = new RectangleImageStore(new Color(50, 220, 135, 130));
-	private static RectangleImageStore sensorImages = new RectangleImageStore(new Color(220, 220, 40, 130));
-	private static RectangleImageStore attackBoxImages = new RectangleImageStore(new Color(220, 220, 40, 130));
+	private static RectangleImageStore colliderImages = new RectangleImageStore(
+			new Color(50, 135, 220, 130));
+	private static RectangleImageStore interactBoxImages = new RectangleImageStore(
+			new Color(50, 220, 135, 130));
+	private static RectangleImageStore sensorImages = new RectangleImageStore(
+			new Color(220, 220, 40, 130));
+	private static RectangleImageStore attackBoxImages = new RectangleImageStore(
+			new Color(220, 40, 40, 130));
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
 	public static void initSpriteSheets() throws SlickException {
@@ -175,7 +179,7 @@ public class ImageBuilder {
 		LucyImage s = interactBoxImages.get(w, h);
 		return new LayeredImage(s);
 	}
-	
+
 	public static LayeredImage makeSensorImage(Rectangle sensor) {
 		// check if a sensor image of this size has been made already
 		int w = (int) (sensor.getWidth() * GRID_SIZE);
@@ -183,7 +187,7 @@ public class ImageBuilder {
 		LucyImage s = sensorImages.get(w, h);
 		return new LayeredImage(s);
 	}
-	
+
 	public static LayeredImage makeAttackBoxImage(Rectangle attackBox) {
 		// check if an attack box image of this size has been made already
 		int w = (int) (attackBox.getWidth() * GRID_SIZE);

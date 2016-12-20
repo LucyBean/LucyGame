@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Dir;
 import helpers.Point;
+import objects.attachments.ActorSticker;
 import objects.world.ItemType;
 
 public class DogEnemy extends Enemy {
@@ -13,6 +14,8 @@ public class DogEnemy extends Enemy {
 	public DogEnemy(Point origin) {
 		super(origin, ItemType.DOG_ENEMY);
 		setMoveSpeed(0.005f);
+		ActorSticker as = new ActorSticker(getCollider().getRectangle());
+		attach(as);
 	}
 
 	@Override

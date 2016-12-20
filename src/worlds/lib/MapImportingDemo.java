@@ -1,4 +1,4 @@
-package worlds.library;
+package worlds.lib;
 
 import java.util.HashMap;
 import java.util.LinkedList;
