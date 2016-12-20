@@ -1,8 +1,9 @@
 package objects;
 
-import gameInterface.InterfaceElement;
 import helpers.Point;
 import helpers.Rectangle;
+import objects.gameInterface.InterfaceElement;
+import objects.world.WorldObject;
 import options.GlobalOptions;
 import worlds.Camera;
 import worlds.WorldLayer;

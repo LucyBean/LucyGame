@@ -9,16 +9,16 @@ import java.util.Set;
 
 import org.newdawn.slick.GameContainer;
 
-import characters.NPC;
 import helpers.Point;
 import helpers.Rectangle;
-import objects.Actor;
-import objects.Lockable;
-import objects.Locker;
 import objects.ObjectLayerSet;
-import objects.WorldObject;
+import objects.world.Actor;
+import objects.world.Lockable;
+import objects.world.Locker;
+import objects.world.WorldObject;
+import objects.world.characters.NPC;
+import objects.world.characters.Player;
 import options.GlobalOptions;
-import player.Player;
 
 /**
  * The Map is responsible for holding all the objects in a World.

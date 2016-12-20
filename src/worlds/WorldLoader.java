@@ -1,12 +1,12 @@
 package worlds;
 
-import worldLibrary.ColliderDemoWorld;
-import worldLibrary.EnemyArena;
-import worldLibrary.HiddenObjectDemoWorld;
-import worldLibrary.LevelBuildingWorld;
-import worldLibrary.MenuDemoWorld;
-import worldLibrary.PlatformerDemoWorld;
-import worldLibrary.QuestDemoWorld;
+import worlds.library.ColliderDemoWorld;
+import worlds.library.EnemyArena;
+import worlds.library.HiddenObjectDemoWorld;
+import worlds.library.LevelBuildingWorld;
+import worlds.library.MenuDemoWorld;
+import worlds.library.PlatformerDemoWorld;
+import worlds.library.QuestDemoWorld;
 
 public class WorldLoader {
 	LucyGame game;

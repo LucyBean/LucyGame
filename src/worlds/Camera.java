@@ -6,7 +6,7 @@ import org.newdawn.slick.Input;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
-import objects.WorldObject;
+import objects.world.WorldObject;
 import options.GlobalOptions;
 
 /**

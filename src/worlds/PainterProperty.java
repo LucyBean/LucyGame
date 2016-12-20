@@ -1,6 +1,6 @@
 package worlds;
 
-import gameInterface.PropertyPanel;
+import objects.gameInterface.PropertyPanel;
 
 public abstract class PainterProperty {
 	private String name;

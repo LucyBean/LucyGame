@@ -4,7 +4,7 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import helpers.Rectangle;
-import images.Sprite;
+import objects.images.Sprite;
 import worlds.World;
 
 public abstract class GameObject {

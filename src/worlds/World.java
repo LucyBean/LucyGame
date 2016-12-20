@@ -8,17 +8,17 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import characters.Conversation;
-import gameInterface.DefaultGameInterface;
-import gameInterface.GameInterface;
-import gameInterface.InterfaceElement;
 import helpers.Dir;
 import helpers.Point;
-import objectLibrary.Wall;
-import objects.WorldObject;
+import objects.gameInterface.DefaultGameInterface;
+import objects.gameInterface.GameInterface;
+import objects.gameInterface.InterfaceElement;
+import objects.lib.Wall;
+import objects.world.WorldObject;
+import objects.world.characters.Conversation;
+import objects.world.characters.Inventory;
+import objects.world.characters.Player;
 import options.GlobalOptions;
-import player.Inventory;
-import player.Player;
 import quests.EventInfo;
 import quests.Quest;
 

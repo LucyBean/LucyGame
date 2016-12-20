@@ -1,6 +1,6 @@
 package quests;
 
-import objects.WorldObject;
+import objects.world.WorldObject;
 
 public class EventInfo {
 	private EventType type;

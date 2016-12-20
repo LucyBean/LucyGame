@@ -1,9 +1,9 @@
 package worlds;
 
 import helpers.Point;
-import objects.ItemType;
-import objects.ObjectMaker;
-import objects.WorldObject;
+import objects.world.ItemType;
+import objects.world.ObjectMaker;
+import objects.world.WorldObject;
 
 public class MapPainter {
 	private WorldMap map;
