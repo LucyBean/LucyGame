@@ -90,12 +90,8 @@ public class GlobalOptions {
 		return Option.DRAW_INTERACT_BOXES.getValue() == 1;
 	}
 	
-	public static boolean drawSensors() {
-		return Option.DRAW_SENSORS.getValue() == 1;
-	}
-	
-	public static boolean drawAttackBoxes() {
-		return Option.DRAW_ATTACK_BOXES.getValue() == 1;
+	public static boolean drawAttachments() {
+		return Option.DRAW_ATTACHMENTS.getValue() == 1;
 	}
 
 	public static boolean debug() {

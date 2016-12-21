@@ -241,14 +241,16 @@ public abstract class WorldObject extends GameObject {
 		if (getInteractBox() != null && GlobalOptions.drawInteractBoxes()) {
 			getInteractBox().draw();
 		}
-		if (GlobalOptions.drawSensors()) {
+		if (GlobalOptions.drawAttachments()) {
 			Collection<Sensor> sensors = attachments.getByType(Sensor.class);
 			sensors.stream().forEach(s -> s.draw());
-		}
-		if (GlobalOptions.drawAttackBoxes()) {
+			
 			Collection<AttackBox> activeAttacks = attachments.getByType(
 					AttackBox.class);
 			activeAttacks.stream().forEach(s -> s.draw());
+			
+			Collection<ActorSticker> actorStickers = attachments.getByType(ActorSticker.class);
+			actorStickers.stream().forEach(s -> s.draw());
 		}
 	}
 

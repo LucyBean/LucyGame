@@ -6,9 +6,8 @@ public enum Option {
 	DRAW_ALL_COLLIDERS("Display all colliders", onOffMap()),
 	DRAW_INVIS_OBJ_COLLIDERS("Display invisible object colliders", onOffMap()),
 	DRAW_INTERACT_BOXES("Draw interact boxes", onOffMap()),
-	DRAW_SENSORS("Draw sensors", onOffMap()),
-	DEBUG("Debugging mode", onOffMap()),
-	DRAW_ATTACK_BOXES("Draw attack boxes", onOffMap());
+	DRAW_ATTACHMENTS("Draw attachments", onOffMap()),
+	DEBUG("Debugging mode", onOffMap());
 
 	String prettyName;
 	int currentValue;
