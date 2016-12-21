@@ -34,7 +34,7 @@ public class PlatformerDemoWorld extends World {
 		ClimbingWallMarker cw = new ClimbingWallMarker(new Point(19, 4), 8);
 		addObject(cw);
 		
-		MovingPlatform mp = new MovingPlatform(new Point(22, 4));
+		MovingPlatform mp = new MovingPlatform(new Point(22, 4), 6);
 		addObject(mp);
 	}
 
