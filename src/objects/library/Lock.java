@@ -1,4 +1,4 @@
-package objects.lib;
+package objects.library;
 
 import helpers.Point;
 import objects.world.Actor;

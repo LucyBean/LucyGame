@@ -4,9 +4,9 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.lib.Gem;
-import objects.lib.Key;
-import objects.lib.Wall;
+import objects.library.Gem;
+import objects.library.Key;
+import objects.library.Wall;
 import objects.world.Actor;
 import objects.world.characters.Matt;
 import objects.world.characters.Player;

@@ -6,7 +6,7 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Point;
 import helpers.WorldMapImporterExporter;
-import objects.lib.MovingPlatform;
+import objects.library.MovingPlatform;
 import objects.world.ClimbingWallMarker;
 import objects.world.WorldObject;
 import objects.world.characters.Player;

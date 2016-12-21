@@ -10,10 +10,10 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.lib.Door;
-import objects.lib.Key;
-import objects.lib.Lock;
-import objects.lib.Wall;
+import objects.library.Door;
+import objects.library.Key;
+import objects.library.Lock;
+import objects.library.Wall;
 import objects.world.Lockable;
 import objects.world.characters.Player;
 import options.GlobalOptions;

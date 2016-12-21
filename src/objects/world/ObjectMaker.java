@@ -1,11 +1,11 @@
 package objects.world;
 
 import helpers.Point;
-import objects.lib.Door;
-import objects.lib.Gem;
-import objects.lib.Key;
-import objects.lib.Lock;
-import objects.lib.Wall;
+import objects.library.Door;
+import objects.library.Gem;
+import objects.library.Key;
+import objects.library.Lock;
+import objects.library.Wall;
 import objects.world.characters.Matt;
 import objects.world.characters.Player;
 

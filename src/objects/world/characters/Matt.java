@@ -8,7 +8,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Point;
 import objects.attachments.InteractBox;
 import objects.images.SpriteBuilder;
-import objects.lib.Gem;
+import objects.library.Gem;
 import objects.world.Actor;
 import objects.world.ItemType;
 import quests.EventType;

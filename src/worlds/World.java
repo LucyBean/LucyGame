@@ -13,7 +13,7 @@ import helpers.Point;
 import objects.gameInterface.DefaultGameInterface;
 import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
-import objects.lib.Wall;
+import objects.library.Wall;
 import objects.world.WorldObject;
 import objects.world.characters.Conversation;
 import objects.world.characters.Inventory;

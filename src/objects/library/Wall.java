@@ -1,4 +1,4 @@
-package objects.lib;
+package objects.library;
 
 import helpers.Dir;
 import helpers.Point;
