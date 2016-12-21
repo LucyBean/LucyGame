@@ -10,12 +10,12 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.library.Door;
-import objects.library.Key;
-import objects.library.Lock;
-import objects.library.Wall;
 import objects.world.Lockable;
 import objects.world.characters.Player;
+import objects.world.lib.Door;
+import objects.world.lib.Key;
+import objects.world.lib.Lock;
+import objects.world.lib.Wall;
 import options.GlobalOptions;
 import worlds.LucyGame;
 import worlds.World;

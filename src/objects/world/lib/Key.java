@@ -1,4 +1,4 @@
-package objects.library;
+package objects.world.lib;
 
 import helpers.Point;
 import objects.world.ItemType;

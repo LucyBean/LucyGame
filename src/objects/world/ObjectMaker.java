@@ -1,13 +1,13 @@
 package objects.world;
 
 import helpers.Point;
-import objects.library.Door;
-import objects.library.Gem;
-import objects.library.Key;
-import objects.library.Lock;
-import objects.library.Wall;
 import objects.world.characters.Matt;
 import objects.world.characters.Player;
+import objects.world.lib.Door;
+import objects.world.lib.Gem;
+import objects.world.lib.Key;
+import objects.world.lib.Lock;
+import objects.world.lib.Wall;
 
 public class ObjectMaker {
 	private ObjectMaker() {

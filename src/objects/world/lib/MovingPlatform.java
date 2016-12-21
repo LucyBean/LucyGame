@@ -1,4 +1,4 @@
-package objects.library;
+package objects.world.lib;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -15,7 +15,7 @@ import worlds.WorldLayer;
 public class MovingPlatform extends Actor {
 	private float midPoint;
 	private float velocity;
-	private float omegaSquared = 0.0001f;
+	private float omegaSquared = 0.000005f;
 
 	public MovingPlatform(Point start, float distance) {
 		super(start, WorldLayer.WORLD, ItemType.MOVING_WALL,
@@ -24,16 +24,16 @@ public class MovingPlatform extends Actor {
 		setColliderFromSprite();
 		getCollider().setSolid(true);
 		useGravity(false);
-		midPoint = start.getX() + distance/2;
+		midPoint = start.getX() + distance / 2;
 		velocity = 0.0f;
-		
-		ActorSticker as = new ActorSticker(new Point(0,-0.2f), 2, 0.2f);
+
+		ActorSticker as = new ActorSticker(new Point(0, -0.2f), 2, 0.2f);
 		attach(as);
 	}
 
 	@Override
 	protected void resetActorState() {
-		
+
 	}
 
 	@Override
@@ -41,15 +41,16 @@ public class MovingPlatform extends Actor {
 		// Calculate acceleration from displacement
 		float displacement = getPosition().getX() - midPoint;
 		float acceleration = displacement * -omegaSquared;
-		velocity += acceleration;
-		
+		velocity += acceleration * delta;
+
 		// Move according to the velocity
 		move(Dir.EAST, velocity * delta);
-		
-		// TODO: I think this probably suffers from rounding errors at low frame rates
+
+		// TODO: I think this probably suffers from rounding errors at low frame
+		// rates
 		// TODO: Definitely some odd behaviour
-		//    might have to evaluate it from using a sine function rather than
-		//    using acceleration/velocity
+		// might have to evaluate it from using a sine function rather than
+		// using acceleration/velocity
 	}
 
 }

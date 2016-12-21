@@ -4,12 +4,12 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.library.Gem;
-import objects.library.Key;
-import objects.library.Wall;
 import objects.world.Actor;
 import objects.world.characters.Matt;
 import objects.world.characters.Player;
+import objects.world.lib.Gem;
+import objects.world.lib.Key;
+import objects.world.lib.Wall;
 import worlds.LucyGame;
 import worlds.World;
 
