@@ -13,25 +13,23 @@ import objects.world.ItemType;
 import worlds.WorldLayer;
 
 public class MovingPlatform extends Actor {
-	private float equilibriumX;
-	private float amplitude;
+	private Point center;
+	private Point amplitude;
 	private final int period;
 	private final double omega;
-	private int t;
+	private int t = 0;
 
-	public MovingPlatform(Point start, float distance, int period) {
+	public MovingPlatform(Point start, Point end, int period) {
 		super(start, WorldLayer.WORLD, ItemType.MOVING_WALL,
 				SpriteBuilder.createRectangle(new Rectangle(Point.ZERO, 2, 1),
 						32, new Color(220, 30, 220)));
 		setColliderFromSprite();
 		getCollider().setSolid(true);
 		useGravity(false);
-		amplitude = distance/2;
-		equilibriumX = start.getX() + amplitude;
+		amplitude = start.move(end.neg()).scale(0.5f); // amplitude = (end - start) / 2
+		center = end.move(amplitude);
 		this.period = period;
 		omega = 2 * Math.PI / period;
-		// TODO: check if the platform heads E/W initially
-		t = period / 2; // The platform starts in the EAST-most position
 
 		ActorSticker as = new ActorSticker(new Point(0, -0.2f), 2, 0.2f);
 		attach(as);
@@ -45,9 +43,13 @@ public class MovingPlatform extends Actor {
 	@Override
 	public void act(GameContainer gc, int delta) {
 		t = (t + delta) % period;
-		float newX = (float) (amplitude * Math.cos(omega * t)) + equilibriumX;
-		float deltaX = newX - getPosition().getX();
-		move(Dir.EAST, deltaX);
+		double cosT = Math.cos(omega * t);
+		float newPosX = (float) (amplitude.getX() * cosT) + center.getX();
+		float newPosY = (float) (amplitude.getY() * cosT) + center.getY();
+		Point newPos = new Point(newPosX, newPosY);
+		Point deltaPos = newPos.move(getPosition().neg()); // Find difference in positions
+		move(Dir.EAST, deltaPos.getX());
+		move(Dir.SOUTH, deltaPos.getY());
 
 		// TODO: I think this probably suffers from rounding errors at low frame
 		// rates
