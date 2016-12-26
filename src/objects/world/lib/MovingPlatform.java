@@ -13,19 +13,25 @@ import objects.world.ItemType;
 import worlds.WorldLayer;
 
 public class MovingPlatform extends Actor {
-	private float midPoint;
-	private float velocity;
-	private float omegaSquared = 0.000005f;
+	private float equilibriumX;
+	private float amplitude;
+	private final int period;
+	private final double omega;
+	private int t;
 
-	public MovingPlatform(Point start, float distance) {
+	public MovingPlatform(Point start, float distance, int period) {
 		super(start, WorldLayer.WORLD, ItemType.MOVING_WALL,
 				SpriteBuilder.createRectangle(new Rectangle(Point.ZERO, 2, 1),
 						32, new Color(220, 30, 220)));
 		setColliderFromSprite();
 		getCollider().setSolid(true);
 		useGravity(false);
-		midPoint = start.getX() + distance / 2;
-		velocity = 0.0f;
+		amplitude = distance/2;
+		equilibriumX = start.getX() + amplitude;
+		this.period = period;
+		omega = 2 * Math.PI / period;
+		// TODO: check if the platform heads E/W initially
+		t = period / 2; // The platform starts in the EAST-most position
 
 		ActorSticker as = new ActorSticker(new Point(0, -0.2f), 2, 0.2f);
 		attach(as);
@@ -38,13 +44,10 @@ public class MovingPlatform extends Actor {
 
 	@Override
 	public void act(GameContainer gc, int delta) {
-		// Calculate acceleration from displacement
-		float displacement = getPosition().getX() - midPoint;
-		float acceleration = displacement * -omegaSquared;
-		velocity += acceleration * delta;
-
-		// Move according to the velocity
-		move(Dir.EAST, velocity * delta);
+		t = (t + delta) % period;
+		float newX = (float) (amplitude * Math.cos(omega * t)) + equilibriumX;
+		float deltaX = newX - getPosition().getX();
+		move(Dir.EAST, deltaX);
 
 		// TODO: I think this probably suffers from rounding errors at low frame
 		// rates
