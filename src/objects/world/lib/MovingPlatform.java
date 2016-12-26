@@ -26,7 +26,8 @@ public class MovingPlatform extends Actor {
 		setColliderFromSprite();
 		getCollider().setSolid(true);
 		useGravity(false);
-		amplitude = start.move(end.neg()).scale(0.5f); // amplitude = (end - start) / 2
+		amplitude = start.move(end.neg()).scale(0.5f); // amplitude = (end -
+														// start) / 2
 		center = end.move(amplitude);
 		this.period = period;
 		omega = 2 * Math.PI / period;
@@ -44,12 +45,18 @@ public class MovingPlatform extends Actor {
 	public void act(GameContainer gc, int delta) {
 		t = (t + delta) % period;
 		double cosT = Math.cos(omega * t);
-		float newPosX = (float) (amplitude.getX() * cosT) + center.getX();
-		float newPosY = (float) (amplitude.getY() * cosT) + center.getY();
-		Point newPos = new Point(newPosX, newPosY);
-		Point deltaPos = newPos.move(getPosition().neg()); // Find difference in positions
-		move(Dir.EAST, deltaPos.getX());
-		move(Dir.SOUTH, deltaPos.getY());
+		// Ignore small amplitude oscillations as these will probably
+		//   lead to 
+		if (Math.abs(amplitude.getX()) > 0.1f) {
+			float newPosX = (float) (amplitude.getX() * cosT) + center.getX();
+			float deltaX = newPosX - getPosition().getX();
+			move(Dir.EAST, deltaX);
+		}
+		if (Math.abs(amplitude.getY()) > 0.1f) {
+			float newPosY = (float) (amplitude.getY() * cosT) + center.getY();
+			float deltaY = newPosY - getPosition().getY();
+			move(Dir.SOUTH, deltaY);
+		}
 
 		// TODO: I think this probably suffers from rounding errors at low frame
 		// rates

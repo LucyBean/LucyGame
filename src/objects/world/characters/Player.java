@@ -75,6 +75,12 @@ public class Player extends Actor {
 		if (input.isKeyDown(Input.KEY_PERIOD)) {
 			interactWithAll();
 		}
+		
+		if (input.isKeyDown(Input.KEY_O)) {
+			startCrouch();
+		} else if (getState() == ActorState.CROUCH) {
+			endCrouch();
+		}
 	}
 	
 	@Override

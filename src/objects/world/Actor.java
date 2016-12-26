@@ -45,11 +45,21 @@ public abstract class Actor extends WorldObject {
 	private boolean canMidAirJump = true;
 	private Point positionDelta;
 	private boolean jumpNextFrame = false;
+	private Collider standingCollider;
+	private Collider crouchingCollider;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 		autoAlignSprite();
+		standingCollider = collider;
+		if (collider != null) {
+			Point ccOrigin = collider.getTopLeft().move(Dir.SOUTH,
+					collider.getHeight() / 2);
+			float ccWidth = collider.getWidth();
+			float ccHeight = collider.getHeight() / 2;
+			crouchingCollider = new Collider(ccOrigin, ccWidth, ccHeight);
+		}
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
@@ -76,10 +86,11 @@ public abstract class Actor extends WorldObject {
 		if (getSprite() != null && getCollider() != null) {
 			// Set position of Player's sprite such that bottom-middle points of
 			// sprite and collider coincide.
+			Point co = getCollider().getTopLeft();
 			float newX = (getCollider().getWidth()
-					- getSprite().getRectangle().getWidth()) / 2;
+					- getSprite().getRectangle().getWidth()) / 2 + co.getX();
 			float newY = (getCollider().getHeight()
-					- getSprite().getRectangle().getHeight());
+					- getSprite().getRectangle().getHeight()) + co.getY();
 			getSprite().setOrigin(new Point(newX, newY));
 		}
 	}
@@ -248,7 +259,8 @@ public abstract class Actor extends WorldObject {
 			// This object has no collider so moves immediately without
 			// collision checking
 			setPosition(getPosition().move(d, amount));
-			getActorStickers().stream().forEach(a -> a.moveStuckActors(d, amount));
+			getActorStickers().stream().forEach(
+					a -> a.moveStuckActors(d, amount));
 			positionDelta = positionDelta.move(d, amount);
 		} else {
 			// This object moves with collision checking
@@ -261,8 +273,9 @@ public abstract class Actor extends WorldObject {
 				moved = false;
 			} else {
 				float moveAmount = posChange.getDir(d);
-				getActorStickers().stream().forEach(a -> a.moveStuckActors(d, moveAmount));
-				
+				getActorStickers().stream().forEach(
+						a -> a.moveStuckActors(d, moveAmount));
+
 				if (d == Dir.EAST || d == Dir.WEST) {
 					setFacing(d);
 				}
@@ -363,7 +376,7 @@ public abstract class Actor extends WorldObject {
 						getCollider().getBottomLeft()).getY();
 				float solidTop = solid.getCoOrdTranslator().objectToWorldCoOrds(
 						solid.getCollider().getTopLeft()).getY();
-				float overlap = actorBtm - solidTop;
+				float overlap = actorBtm - solidTop + 0.0001f;
 				if (overlap > 0 && overlap < FEET_COLLISION_THRESHOLD) {
 					northNudge = Math.max(overlap, northNudge);
 				}
@@ -471,7 +484,7 @@ public abstract class Actor extends WorldObject {
 	 * @param d
 	 * @param delta
 	 */
-	public void walk(Dir d, int delta) {
+	protected void walk(Dir d, int delta) {
 		if (isOnGround()) {
 			setAheadSensorLocation(d);
 			float moveAmount = moveSpeed * delta * walkSpeed;
@@ -490,7 +503,12 @@ public abstract class Actor extends WorldObject {
 	 * @param d
 	 * @param delta
 	 */
-	public void run(Dir d, int delta) {
+	protected void run(Dir d, int delta) {
+		if (crouching()) {
+			walk(d, delta);
+			return;
+		}
+
 		float moveAmount = moveSpeed * delta;
 		if (lastState == ActorState.FALL || lastState == ActorState.JUMP) {
 			moveAmount *= 0.3f;
@@ -518,7 +536,7 @@ public abstract class Actor extends WorldObject {
 	 *            The direction to move (EAST and WEST have no effect)
 	 * @param delta
 	 */
-	public void climb(Dir d, int delta) {
+	protected void climb(Dir d, int delta) {
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
 			float moveAmount = moveSpeed * delta * walkSpeed;
 			boolean moved = move(d, moveAmount);
@@ -547,7 +565,7 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param strength
 	 */
-	public void signalJump() {
+	protected void signalJump() {
 		jumpNextFrame = true;
 	}
 
@@ -556,9 +574,35 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param nextJumpStrengthRelative
 	 */
-	public void signalJump(float nextJumpStrengthRelative) {
+	protected void signalJump(float nextJumpStrengthRelative) {
 		this.nextJumpStrength = defaultJumpStrength * nextJumpStrengthRelative;
 		signalJump();
+	}
+
+	/**
+	 * Detects whether or not this Actor is currently crouching.
+	 */
+	private boolean crouching() {
+		return getState() == ActorState.CROUCH
+				|| getState() == ActorState.CROUCH_WALK;
+	}
+
+	/**
+	 * Starts the Actor crouching
+	 */
+	protected void startCrouch() {
+		setState(ActorState.CROUCH);
+	}
+
+	/**
+	 * Attempts to end the crouch. This will only be successful if the
+	 * standingCollider does not overlap anything.
+	 */
+	protected void endCrouch() {
+		if (crouching() && getOverlappingSolids(
+				standingCollider.getRectangle()).isEmpty()) {
+			setState(ActorState.IDLE);
+		}
 	}
 
 	protected void resetMidAirJump() {
@@ -809,7 +853,10 @@ public abstract class Actor extends WorldObject {
 
 	public abstract void act(GameContainer gc, int delta);
 
-	protected void setState(ActorState newState) {
+	private void setState(ActorState newState) {
+		if (newState == ActorState.WALK && crouching()) {
+			newState = ActorState.CROUCH_WALK;
+		}
 		state = newState;
 	}
 
@@ -824,6 +871,17 @@ public abstract class Actor extends WorldObject {
 			vSpeed = 0;
 		} else if (to == ActorState.WALL_SLIDE) {
 			canMidAirJump = false;
+		} else if (!crouching()
+				&& (to == ActorState.CROUCH || to == ActorState.CROUCH_WALK)) {
+			// transitioning to crouching
+			attach(crouchingCollider);
+		}
+
+		if ((from == ActorState.CROUCH && to != ActorState.CROUCH_WALK)
+				|| (from == ActorState.CROUCH_WALK
+						&& to != ActorState.CROUCH)) {
+			// transitioning to standing
+			attach(standingCollider);
 		}
 	}
 

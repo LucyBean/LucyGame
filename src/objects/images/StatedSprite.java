@@ -26,9 +26,10 @@ public class StatedSprite extends Sprite {
 	public void setImage(LayeredImage image, int state) {
 		images.put(state, image);
 	}
-	
+
 	public void setImages(Map<Integer, LayeredImage> toAdd) {
-		toAdd.entrySet().stream().forEach(i -> images.put(i.getKey(), i.getValue()));
+		toAdd.entrySet().stream().forEach(
+				i -> images.put(i.getKey(), i.getValue()));
 	}
 
 	public void setState(int newState) {
@@ -40,7 +41,7 @@ public class StatedSprite extends Sprite {
 		}
 		currentState = newState;
 	}
-	
+
 	private void changeImage(LayeredImage newImage) {
 		getImage().resetAnimations();
 		currentImage = newImage;
@@ -50,27 +51,29 @@ public class StatedSprite extends Sprite {
 			getObject().statedSpriteImageChange();
 		}
 	}
-	
+
 	private boolean needToChangeSprite(int newState) {
-		if (currentState == ActorState.JUMP.ordinal() && newState == ActorState.FALL.ordinal()) {
+		if (currentState == ActorState.JUMP.ordinal()
+				&& newState == ActorState.FALL.ordinal()) {
 			return false;
 		}
-		
+
 		return (currentState != newState);
 	}
-	
+
 	private boolean needToQueueSpriteChange(int newState) {
-		if (currentState == ActorState.JUMP.ordinal() && newState == ActorState.FALL.ordinal()) {
+		if (currentState == ActorState.JUMP.ordinal()
+				&& newState == ActorState.FALL.ordinal()) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
 	public void update(int delta) {
 		getImage().update(delta);
-		
+
 		LucyImage img = getImage().getLayer(0).getImage();
 		if (img instanceof AnimatedImage) {
 			AnimatedImage ai = (AnimatedImage) img;
