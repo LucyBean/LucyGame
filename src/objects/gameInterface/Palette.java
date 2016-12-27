@@ -6,7 +6,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 
 import helpers.Point;
-import objects.images.ImageBuilder;
+import objects.images.LayeredImage;
 import objects.images.LucyImage;
 import objects.images.Sprite;
 import objects.images.SpriteBuilder;
@@ -34,8 +34,10 @@ public class Palette extends IEList {
 		if (elements != null && elementIndex >= 0
 				&& elementIndex < elements.size()) {
 			ItemType it = elements.get(elementIndex);
-			LucyImage img = ImageBuilder.getItemImage(it);
-			s.getImage().setLayer(1, img);
+			Sprite sit = it.getSprite();
+			LayeredImage limg = sit.getImage();
+			LucyImage lucyImg = limg.getLayer(limg.getTopLayerNumber()).getImage();
+			s.getImage().setLayer(1, lucyImg);
 		} else {
 			s.getImage().clear(1);
 		}

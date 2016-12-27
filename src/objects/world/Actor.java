@@ -14,7 +14,6 @@ import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
 import objects.images.Sprite;
-import objects.images.SpriteBuilder;
 import objects.images.StatedSprite;
 import quests.EventInfo;
 import quests.EventType;
@@ -69,7 +68,7 @@ public abstract class Actor extends WorldObject {
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
+		this(origin, layer, itemType, itemType.getSprite(),
 				null, null);
 	}
 

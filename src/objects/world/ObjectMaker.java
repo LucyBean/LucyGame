@@ -1,12 +1,14 @@
 package objects.world;
 
 import helpers.Point;
+import objects.world.characters.DogEnemy;
 import objects.world.characters.Matt;
 import objects.world.characters.Player;
 import objects.world.lib.Door;
 import objects.world.lib.Gem;
 import objects.world.lib.Key;
 import objects.world.lib.Lock;
+import objects.world.lib.Trampoline;
 import objects.world.lib.Wall;
 
 public class ObjectMaker {
@@ -49,10 +51,7 @@ public class ObjectMaker {
 			case GREEN_LOCK:
 				wo = new Lock(position, 4, lockID);
 				break;
-			case DOOR_BTM:
-				wo = new Door(position, lockID);
-				break;
-			case DOOR_TOP:
+			case DOOR:
 				wo = new Door(position, lockID);
 				break;
 			case MATT:
@@ -61,12 +60,16 @@ public class ObjectMaker {
 			case PLAYER:
 				wo = new Player(position);
 				break;
-		case DOG_ENEMY:
-			break;
-		default:
-			break;
+			case DOG_ENEMY:
+				wo = new DogEnemy(position);
+				break;
+			case TRAMPOLINE:
+				wo = new Trampoline(position);
+				break;
+			default:
+				break;
 		}
-		
+
 		return wo;
 	}
 }

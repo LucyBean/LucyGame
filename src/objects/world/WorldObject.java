@@ -14,7 +14,6 @@ import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
 import objects.images.Sprite;
-import objects.images.SpriteBuilder;
 import options.GlobalOptions;
 import worlds.World;
 import worlds.WorldLayer;
@@ -67,7 +66,7 @@ public abstract class WorldObject extends GameObject {
 	}
 
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
+		this(origin, layer, itemType, itemType.getSprite(),
 				null, null);
 	}
 

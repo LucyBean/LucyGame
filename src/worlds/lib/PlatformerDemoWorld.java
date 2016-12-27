@@ -10,7 +10,6 @@ import objects.world.ClimbingWallMarker;
 import objects.world.WorldObject;
 import objects.world.characters.Player;
 import objects.world.lib.MovingPlatform;
-import objects.world.lib.Trampoline;
 import worlds.LucyGame;
 import worlds.World;
 
@@ -37,9 +36,6 @@ public class PlatformerDemoWorld extends World {
 		
 		MovingPlatform mp = new MovingPlatform(new Point(22, 4), new Point(22, 11), 3000);
 		addObject(mp);
-		
-		Trampoline t = new Trampoline(new Point(7, 11));
-		addObject(t);
 	}
 
 }

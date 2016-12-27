@@ -4,7 +4,6 @@ import helpers.Point;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.images.Sprite;
-import objects.images.SpriteBuilder;
 import objects.world.Actor;
 import objects.world.ItemType;
 import worlds.WorldLayer;
@@ -17,7 +16,7 @@ public abstract class Enemy extends Actor {
 	}
 	
 	public Enemy(Point origin, ItemType itemType) {
-		this(origin, itemType, SpriteBuilder.getWorldItem(itemType), null, null);
+		this(origin, itemType, itemType.getSprite(), null, null);
 		setColliderFromSprite();
 	}
 	

@@ -6,7 +6,6 @@ import helpers.Point;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.images.Sprite;
-import objects.images.SpriteBuilder;
 import objects.world.characters.Player;
 import worlds.World;
 import worlds.WorldLayer;
@@ -38,7 +37,7 @@ public abstract class Locker extends Static {
 	public Locker(int lockID, Point origin, WorldLayer layer,
 			ItemType itemType) {
 		this(lockID, origin, layer, itemType,
-				SpriteBuilder.getWorldItem(itemType), null, null);
+				itemType.getSprite(), null, null);
 		setInteractBoxFromSprite();
 	}
 

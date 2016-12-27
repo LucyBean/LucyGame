@@ -56,26 +56,6 @@ public class SpriteBuilder {
 				1);
 	}
 
-	private static Sprite getDoorSprite() {
-		LayeredImage limg = new LayeredImage(32, 64, 2);
-		LucyImage top = ImageBuilder.getItemImage(ItemType.DOOR_TOP);
-		LucyImage btm = ImageBuilder.getItemImage(ItemType.DOOR_BTM);
-		limg.setLayer(0, top);
-		limg.setLayer(1, new PositionedImage(new Point(0, 32), btm));
-
-		return new SingleSprite(limg, GRID_SIZE);
-	}
-	
-	private static Sprite getTrampolineSprite() {
-		LayeredImage limg = new LayeredImage(64, 32, 2);
-		LucyImage left = ImageBuilder.getItemImage(17);
-		LucyImage right = ImageBuilder.getItemImage(18);
-		limg.setLayer(0, left);
-		limg.setLayer(1, new PositionedImage(new Point(32,0), right));
-		
-		return new SingleSprite(limg, GRID_SIZE);
-	}
-
 	/**
 	 * Returns the character sprite for the given ID. This will have an origin
 	 * of (0,0).
@@ -89,20 +69,30 @@ public class SpriteBuilder {
 		}
 		return new SingleSprite(ImageBuilder.getCharacterImg(id), GRID_SIZE);
 	}
+	
+	public static Sprite getWorldItem(int imageID) {
+		LayeredImage img = new LayeredImage(ImageBuilder.getItemImage(imageID));
+		return new SingleSprite(img, Point.ZERO, GRID_SIZE);
+	}
 
-	public static Sprite getWorldItem(ItemType it) {
-		if (it == ItemType.DOOR_TOP) {
-			return getDoorSprite();
-		}
-		if (it == ItemType.TRAMPOLINE) {
-			return getTrampolineSprite();
-		}
-		if (it.isPaintable()) {
-			LayeredImage img = new LayeredImage(ImageBuilder.getItemImage(it));
-			return new SingleSprite(img, Point.ZERO, GRID_SIZE);
-		} else {
-			return getWorldItem(it.getParent());
-		}
+	public static Sprite getDoorSprite() {
+		LayeredImage limg = new LayeredImage(32, 64, 2);
+		LucyImage top = ImageBuilder.getItemImage(10);
+		LucyImage btm = ImageBuilder.getItemImage(11);
+		limg.setLayer(0, new PositionedImage(new Point(0, 32), btm));
+		limg.setLayer(1, top);
+
+		return new SingleSprite(limg, GRID_SIZE);
+	}
+	
+	public static Sprite getTrampolineSprite() {
+		LayeredImage limg = new LayeredImage(64, 32, 2);
+		LucyImage left = ImageBuilder.getItemImage(16);
+		LucyImage right = ImageBuilder.getItemImage(17);
+		limg.setLayer(0, left);
+		limg.setLayer(1, new PositionedImage(new Point(32,0), right));
+		
+		return new SingleSprite(limg, GRID_SIZE);
 	}
 
 	public static Sprite makeMenuButton(String text) {

@@ -1,41 +1,52 @@
 package objects.world;
 
+import java.util.function.Supplier;
+
+import objects.images.Sprite;
+import objects.images.SpriteBuilder;
+
 public enum ItemType {
-	WALL,
-		GEM,
-		YELLOW_KEY,
-		BLUE_KEY,
-		RED_KEY,
-		GREEN_KEY,
-		YELLOW_LOCK,
-		BLUE_LOCK,
-		RED_LOCK,
-		GREEN_LOCK,
-		DOOR_TOP,
-		DOOR_BTM(DOOR_TOP),
-		PLAYER,
-		MATT,
-		DOG_ENEMY,
+	WALL(0),
+		GEM(1),
+		YELLOW_KEY(2),
+		BLUE_KEY(3),
+		RED_KEY(4),
+		GREEN_KEY(5),
+		YELLOW_LOCK(6),
+		BLUE_LOCK(7),
+		RED_LOCK(8),
+		GREEN_LOCK(9),
+		DOOR(() -> SpriteBuilder.getDoorSprite()),
+		PLAYER(() -> SpriteBuilder.getCharacterSprite(0)),
+		MATT (() -> SpriteBuilder.getCharacterSprite(1)),
+		DOG_ENEMY(14),
 		CLIMBING_WALL_MARKER,
 		MOVING_WALL,
-		TRAMPOLINE;
+		TRAMPOLINE(() -> SpriteBuilder.getTrampolineSprite());
 	
-	ItemType parent;
+	private boolean paintable = true;
 	
-	ItemType(ItemType parent) {
-		this.parent = parent;
+	ItemType(int imageID) {
+		spriteMaker = () -> SpriteBuilder.getWorldItem(imageID);
+	}
+	
+	ItemType(Supplier<Sprite> spriteMaker) {
+		this.spriteMaker = spriteMaker;
 	}
 	
 	ItemType() {
-		this(null);
+		spriteMaker = () -> null;
+		paintable = false;
+	}
+	
+	Supplier<Sprite> spriteMaker;
+	
+	public Sprite getSprite() {
+		return spriteMaker.get();
 	}
 	
 	public boolean isPaintable() {
-		return parent == null;
-	}
-	
-	public ItemType getParent() {
-		return parent;
+		return paintable;
 	}
 	
 	public static ItemType byId(int id) {

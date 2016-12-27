@@ -10,7 +10,7 @@ public class Door extends Static implements Lockable {
 	private int lockID;
 	
 	public Door(Point origin, int lockID) {
-		super(origin, WorldLayer.WORLD, ItemType.DOOR_TOP);
+		super(origin, WorldLayer.WORLD, ItemType.DOOR);
 		setColliderFromSprite();
 		this.lockID = lockID;
 		getCollider().setSolid(true);

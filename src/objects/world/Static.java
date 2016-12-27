@@ -4,7 +4,6 @@ import helpers.Point;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.images.Sprite;
-import objects.images.SpriteBuilder;
 import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {
@@ -19,7 +18,7 @@ public abstract class Static extends WorldObject {
 	}
 
 	public Static(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, SpriteBuilder.getWorldItem(itemType),
+		this(origin, layer, itemType, itemType.getSprite(),
 				null, null);
 	}
 

@@ -5,8 +5,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class StaticImage implements LucyImage {
-	Image myImage;
-	boolean mirrored;
+	private Image myImage;
+	private boolean mirrored;
 	
 	public StaticImage(int width, int height) throws SlickException {
 		myImage = new Image(width, height);
