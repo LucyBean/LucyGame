@@ -2,6 +2,10 @@
 ==  THINGS TO DO  ==
 ====================
 
+Tie Sprite to ItemType? E.g. when creating an object have to specify the ItemType
+	and how to get the Sprite. Surely the type of Sprite can be specified from
+	the ItemType.
+
 Platformer moves
 
 Add the ability to place climbing markers using the world builder
@@ -29,10 +33,6 @@ Change the format of the timings file for the animations as it is very difficult
 		ANIMATION NAME:
 			FPS:x
 			LOOP:true/false
-
-Tie Sprite to ItemType? E.g. when creating an object have to specify the ItemType
-	and how to get the Sprite. Surely the type of Sprite can be specified from
-	the ItemType.
 
 Build the game interface
 	Make options saving automatic

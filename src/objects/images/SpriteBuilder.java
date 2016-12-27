@@ -65,6 +65,16 @@ public class SpriteBuilder {
 
 		return new SingleSprite(limg, GRID_SIZE);
 	}
+	
+	private static Sprite getTrampolineSprite() {
+		LayeredImage limg = new LayeredImage(64, 32, 2);
+		LucyImage left = ImageBuilder.getItemImage(17);
+		LucyImage right = ImageBuilder.getItemImage(18);
+		limg.setLayer(0, left);
+		limg.setLayer(1, new PositionedImage(new Point(32,0), right));
+		
+		return new SingleSprite(limg, GRID_SIZE);
+	}
 
 	/**
 	 * Returns the character sprite for the given ID. This will have an origin
@@ -83,6 +93,9 @@ public class SpriteBuilder {
 	public static Sprite getWorldItem(ItemType it) {
 		if (it == ItemType.DOOR_TOP) {
 			return getDoorSprite();
+		}
+		if (it == ItemType.TRAMPOLINE) {
+			return getTrampolineSprite();
 		}
 		if (it.isPaintable()) {
 			LayeredImage img = new LayeredImage(ImageBuilder.getItemImage(it));

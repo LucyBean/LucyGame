@@ -485,7 +485,7 @@ public abstract class Actor extends WorldObject {
 	 * @param d
 	 * @param delta
 	 */
-	protected void walk(Dir d, int delta) {
+	public void walk(Dir d, int delta) {
 		if (isOnGround()) {
 			setAheadSensorLocation(d);
 			float moveAmount = moveSpeed * delta * walkSpeed;
@@ -507,7 +507,7 @@ public abstract class Actor extends WorldObject {
 	 * @param d
 	 * @param delta
 	 */
-	protected void run(Dir d, int delta) {
+	public void run(Dir d, int delta) {
 		float moveAmount = moveSpeed * delta;
 
 		if (wasCrouching()) {
@@ -540,7 +540,7 @@ public abstract class Actor extends WorldObject {
 	 *            The direction to move (EAST and WEST have no effect)
 	 * @param delta
 	 */
-	protected void climb(Dir d, int delta) {
+	public void climb(Dir d, int delta) {
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
 			float moveAmount = moveSpeed * delta * walkSpeed;
 			boolean moved = move(d, moveAmount);
@@ -569,7 +569,7 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param strength
 	 */
-	protected void signalJump() {
+	public void signalJump() {
 		jumpNextFrame = true;
 	}
 
@@ -578,7 +578,7 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param nextJumpStrengthRelative
 	 */
-	protected void signalJump(float nextJumpStrengthRelative) {
+	public void signalJump(float nextJumpStrengthRelative) {
 		this.nextJumpStrength = defaultJumpStrength * nextJumpStrengthRelative;
 		signalJump();
 	}
@@ -598,7 +598,7 @@ public abstract class Actor extends WorldObject {
 		setState(ActorState.CROUCH);
 	}
 
-	protected void resetMidAirJump() {
+	public void resetMidAirJump() {
 		canMidAirJump = true;
 	}
 
