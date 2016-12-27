@@ -504,7 +504,7 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	protected void run(Dir d, int delta) {
-		if (crouching()) {
+		if (wasCrouching()) {
 			walk(d, delta);
 			return;
 		}
@@ -582,7 +582,7 @@ public abstract class Actor extends WorldObject {
 	/**
 	 * Detects whether or not this Actor is currently crouching.
 	 */
-	private boolean crouching() {
+	private boolean wasCrouching() {
 		return getState() == ActorState.CROUCH
 				|| getState() == ActorState.CROUCH_WALK;
 	}
@@ -592,17 +592,6 @@ public abstract class Actor extends WorldObject {
 	 */
 	protected void startCrouch() {
 		setState(ActorState.CROUCH);
-	}
-
-	/**
-	 * Attempts to end the crouch. This will only be successful if the
-	 * standingCollider does not overlap anything.
-	 */
-	protected void endCrouch() {
-		if (crouching() && getOverlappingSolids(
-				standingCollider.getRectangle()).isEmpty()) {
-			setState(ActorState.IDLE);
-		}
 	}
 
 	protected void resetMidAirJump() {
@@ -854,8 +843,27 @@ public abstract class Actor extends WorldObject {
 	public abstract void act(GameContainer gc, int delta);
 
 	private void setState(ActorState newState) {
-		if (newState == ActorState.WALK && crouching()) {
+		if (newState == ActorState.CROUCH && state == ActorState.CROUCH_WALK) {
+			// Do not let CROUCH overwrite CROUCH_WALK
+			return;
+		}
+		if (newState == ActorState.WALK && wasCrouching()) {
 			newState = ActorState.CROUCH_WALK;
+		}
+		if (newState == ActorState.IDLE) {
+			if (standingCollider != null && crouchingCollider != null
+					&& wasCrouching()) {
+				// Actually set to crouching if IDLE is not possible
+				Collection<WorldObject> standingCollisions = getOverlappingSolids(
+						standingCollider.getRectangle());
+				if (!standingCollisions.isEmpty()) {
+					Collection<WorldObject> crouchingCollisions = getOverlappingSolids(
+							crouchingCollider.getRectangle());
+					if (crouchingCollisions.isEmpty()) {
+						newState = ActorState.CROUCH;
+					}
+				}
+			}
 		}
 		state = newState;
 	}
@@ -871,7 +879,7 @@ public abstract class Actor extends WorldObject {
 			vSpeed = 0;
 		} else if (to == ActorState.WALL_SLIDE) {
 			canMidAirJump = false;
-		} else if (!crouching()
+		} else if (!wasCrouching()
 				&& (to == ActorState.CROUCH || to == ActorState.CROUCH_WALK)) {
 			// transitioning to crouching
 			attach(crouchingCollider);

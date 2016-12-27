@@ -43,6 +43,10 @@ public class Player extends Actor {
 	public void act(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		Consumer<Dir> moveFunction;
+		
+		if (input.isKeyDown(Input.KEY_O)) {
+			startCrouch();
+		}
 
 		if (input.isKeyDown(Input.KEY_LSHIFT)) {
 			moveFunction = (d -> walk(d, delta));
@@ -74,12 +78,6 @@ public class Player extends Actor {
 		}
 		if (input.isKeyDown(Input.KEY_PERIOD)) {
 			interactWithAll();
-		}
-		
-		if (input.isKeyDown(Input.KEY_O)) {
-			startCrouch();
-		} else if (getState() == ActorState.CROUCH) {
-			endCrouch();
 		}
 	}
 	
