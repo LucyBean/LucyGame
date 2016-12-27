@@ -6,10 +6,6 @@ Platformer moves
 
 Add the ability to place climbing markers using the world builder
 
-Add "object sticker" attachments. These can be added to objects and when
-	other Actors (of a certain type only?) are within the "object sticker" they
-	will move with that object
-
 Add a pet that follows me
 
 Expand the quest system
@@ -26,6 +22,13 @@ Sprite constructors: remove those that specify a Point?
 =============
 ==  IDEAS  ==
 =============
+
+Change the format of the timings file for the animations as it is very difficult to remember
+	what everything does. It is also not clear which numbers are for which animations.
+	Change to something like:
+		ANIMATION NAME:
+			FPS:x
+			LOOP:true/false
 
 Tie Sprite to ItemType? E.g. when creating an object have to specify the ItemType
 	and how to get the Sprite. Surely the type of Sprite can be specified from

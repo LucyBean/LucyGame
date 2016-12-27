@@ -32,6 +32,7 @@ public abstract class Actor extends WorldObject {
 	private float jumpHSpeed;
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
+	private float crouchSpeed = 0.7f;
 	private float defaultJumpStrength = 0.02f;
 	private float nextJumpStrength = 0.02f;
 	private boolean gravityEnabled = true;
@@ -488,6 +489,9 @@ public abstract class Actor extends WorldObject {
 		if (isOnGround()) {
 			setAheadSensorLocation(d);
 			float moveAmount = moveSpeed * delta * walkSpeed;
+			if (wasCrouching()) {
+				moveAmount *= crouchSpeed;
+			}
 			if (floorAheadSensor.isOverlappingSolid()) {
 				boolean moved = move(d, moveAmount);
 				if (moved && isOnGround()) {
@@ -504,12 +508,12 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	protected void run(Dir d, int delta) {
+		float moveAmount = moveSpeed * delta;
+
 		if (wasCrouching()) {
-			walk(d, delta);
-			return;
+			moveAmount *= crouchSpeed;
 		}
 
-		float moveAmount = moveSpeed * delta;
 		if (lastState == ActorState.FALL || lastState == ActorState.JUMP) {
 			moveAmount *= 0.3f;
 		}
@@ -847,7 +851,8 @@ public abstract class Actor extends WorldObject {
 			// Do not let CROUCH overwrite CROUCH_WALK
 			return;
 		}
-		if (newState == ActorState.WALK && wasCrouching()) {
+		if ((newState == ActorState.WALK || newState == ActorState.RUN)
+				&& wasCrouching()) {
 			newState = ActorState.CROUCH_WALK;
 		}
 		if (newState == ActorState.IDLE) {
