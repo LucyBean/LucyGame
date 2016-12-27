@@ -1,11 +1,27 @@
 package tests;
 
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import options.GlobalOptions;
 
 public class Enumerations {
-	
+	public static void main(String[] args) {
+		String a = "TEXT_SIZE";
+		TestOption to = TestOption.valueOf(a);
+		System.out.println(to);
+		
+		System.out.println(a.substring(1));
+
+		Pattern p = Pattern.compile("\t(\\w+):(.+)");
+		a = "bad string";//"\tTYPE:animated";
+		Matcher m = p.matcher(a);
+		System.out.println(m.matches());
+		System.out.println(m.group(1));
+		System.out.println(m.group(2));
+		
+	}
 }
 
 enum TestOption {

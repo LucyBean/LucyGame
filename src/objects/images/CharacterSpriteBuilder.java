@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -24,72 +26,118 @@ public class CharacterSpriteBuilder {
 
 	private static Map<Integer, LayeredImage> importAnimation(String name) {
 		Map<Integer, LayeredImage> map = new HashMap<>();
-		int[] timings = new int[ActorState.values().length];
-		boolean[] looping = new boolean[ActorState.values().length];
-		for (int i = 0; i < timings.length; i++) {
-			timings[i] = 32;
-			looping[i] = true;
-		}
 		try {
-			File timingsFile = new File("data/chars/" + name + "/timings");
-			if (timingsFile.exists()) {
-				BufferedReader br = new BufferedReader(new FileReader(timingsFile));
-				String timesLine = br.readLine();
-				if (timesLine != null) {
-					String[] times = timesLine.split(",");
-					for (int i = 0; i < times.length && i < timings.length; i++) {
-						if (times[i].matches("\\d+")) {
-							Integer n = Integer.valueOf(times[i]);
-							timings[i] = n;
+			File propertiesFile = new File(
+					"data/chars/" + name + "/properties");
+			if (propertiesFile.exists()) {
+				BufferedReader br = new BufferedReader(
+						new FileReader(propertiesFile));
+				String nextLine = br.readLine();
+				while (nextLine != null) {
+					String[] parts = nextLine.split(":");
+					// check if this is a line that declares an animation
+					if (parts.length > 0 && parts[0].matches("[A-Z_]+")) {
+						String animName = parts[0];
+						try {
+							ActorState as = ActorState.valueOf(animName);
+							LayeredImage limg = getImage(name, as, br);
+							if (limg != null) {
+								map.put(as.ordinal(), limg);
+							} else if (as == ActorState.IDLE) {
+								System.err.println("Warning: No IDLE animation for " + name);
+							}
+						} catch (IllegalArgumentException iae) {
+							System.err.println("Properties specified for "
+									+ name + " for unknown animation "
+									+ animName);
 						}
 					}
+					nextLine = br.readLine();
 				}
-				String loopLine = br.readLine();
-				if (loopLine != null) {
-					String[] loops = loopLine.split(",");
-					for (int i = 0; i < loops.length && i < looping.length; i++) {
-						if (loops[i].matches("\\d+")) {
-							Integer n = Integer.valueOf(loops[i]);
-							looping[i] = (n == 1);
-						}
-					}
-				}
-				br.close();
 			}
-		} catch (IOException ioe) {
+		} catch (IOException | SlickException e) {
 			System.err.println("Error while reading timings file.");
-			ioe.printStackTrace();
+			e.printStackTrace();
 		}
-		for (int i = 0; i < ActorState.values().length; i++) {
-			ActorState a = ActorState.values()[i];
-			try {
-				File f = new File("data/chars/" + name + "/" + a.toString() + ".png");
-				if (f.exists()) {
-					Image img = new Image(f.getPath());
-					if (timings[i] != 0) {
-						// This is an animated sprite with 24 images
-						int frameWidth = img.getWidth() / 24;
-						SpriteSheet s = new SpriteSheet(img, frameWidth, img.getHeight());
-						LayeredImage limg = new LayeredImage(new AnimatedImage(s, timings[i], looping[i]));
-						map.put(a.ordinal(), limg);
-					} else {
-						// This is a static sprite
-						LayeredImage limg = new LayeredImage(new StaticImage(img));
-						map.put(a.ordinal(), limg);
-					}
-				} else if (a == ActorState.IDLE) {
-					System.err.println("No idle animation for " + name);
-				}
-			} catch (SlickException se) {
-				se.printStackTrace();
-			}
-		}
+
 		return map;
 	}
 
+	private static LayeredImage getImage(String name, ActorState state,
+			BufferedReader source) throws IOException, SlickException {
+		// Try to convert this to an animation
+		String animName = state.name();
+		File f = new File("data/chars/" + name + "/" + animName + ".png");
+		if (f.exists()) {
+			Image img = new Image(f.getPath());
+
+			// Determine the type of this animation
+			Pattern typePattern = Pattern.compile("\tTYPE:(.+)");
+			String typeLine = source.readLine();
+			Matcher typeMatcher = typePattern.matcher(typeLine);
+			
+			if (typeMatcher.matches()) {
+				String type = typeMatcher.group(1);
+				type = type.toLowerCase();
+				
+				if (type.equals("static")) {
+					// This is a static sprite
+					// No properties need to be checked
+					LayeredImage limg = new LayeredImage(new StaticImage(img));
+					return limg;
+				} else if (type.equals("animated")) {
+					// This is an animated sprite
+					// Check for FRAMES, DELAY, and LOOP properties
+					// Extract the other properties
+					
+					String propLine = source.readLine();
+					Pattern propPattern = Pattern.compile("\t(\\w+):(.+)");
+					Matcher propMatcher = propPattern.matcher(propLine);
+					Map<String, String> properties = new HashMap<>();
+					while (propMatcher.matches()) {
+						String prop = propMatcher.group(1).toUpperCase();
+						String propVal = propMatcher.group(2);
+						properties.put(prop, propVal);
+						propLine = source.readLine();
+						propMatcher = propPattern.matcher(propLine);
+					}
+					int numFrames = 24;
+					int delay = 32;
+					boolean looping = true;
+					if (properties.containsKey("FRAMES")) {
+						numFrames = Integer.parseInt(properties.get("FRAMES"));
+					}
+					if (properties.containsKey("DELAY")) {
+						delay = Integer.parseInt(properties.get("DELAY"));
+					}
+					if (properties.containsKey("LOOPING")) {
+						looping = Boolean.parseBoolean(properties.get("LOOP"));
+					}
+					int frameWidth = img.getWidth() / numFrames;
+					SpriteSheet s = new SpriteSheet(img, frameWidth,
+							img.getHeight());
+					LayeredImage limg = new LayeredImage(
+							new AnimatedImage(s, delay, looping));
+					return limg;
+				} else {
+					System.err.println("Unknown image type " + type + " for "
+							+ animName + " for " + name);
+				}
+			} else {
+				System.err.println("Invalid properties for " + animName);
+			}
+		} else {
+			System.err.println("Properties specified for " + animName + " for "
+					+ name + " but no matching image exists.");
+		}
+
+		return null;
+	}
+
 	public static Sprite getBeanSprite() {
-		StatedSprite ss = new StatedSprite(beanAnims.get(ActorState.IDLE.ordinal()), ActorState.IDLE.ordinal(),
-				GRID_SIZE);
+		StatedSprite ss = new StatedSprite(
+				beanAnims.get(ActorState.IDLE.ordinal()),
+				ActorState.IDLE.ordinal(), GRID_SIZE);
 		ss.setImages(beanAnims);
 		return ss;
 	}
