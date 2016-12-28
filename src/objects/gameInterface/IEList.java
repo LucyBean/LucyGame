@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 
 import helpers.Dir;
@@ -356,5 +357,9 @@ public abstract class IEList extends InterfaceElement {
 		
 		return 0;
 	}
-
+	
+	@Override
+	public void update(GameContainer gc, int delta) {
+		buttons.stream().forEach(b -> b.update(gc, delta));
+	}
 }

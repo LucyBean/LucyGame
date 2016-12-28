@@ -377,4 +377,8 @@ public class LayeredImage {
 				.filter(i -> i != null && i instanceof AnimatedImage).map(i -> (AnimatedImage) i)
 				.forEach(i -> i.resetAnimation());
 	}
+
+	public void setLayers(LayeredImage limg) {
+		layers = limg.layers;
+	}
 }

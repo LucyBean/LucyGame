@@ -7,6 +7,7 @@ import objects.attachments.Attachment;
 
 public abstract class Sprite extends Attachment {
 	private int gridSize;
+	private float drawScale = 1.0f;
 
 	/**
 	 * 
@@ -49,12 +50,16 @@ public abstract class Sprite extends Attachment {
 	public void draw() {
 		if (getObject() != null) {
 			CoOrdTranslator cot = getObject().getCoOrdTranslator();
-			Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
+			Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft()).scale(drawScale);
 			getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
-					cot.getDrawScale());
+					cot.getDrawScale()*drawScale);
 		} else {
 			System.err.println("Object is null for " + this);
 		}
+	}
+	
+	public void setDrawScale(float scale) {
+		drawScale = scale;
 	}
 
 	/**
