@@ -50,14 +50,20 @@ public abstract class Sprite extends Attachment {
 	public void draw() {
 		if (getObject() != null) {
 			CoOrdTranslator cot = getObject().getCoOrdTranslator();
-			Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft()).scale(drawScale);
+			Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
 			getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
-					cot.getDrawScale()*drawScale);
+					cot.getDrawScale() * drawScale);
 		} else {
 			System.err.println("Object is null for " + this);
 		}
 	}
-	
+
+	/**
+	 * Changes the draw scale of this object. This changes the size that the
+	 * images will be drawn. It does not affect the position of the origin.
+	 * 
+	 * @param scale
+	 */
 	public void setDrawScale(float scale) {
 		drawScale = scale;
 	}
