@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import objects.attachments.ActorSticker;
+import objects.attachments.InteractBox;
 import objects.world.Actor;
 import objects.world.ItemType;
 import worlds.WorldLayer;
@@ -14,6 +15,9 @@ public class PushableBlock extends Actor {
 		super(origin, WorldLayer.WORLD, ItemType.PUSHABLE_BLOCK);
 		setColliderFromSprite();
 		getCollider().setSolid(true);
+		
+		InteractBox ib = new InteractBox(new Point(-0.3f, 0), 2.6f, 2);
+		attach(ib);
 		
 		ActorSticker as = new ActorSticker(new Point(0, -0.2f), 2, 0.2f);
 		attach(as);
@@ -27,8 +31,12 @@ public class PushableBlock extends Actor {
 
 	@Override
 	public void act(GameContainer gc, int delta) {
-		// TODO Auto-generated method stub
-
+		
+	}
+	
+	@Override
+	public void interactedBy(Actor a) {
+		a.startPushing(this);
 	}
 
 }

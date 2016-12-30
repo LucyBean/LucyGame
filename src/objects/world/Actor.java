@@ -15,6 +15,7 @@ import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
 import objects.images.Sprite;
 import objects.images.StatedSprite;
+import objects.world.lib.PushableBlock;
 import quests.EventInfo;
 import quests.EventType;
 import worlds.World;
@@ -32,6 +33,7 @@ public abstract class Actor extends WorldObject {
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
 	private float crouchSpeed = 0.7f;
+	private float pushSpeed = 0.4f;
 	private float defaultJumpStrength = 0.02f;
 	private float nextJumpStrength = 0.02f;
 	private boolean gravityEnabled = true;
@@ -48,6 +50,7 @@ public abstract class Actor extends WorldObject {
 	private Collider standingCollider;
 	private Collider crouchingCollider;
 	private boolean interactNextFrame;
+	private PushableBlock pushTarget;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -69,8 +72,7 @@ public abstract class Actor extends WorldObject {
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, itemType.getSprite(),
-				null, null);
+		this(origin, layer, itemType, itemType.getSprite(), null, null);
 	}
 
 	@Override
@@ -486,6 +488,12 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	public void walk(Dir d, int delta) {
+		// If this Actor is pushing something then make it push rather than walk
+		if (wasPushing()) {
+			push(d, delta);
+			return;
+		}
+
 		if (isOnGround()) {
 			setAheadSensorLocation(d);
 			float moveAmount = moveSpeed * delta * walkSpeed;
@@ -508,6 +516,12 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	public void run(Dir d, int delta) {
+		// If this Actor is pushing something then make it push rather than run
+		if (wasPushing()) {
+			push(d, delta);
+			return;
+		}
+
 		float moveAmount = moveSpeed * delta;
 
 		if (wasCrouching()) {
@@ -529,6 +543,41 @@ public abstract class Actor extends WorldObject {
 
 		if (canClimb(d)) {
 			setState(ActorState.CLIMB);
+		}
+	}
+
+	/**
+	 * Causes this Actor to push. This will move their pushTarget and themself
+	 * in the given direction.
+	 * 
+	 * @param d
+	 * @param delta
+	 */
+	private void push(Dir d, int delta) {
+		// Figure out whether to push or pull the pushTarget
+		if (pushTarget != null && (d == Dir.EAST || d == Dir.WEST)) {
+			float deltaX = pushTarget.getPosition().getX()
+					- getPosition().getX();
+			float moveAmount = moveSpeed * delta * pushSpeed;
+			// deltaX > 0 means target is EAST of this Actor
+			// Move the pushTarget first
+			boolean pushTargetMoved = pushTarget.move(d, moveAmount);
+			if (pushTargetMoved) {
+				if (d == Dir.EAST) {
+					if (deltaX > 0) {
+						setState(ActorState.PUSH);
+					} else {
+						setState(ActorState.PULL);
+					}
+				} else {
+					if (deltaX < 0) {
+						setState(ActorState.PUSH);
+					} else {
+						setState(ActorState.PULL);
+					}
+				}
+				move(d, moveAmount);
+			}
 		}
 	}
 
@@ -572,9 +621,10 @@ public abstract class Actor extends WorldObject {
 	public void signalJump() {
 		jumpNextFrame = true;
 	}
-	
+
 	/**
-	 * Sends a signal to the Actor to interact with all objects at the end of the next frame.
+	 * Sends a signal to the Actor to interact with all objects at the end of
+	 * the next frame.
 	 */
 	public void signalInteract() {
 		interactNextFrame = true;
@@ -591,11 +641,17 @@ public abstract class Actor extends WorldObject {
 	}
 
 	/**
-	 * Detects whether or not this Actor is currently crouching.
+	 * @return Whether the Actor was crouching in the previous frame.
 	 */
 	private boolean wasCrouching() {
-		return getState() == ActorState.CROUCH
-				|| getState() == ActorState.CROUCH_WALK;
+		ActorState as = getState();
+		return as == ActorState.CROUCH || as == ActorState.CROUCH_WALK;
+	}
+
+	private boolean wasPushing() {
+		ActorState as = getState();
+		return as == ActorState.PUSH_PULL_IDLE || as == ActorState.PUSH
+				|| as == ActorState.PULL;
 	}
 
 	/**
@@ -603,6 +659,12 @@ public abstract class Actor extends WorldObject {
 	 */
 	protected void startCrouch() {
 		setState(ActorState.CROUCH);
+	}
+
+	public void startPushing(PushableBlock pb) {
+		// TODO: Fill in
+		setState(ActorState.PUSH_PULL_IDLE);
+		pushTarget = pb;
 	}
 
 	public void resetMidAirJump() {
@@ -812,7 +874,9 @@ public abstract class Actor extends WorldObject {
 		super.update(gc, delta);
 		if (isEnabled()) {
 			positionDelta = Point.ZERO;
-			setState(ActorState.IDLE);
+			if (!wasPushing()) {
+				setState(ActorState.IDLE);
+			}
 			act(gc, delta);
 			checkForInteractions();
 			if (interactNextFrame) {
@@ -915,7 +979,10 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void interactWithAll() {
-		if (!activeInteractables.isEmpty()) {
+		// Stop pushing/pulling
+		if (wasPushing()) {
+			setState(ActorState.IDLE);
+		} else if (!activeInteractables.isEmpty()) {
 			Iterator<WorldObject> aii = activeInteractables.iterator();
 			while (aii.hasNext()) {
 				WorldObject go = aii.next();
