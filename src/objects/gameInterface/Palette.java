@@ -36,8 +36,8 @@ public class Palette extends IEList {
 			Sprite sit = it.getSprite();
 			LayeredImage limg = sit.getImage();
 			
-			float wratio = s.getImage().getWidth() / limg.getWidth();
-			float hratio = s.getImage().getHeight() / limg.getHeight();
+			float wratio = ((float) s.getImage().getWidth()) / limg.getWidth();
+			float hratio = ((float) s.getImage().getHeight()) / limg.getHeight();
 			float drawScale = Math.min(wratio, hratio);
 			s.setDrawScale(drawScale);
 			s.getImage().setLayers(limg);
