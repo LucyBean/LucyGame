@@ -47,6 +47,7 @@ public abstract class Actor extends WorldObject {
 	private boolean jumpNextFrame = false;
 	private Collider standingCollider;
 	private Collider crouchingCollider;
+	private boolean interactNextFrame;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -571,6 +572,13 @@ public abstract class Actor extends WorldObject {
 	public void signalJump() {
 		jumpNextFrame = true;
 	}
+	
+	/**
+	 * Sends a signal to the Actor to interact with all objects at the end of the next frame.
+	 */
+	public void signalInteract() {
+		interactNextFrame = true;
+	}
 
 	/**
 	 * Signals a jump that is of a relative strength to a standard jump.
@@ -807,6 +815,10 @@ public abstract class Actor extends WorldObject {
 			setState(ActorState.IDLE);
 			act(gc, delta);
 			checkForInteractions();
+			if (interactNextFrame) {
+				interactWithAll();
+				interactNextFrame = false;
+			}
 			if (jumpNextFrame) {
 				jump(delta);
 				jumpNextFrame = false;
@@ -902,9 +914,8 @@ public abstract class Actor extends WorldObject {
 		autoAlignSprite();
 	}
 
-	public void interactWithAll() {
-		if (activeInteractables.isEmpty()) {
-		} else {
+	private void interactWithAll() {
+		if (!activeInteractables.isEmpty()) {
 			Iterator<WorldObject> aii = activeInteractables.iterator();
 			while (aii.hasNext()) {
 				WorldObject go = aii.next();

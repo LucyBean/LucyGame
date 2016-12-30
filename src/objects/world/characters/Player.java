@@ -76,15 +76,15 @@ public class Player extends Actor {
 				climb(Dir.SOUTH, delta);
 			}
 		}
-		if (input.isKeyDown(Input.KEY_PERIOD)) {
-			interactWithAll();
-		}
 	}
 	
 	@Override
 	public void keyPressed (int keycode) {
 		if (gravityEnabled() && keycode == Input.KEY_SPACE) {
 			signalJump();
+		}
+		if (keycode == Input.KEY_PERIOD) {
+			signalInteract();
 		}
 	}
 
