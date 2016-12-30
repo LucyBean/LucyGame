@@ -10,6 +10,7 @@ import objects.world.ClimbingWallMarker;
 import objects.world.WorldObject;
 import objects.world.characters.Player;
 import objects.world.lib.MovingPlatform;
+import objects.world.lib.PushableBlock;
 import worlds.LucyGame;
 import worlds.World;
 
@@ -36,6 +37,9 @@ public class PlatformerDemoWorld extends World {
 		
 		MovingPlatform mp = new MovingPlatform(new Point(22, 4), new Point(22, 11), 3000);
 		addObject(mp);
+		
+		PushableBlock pb = new PushableBlock(new Point(13, -5));
+		addObject(pb);
 	}
 
 }

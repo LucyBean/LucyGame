@@ -1,13 +1,10 @@
 package objects.world.lib;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 
 import helpers.Dir;
 import helpers.Point;
-import helpers.Rectangle;
 import objects.attachments.ActorSticker;
-import objects.images.SpriteBuilder;
 import objects.world.Actor;
 import objects.world.ItemType;
 import worlds.WorldLayer;
@@ -20,9 +17,7 @@ public class MovingPlatform extends Actor {
 	private int t = 0;
 
 	public MovingPlatform(Point start, Point end, int period) {
-		super(start, WorldLayer.WORLD, ItemType.MOVING_WALL,
-				SpriteBuilder.createRectangle(new Rectangle(Point.ZERO, 2, 1),
-						32, new Color(220, 30, 220)));
+		super(start, WorldLayer.WORLD, ItemType.MOVING_PLATFORM);
 		setColliderFromSprite();
 		getCollider().setSolid(true);
 		useGravity(false);
