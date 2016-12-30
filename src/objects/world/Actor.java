@@ -227,6 +227,10 @@ public abstract class Actor extends WorldObject {
 	protected void setWalkSpeed(float walkSpeed) {
 		this.walkSpeed = walkSpeed;
 	}
+	
+	public PushableBlock getPushTarget() {
+		return pushTarget;
+	}
 
 	/**
 	 * Moves a direction, preventing this Actor's Collider from overlapping with
@@ -970,6 +974,15 @@ public abstract class Actor extends WorldObject {
 						&& to != ActorState.CROUCH)) {
 			// transitioning to standing
 			attach(standingCollider);
+		}
+
+		// Clear the pushTarget if transitioning out of a pushing state.
+		boolean wasPushing = from == ActorState.PUSH_PULL_IDLE
+				|| from == ActorState.PUSH || from == ActorState.PULL;
+		boolean nextPushing = to == ActorState.PUSH_PULL_IDLE
+				|| to == ActorState.PUSH || to== ActorState.PULL;
+		if (wasPushing && !nextPushing) {
+			pushTarget = null;
 		}
 	}
 

@@ -29,7 +29,7 @@ public enum ItemType {
 				new Rectangle(Point.ZERO, 2, 1), 32, new Color(220, 30, 220))),
 		TRAMPOLINE(() -> SpriteBuilder.getTrampolineSprite()),
 		PUSHABLE_BLOCK(() -> SpriteBuilder.createRectangle(
-				new Rectangle(Point.ZERO, 2, 2), 32, new Color(30, 220, 220)));
+				new Rectangle(Point.ZERO, 2, 2), 32, new Color(30, 220, 30)));
 
 	private boolean paintable = true;
 

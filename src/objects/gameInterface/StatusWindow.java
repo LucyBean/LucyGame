@@ -11,6 +11,7 @@ import objects.world.Lockable;
 import objects.world.Locker;
 import objects.world.WorldObject;
 import objects.world.characters.NPC;
+import objects.world.lib.PushableBlock;
 
 class StatusWindow extends InterfaceElement {
 	WorldObject watching;
@@ -49,8 +50,11 @@ class StatusWindow extends InterfaceElement {
 			}
 			
 			if (watching instanceof Actor) {
-				ActorState state = ((Actor) watching).getState();
-				text += "State: " + state;
+				Actor a = (Actor) watching;
+				ActorState state = a.getState();
+				text += "State: " + state + "\n";
+				PushableBlock pushTarget = a.getPushTarget();
+				text += "Pushing: " + pushTarget + "\n";
 			}
 			
 			if (watching instanceof NPC) {
