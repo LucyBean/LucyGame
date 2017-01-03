@@ -237,6 +237,10 @@ public abstract class Actor extends WorldObject {
 	public Actor getPushTarget() {
 		return pushTarget;
 	}
+	
+	public float getVSpeed() {
+		return vSpeed;
+	}
 
 	/**
 	 * Moves a direction, preventing this Actor's Collider from overlapping with

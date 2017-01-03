@@ -26,7 +26,8 @@ public class Trampoline extends Static {
 			Player p = (Player) wo;
 			if (p.getState() == ActorState.FALL) {
 				p.resetMidAirJump();
-				p.signalJump(1.5f);
+				float jumpSpeed = Math.min(2.6f, 75.0f * p.getVSpeed());
+				p.signalJump(jumpSpeed);
 			}
 		}
 	}
