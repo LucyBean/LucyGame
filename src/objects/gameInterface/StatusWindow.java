@@ -9,7 +9,6 @@ import objects.world.Actor;
 import objects.world.ActorState;
 import objects.world.Lockable;
 import objects.world.Locker;
-import objects.world.Pushable;
 import objects.world.WorldObject;
 import objects.world.characters.NPC;
 
@@ -53,7 +52,7 @@ class StatusWindow extends InterfaceElement {
 				Actor a = (Actor) watching;
 				ActorState state = a.getState();
 				text += "State: " + state + "\n";
-				Pushable pushTarget = a.getPushTarget();
+				Actor pushTarget = a.getPushTarget();
 				text += "Pushing: " + pushTarget + "\n";
 			}
 			

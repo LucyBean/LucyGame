@@ -37,6 +37,7 @@ public abstract class Actor extends WorldObject {
 	private float defaultJumpStrength = 0.02f;
 	private float nextJumpStrength = 0.02f;
 	private boolean gravityEnabled = true;
+	private boolean pushable = false;
 	private ActorState lastState;
 	private ActorState state;
 	private Sensor floorAheadSensor;
@@ -50,7 +51,7 @@ public abstract class Actor extends WorldObject {
 	private Collider standingCollider;
 	private Collider crouchingCollider;
 	private boolean interactNextFrame;
-	private Pushable pushTarget;
+	private Actor pushTarget;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -151,6 +152,10 @@ public abstract class Actor extends WorldObject {
 	public boolean gravityEnabled() {
 		return gravityEnabled;
 	}
+	
+	public void setPushable(boolean pushable) {
+		this.pushable = pushable;
+	}
 
 	/**
 	 * Returns the state of the Actor at the end of the previous frame.
@@ -228,7 +233,7 @@ public abstract class Actor extends WorldObject {
 		this.walkSpeed = walkSpeed;
 	}
 
-	public Pushable getPushTarget() {
+	public Actor getPushTarget() {
 		return pushTarget;
 	}
 
@@ -693,7 +698,7 @@ public abstract class Actor extends WorldObject {
 		setState(ActorState.CROUCH);
 	}
 
-	public void startPushing(Pushable pb) {
+	public void startPushing(Actor pb) {
 		setState(ActorState.PUSH_PULL_IDLE);
 		pushTarget = pb;
 	}
@@ -1030,6 +1035,13 @@ public abstract class Actor extends WorldObject {
 				getWorld().signalEvent(
 						new EventInfo(EventType.INTERACT, this, go));
 			}
+		}
+	}
+	
+	@Override
+	public void interactedBy(Actor a) {
+		if (pushable) {
+			a.startPushing(this);
 		}
 	}
 }

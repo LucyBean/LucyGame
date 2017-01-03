@@ -197,9 +197,7 @@ public abstract class WorldObject extends GameObject {
 	// Interaction and reactions
 	//
 	public void interactedBy(Actor a) {
-		if (this instanceof Pushable) {
-			a.startPushing((Pushable) this);
-		}
+		
 	}
 
 	/**

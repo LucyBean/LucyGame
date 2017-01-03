@@ -7,15 +7,15 @@ import objects.attachments.ActorSticker;
 import objects.attachments.InteractBox;
 import objects.world.Actor;
 import objects.world.ItemType;
-import objects.world.Pushable;
 import worlds.WorldLayer;
 
-public class PushableBlock extends Actor implements Pushable {
+public class PushableBlock extends Actor {
 
 	public PushableBlock(Point origin) {
 		super(origin, WorldLayer.WORLD, ItemType.PUSHABLE_BLOCK);
 		setColliderFromSprite();
 		getCollider().setSolid(true);
+		setPushable(true);
 		
 		InteractBox ib = new InteractBox(new Point(-0.3f, 0), 2.6f, 2);
 		attach(ib);
