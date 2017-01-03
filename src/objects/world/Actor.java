@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import org.newdawn.slick.GameContainer;
 
@@ -238,11 +239,11 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param d
 	 * @param amount
-	 * @return Whether or not the character actually moved.
+	 * @return The difference in position
 	 */
-	public boolean move(Dir d, float amount) {
+	public Point move(Dir d, float amount) {
 		if (d == null) {
-			return false;
+			return Point.ZERO;
 		}
 
 		if (Math.abs(amount) > 0 && d == Dir.EAST || d == Dir.WEST) {
@@ -260,7 +261,7 @@ public abstract class Actor extends WorldObject {
 			getSprite().setMirrored(true);
 		}
 
-		boolean moved = true;
+		Point delta = Point.ZERO;
 
 		if (getCollider() == null) {
 			// This object has no collider so moves immediately without
@@ -268,18 +269,22 @@ public abstract class Actor extends WorldObject {
 			setPosition(getPosition().move(d, amount));
 			getActorStickers().stream().forEach(
 					a -> a.moveStuckActors(d, amount));
+			delta = Point.ZERO.move(d, amount);
 			positionDelta = positionDelta.move(d, amount);
 		} else {
 			// This object moves with collision checking
 			Point newPos = findNewPosition(d, amount);
 			Point oldPos = getPosition();
-			Point posChange = newPos.move(oldPos.neg());
-			positionDelta = positionDelta.move(posChange);
+			delta = newPos.move(oldPos.neg());
+			positionDelta = positionDelta.move(delta);
 			setPosition(newPos);
-			if (newPos.equals(oldPos)) {
-				moved = false;
+
+			if (delta.equals(Point.ZERO)) {
+				// If delta is small/zero, set it to zero Point
+				delta = Point.ZERO;
 			} else {
-				float moveAmount = posChange.getDir(d);
+				// Move all stuck actors by the same amount
+				float moveAmount = delta.getDir(d);
 				getActorStickers().stream().forEach(
 						a -> a.moveStuckActors(d, moveAmount));
 
@@ -289,7 +294,7 @@ public abstract class Actor extends WorldObject {
 			}
 		}
 
-		return moved;
+		return delta;
 	}
 
 	/**
@@ -349,6 +354,7 @@ public abstract class Actor extends WorldObject {
 		rect = getCoOrdTranslator().objectToWorldCoOrds(rect);
 		Collection<WorldObject> solids = getWorld().getMap().getOverlappingSolids(
 				rect);
+		solids = solids.stream().filter(s -> s != this).collect(Collectors.toSet());
 		return solids;
 	}
 
@@ -505,8 +511,8 @@ public abstract class Actor extends WorldObject {
 				moveAmount *= crouchSpeed;
 			}
 			if (floorAheadSensor.isOverlappingSolid()) {
-				boolean moved = move(d, moveAmount);
-				if (moved && isOnGround()) {
+				Point moved = move(d, moveAmount);
+				if (moved != Point.ZERO && isOnGround()) {
 					setState(ActorState.WALK);
 				}
 			}
@@ -535,8 +541,8 @@ public abstract class Actor extends WorldObject {
 		if (lastState == ActorState.FALL || lastState == ActorState.JUMP) {
 			moveAmount *= 0.3f;
 		}
-		boolean moved = move(d, moveAmount);
-		if (isOnGround() && moved) {
+		Point moved = move(d, moveAmount);
+		if (isOnGround() && moved != Point.ZERO) {
 			setState(ActorState.RUN);
 		}
 
@@ -550,14 +556,14 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
-	public boolean bePushed(Dir d, float amount) {
+	public Point bePushed(Dir d, float amount) {
 		// Objects cannot be pushed off edges
 		setAheadSensorLocation(d);
 		if (floorAheadSensor.isOverlappingSolid()) {
-			boolean moved = move(d, amount);
+			Point moved = move(d, amount);
 			return moved;
 		}
-		return false;
+		return Point.ZERO;
 	}
 
 	/**
@@ -571,30 +577,38 @@ public abstract class Actor extends WorldObject {
 		setAheadSensorLocation(d);
 		// Figure out whether to push or pull the pushTarget
 		if (pushTarget != null && (d == Dir.EAST || d == Dir.WEST)) {
-			// Can only push if there is no wall in the way
-			if (!wallAheadSensorTop.isOverlappingSolid()
-					&& !wallAheadSensorBtm.isOverlappingSolid()) {
-				float deltaX = pushTarget.getPosition().getX()
-						- getPosition().getX();
+			// Determine whether pushing or pulling
+			// deltaX > 0 means target is EAST of this Actor
+			float deltaX = pushTarget.getPosition().getX()
+					- getPosition().getX();
+			boolean pushing = (d == Dir.EAST && deltaX > 0)
+					|| (d == Dir.WEST && deltaX < 0);
+
+			// Can only pull if there is no wall in the way
+			if (pushing || (!wallAheadSensorTop.isOverlappingSolid()
+					&& !wallAheadSensorBtm.isOverlappingSolid()
+					&& floorAheadSensor.isOverlappingSolid())) {
 				float moveAmount = moveSpeed * delta * pushSpeed;
-				// deltaX > 0 means target is EAST of this Actor
-				// Move the pushTarget first
-				boolean pushTargetMoved = pushTarget.bePushed(d, moveAmount);
-				if (pushTargetMoved) {
-					if (d == Dir.EAST) {
-						if (deltaX > 0) {
-							setState(ActorState.PUSH);
-						} else {
-							setState(ActorState.PULL);
-						}
+				Point posDelta = Point.ZERO;
+				if (pushing) {
+					// If pushing move the push target first
+					posDelta = pushTarget.bePushed(d, moveAmount);
+					// Then move the player to it
+					move(d, posDelta.getDir(d));
+				} else {
+					// If pulling, move the player than move the target
+					// the same amount
+					posDelta = move(d, moveAmount);
+					pushTarget.bePushed(d,
+							posDelta.getDir(d));
+				}
+				// Set state as necessary
+				if (posDelta != Point.ZERO) {
+					if (pushing) {
+						setState(ActorState.PUSH);
 					} else {
-						if (deltaX < 0) {
-							setState(ActorState.PUSH);
-						} else {
-							setState(ActorState.PULL);
-						}
+						setState(ActorState.PULL);
 					}
-					move(d, moveAmount);
 				}
 			}
 		}
@@ -611,8 +625,8 @@ public abstract class Actor extends WorldObject {
 	public void climb(Dir d, int delta) {
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
 			float moveAmount = moveSpeed * delta * walkSpeed;
-			boolean moved = move(d, moveAmount);
-			if (moved) {
+			Point moved = move(d, moveAmount);
+			if (moved != Point.ZERO) {
 				// TODO: Animate climbing sprite
 			}
 			if (!wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)) {
