@@ -153,7 +153,7 @@ public abstract class Actor extends WorldObject {
 	public boolean gravityEnabled() {
 		return gravityEnabled;
 	}
-	
+
 	public void setPushable(boolean pushable) {
 		this.pushable = pushable;
 	}
@@ -403,7 +403,8 @@ public abstract class Actor extends WorldObject {
 				northNudge += 0.0001f;
 				move(Dir.NORTH, northNudge);
 				moveArea = calculateMoveArea(d, amount);
-				overlappingSolids = getOverlappingSolids(moveArea).collect(Collectors.toSet());
+				overlappingSolids = getOverlappingSolids(moveArea).collect(
+						Collectors.toSet());
 			}
 		}
 
@@ -564,11 +565,11 @@ public abstract class Actor extends WorldObject {
 	public Point bePushed(Dir d, float amount) {
 		// Objects cannot be pushed off edges
 		setAheadSensorLocation(d);
-		if (floorAheadSensor.isOverlappingSolid()) {
-			Point moved = move(d, amount);
-			return moved;
-		}
-		return Point.ZERO;
+		// if (floorAheadSensor.isOverlappingSolid()) {
+		Point moved = move(d, amount);
+		return moved;
+		// }
+		// return Point.ZERO;
 	}
 
 	/**
@@ -604,8 +605,7 @@ public abstract class Actor extends WorldObject {
 					// If pulling, move the player than move the target
 					// the same amount
 					posDelta = move(d, moveAmount);
-					pushTarget.bePushed(d,
-							posDelta.getDir(d));
+					pushTarget.bePushed(d, posDelta.getDir(d));
 				}
 				// Set state as necessary
 				if (posDelta != Point.ZERO) {
@@ -841,11 +841,10 @@ public abstract class Actor extends WorldObject {
 				getPosition());
 		Stream<WorldObject> interactables = getWorld().getMap().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
-		interactables.filter(
-				go -> go != this && go.isEnabled()).filter(
-						go -> go.getInteractBox().getRectangle().translate(
-								go.getPosition()).overlaps(thisArea)).forEach(
-										go -> nowActive.add(go));
+		interactables.filter(go -> go != this && go.isEnabled()).filter(
+				go -> go.getInteractBox().getRectangle().translate(
+						go.getPosition()).overlaps(thisArea)).forEach(
+								go -> nowActive.add(go));
 		return nowActive;
 	}
 
@@ -911,7 +910,9 @@ public abstract class Actor extends WorldObject {
 		super.update(gc, delta);
 		if (isEnabled()) {
 			positionDelta = Point.ZERO;
-			if (!wasPushing()) {
+			if (!wasPushing() || (pushTarget != null
+					&& pushTarget.getState() == ActorState.FALL)) {
+				// Set idle if not pushing a block
 				setState(ActorState.IDLE);
 			}
 			act(gc, delta);
@@ -1038,7 +1039,7 @@ public abstract class Actor extends WorldObject {
 			}
 		}
 	}
-	
+
 	@Override
 	public void interactedBy(Actor a) {
 		if (pushable) {
