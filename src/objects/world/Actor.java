@@ -237,7 +237,7 @@ public abstract class Actor extends WorldObject {
 	public Actor getPushTarget() {
 		return pushTarget;
 	}
-	
+
 	public float getVSpeed() {
 		return vSpeed;
 	}
@@ -677,8 +677,13 @@ public abstract class Actor extends WorldObject {
 	 * 
 	 * @param nextJumpStrengthRelative
 	 */
-	public void signalJump(float nextJumpStrengthRelative) {
+	public void signalJumpRelative(float nextJumpStrengthRelative) {
 		this.nextJumpStrength = defaultJumpStrength * nextJumpStrengthRelative;
+		signalJump();
+	}
+
+	public void signalJumpAbs(float nextJumpStrength) {
+		this.nextJumpStrength = nextJumpStrength;
 		signalJump();
 	}
 

@@ -110,7 +110,7 @@ public class CharacterSpriteBuilder {
 					if (properties.containsKey("DELAY")) {
 						delay = Integer.parseInt(properties.get("DELAY"));
 					}
-					if (properties.containsKey("LOOPING")) {
+					if (properties.containsKey("LOOP")) {
 						looping = Boolean.parseBoolean(properties.get("LOOP"));
 					}
 					int frameWidth = img.getWidth() / numFrames;

@@ -17,17 +17,22 @@ public class Trampoline extends Static {
 
 	@Override
 	protected void resetStaticState() {
-		
+
 	}
-	
+
 	@Override
 	public void overlapStart(WorldObject wo) {
 		if (wo instanceof Player) {
 			Player p = (Player) wo;
 			if (p.getState() == ActorState.FALL) {
 				p.resetMidAirJump();
-				float jumpSpeed = Math.min(2.6f, 75.0f * p.getVSpeed());
-				p.signalJump(jumpSpeed);
+				// TODO: Fix this
+				// The trampoline should reflect the player
+				// at a speed such that they reach the same
+				// maximum height.
+				// This is an approximate value for this gravity.
+				// Magic, magic numbers.
+				p.signalJumpAbs(p.getVSpeed() * 1.29f);
 			}
 		}
 	}

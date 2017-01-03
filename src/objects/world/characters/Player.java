@@ -29,7 +29,7 @@ public class Player extends Actor {
 			@Override
 			public void effectOnPlayer() {
 				resetMidAirJump();
-				signalJump(0.5f);
+				signalJumpRelative(0.5f);
 			}
 			
 			@Override
