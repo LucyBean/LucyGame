@@ -1,6 +1,6 @@
 package objects.world;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import helpers.Point;
 import objects.attachments.Collider;
@@ -80,10 +80,10 @@ public abstract class Locker extends Static {
 	 */
 	private final void lock() {
 		lockAction();
-		Collection<Lockable> linkedItems = getWorld().getMap().getLockablesByID(
+		Stream<Lockable> linkedItems = getWorld().getMap().getLockablesByID(
 				lockID);
 		if (linkedItems != null) {
-			linkedItems.stream().forEach(b -> b.lock());
+			linkedItems.forEach(b -> b.lock());
 		}
 		locked = true;
 	}
@@ -106,10 +106,10 @@ public abstract class Locker extends Static {
 	 */
 	private final void unlock() {
 		unlockAction();
-		Collection<Lockable> linkedItems = getWorld().getMap().getLockablesByID(
+		Stream<Lockable> linkedItems = getWorld().getMap().getLockablesByID(
 				lockID);
 		if (linkedItems != null) {
-			linkedItems.stream().forEach(b -> b.unlock());
+			linkedItems.forEach(b -> b.unlock());
 		}
 		locked = false;
 	}

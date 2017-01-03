@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.newdawn.slick.GameContainer;
 
@@ -354,11 +355,11 @@ public abstract class Actor extends WorldObject {
 	 *            The rectangle to check in the Actor's co-ordinates.
 	 * @return
 	 */
-	protected Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
+	protected Stream<WorldObject> getOverlappingSolids(Rectangle rect) {
 		rect = getCoOrdTranslator().objectToWorldCoOrds(rect);
-		Collection<WorldObject> solids = getWorld().getMap().getOverlappingSolids(
+		Stream<WorldObject> solids = getWorld().getMap().getOverlappingSolids(
 				rect);
-		solids = solids.stream().filter(s -> s != this).collect(Collectors.toSet());
+		solids = solids.filter(s -> s != this);
 		return solids;
 	}
 
@@ -375,7 +376,7 @@ public abstract class Actor extends WorldObject {
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
 		Collection<WorldObject> overlappingSolids = getOverlappingSolids(
-				moveArea);
+				moveArea).collect(Collectors.toSet());
 
 		// If moving left/right allow the Actor to 'climb' onto solids which
 		// have a
@@ -402,7 +403,7 @@ public abstract class Actor extends WorldObject {
 				northNudge += 0.0001f;
 				move(Dir.NORTH, northNudge);
 				moveArea = calculateMoveArea(d, amount);
-				overlappingSolids = getOverlappingSolids(moveArea);
+				overlappingSolids = getOverlappingSolids(moveArea).collect(Collectors.toSet());
 			}
 		}
 
@@ -838,9 +839,9 @@ public abstract class Actor extends WorldObject {
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(
 				getPosition());
-		Collection<WorldObject> interactables = getWorld().getMap().getAllInteractables();
+		Stream<WorldObject> interactables = getWorld().getMap().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
-		interactables.stream().filter(
+		interactables.filter(
 				go -> go != this && go.isEnabled()).filter(
 						go -> go.getInteractBox().getRectangle().translate(
 								go.getPosition()).overlaps(thisArea)).forEach(
@@ -970,12 +971,12 @@ public abstract class Actor extends WorldObject {
 			if (standingCollider != null && crouchingCollider != null
 					&& wasCrouching()) {
 				// Actually set to crouching if IDLE is not possible
-				Collection<WorldObject> standingCollisions = getOverlappingSolids(
-						standingCollider.getRectangle());
-				if (!standingCollisions.isEmpty()) {
-					Collection<WorldObject> crouchingCollisions = getOverlappingSolids(
-							crouchingCollider.getRectangle());
-					if (crouchingCollisions.isEmpty()) {
+				long standingCollisions = getOverlappingSolids(
+						standingCollider.getRectangle()).count();
+				if (standingCollisions != 0) {
+					long crouchingCollisions = getOverlappingSolids(
+							crouchingCollider.getRectangle()).count();
+					if (crouchingCollisions == 0) {
 						newState = ActorState.CROUCH;
 					}
 				}

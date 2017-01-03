@@ -1,6 +1,7 @@
 package objects.attachments;
 
-import java.util.Collection;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -32,17 +33,19 @@ public class Sensor extends Attachment {
 	public boolean isOverlappingSolid() {
 		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 				getRectangle());
-		Collection<WorldObject> solids = getObject().getWorld().getMap().getOverlappingSolids(
+		Stream<WorldObject> solids = getObject().getWorld().getMap().getOverlappingSolids(
 				rect);
-		return solids == null || !solids.isEmpty();
+		Iterator<WorldObject> is = solids.iterator();
+		return solids == null || is.hasNext();
 	}
 
 	public <T extends WorldObject> boolean isOverlapping(Class<T> t) {
 		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 				getRectangle());
-		Collection<T> ts = getObject().getWorld().getMap().getOverlappingObjectsOfType(
+		Stream<T> ts = getObject().getWorld().getMap().getOverlappingObjectsOfType(
 				rect, t);
-		return ts == null || !ts.isEmpty();
+		Iterator<T> it = ts.iterator();
+		return ts == null || it.hasNext();
 	}
 
 }
