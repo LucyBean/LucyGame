@@ -27,12 +27,21 @@ public class Trampoline extends Static {
 			if (p.getState() == ActorState.FALL) {
 				p.resetMidAirJump();
 				// TODO: Fix this
-				// The trampoline should reflect the player
-				// at a speed such that they reach the same
-				// maximum height.
+				// The trampoline reflects people
 				// This is an approximate value for this gravity.
 				// Magic, magic numbers.
-				p.signalJumpAbs(p.getVSpeed() * 1.29f);
+				// The 'magic jump' strength
+				final float targetJumpStrength = 0.03441f;
+				// The fall speed for this 'magic jump'
+				final float targetVSpeed = 0.02645f;
+
+				float vSpeed = p.getVSpeed();
+				float delta = (1 - targetVSpeed + vSpeed);
+				float power = 10;
+				float ratio = (float) Math.pow(power, Math.pow(delta, power))/power;
+				float jumpStrength = ratio * targetJumpStrength;
+				
+				p.signalJumpAbs(jumpStrength);
 			}
 		}
 	}
