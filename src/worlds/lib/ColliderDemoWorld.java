@@ -53,6 +53,7 @@ class ColliderBox extends Static {
 
 	@Override
 	public void interactedBy(Actor a) {
+		super.interactedBy(a);
 		disable();
 	}
 }

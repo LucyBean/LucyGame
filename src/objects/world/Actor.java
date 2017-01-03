@@ -16,7 +16,6 @@ import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
 import objects.images.Sprite;
 import objects.images.StatedSprite;
-import objects.world.lib.PushableBlock;
 import quests.EventInfo;
 import quests.EventType;
 import worlds.World;
@@ -51,7 +50,7 @@ public abstract class Actor extends WorldObject {
 	private Collider standingCollider;
 	private Collider crouchingCollider;
 	private boolean interactNextFrame;
-	private PushableBlock pushTarget;
+	private Pushable pushTarget;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -229,7 +228,7 @@ public abstract class Actor extends WorldObject {
 		this.walkSpeed = walkSpeed;
 	}
 
-	public PushableBlock getPushTarget() {
+	public Pushable getPushTarget() {
 		return pushTarget;
 	}
 
@@ -694,8 +693,7 @@ public abstract class Actor extends WorldObject {
 		setState(ActorState.CROUCH);
 	}
 
-	public void startPushing(PushableBlock pb) {
-		// TODO: Fill in
+	public void startPushing(Pushable pb) {
 		setState(ActorState.PUSH_PULL_IDLE);
 		pushTarget = pb;
 	}

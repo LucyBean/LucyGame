@@ -66,8 +66,7 @@ public abstract class WorldObject extends GameObject {
 	}
 
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, itemType.getSprite(),
-				null, null);
+		this(origin, layer, itemType, itemType.getSprite(), null, null);
 	}
 
 	protected void setColliderFromSprite() {
@@ -198,7 +197,9 @@ public abstract class WorldObject extends GameObject {
 	// Interaction and reactions
 	//
 	public void interactedBy(Actor a) {
-
+		if (this instanceof Pushable) {
+			a.startPushing((Pushable) this);
+		}
 	}
 
 	/**
@@ -243,12 +244,13 @@ public abstract class WorldObject extends GameObject {
 		if (GlobalOptions.drawAttachments()) {
 			Collection<Sensor> sensors = attachments.getByType(Sensor.class);
 			sensors.stream().forEach(s -> s.draw());
-			
+
 			Collection<AttackBox> activeAttacks = attachments.getByType(
 					AttackBox.class);
 			activeAttacks.stream().forEach(s -> s.draw());
-			
-			Collection<ActorSticker> actorStickers = attachments.getByType(ActorSticker.class);
+
+			Collection<ActorSticker> actorStickers = attachments.getByType(
+					ActorSticker.class);
 			actorStickers.stream().forEach(s -> s.draw());
 		}
 	}

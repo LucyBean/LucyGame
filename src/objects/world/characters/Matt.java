@@ -75,6 +75,7 @@ public class Matt extends NPC {
 
 	@Override
 	public void interactedBy(Actor a) {
+		super.interactedBy(a);
 		if (a instanceof Player) {
 			Player p = (Player) a;
 

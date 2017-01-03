@@ -9,7 +9,6 @@ import helpers.WorldMapImporterExporter;
 import objects.world.ClimbingWallMarker;
 import objects.world.WorldObject;
 import objects.world.characters.Player;
-import objects.world.lib.MovingPlatform;
 import objects.world.lib.PushableBlock;
 import worlds.LucyGame;
 import worlds.World;

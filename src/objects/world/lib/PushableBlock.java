@@ -7,9 +7,10 @@ import objects.attachments.ActorSticker;
 import objects.attachments.InteractBox;
 import objects.world.Actor;
 import objects.world.ItemType;
+import objects.world.Pushable;
 import worlds.WorldLayer;
 
-public class PushableBlock extends Actor {
+public class PushableBlock extends Actor implements Pushable {
 
 	public PushableBlock(Point origin) {
 		super(origin, WorldLayer.WORLD, ItemType.PUSHABLE_BLOCK);
@@ -36,7 +37,7 @@ public class PushableBlock extends Actor {
 	
 	@Override
 	public void interactedBy(Actor a) {
-		a.startPushing(this);
+		super.interactedBy(a);
 	}
 
 }
