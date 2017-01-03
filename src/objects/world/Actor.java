@@ -835,6 +835,20 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
+	/**
+	 * Checks whether the Actor should be Pushing
+	 */
+	private void checkPush() {
+		// Check for continuing a push
+		// This happens when the Actor was previous pushing and
+		// their push target has not started falling.
+		if (wasPushing() && pushTarget != null
+				&& pushTarget.getState() != ActorState.FALL) {
+			setState(ActorState.PUSH_PULL_IDLE);
+		}
+
+	}
+
 	private Collection<WorldObject> findInteractablesHere() {
 		// Check for any interactables that are at the Actor's current position
 		Rectangle thisArea = getCollider().getRectangle().translate(
@@ -910,11 +924,8 @@ public abstract class Actor extends WorldObject {
 		super.update(gc, delta);
 		if (isEnabled()) {
 			positionDelta = Point.ZERO;
-			if (!wasPushing() || (pushTarget != null
-					&& pushTarget.getState() == ActorState.FALL)) {
-				// Set idle if not pushing a block
-				setState(ActorState.IDLE);
-			}
+			setState(ActorState.IDLE);
+			checkPush();
 			act(gc, delta);
 			checkForInteractions();
 			if (interactNextFrame) {
