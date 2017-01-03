@@ -227,7 +227,7 @@ public abstract class Actor extends WorldObject {
 	protected void setWalkSpeed(float walkSpeed) {
 		this.walkSpeed = walkSpeed;
 	}
-	
+
 	public PushableBlock getPushTarget() {
 		return pushTarget;
 	}
@@ -550,6 +550,16 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
+	public boolean bePushed(Dir d, float amount) {
+		// Objects cannot be pushed off edges
+		setAheadSensorLocation(d);
+		if (floorAheadSensor.isOverlappingSolid()) {
+			boolean moved = move(d, amount);
+			return moved;
+		}
+		return false;
+	}
+
 	/**
 	 * Causes this Actor to push. This will move their pushTarget and themself
 	 * in the given direction.
@@ -558,29 +568,34 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	private void push(Dir d, int delta) {
+		setAheadSensorLocation(d);
 		// Figure out whether to push or pull the pushTarget
 		if (pushTarget != null && (d == Dir.EAST || d == Dir.WEST)) {
-			float deltaX = pushTarget.getPosition().getX()
-					- getPosition().getX();
-			float moveAmount = moveSpeed * delta * pushSpeed;
-			// deltaX > 0 means target is EAST of this Actor
-			// Move the pushTarget first
-			boolean pushTargetMoved = pushTarget.move(d, moveAmount);
-			if (pushTargetMoved) {
-				if (d == Dir.EAST) {
-					if (deltaX > 0) {
-						setState(ActorState.PUSH);
+			// Can only push if there is no wall in the way
+			if (!wallAheadSensorTop.isOverlappingSolid()
+					&& !wallAheadSensorBtm.isOverlappingSolid()) {
+				float deltaX = pushTarget.getPosition().getX()
+						- getPosition().getX();
+				float moveAmount = moveSpeed * delta * pushSpeed;
+				// deltaX > 0 means target is EAST of this Actor
+				// Move the pushTarget first
+				boolean pushTargetMoved = pushTarget.bePushed(d, moveAmount);
+				if (pushTargetMoved) {
+					if (d == Dir.EAST) {
+						if (deltaX > 0) {
+							setState(ActorState.PUSH);
+						} else {
+							setState(ActorState.PULL);
+						}
 					} else {
-						setState(ActorState.PULL);
+						if (deltaX < 0) {
+							setState(ActorState.PUSH);
+						} else {
+							setState(ActorState.PULL);
+						}
 					}
-				} else {
-					if (deltaX < 0) {
-						setState(ActorState.PUSH);
-					} else {
-						setState(ActorState.PULL);
-					}
+					move(d, moveAmount);
 				}
-				move(d, moveAmount);
 			}
 		}
 	}
@@ -980,7 +995,7 @@ public abstract class Actor extends WorldObject {
 		boolean wasPushing = from == ActorState.PUSH_PULL_IDLE
 				|| from == ActorState.PUSH || from == ActorState.PULL;
 		boolean nextPushing = to == ActorState.PUSH_PULL_IDLE
-				|| to == ActorState.PUSH || to== ActorState.PULL;
+				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
 		}

@@ -42,11 +42,18 @@ public class ImageBuilder {
 		try {
 			StaticImage img = new StaticImage(width, height);
 			Graphics g = img.getGraphics();
-			g.setColor(fill);
-			g.fillRect(0, 0, width, height);
-			g.setColor(border);
-			g.drawRect(0, 0, width - 1, height - 1);
-			g.drawRect(1, 1, width - 3, height - 3);
+			if (width > 2 && height > 2) {
+				g.setColor(fill);
+				g.fillRect(0, 0, width, height);
+				g.setColor(border);
+				g.drawRect(0, 0, width - 1, height - 1);
+				if (width > 5 && height > 5) {
+					g.drawRect(1, 1, width - 3, height - 3);
+				}
+			} else {
+				g.setColor(border);
+				g.fillRect(0, 0, width, height);
+			}
 			g.flush();
 			return img;
 		} catch (SlickException se) {
