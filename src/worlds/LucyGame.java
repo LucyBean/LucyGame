@@ -10,6 +10,13 @@ import org.newdawn.slick.SlickException;
 import objects.images.ImageBuilder;
 import options.GlobalOptions;
 
+/**
+ * Welcome to the game.
+ * 
+ * @author Lucy
+ * @version 0.0.1
+ *
+ */
 public class LucyGame extends BasicGame {
 	private World world;
 	private WorldLoader worldLoader = new WorldLoader(this);
@@ -26,6 +33,7 @@ public class LucyGame extends BasicGame {
 			app.setDisplayMode(GlobalOptions.WINDOW_WIDTH,
 					GlobalOptions.WINDOW_HEIGHT, false);
 			app.setShowFPS(false);
+			app.setVerbose(false);
 			app.start();
 		} catch (SlickException se) {
 			se.printStackTrace();

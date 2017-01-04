@@ -1,0 +1,6 @@
+<?xml version ="1.0"?>
+<project name="LucyGame" default="default">
+	<target name="default">
+		<buildnumber file="build.number"/>
+	</target>
+</project>
