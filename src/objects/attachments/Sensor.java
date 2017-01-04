@@ -1,5 +1,6 @@
 package objects.attachments;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -42,10 +43,9 @@ public class Sensor extends Attachment {
 	public <T extends WorldObject> boolean isOverlapping(Class<T> t) {
 		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 				getRectangle());
-		Stream<T> ts = getObject().getWorld().getMap().getOverlappingObjectsOfType(
+		Collection<T> ts = getObject().getWorld().getMap().getOverlappingObjectsOfType(
 				rect, t);
-		Iterator<T> it = ts.iterator();
-		return ts == null || it.hasNext();
+		return ts == null || !ts.isEmpty();
 	}
 
 }

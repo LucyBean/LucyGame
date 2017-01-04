@@ -76,6 +76,10 @@ public class Player extends Actor {
 			if (input.isKeyDown(Controller.DOWN)) {
 				climb(Dir.SOUTH, delta);
 			}
+		} else {
+			if (input.isKeyDown(Controller.JUMP)) {
+				signalJumpSustain();
+			}
 		}
 	}
 	

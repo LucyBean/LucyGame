@@ -35,8 +35,8 @@ public abstract class Actor extends WorldObject {
 	private float walkSpeed = 0.5f;
 	private float crouchSpeed = 0.7f;
 	private float pushSpeed = 0.4f;
-	private float defaultJumpStrength = 0.02f;
-	private float nextJumpStrength = 0.02f;
+	private float defaultJumpStrength = 0.015f;
+	private float nextJumpStrength = defaultJumpStrength;
 	private boolean gravityEnabled = true;
 	private boolean pushable = false;
 	private ActorState lastState;
@@ -47,8 +47,10 @@ public abstract class Actor extends WorldObject {
 	private Sensor wallAheadSensorTop;
 	private Sensor wallAheadSensorBtm;
 	private boolean canMidAirJump = true;
-	private Point positionDelta;
 	private boolean jumpNextFrame = false;
+	private boolean canJumpSustain = false;
+	private boolean jumpSustainThisFrame = false;
+	private Point positionDelta;
 	private Collider standingCollider;
 	private Collider crouchingCollider;
 	private boolean interactNextFrame;
@@ -663,6 +665,13 @@ public abstract class Actor extends WorldObject {
 	public void signalJump() {
 		jumpNextFrame = true;
 	}
+	
+	/**
+	 * Sends a signal to the Actor to jump sustain this frame (if possible).
+	 */
+	public void signalJumpSustain() {
+		jumpSustainThisFrame = true;
+	}
 
 	/**
 	 * Sends a signal to the Actor to interact with all objects at the end of
@@ -741,6 +750,7 @@ public abstract class Actor extends WorldObject {
 				vSpeed = -nextJumpStrength * 0.8f;
 				nextJumpStrength = defaultJumpStrength;
 				canMidAirJump = false;
+				canJumpSustain = true;
 			}
 		}
 	}
@@ -767,6 +777,15 @@ public abstract class Actor extends WorldObject {
 		} else {
 			// Fall
 			vSpeed += GRAVITY * delta;
+			
+			// Cause jump sustain by reducing the effect of gravity
+			if (vSpeed < 0 && canJumpSustain) {
+				if (jumpSustainThisFrame) {
+					vSpeed -= GRAVITY * delta * 0.5f;
+				} else {
+					canJumpSustain = false;
+				}
+			}
 			vSpeed = Math.min(TERMINAL_FALL_VELOCITY, vSpeed);
 			if (vSpeed > 0) {
 				setState(ActorState.FALL);
@@ -935,6 +954,7 @@ public abstract class Actor extends WorldObject {
 			positionDelta = Point.ZERO;
 			setState(ActorState.IDLE);
 			checkPush();
+			jumpSustainThisFrame = false;
 			act(gc, delta);
 			checkForInteractions();
 			if (interactNextFrame) {
@@ -1037,6 +1057,11 @@ public abstract class Actor extends WorldObject {
 				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
+		}
+		
+		// Reset jump sustain if transitioning to jump
+		if (to == ActorState.JUMP) {
+			canJumpSustain = true;
 		}
 	}
 

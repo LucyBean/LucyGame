@@ -1,6 +1,6 @@
 package objects.attachments;
 
-import java.util.stream.Stream;
+import java.util.Collection;
 
 import helpers.Dir;
 import helpers.Point;
@@ -40,8 +40,8 @@ public class ActorSticker extends Attachment {
 	}
 	
 	public void moveStuckActors(Dir d, float amount) {
-		Stream<Actor> actors = getOverlappingObjectsOfType(Actor.class);
-		actors.filter(a -> a != getObject()).forEach(a -> a.move(d, amount));
+		Collection<Actor> actors = getOverlappingObjectsOfType(Actor.class);
+		actors.stream().filter(a -> a != getObject()).forEach(a -> a.move(d, amount));
 	}
 
 }

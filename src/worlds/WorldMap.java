@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.newdawn.slick.GameContainer;
@@ -219,10 +220,10 @@ public class WorldMap {
 	 *            The type of objects that should be returned
 	 * @return
 	 */
-	public <T extends WorldObject> Stream<T> getOverlappingObjectsOfType(
+	public <T extends WorldObject> Collection<T> getOverlappingObjectsOfType(
 			Rectangle rectWorld, Class<T> t) {
 		Stream<T> ts = getAllObjectsOfType(t);
-		return findOverlappingObjects(rectWorld, ts, t);
+		return findOverlappingObjects(rectWorld, ts, t).collect(Collectors.toSet());
 	}
 
 	/**
