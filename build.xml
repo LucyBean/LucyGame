@@ -1,6 +1,49 @@
-<?xml version ="1.0"?>
-<project name="LucyGame" default="default">
-	<target name="default">
-		<buildnumber file="build.number"/>
-	</target>
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="current-number">
+
+<property file="build_info.properties"/>
+<property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}.${build.build.number}"/>
+
+<target name="current-number">
+ <echo>Current build number:${build.number}</echo>
+</target>
+
+<target name="compile">
+   <antcall target="build"></antcall>
+</target>
+
+<target name="dist">
+  <antcall target="minor"></antcall>
+</target>
+
+<target name="build">
+    <propertyfile  file="build_info.properties">
+            <entry key="build.build.number" type="int" operation="+" value="1" pattern="0000"/>
+    </propertyfile>
+</target>
+
+<target name="revision">
+    <propertyfile  file="build_info.properties">
+            <entry key="build.revision.number" type="int" operation="+" value="1" pattern="00"/>
+            <entry key="build.build.number" type="int" value="0" pattern="0000"/>
+    </propertyfile>
+</target>
+
+<target name="minor">
+    <propertyfile  file="build_info.properties">
+            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="00"/>
+            <entry key="build.build.number" type="int" value="0" pattern="0000"/>
+            <entry key="build.revision.number" type="int" value="0" pattern="00"/>
+    </propertyfile>
+</target>
+
+<target name="major">
+    <propertyfile  file="build_info.properties">
+            <entry key="build.major.number" type="int" operation="+" value="1" pattern="00"/>
+            <entry key="build.build.number" type="int" value="0" pattern="0000"/>
+            <entry key="build.minor.number" type="int" value="0" pattern="00"/>
+            <entry key="build.revision.number" type="int" value="0" pattern="00"/>
+    </propertyfile>
+</target>
+
 </project>

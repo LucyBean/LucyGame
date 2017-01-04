@@ -280,13 +280,6 @@ public class World {
 	}
 
 	public void update(GameContainer gc, int delta) {
-		Input input = gc.getInput();
-
-		// Reset on D
-		if (input.isKeyDown(Input.KEY_D)) {
-			reset();
-		}
-
 		if (!ignoringInput) {
 
 			camera.update(gc, delta);
@@ -348,16 +341,21 @@ public class World {
 	}
 
 	public void keyPressed(int keycode) {
+		// Reset on D
+		if (keycode == Controller.WORLD_RESET) {
+			reset();
+			return;
+		}
 
 		switch (worldState) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {
 					openMenu();
 				}
-				if (keycode == Input.KEY_I) {
+				if (keycode == Controller.INVENTORY) {
 					openInventoryDisplay();
 				}
-				if (keycode == Input.KEY_P) {
+				if (keycode == Controller.WORLD_PAUSE) {
 					setPaused(!isPaused());
 				}
 				break;
@@ -373,7 +371,7 @@ public class World {
 				}
 				break;
 			case INVENTORY:
-				if (keycode == Input.KEY_I) {
+				if (keycode == Controller.INVENTORY) {
 					closeInventoryDisplay();
 				}
 				break;

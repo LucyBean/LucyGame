@@ -34,6 +34,17 @@ public class LucyGame extends BasicGame {
 					GlobalOptions.WINDOW_HEIGHT, false);
 			app.setShowFPS(false);
 			app.setVerbose(false);
+			
+			System.out.println(args);
+			
+			if (args.length >= 1) {
+				String dev = args[0];
+				if (dev.equals("dev")) {
+					app.setShowFPS(true);
+					app.setVerbose(true);
+					Controller.setDvorak();
+				}
+			}
 			app.start();
 		} catch (SlickException se) {
 			se.printStackTrace();

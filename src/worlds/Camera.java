@@ -41,16 +41,16 @@ public class Camera {
 		// Manula control if there is no target or set to not following
 		if (target == null || !following) {
 			// Move the camera around the world.
-			if (input.isKeyDown(Input.KEY_T)) {
+			if (input.isKeyDown(Controller.CAMERA_S)) {
 				move(Dir.SOUTH, getSpeed() * delta);
 			}
-			if (input.isKeyDown(Input.KEY_C)) {
+			if (input.isKeyDown(Controller.CAMERA_N)) {
 				move(Dir.NORTH, getSpeed() * delta);
 			}
-			if (input.isKeyDown(Input.KEY_H)) {
+			if (input.isKeyDown(Controller.CAMERA_W)) {
 				move(Dir.WEST, getSpeed() * delta);
 			}
-			if (input.isKeyDown(Input.KEY_N)) {
+			if (input.isKeyDown(Controller.CAMERA_E)) {
 				move(Dir.EAST, getSpeed() * delta);
 			}
 		} else {
@@ -90,10 +90,10 @@ public class Camera {
 
 		// Zooming
 
-		if (input.isKeyDown(Input.KEY_R)) {
+		if (input.isKeyDown(Controller.CAMERA_IN)) {
 			zoomIn();
 		}
-		if (input.isKeyDown(Input.KEY_G)) {
+		if (input.isKeyDown(Controller.CAMERA_OUT)) {
 			zoomOut();
 		}
 	}

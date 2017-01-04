@@ -14,6 +14,7 @@ import objects.world.Actor;
 import objects.world.ActorState;
 import objects.world.ItemType;
 import objects.world.WorldObject;
+import worlds.Controller;
 import worlds.WorldLayer;
 
 public class Player extends Actor {
@@ -44,35 +45,35 @@ public class Player extends Actor {
 		Input input = gc.getInput();
 		Consumer<Dir> moveFunction;
 		
-		if (input.isKeyDown(Input.KEY_O)) {
+		if (input.isKeyDown(Controller.CROUCH)) {
 			startCrouch();
 		}
 
-		if (input.isKeyDown(Input.KEY_LSHIFT)) {
+		if (input.isKeyDown(Controller.WALK)) {
 			moveFunction = (d -> walk(d, delta));
 		} else {
 			moveFunction = (d -> run(d, delta));
 		}
 
-		if (input.isKeyDown(Input.KEY_A) && !input.isKeyDown(Input.KEY_E)) {
+		if (input.isKeyDown(Controller.LEFT) && !input.isKeyDown(Controller.RIGHT)) {
 			moveFunction.accept(Dir.WEST);
 		}
-		if (input.isKeyDown(Input.KEY_E) && !input.isKeyDown(Input.KEY_A)) {
+		if (input.isKeyDown(Controller.RIGHT) && !input.isKeyDown(Controller.LEFT)) {
 			moveFunction.accept(Dir.EAST);
 		}
 
 		if (!gravityEnabled()) {
-			if (input.isKeyDown(Input.KEY_COMMA)) {
+			if (input.isKeyDown(Controller.UP)) {
 				moveFunction.accept(Dir.NORTH);
 			}
-			if (input.isKeyDown(Input.KEY_O)) {
+			if (input.isKeyDown(Controller.DOWN)) {
 				moveFunction.accept(Dir.SOUTH);
 			}
 		} else if (getState() == ActorState.CLIMB) {
-			if (input.isKeyDown(Input.KEY_COMMA)) {
+			if (input.isKeyDown(Controller.UP)) {
 				climb(Dir.NORTH, delta);
 			}
-			if (input.isKeyDown(Input.KEY_O)) {
+			if (input.isKeyDown(Controller.DOWN)) {
 				climb(Dir.SOUTH, delta);
 			}
 		}
@@ -80,10 +81,10 @@ public class Player extends Actor {
 	
 	@Override
 	public void keyPressed (int keycode) {
-		if (gravityEnabled() && keycode == Input.KEY_SPACE) {
+		if (gravityEnabled() && keycode == Controller.JUMP) {
 			signalJump();
 		}
-		if (keycode == Input.KEY_PERIOD) {
+		if (keycode == Controller.INTERACT) {
 			signalInteract();
 		}
 	}
