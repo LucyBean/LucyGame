@@ -26,9 +26,8 @@ public class Trampoline extends Static {
 			Player p = (Player) wo;
 			if (p.getState() == ActorState.FALL) {
 				p.resetMidAirJump();
-				// TODO: Fix this
-				// The trampoline reflects people
-				// This is an approximate value for this gravity.
+				// TODO: Make this less 'magic number'-y
+				
 				// Magic, magic numbers.
 				// The 'magic jump' strength
 				final float targetJumpStrength = 0.03441f;
@@ -37,8 +36,11 @@ public class Trampoline extends Static {
 
 				float vSpeed = p.getVSpeed();
 				float delta = (1 - targetVSpeed + vSpeed);
+				// Higher power = player takes longer to reach the 'magic jump' strength
+				// Don't ask
 				float power = 10;
 				float ratio = (float) Math.pow(power, Math.pow(delta, power))/power;
+				
 				float jumpStrength = ratio * targetJumpStrength;
 				
 				p.signalJumpAbs(jumpStrength);

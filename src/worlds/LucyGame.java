@@ -1,5 +1,7 @@
 package worlds;
 
+import java.io.IOException;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -36,9 +38,13 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		ImageBuilder.initSpriteSheets();
-		GlobalOptions.loadFromFile();
-		loadMainMenu();
+		try {
+			ImageBuilder.initSpriteSheets();
+			GlobalOptions.loadFromFile();
+			loadMainMenu();
+		} catch (IOException ioe) {
+			throw new SlickException(ioe.getMessage());
+		}
 	}
 
 	@Override

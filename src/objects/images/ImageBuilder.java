@@ -1,5 +1,7 @@
 package objects.images;
 
+import java.io.IOException;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -28,11 +30,11 @@ public class ImageBuilder {
 			new Color(220, 40, 40, 130));
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
 
-	public static void initSpriteSheets() throws SlickException {
-		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
+	public static void initSpriteSheets() throws SlickException, IOException {
+		conversationCharacters = new SpriteSheet(ImageBuilder.class.getResource("/characterFaces.png"), 64,
 				64);
-		characters = new SpriteSheet("data/characters.png", 40, 80);
-		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
+		characters = new SpriteSheet(ImageBuilder.class.getResource("/characters.png"), 40, 80);
+		worldObjects = new SpriteSheet(ImageBuilder.class.getResource("/worldSprites.png"), 32, 32);
 
 		CharacterSpriteBuilder.initSpriteSheets();
 	}
@@ -80,6 +82,7 @@ public class ImageBuilder {
 	public static StaticImage makeRectangle(int width, int height) {
 		return ImageBuilder.makeRectangle(width, height, new Color(0, 0, 0, 0));
 	}
+	
 
 	public static StaticImage getMenuButtonBackground() {
 		if (menuButtonBackground == null) {

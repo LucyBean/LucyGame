@@ -1,9 +1,10 @@
 package objects.images;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -27,11 +28,11 @@ public class CharacterSpriteBuilder {
 	private static Map<Integer, LayeredImage> importAnimation(String name) {
 		Map<Integer, LayeredImage> map = new HashMap<>();
 		try {
-			File propertiesFile = new File(
-					"data/chars/" + name + "/properties");
-			if (propertiesFile.exists()) {
+			InputStream propertiesFile = CharacterSpriteBuilder.class.getResourceAsStream(
+					"/chars/" + name + "/properties");
+			if (propertiesFile != null) {
 				BufferedReader br = new BufferedReader(
-						new FileReader(propertiesFile));
+						new InputStreamReader(propertiesFile));
 				String nextLine = br.readLine();
 				while (nextLine != null) {
 					String[] parts = nextLine.split(":");
@@ -44,7 +45,9 @@ public class CharacterSpriteBuilder {
 							if (limg != null) {
 								map.put(as.ordinal(), limg);
 							} else if (as == ActorState.IDLE) {
-								System.err.println("Warning: No IDLE animation for " + name);
+								System.err.println(
+										"Warning: No IDLE animation for "
+												+ name);
 							}
 						} catch (IllegalArgumentException iae) {
 							System.err.println("Properties specified for "
@@ -67,19 +70,20 @@ public class CharacterSpriteBuilder {
 			BufferedReader source) throws IOException, SlickException {
 		// Try to convert this to an animation
 		String animName = state.name();
-		File f = new File("data/chars/" + name + "/" + animName + ".png");
-		if (f.exists()) {
-			Image img = new Image(f.getPath());
+		String animPath = "/chars/" + name + "/" + animName + ".png";
+		URL u = CharacterSpriteBuilder.class.getResource(animPath);
+		if (u != null) {
+			Image img = new Image(u.getFile());
 
 			// Determine the type of this animation
 			Pattern typePattern = Pattern.compile("\tTYPE:(.+)");
 			String typeLine = source.readLine();
 			Matcher typeMatcher = typePattern.matcher(typeLine);
-			
+
 			if (typeMatcher.matches()) {
 				String type = typeMatcher.group(1);
 				type = type.toLowerCase();
-				
+
 				if (type.equals("static")) {
 					// This is a static sprite
 					// No properties need to be checked
@@ -89,7 +93,7 @@ public class CharacterSpriteBuilder {
 					// This is an animated sprite
 					// Check for FRAMES, DELAY, and LOOP properties
 					// Extract the other properties
-					
+
 					String propLine = source.readLine();
 					Pattern propPattern = Pattern.compile("\t(\\w+):(.+)");
 					Matcher propMatcher = propPattern.matcher(propLine);

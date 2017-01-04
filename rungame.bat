@@ -1,0 +1,1 @@
+java -Djava.library.path="lib/slick-natives-windows" -jar LucyGame.jar
