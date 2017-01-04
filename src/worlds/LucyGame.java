@@ -1,19 +1,20 @@
 package worlds;
 
-import java.io.IOException;
-
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import objects.images.ImageBuilder;
 import options.GlobalOptions;
 
 public class LucyGame extends BasicGame {
-	World world;
-	WorldLoader worldLoader = new WorldLoader(this);
+	private World world;
+	private WorldLoader worldLoader = new WorldLoader(this);
+	private Image splashScreen;
+	private Thread loadingThread;
 
 	public LucyGame() {
 		super("LucyGame");
@@ -33,33 +34,50 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		world.render(gc, g);
-	}
-
-	@Override
-	public void init(GameContainer gc) throws SlickException {
-		try {
-			ImageBuilder.initSpriteSheets();
-			GlobalOptions.loadFromFile();
-			loadMainMenu();
-		} catch (IOException ioe) {
-			throw new SlickException(ioe.getMessage());
+		if (world == null) {
+			splashScreen.draw();
+		} else {
+			world.render(gc, g);
 		}
 	}
 
 	@Override
+	public void init(GameContainer gc) throws SlickException {
+		splashScreen = ImageBuilder.getSplash();
+
+		loadingThread = new Thread() {
+			@Override
+			public void run() {
+				ImageBuilder.loadImageData();
+			}
+		};
+		
+		loadingThread.start();
+	}
+
+	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		world.update(gc, delta);
+		if (world != null) {
+			world.update(gc, delta);
+		} else if (!ImageBuilder.spriteSheetsInitialised()) {
+			ImageBuilder.initSpriteSheets();
+			GlobalOptions.loadFromFile();
+			loadMainMenu();
+		}
 	}
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
-		world.mousePressed(button, x, y);
+		if (world != null) {
+			world.mousePressed(button, x, y);
+		}
 	}
 
 	@Override
 	public void keyPressed(int keycode, char c) {
-		world.keyPressed(keycode);
+		if (world != null) {
+			world.keyPressed(keycode);
+		}
 	}
 
 	public void loadMainMenu() {
