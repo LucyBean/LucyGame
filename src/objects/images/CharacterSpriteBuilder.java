@@ -1,10 +1,9 @@
 package objects.images;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -28,11 +27,9 @@ public class CharacterSpriteBuilder {
 	private static Map<Integer, LayeredImage> importAnimation(String name) {
 		Map<Integer, LayeredImage> map = new HashMap<>();
 		try {
-			InputStream propertiesFile = CharacterSpriteBuilder.class.getResourceAsStream(
-					"/chars/" + name + "/properties");
-			if (propertiesFile != null) {
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(propertiesFile));
+			File propertiesFile = new File("data/chars/" + name + "/properties");
+			if (propertiesFile.exists()) {
+				BufferedReader br = new BufferedReader(new FileReader(propertiesFile));
 				String nextLine = br.readLine();
 				while (nextLine != null) {
 					String[] parts = nextLine.split(":");
@@ -70,10 +67,9 @@ public class CharacterSpriteBuilder {
 			BufferedReader source) throws IOException, SlickException {
 		// Try to convert this to an animation
 		String animName = state.name();
-		String animPath = "/chars/" + name + "/" + animName + ".png";
-		URL u = CharacterSpriteBuilder.class.getResource(animPath);
-		if (u != null) {
-			Image img = new Image(u.getFile());
+		File animFile = new File("data/chars/" + name + "/" + animName + ".png");
+		if (animFile.exists()) {
+			Image img = new Image(animFile.getPath());
 
 			// Determine the type of this animation
 			Pattern typePattern = Pattern.compile("\tTYPE:(.+)");

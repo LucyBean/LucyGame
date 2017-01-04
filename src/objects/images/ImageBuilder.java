@@ -1,14 +1,10 @@
 package objects.images;
 
-import java.io.IOException;
-import java.net.URL;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.opengl.PNGImageData;
 
 import helpers.Rectangle;
 import objects.world.ItemType;
@@ -23,10 +19,6 @@ public class ImageBuilder {
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
-
-	private static PNGImageData conversationCharactersData;
-	private static PNGImageData charactersData;
-	private static PNGImageData worldObjectsData;
 	
 	private static boolean spriteSheetsInitialised = false;
 
@@ -39,22 +31,6 @@ public class ImageBuilder {
 	private static RectangleImageStore attackBoxImages = new RectangleImageStore(
 			new Color(220, 40, 40, 130));
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
-
-	public static void loadImageData() {
-		conversationCharactersData = new PNGImageData();
-		charactersData = new PNGImageData();
-		worldObjectsData = new PNGImageData();
-		
-		try {
-			conversationCharactersData.loadImage(
-					ImageBuilder.class.getResourceAsStream("/characterFaces.png"));
-			charactersData.loadImage(ImageBuilder.class.getResourceAsStream("/characters.png"));
-			worldObjectsData.loadImage(ImageBuilder.class.getResourceAsStream("/worldSprites.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	public static boolean spriteSheetsInitialised() {
 		return spriteSheetsInitialised;
@@ -62,10 +38,9 @@ public class ImageBuilder {
 
 	public static void initSpriteSheets() throws SlickException {
 		spriteSheetsInitialised = true;
-		conversationCharacters = new SpriteSheet(
-				new Image(conversationCharactersData), 64, 64);
-		characters = new SpriteSheet(new Image(charactersData), 40, 80);
-		worldObjects = new SpriteSheet(new Image(worldObjectsData), 32, 32);
+		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64, 64);
+		characters = new SpriteSheet("data/characters.png", 40, 80);
+		worldObjects = new SpriteSheet(new Image("data/worldSprites.png"), 32, 32);
 
 		CharacterSpriteBuilder.initSpriteSheets();
 	}
@@ -100,9 +75,8 @@ public class ImageBuilder {
 	}
 
 	public static Image getSplash() {
-		URL u = ImageBuilder.class.getResource("/splash.png");
 		try {
-			Image img = new Image(u.getFile());
+			Image img = new Image("data/splash.png");
 			return img;
 		} catch (SlickException e) {
 			System.out.println("Error loading splash");

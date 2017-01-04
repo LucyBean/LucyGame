@@ -21,7 +21,6 @@ public class LucyGame extends BasicGame {
 	private World world;
 	private WorldLoader worldLoader = new WorldLoader(this);
 	private Image splashScreen;
-	private Thread loadingThread;
 
 	public LucyGame() {
 		super("LucyGame");
@@ -63,15 +62,6 @@ public class LucyGame extends BasicGame {
 	@Override
 	public void init(GameContainer gc) throws SlickException {
 		splashScreen = ImageBuilder.getSplash();
-
-		loadingThread = new Thread() {
-			@Override
-			public void run() {
-				ImageBuilder.loadImageData();
-			}
-		};
-		
-		loadingThread.start();
 	}
 
 	@Override

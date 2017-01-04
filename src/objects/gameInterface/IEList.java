@@ -14,6 +14,7 @@ import helpers.Rectangle;
 import objects.images.LayeredImage;
 import objects.images.SingleSprite;
 import objects.images.Sprite;
+import worlds.Controller;
 import worlds.World;
 
 public abstract class IEList extends InterfaceElement {
@@ -122,8 +123,8 @@ public abstract class IEList extends InterfaceElement {
 	public void setBackground(Color c) {
 		if (buttons.size() > 0) {
 			if (getSprite() == null) {
-				int w = getWidthPixels() + padding*2;
-				int h = getHeightPixels() + padding*2;
+				int w = getWidthPixels() + padding * 2;
+				int h = getHeightPixels() + padding * 2;
 				Point origin = new Point(-padding, -padding);
 
 				LayeredImage limg = new LayeredImage(w, h, 1);
@@ -298,24 +299,17 @@ public abstract class IEList extends InterfaceElement {
 	@Override
 	public void keyPressed(int keycode) {
 		if (usingSelection) {
-			switch (keycode) {
-				case Input.KEY_COMMA:
-					moveUp();
-					break;
-				case Input.KEY_O:
-					moveDown();
-					break;
-				case Input.KEY_A:
-					moveLeft();
-					break;
-				case Input.KEY_E:
-					moveRight();
-					break;
-				case Input.KEY_ENTER:
-				case Input.KEY_SPACE:
-					elementClicked(buttonPointToIndex(selectedPoint));
-					break;
-			}
+			if (keycode == Controller.UP)
+				moveUp();
+			if (keycode == Controller.DOWN)
+				moveDown();
+			if (keycode == Controller.LEFT)
+				moveLeft();
+			if (keycode == Controller.RIGHT)
+				moveRight();
+			if (keycode == Input.KEY_ENTER || keycode == Input.KEY_SPACE)
+				elementClicked(buttonPointToIndex(selectedPoint));
+
 		}
 	}
 
@@ -339,7 +333,7 @@ public abstract class IEList extends InterfaceElement {
 			return (int) (spriteBound.getWidth() * width
 					+ padding * (width - 1));
 		}
-		
+
 		return 0;
 	}
 
@@ -354,10 +348,10 @@ public abstract class IEList extends InterfaceElement {
 			return (int) (spriteBound.getHeight() * height
 					+ padding * (height - 1));
 		}
-		
+
 		return 0;
 	}
-	
+
 	@Override
 	public void update(GameContainer gc, int delta) {
 		buttons.stream().forEach(b -> b.update(gc, delta));
