@@ -68,7 +68,11 @@ public class CharacterSpriteBuilder {
 		// Try to convert this to an animation
 		String animName = state.name();
 		File animFile = new File("data/chars/" + name + "/" + animName + ".png");
-		if (animFile.exists()) {
+		
+		if (!animFile.exists()) {
+			System.err.println("Properties specified for " + animName + " for "
+					+ name + " but no matching image exists.");
+		}else {
 			Image img = new Image(animFile.getPath());
 
 			// Determine the type of this animation
@@ -76,7 +80,10 @@ public class CharacterSpriteBuilder {
 			String typeLine = source.readLine();
 			Matcher typeMatcher = typePattern.matcher(typeLine);
 
-			if (typeMatcher.matches()) {
+			if (!typeMatcher.matches()) {
+				// The TYPE line is incorrect
+				System.err.println("Invalid type line for " + animName + ": \"" + typeLine+"\"");
+			} else {
 				String type = typeMatcher.group(1);
 				type = type.toLowerCase();
 
@@ -123,12 +130,7 @@ public class CharacterSpriteBuilder {
 					System.err.println("Unknown image type " + type + " for "
 							+ animName + " for " + name);
 				}
-			} else {
-				System.err.println("Invalid properties for " + animName);
 			}
-		} else {
-			System.err.println("Properties specified for " + animName + " for "
-					+ name + " but no matching image exists.");
 		}
 
 		return null;
