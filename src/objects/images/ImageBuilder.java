@@ -36,6 +36,14 @@ public class ImageBuilder {
 	public static boolean spriteSheetsInitialised() {
 		return spriteSheetsInitialised;
 	}
+	
+	public static void initFont() {
+		java.awt.Font awtFont = new java.awt.Font("Arial Rounded MT Bold",
+				java.awt.Font.PLAIN, 18);
+		font = new TrueTypeFont(awtFont, true); // base Font, anti-aliasing
+												// true/false
+
+	}
 
 	public static void initSpriteSheets() throws SlickException {
 		spriteSheetsInitialised = true;
@@ -44,11 +52,6 @@ public class ImageBuilder {
 		characters = new SpriteSheet("data/characters.png", 40, 80);
 		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
 		uiColourPalette = new SpriteSheet("data/uiColourPalette.png", 1, 1);
-
-		java.awt.Font awtFont = new java.awt.Font("Comic Sans MS",
-				java.awt.Font.PLAIN, 16);
-		font = new TrueTypeFont(awtFont, true); // base Font, anti-aliasing
-												// true/false
 
 		CharacterSpriteBuilder.initSpriteSheets();
 	}
