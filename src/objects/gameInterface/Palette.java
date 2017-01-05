@@ -6,13 +6,16 @@ import java.util.List;
 import org.newdawn.slick.Color;
 
 import helpers.Point;
+import helpers.Rectangle;
 import objects.images.LayeredImage;
+import objects.images.SingleSprite;
 import objects.images.Sprite;
-import objects.images.SpriteBuilder;
 import objects.world.ItemType;
+import options.GlobalOptions;
 
 public class Palette extends IEList {
 	List<ItemType> elements;
+	private static final int blockSize = GlobalOptions.GRID_SIZE;
 
 	public Palette(Point firstPoint) {
 		super(firstPoint, 2, 8, 4);
@@ -30,19 +33,22 @@ public class Palette extends IEList {
 
 	@Override
 	protected void getElementSprite(int elementIndex, Sprite s) {
+		SingleSprite ss = (SingleSprite) s;
+		
 		if (elements != null && elementIndex >= 0
 				&& elementIndex < elements.size()) {
 			ItemType it = elements.get(elementIndex);
 			Sprite sit = it.getSprite();
 			LayeredImage limg = sit.getImage();
 			
-			float wratio = ((float) s.getImage().getWidth()) / limg.getWidth();
-			float hratio = ((float) s.getImage().getHeight()) / limg.getHeight();
+			float wratio = ((float) blockSize) / limg.getWidth();
+			float hratio = ((float) blockSize) / limg.getHeight();
 			float drawScale = Math.min(wratio, hratio);
-			s.setDrawScale(drawScale);
-			s.getImage().setLayers(limg);
+			
+			ss.setDrawScale(drawScale);
+			ss.setImage(limg, Point.ZERO);
 		} else {
-			s.getImage().clearAll();
+			ss.setImage(null, Point.ZERO);
 		}
 	}
 
@@ -62,7 +68,7 @@ public class Palette extends IEList {
 
 	@Override
 	protected Sprite makeNewSprite() {
-		return SpriteBuilder.makePaletteBlock();
+		return new SingleSprite(new Rectangle(Point.ZERO, blockSize, blockSize), 1);
 	}
 
 }

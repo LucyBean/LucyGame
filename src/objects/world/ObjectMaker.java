@@ -8,6 +8,7 @@ import objects.world.lib.Door;
 import objects.world.lib.Gem;
 import objects.world.lib.Key;
 import objects.world.lib.Lock;
+import objects.world.lib.PushableBlock;
 import objects.world.lib.Trampoline;
 import objects.world.lib.Wall;
 
@@ -65,6 +66,9 @@ public class ObjectMaker {
 				break;
 			case TRAMPOLINE:
 				wo = new Trampoline(position);
+				break;
+			case PUSHABLE_BLOCK:
+				wo = new PushableBlock(position);
 				break;
 			default:
 				break;

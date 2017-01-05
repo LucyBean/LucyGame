@@ -1,6 +1,7 @@
 package objects.images;
 
 import helpers.Point;
+import helpers.Rectangle;
 
 /**
  * Sprite class for displaying objects on the world. Can handle a single,
@@ -44,9 +45,20 @@ public class SingleSprite extends Sprite {
 		super(img.getRectangle().translate(origin), gridSize);
 		image = img;
 	}
-	
+
 	public SingleSprite(LayeredImage img, int gridSize) {
 		this(img, Point.ZERO, gridSize);
+	}
+
+	/**
+	 * Creates a new SingleSprite with no image, but whose bounds are specified
+	 * by the given rectangle.
+	 * 
+	 * @param r
+	 * @param gridSize
+	 */
+	public SingleSprite(Rectangle r, int gridSize) {
+		super(r, gridSize);
 	}
 
 	public void setMirrored(boolean mirrored) {
@@ -59,11 +71,20 @@ public class SingleSprite extends Sprite {
 	 * @param delta
 	 */
 	public void update(int delta) {
-		image.update(delta);
+		if (image != null) {
+			image.update(delta);
+		}
 	}
 
 	@Override
 	public LayeredImage getImage() {
 		return image;
+	}
+
+	public void setImage(LayeredImage limg, Point origin) {
+		image = limg;
+		if (image != null) {
+			setRectangle(image.getRectangle().translate(origin));
+		}
 	}
 }

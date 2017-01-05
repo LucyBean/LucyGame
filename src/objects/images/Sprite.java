@@ -44,15 +44,19 @@ public abstract class Sprite extends Attachment {
 
 	@Override
 	public void setRectangle(Rectangle r) {
-		super.setRectangle(r.scale(1.0f / gridSize));
+		if (r != null) {
+			super.setRectangle(r.scale(1.0f / gridSize));
+		}
 	}
 
 	public void draw() {
 		if (getObject() != null) {
-			CoOrdTranslator cot = getObject().getCoOrdTranslator();
-			Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
-			getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
-					cot.getDrawScale() * drawScale);
+			if (getImage() != null) {
+				CoOrdTranslator cot = getObject().getCoOrdTranslator();
+				Point imageCoOrds = cot.objectToScreenCoOrds(getTopLeft());
+				getImage().draw(imageCoOrds.getX(), imageCoOrds.getY(),
+						cot.getDrawScale() * drawScale);
+			}
 		} else {
 			System.err.println("Object is null for " + this);
 		}
