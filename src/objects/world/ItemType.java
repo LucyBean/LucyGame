@@ -23,7 +23,7 @@ public enum ItemType {
 		DOOR(() -> SpriteBuilder.getDoorSprite()),
 		PLAYER(() -> SpriteBuilder.getCharacterSprite(0)),
 		MATT(() -> SpriteBuilder.getCharacterSprite(1)),
-		DOG_ENEMY(14),
+		DOG_ENEMY(11),
 		CLIMBING_WALL_MARKER,
 		MOVING_PLATFORM(() -> SpriteBuilder.createRectangle(
 				new Rectangle(Point.ZERO, 2, 1), 32, new Color(220, 30, 220))),

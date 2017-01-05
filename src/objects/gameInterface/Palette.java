@@ -42,7 +42,7 @@ public class Palette extends IEList {
 			s.setDrawScale(drawScale);
 			s.getImage().setLayers(limg);
 		} else {
-			s.getImage().clear(1);
+			s.getImage().clearAll();
 		}
 	}
 

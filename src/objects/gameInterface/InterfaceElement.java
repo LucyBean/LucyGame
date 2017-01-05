@@ -101,4 +101,26 @@ public abstract class InterfaceElement extends GameObject {
 	public void onClick(int button, Point clickPoint) {
 
 	}
+	
+	/**
+	 * Gets the width of this element in pixels.
+	 * @return
+	 */
+	public int getWidthPixels() {
+		if (getSprite() != null) {
+			return (int) getSprite().getWidth();
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the height of this element in pixels.
+	 * @return
+	 */
+	public int getHeightPixels() {
+		if (getSprite() != null) {
+			return (int) getSprite().getHeight();
+		}
+		return 0;
+	}
 }

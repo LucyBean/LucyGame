@@ -379,6 +379,7 @@ public class LayeredImage {
 	}
 
 	public void setLayers(LayeredImage limg) {
+		numLayers = limg.numLayers;
 		layers = limg.layers;
 	}
 }

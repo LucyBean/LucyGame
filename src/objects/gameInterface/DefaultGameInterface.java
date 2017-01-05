@@ -83,8 +83,8 @@ public class DefaultGameInterface extends GameInterface {
 			}
 		});
 		add(buildingTools, WorldState.BUILDING_MENU);
-		
-		MenuSet debugTools = new MenuSet(new Point(360,0), false);
+
+		MenuSet debugTools = new MenuSet(new Point(360, 0), false);
 		debugTools.add(() -> "Play/pause", s -> {
 			boolean paused = s.getWorld().isPaused();
 			s.getWorld().setPaused(!paused);
@@ -123,11 +123,17 @@ public class DefaultGameInterface extends GameInterface {
 				2);
 
 		add(gameMenu, WorldState.MENU);
-		
+
 		Palette p = new Palette(Point.ZERO);
 		p.setPosition(new Point(0,
 				GlobalOptions.WINDOW_HEIGHT - p.getHeightPixels()));
 		add(p, WorldState.BUILDING);
+
+		UpDownControl udc = new UpDownControl(Point.ZERO, p);
+		udc.setPosition(new Point(
+				p.getPosition().getX() + p.getWidthPixels() + 8,
+				GlobalOptions.WINDOW_HEIGHT - udc.getHeightPixels()));
+		add(udc, WorldState.BUILDING);
 
 		PropertyPanel pp = new PropertyPanel(Point.ZERO);
 		pp.setPosition(

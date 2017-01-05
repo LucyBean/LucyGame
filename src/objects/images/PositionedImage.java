@@ -1,6 +1,7 @@
 package objects.images;
 
 import helpers.Point;
+import helpers.Rectangle;
 import options.GlobalOptions;
 
 public class PositionedImage {
@@ -32,6 +33,12 @@ public class PositionedImage {
 		}
 	}
 
+	/**
+	 * Returns the height of the Positioned Image (the height of the Image plus
+	 * the y-co-ordinate of the origin.)
+	 * 
+	 * @return
+	 */
 	public float getHeight() {
 		if (image != null && origin != null) {
 			return image.getHeight() + origin.getY();
@@ -42,6 +49,16 @@ public class PositionedImage {
 
 	public Point getOrigin() {
 		return origin;
+	}
+
+	/**
+	 * Gets the Rectangle that describes the position and size of the contained
+	 * LucyImage.
+	 * 
+	 * @return
+	 */
+	public Rectangle getRectangle() {
+		return new Rectangle(getOrigin(), image.getWidth(), image.getHeight());
 	}
 
 	public LucyImage getImage() {
@@ -55,8 +72,8 @@ public class PositionedImage {
 	@Override
 	public String toString() {
 		if (image != null) {
-		return "PositionedImage " + image.getWidth() + "x" + image.getHeight()
-				+ " at " + origin;
+			return "PositionedImage " + image.getWidth() + "x"
+					+ image.getHeight() + " at " + origin;
 		} else {
 			return "PositionedImage at " + origin;
 		}

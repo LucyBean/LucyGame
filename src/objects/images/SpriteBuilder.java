@@ -78,7 +78,7 @@ public class SpriteBuilder {
 	public static Sprite getDoorSprite() {
 		LayeredImage limg = new LayeredImage(32, 64, 2);
 		LucyImage top = ImageBuilder.getItemImage(10);
-		LucyImage btm = ImageBuilder.getItemImage(11);
+		LucyImage btm = ImageBuilder.getItemImage(18);
 		limg.setLayer(0, new PositionedImage(new Point(0, 32), btm));
 		limg.setLayer(1, top);
 
@@ -109,6 +109,16 @@ public class SpriteBuilder {
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 
+		return new SingleSprite(limg, 1);
+	}
+	
+	public static Sprite makeUpDownControl() {
+		LucyImage up = ImageBuilder.getItemImage(12);
+		LucyImage dw = ImageBuilder.getItemImage(13);
+		LayeredImage limg = new LayeredImage(32, 72, 2);
+		limg.setLayer(0, up);
+		limg.setLayer(1, new PositionedImage(new Point(0,40), dw));
+		
 		return new SingleSprite(limg, 1);
 	}
 }

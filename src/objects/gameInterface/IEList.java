@@ -228,8 +228,10 @@ public abstract class IEList extends InterfaceElement {
 
 		if (selY < height - 2
 				|| selY < height - 1 && maxItemDisplayed == numElems) {
+			// Move the selected button down by one
 			setSelectedButton(selectedPoint.move(Dir.SOUTH, 1));
-		} else if (minItemDisplayed < getNumElements() - buttons.size()) {
+		} else if (minItemDisplayed < numElems - buttons.size()) {
+			// Scroll through the sprites
 			minItemDisplayed += width;
 			updateSprites();
 		}
@@ -325,6 +327,7 @@ public abstract class IEList extends InterfaceElement {
 	 *
 	 * @return The width of the elemnt in pixels
 	 */
+	@Override
 	public int getWidthPixels() {
 		if (getSprite() != null) {
 			return (int) getSprite().getRectangle().getWidth();
@@ -340,6 +343,7 @@ public abstract class IEList extends InterfaceElement {
 	/**
 	 * @return The height of the element in pixels
 	 */
+	@Override
 	public int getHeightPixels() {
 		if (getSprite() != null) {
 			return (int) getSprite().getRectangle().getHeight();
