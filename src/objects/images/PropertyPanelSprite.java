@@ -24,13 +24,11 @@ public class PropertyPanelSprite extends SingleSprite {
 		// Name
 		x = border;
 		y = border;
-		limg.setLayer(0, new PositionedImage(new Point(x, y),
-				ImageBuilder.makeRectangle(textBoxWidth, elementHeight)));
+		limg.setLayer(0, new PositionedImage(new Point(x, y), null));
 
 		// Quantity
 		y = border + elementHeight + 2 * padding + up.getHeight();
-		limg.setLayer(1, new PositionedImage(new Point(x, y),
-				ImageBuilder.makeRectangle(textBoxWidth, elementHeight)));
+		limg.setLayer(1, new PositionedImage(new Point(x, y), null));
 
 		// Plus
 		x = border + (textBoxWidth - up.getWidth()) / 2;
@@ -51,14 +49,14 @@ public class PropertyPanelSprite extends SingleSprite {
 
 	public void setName(String name) {
 		LayeredImage limg = getImage();
-		LucyImage i = limg.getLayer(0).getImage();
-		Point alignment = new Point(i.getWidth() / 2, i.getHeight());
-		limg.setText(0, name, alignment, 1, 2);
+		TextImage timg = new TextImage(name);
+		limg.setLayer(0, timg);
 	}
 
 	public void setQuantity(int amount) {
 		LayeredImage limg = getImage();
-		limg.setTextCentered(1, "" + amount);
+		TextImage timg = new TextImage("" + amount);
+		limg.setLayer(1, timg);
 	}
 
 	public void clear() {

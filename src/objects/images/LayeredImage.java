@@ -292,16 +292,13 @@ public class LayeredImage {
 	 * @param layer
 	 *            The number of the layer to fill. 0 is the background.
 	 * @param text
-	 *            The color with which to fill the layer.
+	 *            The text to show
 	 */
 	public void setTextCentered(int layer, String text) {
-		LucyImage img = getLayer(layer).getImage();
-		if (img == null) {
-			getLayer(layer).setImage(ImageBuilder.makeRectangle(width, height));
-		}
-		float width = img.getWidth();
-		float height = img.getHeight();
-		setText(layer, text, new Point(width / 2, height / 2), 1, 1);
+		TextImage timg = new TextImage(text);
+		float x = (getWidth() - timg.getWidth()) / 2;
+		float y = (getHeight() - timg.getHeight()) /2;
+		setLayer(layer, new PositionedImage(new Point(x,y), timg));
 	}
 
 	/**
@@ -318,28 +315,8 @@ public class LayeredImage {
 	 *            The point at which the topLeft of the text will be.
 	 */
 	public void setText(int layer, String text, Point topLeft) {
-		LucyImage img = getLayer(layer).getImage();
-		if (img != null && img instanceof StaticImage) {
-			if (img instanceof StaticImage) {
-				try {
-					Graphics g = ((StaticImage) img).getGraphics();
-					g.clear();
-
-					g.setColor(Color.black);
-					g.drawString(text, topLeft.getX(), topLeft.getY());
-					g.flush();
-				} catch (SlickException se) {
-					System.err.println("Error while adding text to image layer.");
-					if (GlobalOptions.debug()) {
-						se.printStackTrace();
-					}
-				}
-			} else if (GlobalOptions.debug()) {
-				System.err.println("Attempting to set text to a non-static image layer.");
-			}
-		} else if (GlobalOptions.debug()) {
-			System.err.println("Attempting to add text to uninitialised layer.");
-		}
+		TextImage timg = new TextImage(text);
+		setLayer(layer, new PositionedImage(topLeft, timg));
 	}
 
 	/**

@@ -1,10 +1,12 @@
 package objects.images;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.TrueTypeFont;
 
 import helpers.Rectangle;
 import io.CharacterSpriteBuilder;
@@ -20,7 +22,9 @@ public class ImageBuilder {
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
-	
+
+	private static Font font;
+
 	private static boolean spriteSheetsInitialised = false;
 
 	private static RectangleImageStore colliderImages = new RectangleImageStore(
@@ -32,18 +36,29 @@ public class ImageBuilder {
 	private static RectangleImageStore attackBoxImages = new RectangleImageStore(
 			new Color(220, 40, 40, 130));
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
-	
+
 	public static boolean spriteSheetsInitialised() {
 		return spriteSheetsInitialised;
 	}
 
 	public static void initSpriteSheets() throws SlickException {
 		spriteSheetsInitialised = true;
-		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64, 64);
+		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
+				64);
 		characters = new SpriteSheet("data/characters.png", 40, 80);
-		worldObjects = new SpriteSheet(new Image("data/worldSprites.png"), 32, 32);
+		worldObjects = new SpriteSheet(new Image("data/worldSprites.png"), 32,
+				32);
+
+		java.awt.Font awtFont = new java.awt.Font("Times New Roman",
+				java.awt.Font.PLAIN, 16);
+		font = new TrueTypeFont(awtFont, true); // base Font, anti-aliasing
+												// true/false
 
 		CharacterSpriteBuilder.initSpriteSheets();
+	}
+
+	public static Font getFont() {
+		return font;
 	}
 
 	public static StaticImage makeRectangle(int width, int height, Color fill,
@@ -101,7 +116,7 @@ public class ImageBuilder {
 		return ImageBuilder.makeRectangle(width, height, new Color(0, 0, 0, 0));
 	}
 
-	public static StaticImage getMenuButtonBackground() {
+	private static StaticImage getMenuButtonBackground() {
 		if (menuButtonBackground == null) {
 			menuButtonBackground = makeRectangle(240, 32,
 					new Color(240, 120, 180));
@@ -110,7 +125,7 @@ public class ImageBuilder {
 		return menuButtonBackground;
 	}
 
-	public static StaticImage getMenuButtonSelectedBackground() {
+	private static StaticImage getMenuButtonSelectedBackground() {
 		if (menuButtonSelectedBackground == null) {
 			menuButtonSelectedBackground = makeRectangle(280, 32,
 					new Color(240, 240, 180));
@@ -222,13 +237,13 @@ public class ImageBuilder {
 		LucyImage s = attackBoxImages.get(w, h);
 		return new LayeredImage(s);
 	}
-	
+
 	public static LucyImage getButtonBackground(Rectangle r) {
 		int width = (int) r.getWidth();
 		int height = (int) r.getHeight();
 		return getButtonBackground(width, height);
 	}
-	
+
 	public static LucyImage getButtonBackground(int width, int height) {
 		return getMenuButtonBackground().getScaledCopy(width, height);
 	}

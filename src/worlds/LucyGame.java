@@ -28,6 +28,7 @@ public class LucyGame extends BasicGame {
 
 	public static void main(String[] args) {
 		try {
+			
 			AppGameContainer app = new AppGameContainer(new LucyGame());
 			app.setDisplayMode(GlobalOptions.WINDOW_WIDTH,
 					GlobalOptions.WINDOW_HEIGHT, false);
@@ -69,7 +70,10 @@ public class LucyGame extends BasicGame {
 		} else if (!ImageBuilder.spriteSheetsInitialised()) {
 			ImageBuilder.initSpriteSheets();
 			GlobalOptions.loadFromFile();
+			long before = System.currentTimeMillis();
 			loadMainMenu();
+			long after = System.currentTimeMillis();
+			System.out.println("Time spent loading menu " + (after - before));
 		}
 	}
 
