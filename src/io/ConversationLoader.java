@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import objects.images.ImageBuilder;
 import objects.world.characters.Conversation;
 import objects.world.characters.ConversationCharacter;
 import objects.world.characters.ConversationSet;
@@ -23,7 +22,7 @@ public class ConversationLoader {
 	 *            data/conversations/
 	 * @return A map of NPCid to ConversationSet
 	 */
-	public static Map<Integer, ConversationSet> loadConversations(String name) {
+	public static Map<Integer, ConversationSet> load(String name) {
 		Map<Integer, ConversationSet> conversations = new HashMap<>();
 
 		File f = new File("data/conversations/" + name + ".conv");

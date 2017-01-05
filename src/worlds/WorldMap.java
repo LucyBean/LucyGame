@@ -203,6 +203,10 @@ public class WorldMap {
 		return lockablesByID.get(lockID).stream();
 	}
 	
+	public NPC getNPC(int npcID) {
+		return npcsByID.get(npcID);
+	}
+	
 	public <T extends WorldObject> Stream<T> getAllObjectsOfType(
 			Class<T> t) {
 		return getObjects().filter(a -> a.isEnabled()).filter(

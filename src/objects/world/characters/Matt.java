@@ -63,16 +63,7 @@ public class Matt extends NPC {
 
 	}
 
-	/**
-	 * Shows the required conversation on screen for the current state.
-	 */
-	private void talk() {
-		Conversation c = conversations.get(state);
-		if (c != null) {
-			getWorld().showConversation(c);
-		}
-	}
-
+	/*
 	@Override
 	public void interactedBy(Actor a) {
 		super.interactedBy(a);
@@ -109,5 +100,5 @@ public class Matt extends NPC {
 					break;
 			}
 		}
-	}
+	}*/
 }

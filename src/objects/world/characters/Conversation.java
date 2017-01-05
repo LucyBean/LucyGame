@@ -39,4 +39,8 @@ public class Conversation
 		// TODO: Make this do something
 		this.endState = endState;
 	}
+	
+	public int getEndState() {
+		return endState;
+	}
 }
