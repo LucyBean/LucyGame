@@ -1,0 +1,14 @@
+NPCid:1
+STATE:0
+END:1
+	LUCY: Bby?
+	MATT: Ys?
+	LUCY: Cuddle.
+	MATT: Not again.
+	LUCY: Ys!
+	MATT: Give me a gem to get a cuddle!
+STATE:1
+	MATT: Give me a gem to get a cuddle!
+STATE:2
+	MATT: Thank you for your gem! Here is your cuddle!
+	LUCY: Yay!

@@ -35,7 +35,7 @@ public abstract class Actor extends WorldObject {
 	private float walkSpeed = 0.5f;
 	private float crouchSpeed = 0.7f;
 	private float pushSpeed = 0.4f;
-	private float defaultJumpStrength = 0.012f;
+	private float defaultJumpStrength = 0.013f;
 	private float nextJumpStrength = defaultJumpStrength;
 	private boolean gravityEnabled = true;
 	private boolean pushable = false;
@@ -739,7 +739,7 @@ public abstract class Actor extends WorldObject {
 					|| lastState == ActorState.CLIMB) {
 				// If wall sliding or climbing then single jump
 				// away from the wall
-				vSpeed = -nextJumpStrength;
+				vSpeed = -nextJumpStrength * 1.3f;
 				nextJumpStrength = defaultJumpStrength;
 				setFacing(getFacing().neg());
 				jumpHSpeed = moveSpeed * 0.7f;

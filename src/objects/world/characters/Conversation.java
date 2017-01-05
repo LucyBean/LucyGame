@@ -16,6 +16,7 @@ public class Conversation
 	Iterator<Pair<ConversationCharacter, String>> iterator;
 
 	public Pair<ConversationCharacter, String> getNext() {
+		// Need the iterator to persist between calls of getNext
 		if (iterator == null) {
 			iterator = iterator();
 		}
@@ -23,6 +24,8 @@ public class Conversation
 		if (iterator.hasNext()) {
 			return iterator.next();
 		} else {
+			// Setting the iterator to null will 'reset' the conversation
+			iterator = null;
 			return null;
 		}
 	}

@@ -26,15 +26,6 @@ public class QuestDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-//		WorldObject background = new Static(Point.ZERO, WorldLayer.BACKGROUND,
-//				new Sprite(new Image("data/Desert.jpg"), Point.ZERO, 1)) {
-//			@Override
-//			protected void resetStaticState() {
-//
-//			}
-//		};
-//		addObject(background);
-
 		Actor player = new Player(new Point(3, 2));
 		addObject(player);
 
