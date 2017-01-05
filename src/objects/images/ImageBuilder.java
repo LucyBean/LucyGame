@@ -14,14 +14,10 @@ import objects.world.ItemType;
 import options.GlobalOptions;
 
 public class ImageBuilder {
-	private static StaticImage menuButtonBackground;
-	private static StaticImage menuButtonSelectedBackground;
-	private static StaticImage worldLoaderButtonBackground;
-	private static StaticImage paletteBlockBackground;
-
 	private static SpriteSheet conversationCharacters;
 	private static SpriteSheet characters;
 	private static SpriteSheet worldObjects;
+	private static SpriteSheet uiColourPalette;
 
 	private static Font font;
 
@@ -46,8 +42,8 @@ public class ImageBuilder {
 		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
 				64);
 		characters = new SpriteSheet("data/characters.png", 40, 80);
-		worldObjects = new SpriteSheet(new Image("data/worldSprites.png"), 32,
-				32);
+		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
+		uiColourPalette = new SpriteSheet("data/uiColourPalette.png", 1, 1);
 
 		java.awt.Font awtFont = new java.awt.Font("Times New Roman",
 				java.awt.Font.PLAIN, 16);
@@ -100,47 +96,24 @@ public class ImageBuilder {
 		}
 		return null;
 	}
-
-	public static StaticImage makeRectangle(int width, int height, Color fill) {
-		return ImageBuilder.makeRectangle(width, height, fill, fill);
+	
+	public static StaticImage getColouredRectangle(Rectangle rect, int uiColour) {
+		int width = (int) rect.getWidth();
+		int height = (int) rect.getHeight();
+		return getColouredRectangle(width, height, uiColour);
 	}
 
-	/**
-	 * Creates a new blank rectangular image.
-	 * 
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	public static StaticImage makeRectangle(int width, int height) {
-		return ImageBuilder.makeRectangle(width, height, new Color(0, 0, 0, 0));
-	}
-
-	private static StaticImage getMenuButtonBackground() {
-		if (menuButtonBackground == null) {
-			menuButtonBackground = makeRectangle(240, 32,
-					new Color(240, 120, 180));
+	public static StaticImage getColouredRectangle(int width, int height,
+			int uiColour) {
+		int x = uiColour % 4;
+		int y = uiColour / 4;
+		if (x >= 0 && x < uiColourPalette.getHorizontalCount() && y >= 0
+				&& y < uiColourPalette.getVerticalCount()) {
+			StaticImage simg = new StaticImage(uiColourPalette.getSprite(x, y));
+			return simg.getScaledCopy(width, height);
+		} else {
+			return null;
 		}
-
-		return menuButtonBackground;
-	}
-
-	private static StaticImage getMenuButtonSelectedBackground() {
-		if (menuButtonSelectedBackground == null) {
-			menuButtonSelectedBackground = makeRectangle(280, 32,
-					new Color(240, 240, 180));
-		}
-
-		return menuButtonSelectedBackground;
-	}
-
-	public static StaticImage getWorldButtonBackground() {
-		if (worldLoaderButtonBackground == null) {
-			worldLoaderButtonBackground = makeRectangle(400, 32,
-					new Color(200, 100, 200));
-		}
-
-		return worldLoaderButtonBackground;
 	}
 
 	public static StaticImage getKeyImg(int keyID) {
@@ -174,14 +147,6 @@ public class ImageBuilder {
 		} else {
 			return null;
 		}
-	}
-
-	public static StaticImage getPaletteBlockBackground() {
-		if (paletteBlockBackground == null) {
-			paletteBlockBackground = ImageBuilder.makeRectangle(32, 32);
-		}
-
-		return paletteBlockBackground;
 	}
 
 	public static StaticImage getItemImage(int id) {
@@ -236,15 +201,5 @@ public class ImageBuilder {
 		int h = (int) (attackBox.getHeight() * GRID_SIZE);
 		LucyImage s = attackBoxImages.get(w, h);
 		return new LayeredImage(s);
-	}
-
-	public static LucyImage getButtonBackground(Rectangle r) {
-		int width = (int) r.getWidth();
-		int height = (int) r.getHeight();
-		return getButtonBackground(width, height);
-	}
-
-	public static LucyImage getButtonBackground(int width, int height) {
-		return getMenuButtonBackground().getScaledCopy(width, height);
 	}
 }

@@ -2,12 +2,9 @@ package objects.world;
 
 import java.util.function.Supplier;
 
-import org.newdawn.slick.Color;
-
-import helpers.Point;
-import helpers.Rectangle;
 import objects.images.Sprite;
 import objects.images.SpriteBuilder;
+import options.GlobalOptions;
 
 public enum ItemType {
 	WALL(0),
@@ -25,11 +22,11 @@ public enum ItemType {
 		MATT(() -> SpriteBuilder.getCharacterSprite(1)),
 		DOG_ENEMY(11),
 		CLIMBING_WALL_MARKER,
-		MOVING_PLATFORM(() -> SpriteBuilder.createRectangle(
-				new Rectangle(Point.ZERO, 2, 1), 32, new Color(220, 30, 220))),
+		MOVING_PLATFORM(() -> SpriteBuilder.getColouredRectangle(2, 1, 4,
+				GlobalOptions.GRID_SIZE)),
 		TRAMPOLINE(() -> SpriteBuilder.getTrampolineSprite()),
-		PUSHABLE_BLOCK(() -> SpriteBuilder.createRectangle(
-				new Rectangle(Point.ZERO, 2, 2), 32, new Color(30, 220, 30)));
+		PUSHABLE_BLOCK(() -> SpriteBuilder.getColouredRectangle(2, 2, 5,
+				GlobalOptions.GRID_SIZE));
 
 	private boolean paintable = true;
 

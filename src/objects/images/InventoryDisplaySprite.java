@@ -14,36 +14,29 @@ public class InventoryDisplaySprite extends SingleSprite {
 		final int border = 6;
 		final int padding = 6;
 		final int textBoxWidth = 70;
-		final int digitWidth = 10;
+		final int quantitySize = 20;
 
 		final int width = border * 2 + padding * 2 + iconSize + textBoxWidth
-				+ digitWidth * 2;
+				+ quantitySize;
 		final int height = border * 2 + iconSize;
 
 		LayeredImage img = new LayeredImage(width, height, 5);
 
 		// Set background
-		img.setLayer(0, ImageBuilder.makeRectangle(width, height));
+		img.setLayer(0, ImageBuilder.getColouredRectangle(width, height, 6));
 
 		Point p = new Point(border, border);
 
 		// Icon
-		LucyImage icon = ImageBuilder.makeRectangle(iconSize, iconSize);
-		img.setLayer(1, new PositionedImage(p, icon));
+		img.setLayerPosition(1, p);
 		p = p.move(Dir.EAST, iconSize + padding);
 
 		// Text
-		LucyImage textBox = ImageBuilder.makeRectangle(textBoxWidth, iconSize);
-		img.setLayer(2, new PositionedImage(p, textBox));
+		img.setLayerPosition(2, p);
 		p = p.move(Dir.EAST, textBoxWidth + padding);
 
-		// Digit one
-		LucyImage digit1 = ImageBuilder.makeRectangle(digitWidth, iconSize);
-		img.setLayer(3, new PositionedImage(p, digit1));
-		p = p.move(Dir.EAST, digitWidth);
-
-		LucyImage digit2 = ImageBuilder.makeRectangle(digitWidth, iconSize);
-		img.setLayer(4, new PositionedImage(p, digit2));
+		// Digits
+		img.setLayerPosition(3, p);
 
 		return img;
 	}
@@ -65,15 +58,7 @@ public class InventoryDisplaySprite extends SingleSprite {
 	}
 
 	private void setQuantity(int quantity) {
-		// Set quantity on layers 3 and 4
-		if (quantity >= 10) {
-			int digitTens = quantity / 10;
-			getImage().setText(3, "" + digitTens, vTextAlign);
-		} else {
-			getImage().clear(3);
-		}
-		int digitOnes = quantity % 10;
-		getImage().setText(4, "" + digitOnes, vTextAlign);
+		getImage().setText(3, "" + quantity, vTextAlign);
 	}
 	
 	public void setTo(InventoryItem ii, int quantity) {

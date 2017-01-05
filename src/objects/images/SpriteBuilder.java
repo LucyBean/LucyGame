@@ -1,7 +1,5 @@
 package objects.images;
 
-import org.newdawn.slick.Color;
-
 import helpers.Point;
 import helpers.Rectangle;
 import io.CharacterSpriteBuilder;
@@ -16,26 +14,16 @@ import options.GlobalOptions;
  */
 public class SpriteBuilder {
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
-
-	/**
-	 * Creates a new rectangular sprite of the given colour.
-	 * 
-	 * @param r
-	 * @param scale
-	 * @param fill
-	 * @param border
-	 * @return
-	 */
-	public static Sprite createRectangle(Rectangle r, int scale, Color fill,
-			Color border) {
-		int width = (int) (r.getWidth() * scale);
-		int height = (int) (r.getHeight() * scale);
-		LucyImage img = ImageBuilder.makeRectangle(width, height, fill, border);
-		return new SingleSprite(new LayeredImage(img), r.getTopLeft(), scale);
+	
+	public static Sprite getColouredRectangle(Rectangle rect, int uiColour, int gridSize) {
+		return getColouredRectangle(rect.getWidth(), rect.getHeight(), uiColour, gridSize);
 	}
-
-	public static Sprite createRectangle(Rectangle r, int scale, Color fill) {
-		return createRectangle(r, scale, fill, fill.darker(0.5f));
+	
+	public static Sprite getColouredRectangle(float width, float height, int uiColour, int gridSize) {
+		int w = (int) (width * gridSize);
+		int h = (int) (height * gridSize);
+		LucyImage lui = ImageBuilder.getColouredRectangle(w, h, uiColour);
+		return new SingleSprite(new LayeredImage(lui), gridSize);
 	}
 
 	public static Sprite drawWall(int width, int height) {
@@ -97,7 +85,7 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite makeMenuButton(String text) {
-		LucyImage bg = ImageBuilder.getMenuButtonBackground();
+		LucyImage bg = ImageBuilder.getColouredRectangle(240, 32, 0);
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 		limg.setTextCentered(limg.getTopLayerNumber(), text);
@@ -106,7 +94,7 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite makePaletteBlock() {
-		LucyImage bg = ImageBuilder.getPaletteBlockBackground();
+		LucyImage bg = ImageBuilder.getColouredRectangle(32,32,2);
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 

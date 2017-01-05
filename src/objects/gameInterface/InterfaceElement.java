@@ -45,10 +45,10 @@ public abstract class InterfaceElement extends GameObject {
 		}
 	}
 
-	protected void setBackground() {
+	protected void setBackground(int uiColour) {
 		LayeredImage limg = getSprite().getImage();
 		Rectangle rect = limg.getLayer(0).getRectangle();
-		LucyImage bg = ImageBuilder.getButtonBackground(rect);
+		LucyImage bg = ImageBuilder.getColouredRectangle(rect, uiColour);
 		limg.setLayer(0, bg);
 	}
 

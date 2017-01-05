@@ -1,6 +1,5 @@
 package worlds.lib;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -150,8 +149,7 @@ public class CameraObjectLoadingDemo extends World {
 }
 
 class CameraBox extends Actor {
-	static Sprite sprite = SpriteBuilder.createRectangle(
-			new Rectangle(Point.ZERO, 2, 1), 32, new Color(190, 80, 190));
+	static Sprite sprite = SpriteBuilder.getColouredRectangle(2,1,1,32);
 	float speed;
 
 	public CameraBox(Point origin) {
@@ -185,10 +183,8 @@ class CameraBox extends Actor {
 
 class WorldSector extends Static {
 	static Rectangle spriteRect = new Rectangle(Point.ZERO, 3, 3);
-	static Sprite active = SpriteBuilder.createRectangle(spriteRect,
-			GlobalOptions.GRID_SIZE, new Color(100, 240, 100));
-	static Sprite inactive = SpriteBuilder.createRectangle(spriteRect,
-			GlobalOptions.GRID_SIZE, new Color(240, 100, 100));
+	static Sprite active = SpriteBuilder.getColouredRectangle(spriteRect, 5, GlobalOptions.GRID_SIZE);
+	static Sprite inactive = SpriteBuilder.getColouredRectangle(spriteRect, 0, GlobalOptions.GRID_SIZE);
 
 	boolean activeSector;
 	final WorldSector[] neighbours;

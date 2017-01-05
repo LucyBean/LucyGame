@@ -9,7 +9,7 @@ import objects.images.LucyImage;
 public abstract class Button extends InterfaceElement {
 	public Button(Rectangle button) {
 		super(button);
-		setBackground();
+		setBackground(0);
 	}
 
 	public Button(Point origin, LucyImage backgroundImage) {

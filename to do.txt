@@ -2,10 +2,6 @@
 ==  THINGS TO DO  ==
 ====================
 
-Tie Sprite to ItemType? E.g. when creating an object have to specify the ItemType
-	and how to get the Sprite. Surely the type of Sprite can be specified from
-	the ItemType.
-
 Platformer moves
 
 Add the ability to place climbing markers using the world builder
@@ -23,6 +19,8 @@ Animations
 ==  ISSUES  ==
 ==============
 Sprite constructors: remove those that specify a Point?
+Make the text wrap around multiple levels. Conversations are currently broken for this reason!
+
 =============
 ==  IDEAS  ==
 =============

@@ -16,7 +16,8 @@ public class ConversationBlockSprite extends SingleSprite {
 	private static final int width = GlobalOptions.WINDOW_WIDTH - 100;
 
 	private static final int textBoxWidth = width - (border * 2 + padding + spriteSize);
-	private static final int textBoxHeight = padding + spriteSize + nameHeight;
+	//private static final int textBoxHeight = padding + spriteSize + nameHeight;
+	// TODO: Ensure that images are wrapped correctly
 	
 	private boolean leftAligned = true;
 	
@@ -25,22 +26,16 @@ public class ConversationBlockSprite extends SingleSprite {
 		LayeredImage img = new LayeredImage(width, height, 4);
 
 		// Set the background
-		img.setLayer(0, ImageBuilder.makeRectangle(width, height));
+		img.setLayer(0, ImageBuilder.getColouredRectangle(width, height, 5));
 
 		// Set the sprite square
-		img.setLayer(1, new PositionedImage(new Point(border, border),
-				ImageBuilder.makeRectangle(spriteSize, spriteSize)));
+		img.setLayerPosition(1, new Point(border, border));
 
 		// Set the name square
-		img.setLayer(2,
-				new PositionedImage(
-						new Point(border, border + spriteSize + padding),
-						ImageBuilder.makeRectangle(spriteSize, nameHeight)));
+		img.setLayerPosition(2, new Point(border, border + spriteSize + padding));
 
 		// Set the text square
-		img.setLayer(3, new PositionedImage(
-				new Point(border + spriteSize + padding, border),
-				ImageBuilder.makeRectangle(textBoxWidth, textBoxHeight)));
+		img.setLayerPosition(3, new Point(border + spriteSize + padding, border));
 
 		// Debugging colours
 		img.fillLayer(0, new Color(120, 250, 250));

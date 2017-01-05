@@ -2,15 +2,12 @@ package worlds.lib;
 
 import java.util.Random;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
-import objects.attachments.InteractBox;
-import objects.images.ImageBuilder;
-import objects.images.LayeredImage;
-import objects.images.SingleSprite;
+import helpers.Rectangle;
 import objects.images.Sprite;
+import objects.images.SpriteBuilder;
 import objects.world.Actor;
 import objects.world.ItemType;
 import objects.world.PickUpItem;
@@ -72,14 +69,12 @@ public class HiddenObjectDemoWorld extends World {
 
 class HiddenSquare extends Static {
 	private final static int gridSize = GlobalOptions.GRID_SIZE;
-	private final static Sprite sprite = new SingleSprite(new LayeredImage(
-			ImageBuilder.makeRectangle(gridSize * 2, gridSize * 2,
-					new Color(190, 60, 190))),
-			gridSize);
+	private final static Sprite sprite = SpriteBuilder.getColouredRectangle(
+			new Rectangle(Point.ZERO, 2, 2), 4, gridSize);
 
 	public HiddenSquare(Point origin) {
-		super(origin, WorldLayer.WORLD, null, sprite, null,
-				new InteractBox(Point.ZERO, 2, 2));
+		super(origin, WorldLayer.WORLD, null, sprite);
+		setInteractBoxFromSprite();
 	}
 
 	@Override

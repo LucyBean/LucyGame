@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -21,7 +20,7 @@ public class ImageDrawingWorld extends World {
 		
 		images = new LinkedList<>();
 		for (int i = 1; i < 20; i++) {
-			images.add(ImageBuilder.makeRectangle(i*4, 8, Color.red));
+			images.add(ImageBuilder.getColouredRectangle(i*4, 8, 2));
 		}
 	}
 	

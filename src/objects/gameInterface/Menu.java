@@ -18,7 +18,7 @@ public abstract class Menu extends IEList {
 
 	public Menu(Point firstPoint, int numDisplayElems, MenuSet menuSet, boolean useSelection) {
 		super(firstPoint, numDisplayElems, 1, 4, (useSelection) ? (s -> s.getImage().setLayer(0,
-				ImageBuilder.getMenuButtonSelectedBackground())) : null);
+				ImageBuilder.getColouredRectangle(240, 32, 1))) : null);
 		labels = new ArrayList<Supplier<String>>();
 		clickActions = new ArrayList<Consumer<Menu>>();
 		this.menuSet = menuSet;
@@ -73,7 +73,7 @@ public abstract class Menu extends IEList {
 			// There is information to be displayed
 			String label = labels.get(elementIndex).get();
 			LayeredImage limg = s.getImage();
-			limg.setLayer(0, ImageBuilder.getMenuButtonBackground());
+			limg.setLayer(0, ImageBuilder.getColouredRectangle(240, 32, 0));
 			limg.setTextCentered(1, label);
 		} else {
 			LayeredImage limg = s.getImage();

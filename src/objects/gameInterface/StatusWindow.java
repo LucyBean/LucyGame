@@ -17,7 +17,7 @@ class StatusWindow extends InterfaceElement {
 
 	public StatusWindow(Point origin) {
 		super(new Rectangle(origin, 200, 200));
-		setBackground();
+		setBackground(3);
 	}
 
 	@Override
