@@ -8,16 +8,10 @@ import org.newdawn.slick.GameContainer;
 import helpers.Point;
 import objects.attachments.InteractBox;
 import objects.images.SpriteBuilder;
-import objects.world.Actor;
 import objects.world.ItemType;
-import objects.world.lib.Gem;
-import quests.EventType;
-import quests.Objective;
-import quests.Quest;
 
 public class Matt extends NPC {
 	private Map<Integer, Conversation> conversations;
-	private int state = 0;
 
 	public Matt(Point origin, int npcID) {
 		super(origin, ItemType.MATT, SpriteBuilder.getCharacterSprite(1),
@@ -62,6 +56,8 @@ public class Matt extends NPC {
 	public void act(GameContainer gc, int delta) {
 
 	}
+	
+	// TODO: Re-do this quest!
 
 	/*
 	@Override

@@ -10,7 +10,7 @@ import worlds.WorldLayer;
 
 public abstract class NPC extends Actor {
 	private int npcID;
-	private int conversationState = 0;
+	private int storyState = 0;
 	private ConversationSet conversations;
 
 	public NPC(Point origin, ItemType itemType, Sprite sprite,
@@ -25,15 +25,19 @@ public abstract class NPC extends Actor {
 		return npcID;
 	}
 	
+	protected void setStoryState(int state) {
+		storyState = state;
+	}
+	
 	/**
 	 * Shows the required conversation on screen for the current state.
 	 */
 	protected void talk() {
-		Conversation c = conversations.get(conversationState);
+		Conversation c = conversations.get(storyState);
 		if (c != null) {
 			getWorld().showConversation(c);
 		}
-		conversationState = c.getEndState();
+		setStoryState(c.getEndState());
 	}
 	
 	public void interactedBy(Actor a) {
