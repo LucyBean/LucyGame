@@ -34,8 +34,6 @@ public class LucyGame extends BasicGame {
 			app.setShowFPS(false);
 			app.setVerbose(false);
 			
-			System.out.println(args);
-			
 			if (args.length >= 1) {
 				String dev = args[0];
 				if (dev.equals("dev")) {

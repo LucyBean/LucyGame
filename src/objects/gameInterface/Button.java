@@ -1,6 +1,5 @@
 package objects.gameInterface;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
@@ -10,13 +9,13 @@ import objects.images.LucyImage;
 public abstract class Button extends InterfaceElement {
 	public Button(Rectangle button) {
 		super(button);
-		setBackground(new Color(240, 120, 180));
+		setBackground();
 	}
 
 	public Button(Point origin, LucyImage backgroundImage) {
 		super(new Rectangle(origin, backgroundImage.getWidth(),
 				backgroundImage.getHeight()));
-		setBackground(backgroundImage);
+		getSprite().getImage().setLayer(0, backgroundImage);
 	}
 
 	@Override

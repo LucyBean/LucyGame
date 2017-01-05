@@ -1,18 +1,15 @@
 package objects.gameInterface;
 
-import org.newdawn.slick.Color;
-
 import helpers.Point;
 import helpers.Rectangle;
 import objects.GameObject;
+import objects.images.ImageBuilder;
 import objects.images.LayeredImage;
 import objects.images.LucyImage;
 import objects.images.Sprite;
 import objects.images.SpriteBuilder;
 
 public abstract class InterfaceElement extends GameObject {
-	Rectangle rect;
-
 	public InterfaceElement(Point point, Sprite sprite) {
 		super(point, sprite);
 	}
@@ -48,20 +45,11 @@ public abstract class InterfaceElement extends GameObject {
 		}
 	}
 
-	/**
-	 * Sets the background color for the InterfaceElement's sprite.
-	 * 
-	 * @param c
-	 *            The new background color.
-	 */
-	protected void setBackground(Color c) {
+	protected void setBackground() {
 		LayeredImage limg = getSprite().getImage();
-		limg.fillLayer(0, c);
-	}
-
-	protected void setBackground(LucyImage img) {
-		LayeredImage limg = getSprite().getImage();
-		limg.setLayer(0, img);
+		Rectangle rect = limg.getLayer(0).getRectangle();
+		LucyImage bg = ImageBuilder.getButtonBackground(rect);
+		limg.setLayer(0, bg);
 	}
 
 	/**

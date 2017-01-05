@@ -1,6 +1,5 @@
 package objects.gameInterface;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
@@ -18,7 +17,7 @@ class StatusWindow extends InterfaceElement {
 
 	public StatusWindow(Point origin) {
 		super(new Rectangle(origin, 200, 200));
-		setBackground(new Color(240, 220, 240, 200));
+		setBackground();
 	}
 
 	@Override

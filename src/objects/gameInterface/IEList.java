@@ -285,6 +285,13 @@ public abstract class IEList extends InterfaceElement {
 
 	protected abstract void elementClicked(int elementNumber);
 
+	/**
+	 * Creates a new Sprite for this IEList. If images are to be added to this
+	 * IEList, then this should create a blank SingleSprite with the bounding
+	 * rectangle set to the size of the elements.
+	 * 
+	 * @return
+	 */
 	protected abstract Sprite makeNewSprite();
 
 	@Override

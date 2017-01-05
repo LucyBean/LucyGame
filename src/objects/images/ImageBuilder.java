@@ -221,4 +221,14 @@ public class ImageBuilder {
 		LucyImage s = attackBoxImages.get(w, h);
 		return new LayeredImage(s);
 	}
+	
+	public static LucyImage getButtonBackground(Rectangle r) {
+		int width = (int) r.getWidth();
+		int height = (int) r.getHeight();
+		return getButtonBackground(width, height);
+	}
+	
+	public static LucyImage getButtonBackground(int width, int height) {
+		return getMenuButtonBackground().getScaledCopy(width, height);
+	}
 }
