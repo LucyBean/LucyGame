@@ -87,6 +87,10 @@ public class ConversationLoader {
 				// The previous conversation (if any) is done and can be added
 				// to the set
 				if (c != null) {
+					if (prevChat != null) {
+						c.add(prev, prevChat);
+						prevChat = null;
+					}
 					c.setEndState(end);
 					cs.put(state, c);
 				}

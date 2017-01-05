@@ -91,6 +91,8 @@ public class ConversationDisplay extends InterfaceElement {
 			// If we have reached the end of the line, wrap
 			if (newWidth > textBoxSize.getWidth()) {
 				nextLine += "\n";
+				textWidth = 0;
+				textHeight += f.getLineHeight();
 				// If we have run out of space, stop
 				if (textHeight + f.getLineHeight() > textBoxSize.getHeight()) {
 					savedWord = nextWord;
@@ -98,6 +100,7 @@ public class ConversationDisplay extends InterfaceElement {
 				}
 			}
 			nextLine += " " + nextWord;
+			textWidth += f.getWidth(nextWord + " ");
 		}
 		TextImage timg = new TextImage(nextLine);
 		cbs.setText(timg);

@@ -35,12 +35,27 @@ public class Conversation
 		add(new Pair<>(c, text));
 	}
 	
+	/**
+	 * The end state for the NPC after they have said this conversation.
+	 * @param endState
+	 */
 	public void setEndState(int endState) {
-		// TODO: Make this do something
 		this.endState = endState;
 	}
 	
 	public int getEndState() {
 		return endState;
+	}
+	
+	@Override
+	public String toString() {
+		if (size() <= 0) {
+			return "No conversation :(";
+		} else {
+			Pair<ConversationCharacter, String> first = get(0);
+			String name = first.getFirst().getName();
+			String text = first.getSecond();
+			return name + ": " + text;
+		}
 	}
 }
