@@ -45,7 +45,7 @@ public class ImageBuilder {
 		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
 		uiColourPalette = new SpriteSheet("data/uiColourPalette.png", 1, 1);
 
-		java.awt.Font awtFont = new java.awt.Font("Times New Roman",
+		java.awt.Font awtFont = new java.awt.Font("Comic Sans MS",
 				java.awt.Font.PLAIN, 16);
 		font = new TrueTypeFont(awtFont, true); // base Font, anti-aliasing
 												// true/false
