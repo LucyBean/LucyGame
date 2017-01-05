@@ -4,15 +4,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Font;
 
-import helpers.Dir;
 import helpers.Pair;
 import helpers.Point;
+import helpers.Rectangle;
 import objects.images.ConversationBlockSprite;
-import objects.images.StaticImage;
+import objects.images.ImageBuilder;
+import objects.images.TextImage;
 import objects.world.characters.Conversation;
 import objects.world.characters.ConversationCharacter;
 
@@ -71,46 +70,38 @@ public class ConversationDisplay extends InterfaceElement {
 	}
 
 	public void showNextTextLine() {
-		try {
-			ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
-			StaticImage textLayer = cbs.getTextImage();
-			Graphics g = textLayer.getGraphics();
-			g.clear();
-			g.setColor(Color.black);
-			final int spaceWidth = 8;
-			final int lineHeight = g.getFont().getLineHeight();
-			Point textPoint = Point.ZERO;
+		ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
+		Rectangle textBoxSize = cbs.getTextBoxSize();
+		Font f = ImageBuilder.getFont();
+		String nextLine = "";
+		int textWidth = 0;
+		int textHeight = 0;
 
-			while (wordsRemaining()) {
-				String nextWord;
-				if (savedWord != null) {
-					nextWord = savedWord;
-					savedWord = null;
-				} else {
-					nextWord = wordListIterator.next();
-				}
-				int wordWidth = g.getFont().getWidth(nextWord);
-				float newWidth = textPoint.getX() + wordWidth;
-
-				// If we have reached the end of the line, wrap
-				if (newWidth > textLayer.getWidth()) {
-					textPoint = new Point(0, textPoint.getY() + lineHeight);
-					// If we have run out of space, stop
-					if (textPoint.getY() + lineHeight > textLayer.getHeight()) {
-						savedWord = nextWord;
-						break;
-					}
-				}
-
-				g.drawString(nextWord, textPoint.getX(), textPoint.getY());
-				textPoint = textPoint.move(Dir.EAST, wordWidth + spaceWidth);
+		while (wordsRemaining()) {
+			String nextWord;
+			if (savedWord != null) {
+				nextWord = savedWord;
+				savedWord = null;
+			} else {
+				nextWord = wordListIterator.next();
 			}
+			int wordWidth = f.getWidth(nextWord);
+			int newWidth = textWidth + wordWidth;
 
-			g.flush();
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// If we have reached the end of the line, wrap
+			if (newWidth > textBoxSize.getWidth()) {
+				nextLine += "\n";
+				// If we have run out of space, stop
+				if (textHeight + f.getLineHeight() > textBoxSize.getHeight()) {
+					savedWord = nextWord;
+					break;
+				}
+			}
+			nextLine += " " + nextWord;
 		}
+		TextImage timg = new TextImage(nextLine);
+		cbs.setText(timg);
+
 	}
 
 	@Override
