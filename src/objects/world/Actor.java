@@ -35,7 +35,7 @@ public abstract class Actor extends WorldObject {
 	private float walkSpeed = 0.5f;
 	private float crouchSpeed = 0.7f;
 	private float pushSpeed = 0.4f;
-	private float defaultJumpStrength = 0.015f;
+	private float defaultJumpStrength = 0.012f;
 	private float nextJumpStrength = defaultJumpStrength;
 	private boolean gravityEnabled = true;
 	private boolean pushable = false;
@@ -734,6 +734,7 @@ public abstract class Actor extends WorldObject {
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
 				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
+				canJumpSustain = true;
 			} else if (lastState == ActorState.WALL_SLIDE
 					|| lastState == ActorState.CLIMB) {
 				// If wall sliding or climbing then single jump
@@ -1057,11 +1058,6 @@ public abstract class Actor extends WorldObject {
 				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
-		}
-		
-		// Reset jump sustain if transitioning to jump
-		if (to == ActorState.JUMP) {
-			canJumpSustain = true;
 		}
 	}
 
