@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import helpers.Rectangle;
+import io.CharacterSpriteBuilder;
 import objects.world.ItemType;
 import options.GlobalOptions;
 

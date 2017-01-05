@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 
 import helpers.Point;
 import helpers.Rectangle;
+import io.CharacterSpriteBuilder;
 import objects.world.ItemType;
 import options.GlobalOptions;
 

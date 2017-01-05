@@ -1,4 +1,4 @@
-package objects.images;
+package io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,11 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
+import objects.images.AnimatedImage;
+import objects.images.LayeredImage;
+import objects.images.Sprite;
+import objects.images.StatedSprite;
+import objects.images.StaticImage;
 import objects.world.ActorState;
 import options.GlobalOptions;
 

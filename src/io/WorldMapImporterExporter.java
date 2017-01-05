@@ -1,4 +1,4 @@
-package helpers;
+package io;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
+import helpers.ObjectByter;
 import objects.world.WorldObject;
 import options.GlobalOptions;
 import worlds.WorldMap;

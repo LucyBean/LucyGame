@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
-import helpers.WorldMapImporterExporter;
+import io.WorldMapImporterExporter;
 import objects.world.ClimbingWallMarker;
 import objects.world.WorldObject;
 import objects.world.characters.Player;

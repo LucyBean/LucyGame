@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import helpers.Point;
 import helpers.Rectangle;
-import helpers.WorldMapImporterExporter;
+import io.WorldMapImporterExporter;
 import objects.world.WorldObject;
 import options.GlobalOptions;
 import options.Option;

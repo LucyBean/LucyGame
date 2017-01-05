@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.newdawn.slick.SlickException;
 
-import helpers.WorldMapImporterExporter;
+import io.WorldMapImporterExporter;
 import objects.world.WorldObject;
 import objects.world.characters.Player;
 import worlds.LucyGame;
