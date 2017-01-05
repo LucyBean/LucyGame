@@ -2,6 +2,8 @@ package objects.attachments;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -46,13 +48,19 @@ public class AttackBox extends Attachment {
 	 * attackEffect... methods on any enemies for which it overlaps.
 	 */
 	public void checkAttack() {
-		Collection<Enemy> enemies = getOverlappingObjectsOfType(Enemy.class);
-		if (!enemies.isEmpty()) {
+		Stream<Enemy> enemies = getOverlappingObjectsOfType(Enemy.class);
+		// Operate on the stream to apply the effect to all unaffected enemies,
+		// and count the number of enemies harmed.
+		Optional<Integer> enemiesHarmed = enemies.filter(
+				e -> !damagedByThisAttack.contains(e)).map(e -> {
+					effectOnEnemy(e);
+					damagedByThisAttack.add(e);
+					return 1;
+				}).reduce((a, b) -> a + b);
+
+		if (enemiesHarmed.isPresent()) {
+			// This will happen if at least one enemy is harmed.
 			effectOnPlayer();
-			enemies.stream().filter(e -> !damagedByThisAttack.contains(e)).forEach(e -> {
-				effectOnEnemy(e);
-				damagedByThisAttack.add(e);
-			});
 		}
 	}
 

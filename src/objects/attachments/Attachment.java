@@ -1,6 +1,6 @@
 package objects.attachments;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -104,7 +104,7 @@ public abstract class Attachment {
 		return rect.toString();
 	}
 	
-	public <T extends WorldObject> Collection<T> getOverlappingObjectsOfType(Class<T> t) {
+	public <T extends WorldObject> Stream<T> getOverlappingObjectsOfType(Class<T> t) {
 		if (getObject() != null) {
 			Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 					getRectangle());
