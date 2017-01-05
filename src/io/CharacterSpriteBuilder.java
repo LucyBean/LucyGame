@@ -37,6 +37,7 @@ public class CharacterSpriteBuilder {
 				BufferedReader br = new BufferedReader(new FileReader(propertiesFile));
 				String nextLine = br.readLine();
 				while (nextLine != null) {
+					// TODO: Change to use a Pattern and Matcher
 					String[] parts = nextLine.split(":");
 					// check if this is a line that declares an animation
 					if (parts.length > 0 && parts[0].matches("[A-Z_]+")) {

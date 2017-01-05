@@ -7,6 +7,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import io.ConversationLoader;
 import objects.images.ImageBuilder;
 import options.GlobalOptions;
 
@@ -69,6 +70,8 @@ public class LucyGame extends BasicGame {
 		} else if (!ImageBuilder.spriteSheetsInitialised()) {
 			ImageBuilder.initSpriteSheets();
 			GlobalOptions.loadFromFile();
+			// TODO: Remove test
+			ConversationLoader.loadConversations("level4");
 			loadMainMenu();
 		}
 	}

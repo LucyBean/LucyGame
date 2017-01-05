@@ -13,7 +13,8 @@ public class Conversation
 	 */
 	private static final long serialVersionUID = 419051881480270030L;
 
-	Iterator<Pair<ConversationCharacter, String>> iterator;
+	private Iterator<Pair<ConversationCharacter, String>> iterator;
+	private int endState;
 
 	public Pair<ConversationCharacter, String> getNext() {
 		// Need the iterator to persist between calls of getNext
@@ -32,5 +33,10 @@ public class Conversation
 
 	public void add(ConversationCharacter c, String text) {
 		add(new Pair<>(c, text));
+	}
+	
+	public void setEndState(int endState) {
+		// TODO: Make this do something
+		this.endState = endState;
 	}
 }

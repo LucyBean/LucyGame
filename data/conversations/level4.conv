@@ -1,14 +1,19 @@
 NPCid:1
 STATE:0
 END:1
-	LUCY: Bby?
-	MATT: Ys?
-	LUCY: Cuddle.
-	MATT: Not again.
-	LUCY: Ys!
-	MATT: Give me a gem to get a cuddle!
+	LUCY:	Bby?
+	MATT:	Ys?
+	LUCY:	Cuddle.
+	MATT:	Not again.
+	LUCY:	Ys!
+	MATT:	Give me a gem to get a cuddle!
 STATE:1
-	MATT: Give me a gem to get a cuddle!
+	MATT:	Give me a gem to get a cuddle!
 STATE:2
-	MATT: Thank you for your gem! Here is your cuddle!
-	LUCY: Yay!
+	MATT:	Thank you for your gem!
+			Here is your cuddle!
+	LUCY:	Yay!
+
+NPCid:2
+STATE:0
+	BOB:	I don't exist!
