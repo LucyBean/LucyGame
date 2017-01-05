@@ -4,33 +4,49 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 
 public class TextImage implements LucyImage {
+	private String[] lines;
+	private Font f;
+	private int width = 0;
+	private int height = 0;
 
-	private String text;
-	Font f;
-	
 	public TextImage(String text) {
-		this.text = text;
-		f = ImageBuilder.getFont();
+		if (text != null) {
+			lines = text.split("\n");
+			f = ImageBuilder.getFont();
+			
+			if (lines.length > 0) {
+				for (int i = 0; i < lines.length; i++) {
+					width = Math.max(width, f.getWidth(lines[i]));
+					height += f.getHeight(lines[i]);
+				}
+			}
+		}
 	}
-	
+
 	@Override
 	public void draw(float x, float y, float scale) {
-		f.drawString(x, y, text, Color.black);
+		if (lines != null) {
+			for (int i = 0; i < lines.length; i++) {
+				f.drawString(x,y, lines[i], Color.black);
+				y += f.getHeight(lines[i]);
+			}
+		}
 	}
 
 	@Override
 	public int getWidth() {
-		return f.getWidth(text);
+		return width;
 	}
 
 	@Override
 	public int getHeight() {
-		return f.getHeight(text);
+		return height;
 	}
 
 	@Override
 	public void setMirrored(boolean mirrored) {
-		// This cannot be done
+		// This cannot be done with text!
+		// It doesn't make sense!
 	}
 
 }
