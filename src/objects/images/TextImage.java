@@ -59,7 +59,7 @@ public class TextImage implements LucyImage {
 		int h = getHeight();
 
 		x -= (w * hAlign) / 2;
-		y -= (h * vAlign) / 2;
+		y += (h * vAlign) / 2;
 
 		if (lines != null) {
 			for (int i = 0; i < lines.length; i++) {

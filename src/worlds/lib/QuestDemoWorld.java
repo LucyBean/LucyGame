@@ -1,16 +1,11 @@
 package worlds.lib;
 
-import java.util.Map;
-
 import org.newdawn.slick.SlickException;
 
 import helpers.Dir;
 import helpers.Point;
-import io.ConversationLoader;
 import objects.world.Actor;
-import objects.world.characters.ConversationSet;
 import objects.world.characters.Matt;
-import objects.world.characters.NPC;
 import objects.world.characters.Player;
 import objects.world.lib.Gem;
 import objects.world.lib.Key;
@@ -51,16 +46,8 @@ public class QuestDemoWorld extends World {
 		Gem g = new Gem(new Point(18,8));
 		addObject(g);
 		
-		// Load the conversations and set them to the correct NPCs
-		Map<Integer, ConversationSet> conversations = ConversationLoader.load("level4");
-		for (int npcID : conversations.keySet()) {
-			ConversationSet cs = conversations.get(npcID);
-			NPC npc = getMap().getNPC(npcID);
-			if (npc == null) {
-				System.err.println("Loaded quest for unknown NPCid: " + npcID);
-			} else {
-				npc.setConversations(cs);
-			}
-		}
+		// Load conversations for this level
+		loadConversations("level4");
+		
 	}
 }

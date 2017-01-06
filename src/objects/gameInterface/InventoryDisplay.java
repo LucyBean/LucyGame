@@ -2,8 +2,6 @@ package objects.gameInterface;
 
 import java.util.Iterator;
 
-import org.newdawn.slick.Color;
-
 import helpers.Point;
 import objects.images.InventoryDisplaySprite;
 import objects.images.SingleSprite;
@@ -18,8 +16,7 @@ public class InventoryDisplay extends IEList {
 	InventoryItem maxItem;
 
 	public InventoryDisplay(Point firstPoint, Inventory i) {
-		super(firstPoint, 4, 1, 4,
-				(s -> s.getImage().fillLayer(0, new Color(120, 120, 180))));
+		super(firstPoint, 4, 1, 4, (s -> s.getImage().fillLayer(0, 2)));
 		if (i != null) {
 			inventory = i;
 			updateSprites();
@@ -37,7 +34,7 @@ public class InventoryDisplay extends IEList {
 
 	@Override
 	protected void elementClicked(int elementIndex) {
-		
+
 	}
 
 	@Override

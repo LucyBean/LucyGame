@@ -3,8 +3,6 @@ package objects.gameInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.newdawn.slick.Color;
-
 import helpers.Point;
 import helpers.Rectangle;
 import objects.images.PropertyPanelSprite;
@@ -17,7 +15,7 @@ public class PropertyPanel extends IEList {
 
 	public PropertyPanel(Point firstPoint) {
 		super(firstPoint, 1, 4, 4);
-		setBackground(Color.cyan);
+		setBackground(5);
 
 		properties = new ArrayList<PainterProperty>();
 		properties.add(PainterProperty.getLockID());

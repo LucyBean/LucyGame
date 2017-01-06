@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 
@@ -120,7 +119,7 @@ public abstract class IEList extends InterfaceElement {
 	 * 
 	 * @param c
 	 */
-	public void setBackground(Color c) {
+	public void setBackground(int uiColour) {
 		if (buttons.size() > 0) {
 			if (getSprite() == null) {
 				int w = getWidthPixels() + padding * 2;
@@ -131,7 +130,7 @@ public abstract class IEList extends InterfaceElement {
 				setSprite(new SingleSprite(limg, origin, 1));
 			}
 
-			getSprite().getImage().fillLayer(0, c);
+			getSprite().getImage().fillLayer(0, uiColour);
 		}
 	}
 

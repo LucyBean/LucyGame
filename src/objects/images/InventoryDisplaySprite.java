@@ -1,14 +1,10 @@
 package objects.images;
 
-import org.newdawn.slick.Color;
-
 import helpers.Dir;
 import helpers.Point;
 import objects.world.characters.InventoryItem;
 
 public class InventoryDisplaySprite extends SingleSprite {
-	private final static Point vTextAlign = new Point(0, 8);
-
 	private static LayeredImage makeImage() {
 		final int iconSize = 32;
 		final int border = 6;
@@ -32,11 +28,17 @@ public class InventoryDisplaySprite extends SingleSprite {
 		p = p.move(Dir.EAST, iconSize + padding);
 
 		// Text
-		img.setLayerPosition(2, p);
+		// Middle align this
+		p.move(Dir.SOUTH, iconSize/2);
+		TextImage name = new TextImage("Name");
+		name.setAlignment(0, 1);
+		img.setLayer(2, new PositionedImage(p, name));
 		p = p.move(Dir.EAST, textBoxWidth + padding);
 
 		// Digits
-		img.setLayerPosition(3, p);
+		TextImage digits = new TextImage("00");
+		digits.setAlignment(0,1);
+		img.setLayer(3, new PositionedImage(p, digits));
 
 		return img;
 	}
@@ -46,7 +48,7 @@ public class InventoryDisplaySprite extends SingleSprite {
 	}
 
 	private void setDeselectedBackground() {
-		getImage().fillLayer(0, new Color(200, 200, 200));
+		getImage().fillLayer(0, 0);
 	}
 
 	private void setIcon(LucyImage i) {
@@ -54,11 +56,11 @@ public class InventoryDisplaySprite extends SingleSprite {
 	}
 
 	private void setName(String name) {
-		getImage().setText(2, name, vTextAlign);
+		getImage().setText(2, name);
 	}
 
 	private void setQuantity(int quantity) {
-		getImage().setText(3, "" + quantity, vTextAlign);
+		getImage().setText(3, "" + quantity);
 	}
 	
 	public void setTo(InventoryItem ii, int quantity) {

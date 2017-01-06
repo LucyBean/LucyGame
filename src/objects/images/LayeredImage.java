@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import helpers.Point;
@@ -192,32 +190,32 @@ public class LayeredImage {
 	}
 
 	/**
-	 * Completely fills the layer with the Color c if it is a static image
-	 * layer.
+	 * Replaces this layer with an image containing the uiColour. Will fill the
+	 * entire LayeredImage if this layer does not already exist, otherwise
+	 * replaces the image on the specified layer with a block of colour of the
+	 * same size.
 	 * 
 	 * @param layer
 	 *            The number of the layer to fill. 0 is the background.
 	 * @param c
 	 *            The color with which to fill the layer.
 	 */
-	public void fillLayer(int layer, Color c) {
+	public void fillLayer(int layer, int uiColour) {
 		LucyImage img = getLayer(layer).getImage();
+		int width;
+		int height;
+		Point origin;
 		if (img != null) {
-			if (img instanceof StaticImage) {
-				try {
-					Graphics g = ((StaticImage) img).getGraphics();
-					g.setColor(c);
-					g.fillRect(0, 0, width, height);
-					g.flush();
-				} catch (SlickException se) {
-					System.err.println("Error while filling layer.");
-					se.printStackTrace();
-				}
-			} else if (GlobalOptions.debug()) {
-				System.err.println(
-						"Attempting to fill a non-static image layer.");
-			}
+			origin = getLayer(layer).getOrigin();
+			width = img.getWidth();
+			height = img.getHeight();
+		} else {
+			origin = Point.ZERO;
+			width = getWidth();
+			height = getHeight();
 		}
+		setLayer(layer, new PositionedImage(origin,
+				ImageBuilder.getColouredRectangle(width, height, uiColour)));
 	}
 
 	/**
@@ -228,20 +226,13 @@ public class LayeredImage {
 	 */
 	public void clear(int layer) {
 		LucyImage img = getLayer(layer).getImage();
-		if (img != null) {
-			if (img instanceof StaticImage) {
-				try {
-					Graphics g = ((StaticImage) img).getGraphics();
-					g.clear();
-					g.flush();
-				} catch (SlickException se) {
-					System.err.println("Error while filling layer.");
-					se.printStackTrace();
-				}
-			} else if (GlobalOptions.debug()) {
-				System.err.println(
-						"Attempting to clear a non-static image layer.");
-			}
+		if (img instanceof TextImage) {
+			// Set to blank text if TextImage to keep its
+			// hAlign and vAlign properties
+			TextImage timg = (TextImage) img;
+			timg.setText("");
+		} else {
+			getLayer(layer).setImage(null);
 		}
 	}
 
@@ -316,6 +307,23 @@ public class LayeredImage {
 	public void setText(int layer, String text, Point topLeft) {
 		TextImage timg = new TextImage(text);
 		setLayer(layer, new PositionedImage(topLeft, timg));
+	}
+
+	/**
+	 * Sets this layer to display text. Text will be positioned at the origin
+	 * for the given layer.
+	 * 
+	 * @param layer
+	 * @param text
+	 */
+	public void setText(int layer, String text) {
+		LucyImage img = getLayer(layer).getImage();
+		if (img instanceof TextImage) {
+			TextImage timg = (TextImage) img;
+			timg.setText(text);
+		} else {
+			setLayer(layer, new TextImage(text));
+		}
 	}
 
 	/**

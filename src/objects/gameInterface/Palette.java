@@ -3,8 +3,6 @@ package objects.gameInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.newdawn.slick.Color;
-
 import helpers.Point;
 import helpers.Rectangle;
 import objects.images.LayeredImage;
@@ -19,7 +17,7 @@ public class Palette extends IEList {
 
 	public Palette(Point firstPoint) {
 		super(firstPoint, 2, 8, 4);
-		setBackground(Color.white);
+		setBackground(2);
 		elements = new ArrayList<>();
 
 		for (ItemType it : ItemType.values()) {
