@@ -29,12 +29,17 @@ public class Sensor extends Attachment {
 
 		return image;
 	}
-
-	public boolean isOverlappingSolid() {
+	
+	public Stream<WorldObject> getOverlappingSolids() {
 		Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 				getRectangle());
 		Stream<WorldObject> solids = getObject().getWorld().getMap().getOverlappingSolids(
 				rect);
+		return solids;
+	}
+
+	public boolean isOverlappingSolid() {
+		Stream<WorldObject> solids = getOverlappingSolids();
 		Iterator<WorldObject> is = solids.iterator();
 		return solids == null || is.hasNext();
 	}

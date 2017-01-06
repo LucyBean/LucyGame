@@ -56,6 +56,7 @@ public abstract class Actor extends WorldObject {
 	private Collider crouchingCollider;
 	private boolean interactNextFrame;
 	private Actor pushTarget;
+	private Collection<WorldObject> solidsToIgnoreThisFrame;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
@@ -246,6 +247,28 @@ public abstract class Actor extends WorldObject {
 	}
 
 	/**
+	 * Causes this solid to be ignored by the Actor's collision checking until
+	 * the end of the frame.
+	 * 
+	 * @param wo
+	 */
+	private void ignoreSolid(WorldObject wo) {
+		solidsToIgnoreThisFrame.add(wo);
+	}
+	
+	/**
+	 * Gets solids that should be ignored when collision checking
+	 * @return
+	 */
+	private Collection<WorldObject> getIgnoredSolids() {
+		Collection<WorldObject> solids = new HashSet<>();
+		solids.addAll(solidsToIgnoreThisFrame);
+		getOverlappingSolids(getCollider().getRectangle()).forEach(
+				s -> solids.add(s));
+		return solids;
+	}
+
+	/**
 	 * Moves a direction, preventing this Actor's Collider from overlapping with
 	 * any other Colliders. Does not set ActorState.
 	 * 
@@ -382,8 +405,10 @@ public abstract class Actor extends WorldObject {
 			amount = -amount;
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
-		Collection<WorldObject> overlappingSolids = getOverlappingSolids(
+		Collection<WorldObject> solidsToCheck = getOverlappingSolids(
 				moveArea).collect(Collectors.toSet());
+		// Add the solids that are already overlapping to the ignore set
+		Collection<WorldObject> solidsToIgnore = getIgnoredSolids();
 
 		// If moving left/right allow the Actor to 'climb' onto solids which
 		// have a
@@ -394,7 +419,7 @@ public abstract class Actor extends WorldObject {
 			float northNudge = 0.0f;
 			// feet collisions are one in which the vertically colliding
 			// distance is small
-			Iterator<WorldObject> osi = overlappingSolids.iterator();
+			Iterator<WorldObject> osi = solidsToCheck.iterator();
 			while (osi.hasNext()) {
 				WorldObject solid = osi.next();
 				float actorBtm = getCoOrdTranslator().objectToWorldCoOrds(
@@ -410,19 +435,23 @@ public abstract class Actor extends WorldObject {
 				northNudge += 0.0001f;
 				move(Dir.NORTH, northNudge);
 				moveArea = calculateMoveArea(d, amount);
-				overlappingSolids = getOverlappingSolids(moveArea).collect(
+				solidsToCheck = getOverlappingSolids(moveArea).collect(
 						Collectors.toSet());
 			}
 		}
 
+		// Remove all solids that are already overlapping
+		solidsToCheck = solidsToCheck.stream().filter(
+				s -> !solidsToIgnore.contains(s)).collect(Collectors.toSet());
+
 		// If there are no active solids, move to that position immediately.
-		if (overlappingSolids.isEmpty()) {
+		if (solidsToCheck.isEmpty()) {
 			return getPosition().move(d.asPoint().scale(amount));
 		}
 		// Else move to edge of the d.neg()-most point
 		else {
 			float toMove = 0.0f;
-			Iterator<WorldObject> asi = overlappingSolids.iterator();
+			Iterator<WorldObject> asi = solidsToCheck.iterator();
 			WorldObject go;
 			switch (d) {
 				case NORTH: {
@@ -547,16 +576,29 @@ public abstract class Actor extends WorldObject {
 
 		float moveAmount = moveSpeed * delta;
 
+		// Reduce the 'run speed' while crouching
 		if (wasCrouching()) {
 			moveAmount *= crouchSpeed;
 		}
 
+		// Reduce the 'run speed' while falling and jumping
 		if (lastState == ActorState.FALL || lastState == ActorState.JUMP) {
 			moveAmount *= 0.3f;
 		}
+
 		Point moved = move(d, moveAmount);
 		if (isOnGround() && moved != Point.ZERO) {
 			setState(ActorState.RUN);
+			// If they're running 'off an edge' then make them fall through the
+			// block by ignoring all collisions with WorldObjects overlapping
+			// their feet
+			if (!floorAheadSensor.isOverlappingSolid()) {
+				Collection<WorldObject> groundBlocks = floorSensor.getOverlappingSolids().collect(
+						Collectors.toSet());
+				groundBlocks.forEach(wo -> ignoreSolid(wo));
+				// Make them fall off the edge
+				setState(ActorState.FALL);
+			}
 		}
 
 		if (!isOnGround() && canWallSlide(d)) {
@@ -666,7 +708,7 @@ public abstract class Actor extends WorldObject {
 	public void signalJump() {
 		jumpNextFrame = true;
 	}
-	
+
 	/**
 	 * Sends a signal to the Actor to jump sustain this frame (if possible).
 	 */
@@ -764,12 +806,12 @@ public abstract class Actor extends WorldObject {
 	 * @param delta
 	 */
 	private void calculateVSpeed(int delta) {
-		if (isOnGround() && vSpeed >= 0.0f) {
+		if (isOnGround() && vSpeed >= 0) {
 			// If player is on the ground and is falling, stop them.
 			// Also reset mid-air jump ability
 			vSpeed = 0.0f;
 			resetMidAirJump();
-		} else if (isOnCeiling() && vSpeed < 0.0f) {
+		} else if (isOnCeiling() && vSpeed < 0) {
 			// Stop jumping if touching the ceiling
 			vSpeed = 0.0f;
 		} else if (state == ActorState.WALL_SLIDE) {
@@ -779,7 +821,7 @@ public abstract class Actor extends WorldObject {
 		} else {
 			// Fall
 			vSpeed += GRAVITY * delta;
-			
+
 			// Cause jump sustain by reducing the effect of gravity
 			if (vSpeed < 0 && canJumpSustain) {
 				if (jumpSustainThisFrame) {
@@ -809,7 +851,12 @@ public abstract class Actor extends WorldObject {
 		if (getCollider() == null) {
 			return false;
 		} else {
-			return floorSensor.isOverlappingSolid();
+			// Find all solids that are not being ignored
+			Collection<WorldObject> solidsToIgnore = getIgnoredSolids();
+			Stream<WorldObject> floorSolids = floorSensor.getOverlappingSolids().filter(
+					s -> !solidsToIgnore.contains(s));
+			long count = floorSolids.count();
+			return count != 0;
 		}
 	}
 
@@ -953,6 +1000,7 @@ public abstract class Actor extends WorldObject {
 	final public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
 		if (isEnabled()) {
+			solidsToIgnoreThisFrame = new HashSet<>();
 			positionDelta = Point.ZERO;
 			setState(ActorState.IDLE);
 			checkPush();
@@ -967,14 +1015,16 @@ public abstract class Actor extends WorldObject {
 				jump(delta);
 				jumpNextFrame = false;
 			}
-			// Use exponential averaging to determine the 'velocity' of the actor
+			// Use exponential averaging to determine the 'velocity' of the
+			// actor
 			// This will be used for jump movement
-			float alpha = 0.4f;
-			velocityExp = velocityExp * alpha + positionDelta.getX() * (1-alpha) / delta;
-			
+			float alpha = 0.7f;
+			velocityExp = velocityExp * alpha
+					+ positionDelta.getX() * (1 - alpha) / delta;
+
 			jumpMovement(delta);
 		}
-		
+
 		if (lastState != state) {
 			stateChanged(lastState, state);
 		}
@@ -1065,7 +1115,7 @@ public abstract class Actor extends WorldObject {
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
 		}
-		
+
 		// Set fall hSpeed
 		if (to == ActorState.FALL && from != ActorState.JUMP) {
 			jumpHSpeed = velocityExp * 0.8f;
