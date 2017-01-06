@@ -967,13 +967,14 @@ public abstract class Actor extends WorldObject {
 				jump(delta);
 				jumpNextFrame = false;
 			}
+			// Use exponential averaging to determine the 'velocity' of the actor
+			// This will be used for jump movement
+			float alpha = 0.4f;
+			velocityExp = velocityExp * alpha + positionDelta.getX() * (1-alpha) / delta;
+			
 			jumpMovement(delta);
 		}
 		
-		// use exponential averaging to determine the 'velocity' of the actor
-		float alpha = 0.9f;
-		velocityExp = velocityExp * alpha + positionDelta.getX() * (1-alpha) / delta;
-
 		if (lastState != state) {
 			stateChanged(lastState, state);
 		}
@@ -1063,6 +1064,11 @@ public abstract class Actor extends WorldObject {
 				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
+		}
+		
+		// Set fall hSpeed
+		if (to == ActorState.FALL && from != ActorState.JUMP) {
+			jumpHSpeed = velocityExp * 0.8f;
 		}
 	}
 
