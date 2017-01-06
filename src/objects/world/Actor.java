@@ -225,6 +225,13 @@ public abstract class Actor extends WorldObject {
 	private void setFacing(Dir facing) {
 		this.facing = facing;
 		setAheadSensorLocation(facing);
+
+		if (facing == Dir.EAST) {
+			getSprite().setMirrored(false);
+		} else if (facing == Dir.WEST) {
+			getSprite().setMirrored(true);
+		}
+
 	}
 
 	/**
@@ -288,13 +295,6 @@ public abstract class Actor extends WorldObject {
 			} else {
 				setFacing(d.neg());
 			}
-			setAheadSensorLocation(getFacing());
-		}
-
-		if (getFacing() == Dir.EAST) {
-			getSprite().setMirrored(false);
-		} else if (getFacing() == Dir.WEST) {
-			getSprite().setMirrored(true);
 		}
 
 		Point delta = Point.ZERO;
@@ -323,10 +323,6 @@ public abstract class Actor extends WorldObject {
 				float moveAmount = delta.getDir(d);
 				getActorStickers().stream().forEach(
 						a -> a.moveStuckActors(d, moveAmount));
-
-				if (d == Dir.EAST || d == Dir.WEST) {
-					setFacing(d);
-				}
 			}
 		}
 
@@ -1053,6 +1049,7 @@ public abstract class Actor extends WorldObject {
 				// Move E/W according to jump direction
 				float moveAmount = jumpHSpeed * delta;
 				move(Dir.EAST, moveAmount);
+				System.out.println(jumpHSpeed);
 				// If hit a wall then set to zero
 				if (getCollider() != null
 						&& wallAheadSensorTop.isOverlappingSolid()
