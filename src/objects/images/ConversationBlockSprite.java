@@ -19,8 +19,6 @@ public class ConversationBlockSprite extends SingleSprite {
 			- (border * 2 + padding + spriteSize);
 	private static final int textBoxHeight = padding + spriteSize + nameHeight;
 
-	private boolean leftAligned = true;
-
 	private static LayeredImage makeImage() {
 
 		LayeredImage img = new LayeredImage(width, height, 4);
@@ -32,8 +30,10 @@ public class ConversationBlockSprite extends SingleSprite {
 		img.setLayerPosition(1, new Point(border, border));
 
 		// Set the name square
-		img.setLayerPosition(2,
-				new Point(border, border + spriteSize + padding));
+		img.setLayer(2,
+				new PositionedImage(
+						new Point(border, border + spriteSize + padding),
+						new TextImage("Name")));
 
 		// Set the text square
 		img.setLayerPosition(3,
@@ -46,25 +46,39 @@ public class ConversationBlockSprite extends SingleSprite {
 	 * Sets the character image to display on the left
 	 */
 	private void setLeftDisplay() {
+		// Sprite square
 		getImage().setLayerPosition(1, new Point(border, border));
+
+		// Name square
 		getImage().setLayerPosition(2,
 				new Point(border, border + spriteSize + padding));
+		TextImage timg = (TextImage) getImage().getLayer(2).getImage();
+		// Left align the name
+		timg.setAlignment(0, 0);
+
+		// Text square
 		getImage().setLayerPosition(3,
 				new Point(border + spriteSize + padding, border));
-		leftAligned = true;
 	}
 
 	/**
 	 * Sets the character image to display on the right
 	 */
 	private void setRightDisplay() {
+		// Sprite square
 		getImage().setLayerPosition(1,
 				new Point(border + textBoxWidth + padding, border));
+
+		// Name square
 		getImage().setLayerPosition(2,
-				new Point(border + textBoxWidth + padding,
+				new Point(border + textBoxWidth + padding + spriteSize,
 						border + spriteSize + padding));
+		TextImage timg = (TextImage) getImage().getLayer(2).getImage();
+		// Right align the name
+		timg.setAlignment(2, 0);
+
+		// Text square
 		getImage().setLayerPosition(3, new Point(border, border));
-		leftAligned = false;
 	}
 
 	public ConversationBlockSprite() {
@@ -74,29 +88,37 @@ public class ConversationBlockSprite extends SingleSprite {
 	public Rectangle getTextBoxSize() {
 		return new Rectangle(Point.ZERO, textBoxWidth, textBoxHeight);
 	}
-	
+
 	public void setText(TextImage timg) {
 		getImage().setLayer(3, timg);
 	}
 
 	public void setCharacter(ConversationCharacter cc) {
+		String name;
+		LucyImage img;
+		if (cc == null) {
+			img = null;
+			name = "Unknown";
+		} else {
+			img = cc.getImage();
+			name = cc.getName();
+		}
 		if (cc == ConversationCharacter.LUCY) {
 			setLeftDisplay();
 		} else {
 			setRightDisplay();
 		}
 
-		if (cc.getImage() != null) {
+		// Set the image
+		if (img != null) {
 			getImage().setLayer(1, cc.getImage());
 		} else {
 			getImage().clear(1);
 		}
 
-		if (leftAligned) {
-			getImage().setText(2, cc.getName(), new Point(spriteSize, 0), 2, 0);
-		} else {
-			getImage().setText(2, cc.getName(), Point.ZERO);
-		}
+		// Set the name
+		TextImage timg = (TextImage) getImage().getLayer(2).getImage();
+		timg.setText(name);
 	}
 
 }

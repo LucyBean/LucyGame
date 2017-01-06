@@ -19,7 +19,6 @@ Animations
 ==  ISSUES  ==
 ==============
 Sprite constructors: remove those that specify a Point?
-Make the text wrap around multiple levels. Conversations are currently broken for this reason!
 
 =============
 ==  IDEAS  ==

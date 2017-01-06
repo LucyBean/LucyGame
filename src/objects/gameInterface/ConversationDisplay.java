@@ -99,8 +99,8 @@ public class ConversationDisplay extends InterfaceElement {
 					break;
 				}
 			}
-			nextLine += " " + nextWord;
-			textWidth += f.getWidth(nextWord + " ");
+			nextLine += nextWord + " ";
+			textWidth += f.getWidth(" " + nextWord);
 		}
 		TextImage timg = new TextImage(nextLine);
 		cbs.setText(timg);
