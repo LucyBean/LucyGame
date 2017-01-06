@@ -255,9 +255,10 @@ public abstract class Actor extends WorldObject {
 	private void ignoreSolid(WorldObject wo) {
 		solidsToIgnoreThisFrame.add(wo);
 	}
-	
+
 	/**
 	 * Gets solids that should be ignored when collision checking
+	 * 
 	 * @return
 	 */
 	private Collection<WorldObject> getIgnoredSolids() {
@@ -597,6 +598,14 @@ public abstract class Actor extends WorldObject {
 						Collectors.toSet());
 				groundBlocks.forEach(wo -> ignoreSolid(wo));
 				// Make them fall off the edge
+				// Set the hSpeed of the jump
+				// This has a minimum value to ensure the edge is cleared.
+				float minHSpeed = 0.004f;
+				if (velocityExp > 0) {
+					jumpHSpeed = Math.max(velocityExp, minHSpeed);
+				} else {
+					jumpHSpeed = Math.min(velocityExp, -minHSpeed);
+				}
 				setState(ActorState.FALL);
 			}
 		}
@@ -776,7 +785,7 @@ public abstract class Actor extends WorldObject {
 				// in the direction of travel
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
-				jumpHSpeed = velocityExp * 0.8f;
+				jumpHSpeed = 0.8f * velocityExp;
 				canJumpSustain = true;
 			} else if (lastState == ActorState.WALL_SLIDE
 					|| lastState == ActorState.CLIMB) {
@@ -1114,11 +1123,6 @@ public abstract class Actor extends WorldObject {
 				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
-		}
-
-		// Set fall hSpeed
-		if (to == ActorState.FALL && from != ActorState.JUMP) {
-			jumpHSpeed = velocityExp * 0.8f;
 		}
 	}
 
