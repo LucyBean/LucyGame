@@ -31,6 +31,7 @@ public abstract class Actor extends WorldObject {
 	private final static float FEET_COLLISION_THRESHOLD = 0.01f;
 	private float vSpeed;
 	private float jumpHSpeed;
+	private float velocityExp = 0.0f;
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
 	private float crouchSpeed = 0.7f;
@@ -733,7 +734,7 @@ public abstract class Actor extends WorldObject {
 				// in the direction of travel
 				vSpeed = -nextJumpStrength;
 				nextJumpStrength = defaultJumpStrength;
-				jumpHSpeed = positionDelta.getX() / delta * 0.8f;
+				jumpHSpeed = velocityExp * 0.8f;
 				canJumpSustain = true;
 			} else if (lastState == ActorState.WALL_SLIDE
 					|| lastState == ActorState.CLIMB) {
@@ -968,6 +969,10 @@ public abstract class Actor extends WorldObject {
 			}
 			jumpMovement(delta);
 		}
+		
+		// use exponential averaging to determine the 'velocity' of the actor
+		float alpha = 0.9f;
+		velocityExp = velocityExp * alpha + positionDelta.getX() * (1-alpha) / delta;
 
 		if (lastState != state) {
 			stateChanged(lastState, state);
