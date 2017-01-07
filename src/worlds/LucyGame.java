@@ -38,6 +38,7 @@ public class LucyGame extends BasicGame {
 	public static void main(String[] args) {
 		try {
 			getSplashInfo();
+			System.out.println(version);
 			AppGameContainer app = new AppGameContainer(new LucyGame());
 			app.setDisplayMode(GlobalOptions.WINDOW_WIDTH,
 					GlobalOptions.WINDOW_HEIGHT, false);

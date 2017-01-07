@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="project" default="current-number">
+<project name="project" default="compile">
 
 <property file="build_info.properties"/>
 <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}.${build.build.number}"/>
+<property name="dir.buildfile" value="."/>
+<property name="dir.workspace" value="${dir.buildfile}/.."/>
+<property name="dir.jarfile" value="${dir.buildfile}"/><!--  -->
 
-<target name="current-number">
- <echo>Current build number:${build.number}</echo>
+<target name="create_run_jar">
+    <jar destfile="${dir.jarfile}/LucyGame.jar">
+        <manifest>
+            <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+            <attribute name="Rsrc-Main-Class" value="worlds.LucyGame"/>
+            <attribute name="Class-Path" value="."/>
+            <attribute name="Rsrc-Class-Path" value="./ ibxm.jar jinput.jar lwjgl.jar slick.jar"/>
+        </manifest>
+        <zipfileset src="jar-in-jar-loader.zip"/>
+        <fileset dir="${dir.jarfile}/bin"/>
+        <zipfileset dir="${dir.jarfile}/slick/slick/lib" includes="ibxm.jar"/>
+        <zipfileset dir="${dir.jarfile}/slick/slick/lib" includes="jinput.jar"/>
+        <zipfileset dir="${dir.jarfile}/slick/slick/lib" includes="lwjgl.jar"/>
+        <zipfileset dir="${dir.jarfile}/slick/slick/lib" includes="slick.jar"/>
+    </jar>
 </target>
 
 <target name="compile">
@@ -45,5 +61,8 @@
             <entry key="build.revision.number" type="int" value="0" pattern="00"/>
     </propertyfile>
 </target>
+
+
+<echo>Current build:${build.number}</echo>
 
 </project>
