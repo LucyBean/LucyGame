@@ -1,5 +1,8 @@
 package objects.images;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
@@ -7,6 +10,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.PNGImageData;
+import org.newdawn.slick.opengl.renderer.SGL;
 
 import helpers.Rectangle;
 import io.CharacterSpriteBuilder;
@@ -19,9 +24,15 @@ public class ImageBuilder {
 	private static SpriteSheet worldObjects;
 	private static SpriteSheet uiColourPalette;
 
+	private static PNGImageData conversationCharactersData;
+	private static PNGImageData charactersData;
+	private static PNGImageData worldObjectsData;
+	private static PNGImageData uiColourPaletteData;
+
 	private static Font font;
 
 	private static boolean spriteSheetsInitialised = false;
+	private static boolean imageDataLoaded = false;
 
 	private static RectangleImageStore colliderImages = new RectangleImageStore(
 			new Color(50, 135, 220, 130));
@@ -36,24 +47,54 @@ public class ImageBuilder {
 	public static boolean spriteSheetsInitialised() {
 		return spriteSheetsInitialised;
 	}
-	
+
 	public static void initFont() {
 		java.awt.Font awtFont = new java.awt.Font("Arial Rounded MT Bold",
 				java.awt.Font.PLAIN, 18);
 		font = new TrueTypeFont(awtFont, true); // base Font, anti-aliasing
 												// true/false
+	}
 
+	public static void loadImageData() throws SlickException {
+		conversationCharactersData = new PNGImageData();
+		charactersData = new PNGImageData();
+		worldObjectsData = new PNGImageData();
+		uiColourPaletteData = new PNGImageData();
+
+		try {
+			conversationCharactersData.loadImage(
+					new FileInputStream("data/characterFaces.png"));
+			charactersData.loadImage(
+					new FileInputStream("data/characters.png"));
+			worldObjectsData.loadImage(
+					new FileInputStream("data/worldSprites.png"));
+			uiColourPaletteData.loadImage(
+					new FileInputStream("data/uiColourPalette.png"));
+
+			imageDataLoaded = true;
+		} catch (IOException ioe) {
+			throw new SlickException(ioe.getMessage());
+		}
 	}
 
 	public static void initSpriteSheets() throws SlickException {
-		spriteSheetsInitialised = true;
-		conversationCharacters = new SpriteSheet("data/characterFaces.png", 64,
-				64);
-		characters = new SpriteSheet("data/characters.png", 40, 80);
-		worldObjects = new SpriteSheet("data/worldSprites.png", 32, 32);
-		uiColourPalette = new SpriteSheet("data/uiColourPalette.png", 1, 1);
+		if (!imageDataLoaded) {
+			loadImageData();
+		}
+
+		conversationCharacters = new SpriteSheet(
+				new Image(conversationCharactersData), 64, 64);
+		characters = new SpriteSheet(new Image(charactersData), 40, 80);
+		worldObjects = new SpriteSheet(new Image(worldObjectsData), 32, 32);
+		uiColourPalette = new SpriteSheet(new Image(uiColourPaletteData), 1, 1);
+
+		// Use nearest neighbour interpolation for uiColourPalette
+		// This means that the 1x1 pixels will be stretched into large images
+		// of block colour
+		uiColourPalette.getTexture().setTextureFilter(SGL.GL_NEAREST);
 
 		CharacterSpriteBuilder.initSpriteSheets();
+		spriteSheetsInitialised = true;
 	}
 
 	public static Font getFont() {
@@ -99,8 +140,9 @@ public class ImageBuilder {
 		}
 		return null;
 	}
-	
-	public static StaticImage getColouredRectangle(Rectangle rect, int uiColour) {
+
+	public static StaticImage getColouredRectangle(Rectangle rect,
+			int uiColour) {
 		int width = (int) rect.getWidth();
 		int height = (int) rect.getHeight();
 		return getColouredRectangle(width, height, uiColour);

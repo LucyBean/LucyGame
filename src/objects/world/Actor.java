@@ -106,11 +106,11 @@ public abstract class Actor extends WorldObject {
 
 	private void addSensors() {
 		if (getCollider() != null) {
-			float sensorSize = 0.05f;
-			float wallSensorHeight = 0.2f;
+			float sensorSize = 0.2f;
+			float wallSensorHeight = 0.05f;
 
 			floorSensor = new Sensor(getCollider().getBottomLeft(),
-					getCollider().getWidth(), sensorSize, this);
+					getCollider().getWidth(), sensorSize / 5, this);
 			ceilingSensor = new Sensor(
 					getCollider().getTopLeft().move(Dir.NORTH, sensorSize),
 					getCollider().getWidth(), sensorSize, this);
@@ -319,10 +319,21 @@ public abstract class Actor extends WorldObject {
 				// If delta is small/zero, set it to zero Point
 				delta = Point.ZERO;
 			} else {
-				// Move all stuck actors by the same amount
+				// Move all stuck actors by the same amount (plus a small
+				// amount)
+				// This is to prevent stuck actors being moved slightly too
+				// little, causing them to overlap with this Actor, which can
+				// cause Actors to fall through a moving block.
 				float moveAmount = delta.getDir(d);
+				float increase = 0.00001f;
+				if (moveAmount > 0) {
+					moveAmount += increase;
+				} else if (moveAmount < 0) {
+					moveAmount -= increase;
+				}
+				final float ma = moveAmount;
 				getActorStickers().stream().forEach(
-						a -> a.moveStuckActors(d, moveAmount));
+						a -> a.moveStuckActors(d, ma));
 			}
 		}
 
@@ -382,12 +393,12 @@ public abstract class Actor extends WorldObject {
 	 *            The rectangle to check in the Actor's co-ordinates.
 	 * @return
 	 */
-	protected Stream<WorldObject> getOverlappingSolids(Rectangle rect) {
+	protected Collection<WorldObject> getOverlappingSolids(Rectangle rect) {
 		rect = getCoOrdTranslator().objectToWorldCoOrds(rect);
 		Stream<WorldObject> solids = getWorld().getMap().getOverlappingSolids(
 				rect);
 		solids = solids.filter(s -> s != this);
-		return solids;
+		return solids.collect(Collectors.toSet());
 	}
 
 	/**
@@ -402,8 +413,7 @@ public abstract class Actor extends WorldObject {
 			amount = -amount;
 		}
 		Rectangle moveArea = calculateMoveArea(d, amount);
-		Collection<WorldObject> solidsToCheck = getOverlappingSolids(
-				moveArea).collect(Collectors.toSet());
+		Collection<WorldObject> solidsToCheck = getOverlappingSolids(moveArea);
 		// Add the solids that are already overlapping to the ignore set
 		Collection<WorldObject> solidsToIgnore = getIgnoredSolids();
 
@@ -432,8 +442,7 @@ public abstract class Actor extends WorldObject {
 				northNudge += 0.0001f;
 				move(Dir.NORTH, northNudge);
 				moveArea = calculateMoveArea(d, amount);
-				solidsToCheck = getOverlappingSolids(moveArea).collect(
-						Collectors.toSet());
+				solidsToCheck = getOverlappingSolids(moveArea);
 			}
 		}
 
@@ -590,19 +599,25 @@ public abstract class Actor extends WorldObject {
 			// block by ignoring all collisions with WorldObjects overlapping
 			// their feet
 			if (!floorAheadSensor.isOverlappingSolid()) {
-				Collection<WorldObject> groundBlocks = floorSensor.getOverlappingSolids().collect(
-						Collectors.toSet());
-				groundBlocks.forEach(wo -> ignoreSolid(wo));
-				// Make them fall off the edge
-				// Set the hSpeed of the jump
-				// This has a minimum value to ensure the edge is cleared.
-				float minHSpeed = 0.004f;
-				if (velocityExp > 0) {
-					jumpHSpeed = Math.max(velocityExp, minHSpeed);
-				} else {
-					jumpHSpeed = Math.min(velocityExp, -minHSpeed);
+				// Check if there is space to 'run off' this block. This
+				// requires a space as large as this object's collider to be free
+				Rectangle runSpace = getCollider().getRectangle();
+				runSpace = runSpace.translate(d, runSpace.getWidth());
+				if (getOverlappingSolids(runSpace).isEmpty()) {
+					Collection<WorldObject> groundBlocks = floorSensor.getOverlappingSolids().collect(
+							Collectors.toSet());
+					groundBlocks.forEach(wo -> ignoreSolid(wo));
+					// Make them fall off the edge
+					// Set the hSpeed of the jump
+					// This has a minimum value to ensure the edge is cleared.
+					float minHSpeed = 0.004f;
+					if (velocityExp > 0) {
+						jumpHSpeed = Math.max(velocityExp, minHSpeed);
+					} else {
+						jumpHSpeed = Math.min(velocityExp, -minHSpeed);
+					}
+					setState(ActorState.FALL);
 				}
-				setState(ActorState.FALL);
 			}
 		}
 
@@ -1049,7 +1064,6 @@ public abstract class Actor extends WorldObject {
 				// Move E/W according to jump direction
 				float moveAmount = jumpHSpeed * delta;
 				move(Dir.EAST, moveAmount);
-				System.out.println(jumpHSpeed);
 				// If hit a wall then set to zero
 				if (getCollider() != null
 						&& wallAheadSensorTop.isOverlappingSolid()
@@ -1075,12 +1089,12 @@ public abstract class Actor extends WorldObject {
 			if (standingCollider != null && crouchingCollider != null
 					&& wasCrouching()) {
 				// Actually set to crouching if IDLE is not possible
-				long standingCollisions = getOverlappingSolids(
-						standingCollider.getRectangle()).count();
-				if (standingCollisions != 0) {
-					long crouchingCollisions = getOverlappingSolids(
-							crouchingCollider.getRectangle()).count();
-					if (crouchingCollisions == 0) {
+				Collection<WorldObject> standingCollisions = getOverlappingSolids(
+						standingCollider.getRectangle());
+				if (!standingCollisions.isEmpty()) {
+					Collection<WorldObject> crouchingCollisions = getOverlappingSolids(
+							crouchingCollider.getRectangle());
+					if (crouchingCollisions.isEmpty()) {
 						newState = ActorState.CROUCH;
 					}
 				}

@@ -23,6 +23,15 @@ public class Rectangle {
 		this.height = height;
 	}
 
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param rectangle
+	 */
+	public Rectangle(Rectangle rectangle) {
+		this(rectangle.getTopLeft(), rectangle.getWidth(), rectangle.getHeight());
+	}
+
 	public Point getTopLeft() {
 		return topLeft;
 	}
@@ -166,5 +175,9 @@ public class Rectangle {
 	@Override
 	public String toString() {
 		return "[" + topLeft + " " + width + " " + height + "]";
+	}
+
+	public Rectangle translate(Dir d, float amount) {
+		return translate(Point.ZERO.move(d, amount));
 	}
 }
