@@ -15,5 +15,8 @@ A list of features in approximate order of implementation:
 * A very basic quest system
 * A level builder
 * Animated sprites of myself walking/running/jumping/falling
+* A dog enemy (the world enemy in the world)
+* The ability to climb up things, push blocks, and crouch
+* The world contains trampolines and moving blocks
 
-Running world.LucyGame should run the game but I have not tested this on other computers.
+Running Demo/runLucyGame.jar will download and run the latest version of the demo. If you just want to play the game, download this file, put it in a folder, and run! (This will download all necessary files to a new directory called 'Lucy Game Alpha Demo' so you might want to put it in its own folder)
