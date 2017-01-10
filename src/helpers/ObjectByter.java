@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import io.ErrorLogger;
 import objects.world.ItemType;
 import objects.world.ObjectMaker;
 import objects.world.WorldObject;
@@ -30,7 +31,7 @@ public class ObjectByter {
 		try {
 			out.write(getBytes());
 		} catch (IOException ioe) {
-			System.err.println("Error exporting object.");
+			ErrorLogger.log(ioe, "Error exporting object.", 2);
 			if (GlobalOptions.debug()) {
 				ioe.printStackTrace();
 			}
@@ -65,7 +66,7 @@ public class ObjectByter {
 			byteBuffer.putInt(keyID);
 			byteBuffer.putInt(npcID);
 		} else {
-			System.err.println("Unexportable object " + object);
+			ErrorLogger.log("Unexportable object " + object, 2);
 		}
 	}
 

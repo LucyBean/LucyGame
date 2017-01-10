@@ -12,6 +12,7 @@ import org.newdawn.slick.SlickException;
 import helpers.Dir;
 import helpers.Point;
 import io.ConversationLoader;
+import io.ErrorLogger;
 import objects.gameInterface.DefaultGameInterface;
 import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
@@ -68,8 +69,7 @@ public class World {
 			init();
 
 		} catch (SlickException se) {
-			System.err.println("Unable to initialise or reset world.");
-			se.printStackTrace();
+			ErrorLogger.log(se, "Unable to initialise or reset world.", 5);
 		}
 	}
 

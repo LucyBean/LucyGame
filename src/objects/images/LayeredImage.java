@@ -8,7 +8,7 @@ import org.newdawn.slick.SlickException;
 
 import helpers.Point;
 import helpers.Rectangle;
-import options.GlobalOptions;
+import io.ErrorLogger;
 
 /**
  * A wrapper for Images that allows a Sprite to use multiple Images as a layer.
@@ -49,9 +49,9 @@ public class LayeredImage {
 		if (w.isPresent() && h.isPresent()) {
 			this.width = (int) ((float) w.get());
 			this.height = (int) ((float) h.get());
-		} else if (GlobalOptions.debug()) {
-			System.err.println("Attempted to create a new LayeredImage "
-					+ "from an empty list of images.");
+		} else {
+			ErrorLogger.log("Attempted to create a new LayeredImage "
+					+ "from an empty list of images.", 2);
 		}
 	}
 
@@ -108,10 +108,7 @@ public class LayeredImage {
 							new StaticImage(width, height));
 					layers.add(z, img);
 				} catch (SlickException se) {
-					System.err.println("Unable to create new layer on image.");
-					if (GlobalOptions.debug()) {
-						se.printStackTrace();
-					}
+					ErrorLogger.log(se, "Unable to create new layer on image.", 4);
 				}
 			}
 			return img;
@@ -128,19 +125,18 @@ public class LayeredImage {
 	 */
 	public void setLayer(int layer, PositionedImage img) {
 		if (layer >= 0 && layer < numLayers) {
-			if (GlobalOptions.debug()
-					&& (img.getWidth() > width || img.getHeight() > height)) {
-				System.err.println("Incorrectly sized image " + img.getWidth()
+			if (img.getWidth() > width || img.getHeight() > height) {
+				ErrorLogger.log("Incorrectly sized image " + img.getWidth()
 						+ "x" + img.getHeight() + " added to image of size "
-						+ width + "x" + height);
+						+ width + "x" + height, 1);
 			}
 			if (layers.get(layer) != null) {
 				layers.remove(layer);
 			}
 			layers.add(layer, img);
-		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to add an image to an invalid layer " + layer);
+		} else {
+			ErrorLogger.log(
+					"Attempting to add an image to an invalid layer " + layer, 1);
 		}
 	}
 
@@ -154,10 +150,9 @@ public class LayeredImage {
 	 */
 	public void setLayerPosition(int layer, Point p) {
 		if (layer >= 0 && layer < numLayers) {
-			if (GlobalOptions.debug()
-					&& (p.getX() > width || p.getY() > height)) {
-				System.err.println("Incorrect image position " + p
-						+ " on image of size " + width + "x" + height);
+			if (p.getX() > width || p.getY() > height) {
+				ErrorLogger.log("Incorrect image position " + p
+						+ " on image of size " + width + "x" + height, 1);
 			}
 			PositionedImage pi = layers.get(layer);
 			if (pi != null) {
@@ -165,9 +160,9 @@ public class LayeredImage {
 			} else {
 				layers.add(layer, new PositionedImage(p, null));
 			}
-		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to add an image to an invalid layer " + layer);
+		} else {
+			ErrorLogger.log(
+					"Attempting to add an image to an invalid layer " + layer, 1);
 		}
 	}
 

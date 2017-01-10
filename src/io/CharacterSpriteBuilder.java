@@ -52,9 +52,9 @@ public class CharacterSpriteBuilder {
 							if (limg != null) {
 								map.put(as.ordinal(), limg);
 							} else if (as == ActorState.IDLE) {
-								System.err.println(
+								ErrorLogger.log(
 										"Warning: No IDLE animation for "
-												+ name);
+												+ name, 3);
 							}
 						}
 					}
@@ -63,8 +63,7 @@ public class CharacterSpriteBuilder {
 				br.close();
 			}
 		} catch (IOException | SlickException e) {
-			System.err.println("Error while reading timings file.");
-			e.printStackTrace();
+			ErrorLogger.log(e, "Error while reading timings file.", 3);
 		}
 
 		return map;
@@ -89,24 +88,24 @@ public class CharacterSpriteBuilder {
 		String animName = properties.get("name").toUpperCase();
 		if (animName == null) {
 			// No name specified
-			System.err.println("Warning: no animation name specified "
-					+ description + " for " + charName);
+			ErrorLogger.log("Warning: no animation name specified "
+					+ description + " for " + charName, 1);
 			return null;
 		}
 
 		try {
 			state = ActorState.valueOf(animName);
 		} catch (IllegalArgumentException iae) {
-			System.err.println("Properties specified for " + charName
-					+ " for unknown animation " + animName);
+			ErrorLogger.log("Properties specified for " + charName
+					+ " for unknown animation " + animName, 1);
 		}
 
 		// Find the file and check it exists
 		File animFile = new File(
 				"data/chars/" + charName + "/" + animName + ".png");
 		if (!animFile.exists()) {
-			System.err.println("Properties specified for " + animName + " for "
-					+ charName + " but no matching image exists.");
+			ErrorLogger.log("Properties specified for " + animName + " for "
+					+ charName + " but no matching image exists.", 1);
 			return null;
 		}
 		Image img = new Image(animFile.getPath());
@@ -115,8 +114,8 @@ public class CharacterSpriteBuilder {
 		String type = properties.get("type");
 		if (type == null) {
 			// No type specified
-			System.err.println(
-					"No type specified for " + animName + " for " + charName);
+			ErrorLogger.log(
+					"No type specified for " + animName + " for " + charName, 1);
 			return new Pair<>(null, state);
 		} else if (type.equals("static")) {
 			// This is a static sprite
@@ -146,8 +145,8 @@ public class CharacterSpriteBuilder {
 					new AnimatedImage(s, delay, looping));
 			return new Pair<>(limg, state);
 		} else {
-			System.err.println("Unknown image type " + type + " for " + animName
-					+ " for " + charName);
+			ErrorLogger.log("Unknown image type " + type + " for " + animName
+					+ " for " + charName, 1);
 			return new Pair<>(null, state);
 		}
 	}

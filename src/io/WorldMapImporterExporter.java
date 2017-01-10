@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import helpers.ObjectByter;
 import objects.world.WorldObject;
-import options.GlobalOptions;
 import worlds.WorldMap;
 
 public class WorldMapImporterExporter {
@@ -29,10 +28,7 @@ public class WorldMapImporterExporter {
 
 			out.close();
 		} catch (IOException ioe) {
-			System.err.println("Error exporting map.");
-			if (GlobalOptions.debug()) {
-				ioe.printStackTrace();
-			}
+			ErrorLogger.log(ioe, "Error exporting map.", 4);
 		}
 	}
 
@@ -45,8 +41,8 @@ public class WorldMapImporterExporter {
 			int fileVersion = readHeader(buffer);
 
 			if (fileVersion != version) {
-				System.err.println(
-						"Map import/export version numbers do not match.");
+				ErrorLogger.log(
+						"Map import/export version numbers do not match.", 3);
 			}
 
 			Collection<WorldObject> objects = new HashSet<WorldObject>();
@@ -58,10 +54,7 @@ public class WorldMapImporterExporter {
 			in.close();
 			return objects;
 		} catch (IOException ioe) {
-			System.err.println("Error importing map.");
-			if (GlobalOptions.debug()) {
-				ioe.printStackTrace();
-			}
+			ErrorLogger.log(ioe, "Error importing map.", 4);
 			return null;
 		}
 	}

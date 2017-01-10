@@ -28,8 +28,8 @@ public class ConversationLoader {
 		File f = new File("data/conversations/" + name + ".conv");
 
 		if (!f.exists()) {
-			System.err.println("Attempted to load conversations for " + name
-					+ " but no file exists.");
+			ErrorLogger.log("Attempted to load conversations for " + name
+					+ " but no file exists.", 2);
 		} else {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(f));
@@ -48,8 +48,7 @@ public class ConversationLoader {
 					nextLine = br.readLine();
 				}
 			} catch (IOException ioe) {
-				System.err.println("IOException occurred while reading " + f);
-				ioe.printStackTrace();
+				ErrorLogger.log(ioe, 4);
 			}
 		}
 
@@ -105,9 +104,11 @@ public class ConversationLoader {
 				// Put the previously parsed chat in the conversation
 				if (prevChat != null) {
 					if (c == null) {
-						System.err.println("Badly formatted conversation file.");
-						System.err.println("Conversation script given before conversation "
-								+ "state declaration.");
+						ErrorLogger.log(
+								"Badly formatted conversation file. "
+								+ "Conversation script given before conversation "
+										+ "state declaration.",
+								1);
 						return null;
 					}
 					c.add(prev, prevChat);
@@ -118,14 +119,16 @@ public class ConversationLoader {
 				try {
 					prev = ConversationCharacter.valueOf(charName);
 				} catch (IllegalArgumentException iae) {
-					System.err.println("Unknown character: " + charName);
+					ErrorLogger.log("Unknown character: " + charName, 1);
 					prev = null;
 				}
 				prevChat = scriptWithNameMatcher.group(2);
 			} else if (scriptWithoutNameMatcher.matches()) {
 				if (prev == null) {
-					System.err.println("Badly formatted conversation file.");
-					System.err.println("First line of script does not specify character.");
+					ErrorLogger.log(
+							"Badly formatted conversation file. "
+									+ "First line of script does not specify character.",
+							1);
 				}
 				// This is a continuation of the previous chat
 				prevChat += " " + scriptWithoutNameMatcher.group(1);
@@ -136,9 +139,9 @@ public class ConversationLoader {
 		// Add in the final chat
 		if (prevChat != null) {
 			if (c == null) {
-				System.err.println("Badly formatted conversation file.");
-				System.err.println("Conversation script given before conversation "
-						+ "state declaration.");
+				ErrorLogger.log("Badly formatted conversation file. "
+						+ "Conversation script given before conversation "
+						+ "state declaration.", 1);
 				return null;
 			}
 			c.add(prev, prevChat);

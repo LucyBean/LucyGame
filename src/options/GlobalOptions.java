@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import io.ErrorLogger;
+
 public class GlobalOptions {
 	/**
 	 * Sets the program's options by reading from "data/settings.ini".
@@ -22,10 +24,7 @@ public class GlobalOptions {
 				br.close();
 			}
 		} catch (IOException ioe) {
-			System.err.println("Error reading settitngs.");
-			if (GlobalOptions.debug()) {
-				ioe.printStackTrace();
-			}
+			ErrorLogger.log(ioe, "Error reading settings.", 4);
 		}
 	}
 
@@ -45,10 +44,7 @@ public class GlobalOptions {
 			
 			bw.close();
 		} catch (IOException ioe) {
-			System.err.println("Error writing settings.");
-			if (GlobalOptions.debug()) {
-				ioe.printStackTrace();
-			}
+			ErrorLogger.log(ioe, "Error writing settings.", 4);
 		}
 	}
 
@@ -65,16 +61,16 @@ public class GlobalOptions {
 				if (kn >= 0 && kn < Option.values().length) {
 					Option.values()[kn].setValue(vn);
 				} else {
-					System.err.println("Found unknown option " + kn);
+					ErrorLogger.log("Found unknown option " + kn, 0);
 				}
 
 			} catch (NumberFormatException nfe) {
-				System.err.println("Attempted to parse option " + s
-						+ " but it was badly formatted.");
+				ErrorLogger.log("Attempted to parse option " + s
+						+ " but it was badly formatted.", 3);
 			}
 		} else {
-			System.err.println("Attempted to parse option " + s
-					+ " but it was badly formatted.");
+			ErrorLogger.log("Attempted to parse option " + s
+					+ " but it was badly formatted.", 3);
 		}
 	}
 
