@@ -13,8 +13,10 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import io.ErrorLogger;
 import objects.images.ImageBuilder;
 import options.GlobalOptions;
 
@@ -28,6 +30,7 @@ import options.GlobalOptions;
 public class LucyGame extends BasicGame {
 	private World world;
 	private WorldLoader worldLoader = new WorldLoader(this);
+	private boolean gameCrashed = false;
 
 	private static String version;
 
@@ -39,6 +42,7 @@ public class LucyGame extends BasicGame {
 		try {
 			getSplashInfo();
 			System.out.println(version);
+			ErrorLogger.setVersion(version);
 			AppGameContainer app = new AppGameContainer(new LucyGame());
 			app.setDisplayMode(GlobalOptions.WINDOW_WIDTH,
 					GlobalOptions.WINDOW_HEIGHT, false);
@@ -106,8 +110,14 @@ public class LucyGame extends BasicGame {
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		if (world == null) {
 			drawSplash();
+		} else if (gameCrashed) {
+			drawOops();
 		} else {
-			world.render(gc, g);
+			try {
+				world.render(gc, g);
+			} catch (Exception e) {
+				gameCrashed(e);
+			}
 		}
 	}
 
@@ -124,7 +134,20 @@ public class LucyGame extends BasicGame {
 		f.drawString(x, y, d.toString());
 		y += spacing;
 		f.drawString(x, y, version);
+	}
 
+	private void drawOops() {
+		Font f = ImageBuilder.getFont();
+
+		int x = 50;
+		int y = 50;
+		int spacing = f.getLineHeight() + 10;
+
+		f.drawString(x, y, "Oops, looks like the game crashed!");
+		y += spacing;
+		f.drawString(x, y, "The error has been logged and I will fix it ASAP.");
+		y += spacing * 3;
+		f.drawString(x, y, "Push space to restart the game.");
 	}
 
 	@Override
@@ -134,33 +157,57 @@ public class LucyGame extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		if (world != null) {
-			world.update(gc, delta);
-		} else if (!ImageBuilder.spriteSheetsInitialised()) {
-			long start = System.currentTimeMillis();
-			ImageBuilder.initSpriteSheets();
-			GlobalOptions.loadFromFile();
-			loadMainMenu();
-			long end = System.currentTimeMillis();
-			System.out.println("Load time: " + (end - start));
+		try {
+			if (!gameCrashed) {
+				if (world != null) {
+					world.update(gc, delta);
+				} else if (!ImageBuilder.spriteSheetsInitialised()) {
+					long start = System.currentTimeMillis();
+					ImageBuilder.initSpriteSheets();
+					GlobalOptions.loadFromFile();
+					loadMainMenu();
+					long end = System.currentTimeMillis();
+					System.out.println("Load time: " + (end - start));
+				}
+			}
+		} catch (Exception e) {
+			gameCrashed(e);
 		}
 	}
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
-		if (world != null) {
-			world.mousePressed(button, x, y);
+		if (world != null && !gameCrashed) {
+			try {
+				world.mousePressed(button, x, y);
+			} catch (Exception e) {
+				gameCrashed(e);
+			}
 		}
 	}
 
 	@Override
 	public void keyPressed(int keycode, char c) {
-		if (world != null) {
-			world.keyPressed(keycode);
+		if (world != null && !gameCrashed) {
+			try {
+				world.keyPressed(keycode);
+			} catch (Exception e) {
+				gameCrashed(e);
+			}
+		} else if (gameCrashed) {
+			if (keycode == Input.KEY_SPACE) {
+				loadMainMenu();
+			}
 		}
 	}
 
+	private void gameCrashed(Exception e) {
+		gameCrashed = true;
+		ErrorLogger.log(e, 5);
+	}
+
 	public void loadMainMenu() {
+		gameCrashed = false;
 		world = worldLoader.getMainMenu();
 	}
 

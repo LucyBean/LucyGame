@@ -411,6 +411,11 @@ public class World {
 		gameInterface.keyPressed(keycode, worldState);
 		worldInterface.keyPressed(keycode, worldState);
 		map.keyPressed(keycode);
+		
+		// TODO: Remove
+		if (keycode == Input.KEY_1) {
+			throw new NullPointerException();
+		}
 	}
 
 	public void mousePressed(int button, int x, int y) {
