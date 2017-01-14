@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<anim name="IDLE" type="ANIMATED" frames="24" delay="64" loop="TRUE"/>
+<anim name="WALK" type="ANIMATED" frame="24" delay="32" loop="TRUE"/>
+<anim name="RUN" type="ANIMATED" delay="24" loop="TRUE"/>
+<anim name="JUMP" type="ANIMATED" delay="24" loop="FALSE"/>
+<anim name="FALL" type="ANIMATED" delay="18" loop="FALSE"/>
+<anim name="WALL_SLIDE" type="STATIC"/>
+<anim name="CROUCH" type="STATIC"/>
+<anim name="CROUCH_WALK" type="STATIC"/>
