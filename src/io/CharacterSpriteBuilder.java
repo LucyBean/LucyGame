@@ -38,12 +38,12 @@ public class CharacterSpriteBuilder {
 			if (propertiesFile.exists()) {
 				BufferedReader br = new BufferedReader(
 						new FileReader(propertiesFile));
-				String nextLine = br.readLine();
-				while (nextLine != null) {
+				String nextLine;
+				while ((nextLine = br.readLine())!= null) {
 					Pattern animLine = Pattern.compile("<anim.*/>");
 					Matcher m = animLine.matcher(nextLine);
 					// If this line represents an animation
-					if (m.matches()) {
+					if (m.find()) {
 						Pair<LayeredImage, ActorState> v = getImage(nextLine,
 								name);
 						if (v != null) {
@@ -58,7 +58,6 @@ public class CharacterSpriteBuilder {
 							}
 						}
 					}
-					nextLine = br.readLine();
 				}
 				br.close();
 			}

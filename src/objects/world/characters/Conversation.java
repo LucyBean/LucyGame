@@ -53,7 +53,10 @@ public class Conversation
 			return "No conversation :(";
 		} else {
 			Pair<ConversationCharacter, String> first = get(0);
-			String name = first.getFirst().getName();
+			String name = "Unknown";
+			if (first.getFirst() != null) {
+				name = first.getFirst().getName();
+			}
 			String text = first.getSecond();
 			return name + ": " + text;
 		}

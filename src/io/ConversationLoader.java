@@ -15,6 +15,9 @@ import objects.world.characters.ConversationSet;
 
 public class ConversationLoader {
 
+	private static int lineNumber;
+	private static String fileName;
+
 	/**
 	 * 
 	 * @param name
@@ -23,9 +26,12 @@ public class ConversationLoader {
 	 * @return A map of NPCid to ConversationSet
 	 */
 	public static Map<Integer, ConversationSet> load(String name) {
+		lineNumber = 0;
+		fileName = name;
+
 		Map<Integer, ConversationSet> conversations = new HashMap<>();
 
-		File f = new File("data/conversations/" + name + ".conv");
+		File f = new File("data/conversations/" + name + ".xml");
 
 		if (!f.exists()) {
 			ErrorLogger.log("Attempted to load conversations for " + name
@@ -33,19 +39,29 @@ public class ConversationLoader {
 		} else {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(f));
-				String nextLine = br.readLine();
-				Pattern npcLinePattern = Pattern.compile("NPCid:\\s*(\\d+)");
-				// Read the whole file
-				while (nextLine != null) {
-					// Try to find an NPCid line
-					Matcher npcLineMatcher = npcLinePattern.matcher(nextLine);
-					if (npcLineMatcher.matches()) {
-						Integer npcID = Integer.parseInt(
-								npcLineMatcher.group(1));
-						ConversationSet cs = readConversationSet(br);
-						conversations.put(npcID, cs);
+				String nextLine;
+				Pattern npcPattern = Pattern.compile("<npc.*>");
+				// Find the next NPC declaration line
+				while ((nextLine = br.readLine()) != null) {
+					lineNumber++;
+					Matcher npcMatcher = npcPattern.matcher(nextLine);
+					if (npcMatcher.find()) {
+						// Find the NPC id
+						Pattern npcIdPattern = Pattern.compile(
+								"id\\s*=\\s*\"(\\d+)\"");
+						Matcher npcIdMatcher = npcIdPattern.matcher(nextLine);
+						int npcID = 0;
+						if (npcIdMatcher.find()) {
+							npcID = Integer.parseInt(npcIdMatcher.group(1));
+							// Extract the conversation and add to the file
+							ConversationSet cs = readConversationSet(br);
+							if (cs != null && cs.size() > 0) {
+								conversations.put(npcID, cs);
+							}
+						} else {
+							logError("No NPC ID specified", 1);
+						}
 					}
-					nextLine = br.readLine();
 				}
 			} catch (IOException ioe) {
 				ErrorLogger.log(ioe, 4);
@@ -59,96 +75,140 @@ public class ConversationLoader {
 			throws IOException {
 		ConversationSet cs = new ConversationSet();
 
-		String nextLine = br.readLine();
-		Pattern stateLinePattern = Pattern.compile("STATE:\\s*(\\d+)");
-		Pattern endLinePattern = Pattern.compile("END:\\s*(\\d+)");
-		Pattern scriptWithNamePattern = Pattern.compile(
-				"\\s*(\\w+)\\s*:\\s*(.+)\\s*");
-		Pattern scriptWithoutNamePattern = Pattern.compile("\\s*([^:]+)\\s*");
-
 		Conversation c = null;
-		Integer state = null;
+		Integer start = null;
 		int end = 0;
 		ConversationCharacter prev = null;
 		String prevChat = null;
 
-		// This loop terminates at the end of file or when an empty line is
-		// reached
-		while (nextLine != null && !nextLine.equals("")) {
-			Matcher stateLineMatcher = stateLinePattern.matcher(nextLine);
-			Matcher endLineMatcher = endLinePattern.matcher(nextLine);
-			Matcher scriptWithNameMatcher = scriptWithNamePattern.matcher(
-					nextLine);
-			Matcher scriptWithoutNameMatcher = scriptWithoutNamePattern.matcher(
-					nextLine);
-			if (stateLineMatcher.matches()) {
-				// If this is a state line then need to make a new conversation
-				// The previous conversation (if any) is done and can be added
-				// to the set
-				if (c != null) {
+		Pattern breakPattern = Pattern.compile("<\\/npc>");
+		Pattern convEndPattern = Pattern.compile("<\\/conv>");
+		Pattern convStartPattern = Pattern.compile("<conv.*>");
+		Pattern startStatePattern = Pattern.compile("start\\s*=\\s*\"(\\d+)\"");
+		Pattern endStatePattern = Pattern.compile("start\\s*=\\s*\"(\\d+)\"");
+		Pattern scriptWithNamePattern = Pattern.compile(
+				"\\s*(\\w+)\\s*:\\s*(.+)\\s*");
+		Pattern scriptWithoutNamePattern = Pattern.compile("\\s*([^:<>]+)\\s*");
+
+		String nextLine;
+		while ((nextLine = br.readLine()) != null) {
+			lineNumber++;
+			// If reach a </npc> line then stop reading lines
+			Matcher m = breakPattern.matcher(nextLine);
+			if (m.find()) {
+				break;
+			}
+
+			// Check for the end of a conversation
+			m = convEndPattern.matcher(nextLine);
+			if (m.find()) {
+				if (c == null) {
+					logError("Badly formed conversation file: Too many </conv>",
+							1);
+				} else {
+					// Add the previous conversation to the set
 					if (prevChat != null) {
 						c.add(prev, prevChat);
 						prevChat = null;
 					}
 					c.setEndState(end);
-					cs.put(state, c);
+					Conversation cold = cs.put(start, c);
+					if (cold != null) {
+						logError(
+								"Duplicate conversations for start id " + start,
+								1);
+					}
 				}
-				state = Integer.parseInt(stateLineMatcher.group(1));
+				start = null;
+			}
+
+			// Check for the start of a declaration
+			m = convStartPattern.matcher(nextLine);
+			if (m.find()) {
+				// Find start state
+				m = startStatePattern.matcher(nextLine);
+				if (m.find()) {
+					start = Integer.parseInt(m.group(1));
+				} else {
+					start = 0;
+				}
+				// Find end state, if any
+				m = endStatePattern.matcher(nextLine);
+				if (m.find()) {
+					end = Integer.parseInt(m.group(1));
+				} else {
+					// If no end state specified then set end to same as
+					// start
+					end = start;
+				}
+				if (c != null) {
+					logError(
+							"Badly formatted conversation file: Conversation started before previous closed.",
+							1);
+				}
+
 				c = new Conversation();
-				// By default, the ending state will be the start state.
-				end = state;
-			} else if (endLineMatcher.matches()) {
-				// This is an END: line
-				end = Integer.parseInt(endLineMatcher.group(1));
-			} else if (scriptWithNameMatcher.matches()) {
+			}
+
+			// Check for a script start with NAME:
+			m = scriptWithNamePattern.matcher(nextLine);
+			if (m.matches()) {
 				// Put the previously parsed chat in the conversation
 				if (prevChat != null) {
 					if (c == null) {
-						ErrorLogger.log(
-								"Badly formatted conversation file. "
-								+ "Conversation script given before conversation "
-										+ "state declaration.",
-								1);
+						logError("Badly formatted conversation file. "
+								+ "Conversation script given before valid conversation "
+								+ "declaration.", 1);
 						return null;
 					}
 					c.add(prev, prevChat);
 				}
 
 				// This is the start of a character's conversation
-				String charName = scriptWithNameMatcher.group(1).toUpperCase();
+				String charName = m.group(1).toUpperCase();
 				try {
 					prev = ConversationCharacter.valueOf(charName);
 				} catch (IllegalArgumentException iae) {
-					ErrorLogger.log("Unknown character: " + charName, 1);
+					logError("Unknown character: " + charName, 1);
 					prev = null;
 				}
-				prevChat = scriptWithNameMatcher.group(2);
-			} else if (scriptWithoutNameMatcher.matches()) {
+				prevChat = m.group(2);
+			}
+
+			// Check for a script without a NAME
+			m = scriptWithoutNamePattern.matcher(nextLine);
+			if (m.matches()) {
 				if (prev == null) {
-					ErrorLogger.log(
-							"Badly formatted conversation file. "
-									+ "First line of script does not specify character.",
+					logError(
+							"Badly formatted conversation file. First line "
+									+ "of script does not specify character.",
 							1);
 				}
 				// This is a continuation of the previous chat
-				prevChat += " " + scriptWithoutNameMatcher.group(1);
+				prevChat += " " + m.group(1);
 			}
-
-			nextLine = br.readLine();
 		}
-		// Add in the final chat
+
+		// Add in the final chat if any left
 		if (prevChat != null) {
+			logError("Unterminated conversation tag", 1);
 			if (c == null) {
-				ErrorLogger.log("Badly formatted conversation file. "
+				logError("Badly formatted conversation file. "
 						+ "Conversation script given before conversation "
 						+ "state declaration.", 1);
 				return null;
 			}
 			c.add(prev, prevChat);
 			c.setEndState(end);
-			cs.put(state, c);
+			cs.put(start, c);
 		}
 
 		return cs;
+	}
+
+	private static void logError(String message, int severity) {
+		ErrorLogger.log(
+				message + " on line " + lineNumber + " for file " + fileName,
+				severity);
 	}
 }

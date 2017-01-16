@@ -28,3 +28,12 @@
 	BOB:	I don't exist!
 	</conv>
 </npc>
+<npc>
+</npc>
+<npc id = "3">
+	<conv>
+	MATT: Hello
+	<conv start="3">
+	LUCY: Hi!
+	</conv>
+</npc>
