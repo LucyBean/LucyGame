@@ -2,7 +2,6 @@ package worlds;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -18,9 +17,7 @@ import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
 import objects.world.WorldObject;
 import objects.world.characters.Conversation;
-import objects.world.characters.ConversationSet;
 import objects.world.characters.Inventory;
-import objects.world.characters.NPC;
 import objects.world.characters.Player;
 import objects.world.lib.Wall;
 import options.GlobalOptions;
@@ -115,16 +112,7 @@ public class World {
 	 */
 	public void loadScripts(String name) {
 		// Load the conversations and set them to the correct NPCs
-		Map<Integer, ConversationSet> conversations = ConversationLoader.load(name);
-		for (int npcID : conversations.keySet()) {
-			ConversationSet cs = conversations.get(npcID);
-			NPC npc = getMap().getNPC(npcID);
-			if (npc == null) {
-				System.err.println("Loaded quest for unknown NPCid: " + npcID);
-			} else {
-				npc.setConversations(cs);
-			}
-		}
+		ConversationLoader.load(name, map);
 	}
 
 	/**

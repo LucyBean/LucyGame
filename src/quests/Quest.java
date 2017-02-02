@@ -10,9 +10,11 @@ public class Quest {
 	private Iterator<Objective> iterator;
 	private Objective current;
 	private List<Objective> objectives;
+	private int id;
 
-	public Quest() {
+	public Quest(int id) {
 		objectives = new LinkedList<>();
+		this.id = id;
 	}
 
 	public void add(Objective o) {
