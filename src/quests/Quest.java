@@ -4,13 +4,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.ErrorLogger;
 import options.GlobalOptions;
+import worlds.World;
 
 public class Quest {
 	private Iterator<Objective> iterator;
 	private Objective current;
 	private List<Objective> objectives;
 	private int id;
+	private World world;
 
 	public Quest(int id) {
 		objectives = new LinkedList<>();
@@ -21,28 +24,47 @@ public class Quest {
 		objectives.add(o);
 	}
 
-	public void start() {
+	public void start(World world) {
+		this.world = world;
+		objectives.forEach(o -> o.setWorld(world));
 		if (objectives.size() > 0) {
+			world.questStarted(this);
 			iterator = objectives.iterator();
-			current = iterator.next();
-			System.out.println("Started quest.");
-			System.out.println(toString());
+			boolean finished = startNextObjective();
+			if (finished) {
+				world.questFinished(this);
+			}
+			System.out.println("Started quest " + id);
 		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to start a quest with no objectives.");
+			ErrorLogger.log("Attempting to start a quest with no objectives.", 1);
 		}
 	}
 
 	public void signalEvent(EventInfo ei) {
-		if (current.isSatisfied(ei)) {
-			if (iterator.hasNext()) {
-				current = iterator.next();
-				System.out.println("I received a signal!");
-				System.out.println(toString());
-			} else {
-				System.out.println("Quest finished.");
+		current.passEvent(ei);
+		if (current.isSatisfied()) {
+			boolean finished = startNextObjective();
+			if (finished) {
+				world.questFinished(this);
 			}
+			System.out.println("Finished: " + finished);
 		}
+	}
+
+	/**
+	 * 
+	 * @return Whether or not the Quest has finished
+	 */
+	private boolean startNextObjective() {
+		// signal to do end effects to current
+		if (current != null) {
+			current.applyEndEffects();
+		}
+		// Go through objectives until an unsatisfied one is found
+		while (iterator.hasNext() && (current = iterator.next()).checkInitSatisfaction()) {
+			System.out.println("Starting quest " + current);
+		}
+		return current.isSatisfied() && !iterator.hasNext();
 	}
 
 	public Objective getCurrent() {

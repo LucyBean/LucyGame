@@ -432,12 +432,11 @@ public class World {
 		activeQuests.stream().forEach(q -> q.signalEvent(ei));
 	}
 
-	public void startQuest(Quest q) {
+	public void questStarted(Quest q) {
 		activeQuests.add(q);
-		q.start();
 	}
 
-	public void stopQuest(Quest q) {
+	public void questFinished(Quest q) {
 		activeQuests.remove(q);
 	}
 

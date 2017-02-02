@@ -36,7 +36,7 @@ public abstract class NPC extends Actor {
 		return npcID;
 	}
 
-	protected void setStoryState(int state) {
+	public void setStoryState(int state) {
 		storyState = state;
 	}
 
@@ -59,7 +59,7 @@ public abstract class NPC extends Actor {
 		// Get the quest and maybe start it
 		Quest q = quests.get(storyState);
 		if (q != null) {
-			q.start();
+			q.start(getWorld());
 		}
 		talk();
 		

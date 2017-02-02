@@ -5,15 +5,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import objects.world.ItemType;
 import objects.world.characters.Conversation;
 import objects.world.characters.ConversationCharacter;
 import objects.world.characters.ConversationSet;
 import objects.world.characters.NPC;
 import quests.Objective;
+import quests.PickUpObjective;
 import quests.Quest;
 import worlds.WorldMap;
 
@@ -51,7 +55,7 @@ public class ConversationLoader {
 			}
 		}
 	}
-	
+
 	private static void loadConversations(WorldMap map) throws IOException {
 		String nextLine;
 
@@ -78,7 +82,7 @@ public class ConversationLoader {
 			}
 		}
 	}
-	
+
 	private static void loadQuests(WorldMap map) throws IOException {
 		// Find the quests
 		String nextLine;
@@ -110,21 +114,23 @@ public class ConversationLoader {
 					// Extract id and state
 					int npcID = 0;
 					int state = 0;
-					if ((m = propertyExtractor("id").matcher(nextLine)).find()) {
+					if ((m = propertyExtractor("id", "\\d+").matcher(nextLine)).find()) {
 						npcID = Integer.parseInt(m.group(1));
 					} else {
 						logError("Unspecified NPC id", 2);
 					}
-					if ((m = propertyExtractor("state").matcher(nextLine)).find()) {
+					if ((m = propertyExtractor("state", "\\d+").matcher(nextLine)).find()) {
 						state = Integer.parseInt(m.group(1));
 					} else {
-						logError("Unspecified NPC state",2);
+						logError("Unspecified NPC state", 2);
 					}
-					
+
 					// TODO: Parse objectives
 					Quest q = new Quest(questID);
-					q.add(new Objective("Test", ei -> false));
-					
+					List<Objective> objectives = loadObjectives();
+					objectives.forEach(o -> q.add(o));
+					q.add(new Objective("Test", ei -> false, w -> false));
+
 					NPC npc = map.getNPC(npcID);
 					if (npc == null) {
 						logError("Quest specified for unknown NPC", 2);
@@ -149,6 +155,119 @@ public class ConversationLoader {
 		return nextLine;
 	}
 
+	private static List<Objective> loadObjectives() throws IOException {
+		// Find a line that starts an objective
+		String nextLine;
+		Pattern objStartPattern = Pattern.compile("<objective");
+		Matcher m;
+		LinkedList<Objective> objectives = new LinkedList<>();
+
+		while ((nextLine = getNextLine()) != null) {
+			if (nextLine.matches("\\s*</quest>\\s*")) {
+				break;
+			}
+			m = objStartPattern.matcher(nextLine);
+			if (m.find()) {
+				Objective o = loadObjective(nextLine);
+				if (o != null) {
+					objectives.add(o);
+				}
+			}
+		}
+		return objectives;
+	}
+
+	private static Objective loadObjective(String firstLine) throws IOException {
+		String nextLine = firstLine;
+		// Find the type
+		Matcher m = propertyExtractor("type", "\\w+").matcher(nextLine);
+		String type;
+		Objective o = null;
+
+		if (m.find()) {
+			type = m.group(1);
+		} else {
+			logError("Objective with no type", 2);
+			return null;
+		}
+
+		// Create objective of correct type
+		if (type.equals("pickup")) {
+			// Find item type to pick up
+			m = propertyExtractor("id", "\\w+").matcher(nextLine);
+			String itemType;
+			if (m.find()) {
+				itemType = m.group(1);
+			} else {
+				logError("Pick up objective with no item specified", 2);
+				return null;
+			}
+			ItemType it = null;
+			try {
+				it = ItemType.valueOf(itemType.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				logError("Unknown object specified: " + itemType, 2);
+				return null;
+			}
+			o = new PickUpObjective(it);
+		} else {
+			// TODO: Fill in other types
+			logError("Unknown type of objective: " + type, 2);
+			return null;
+		}
+
+		// Check for short objective
+		m = Pattern.compile("/>").matcher(nextLine);
+		if (m.find()) {
+			return o;
+		}
+
+		loadQuestEffects(o, nextLine);
+		return o;
+	}
+
+	/**
+	 * Adds any effects described in the script to the objective
+	 * 
+	 * @param o
+	 * @throws IOException
+	 */
+	private static void loadQuestEffects(Objective o, String thisLine) throws IOException {
+		String nextLine = thisLine;
+		Matcher m;
+		// Find any effects
+		do {
+			Pattern effectPattern = Pattern.compile("<effect");
+			if ((m = effectPattern.matcher(nextLine)).find()) {
+				// Find the location
+				m = propertyExtractor("loc", "\\w+").matcher(nextLine);
+				String loc = "end";
+				if (m.find()) {
+					loc = m.group(1);
+				}
+				while(!(nextLine = getNextLine()).matches("\\s*</effect>\\s*")) {
+					// Find all effects
+					Pattern setStatePattern = Pattern.compile("setState\\((\\d+),(\\d+)\\)");
+					m = setStatePattern.matcher(nextLine);
+					if (m.find()) {
+						int npcID = Integer.parseInt(m.group(1));
+						int newState = Integer.parseInt(m.group(2));
+						
+						o.addEndEffect(cw -> {
+							if (cw != null && cw.getMap() != null) {
+								NPC npc = cw.getMap().getNPC(npcID);
+								if (npc != null) {
+									npc.setStoryState(newState);
+								}
+							}
+						});
+					}
+				}
+			}
+		} while ((nextLine = getNextLine()) != null && !nextLine.matches("\\s*</objective>\\s*"));
+
+	}
+
 	private static Map<Integer, ConversationSet> loadConversations() throws IOException {
 		Map<Integer, ConversationSet> conversations = new HashMap<>();
 		String nextLine;
@@ -159,7 +278,7 @@ public class ConversationLoader {
 			Matcher m = npcPattern.matcher(nextLine);
 			if (m.find()) {
 				// Find the NPC id
-				Pattern npcIdPattern = propertyExtractor("id");
+				Pattern npcIdPattern = propertyExtractor("id", "\\d+");
 				Matcher npcIdMatcher = npcIdPattern.matcher(nextLine);
 				int npcID = 0;
 				if (npcIdMatcher.find()) {
@@ -194,8 +313,8 @@ public class ConversationLoader {
 		Pattern breakPattern = Pattern.compile("<\\/npc>");
 		Pattern convEndPattern = Pattern.compile("<\\/conv>");
 		Pattern convStartPattern = Pattern.compile("<conv.*>");
-		Pattern startStatePattern = propertyExtractor("start");
-		Pattern endStatePattern = propertyExtractor("end");
+		Pattern startStatePattern = propertyExtractor("start", "\\d+");
+		Pattern endStatePattern = propertyExtractor("end", "\\d+");
 		Pattern scriptWithNamePattern = Pattern.compile("\\s*(\\w+)\\s*:\\s*(.+)\\s*");
 		Pattern scriptWithoutNamePattern = Pattern.compile("\\s*([^:<>]+)\\s*");
 
@@ -305,8 +424,8 @@ public class ConversationLoader {
 		return cs;
 	}
 
-	private static Pattern propertyExtractor(String propName) {
-		return Pattern.compile(propName + "\\s*=\\s*\"(\\d+)\"");
+	private static Pattern propertyExtractor(String propName, String pattern) {
+		return Pattern.compile(propName + "\\s*=\\s*\"(" + pattern + ")\"");
 	}
 
 	private static void logError(String message, int severity) {
