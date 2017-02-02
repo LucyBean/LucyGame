@@ -5,5 +5,5 @@
 <anim name="JUMP" type="ANIMATED" delay="24" loop="FALSE"/>
 <anim name="FALL" type="ANIMATED" delay="18" loop="FALSE"/>
 <anim name="WALL_SLIDE" type="STATIC"/>
-<anim name="CROUCH" type="STATIC"/>
-<anim name="CROUCH_WALK" type="STATIC"/>
+<anim name="CROUCH" type="ANIMATED" delay="64" loop="TRUE"/>
+<anim name="CROUCH_WALK" type="ANIMATED" delay="32" loop="TRUE"/>

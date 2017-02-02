@@ -1,8 +1,5 @@
 package objects.world.characters;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
@@ -11,40 +8,11 @@ import objects.images.SpriteBuilder;
 import objects.world.ItemType;
 
 public class Matt extends NPC {
-	private Map<Integer, Conversation> conversations;
-
 	public Matt(Point origin, int npcID) {
 		super(origin, ItemType.MATT, SpriteBuilder.getCharacterSprite(1),
 				null, new InteractBox(new Point(-1, 0), 3, 2), npcID);
 		useGravity(false);
 		getSprite().setOrigin(new Point(-0.25f, -0.5f));
-
-		buildConversations();
-	}
-
-	private void buildConversations() {
-		conversations = new HashMap<>();
-		ConversationCharacter lucy = ConversationCharacter.LUCY;
-		ConversationCharacter matt = ConversationCharacter.MATT;
-
-		Conversation initial = new Conversation();
-		initial.add(lucy, "Bby?");
-		initial.add(matt, "Ys?");
-		initial.add(lucy, "Cuddle");
-		initial.add(matt, "Not again");
-		initial.add(lucy, "Ys!");
-		initial.add(matt, "Give me a gem to get a cuddle!");
-		conversations.put(0, initial);
-
-		Conversation middle = new Conversation();
-		middle.add(matt, "Give me a gem to get a cuddle!");
-		conversations.put(1, middle);
-
-		Conversation end = new Conversation();
-		end.add(matt, "Thank you for the gem! Here is your cuddle!");
-		end.add(lucy, "Yay!");
-		conversations.put(2, end);
-
 	}
 
 	@Override
@@ -56,8 +24,6 @@ public class Matt extends NPC {
 	public void act(GameContainer gc, int delta) {
 
 	}
-	
-	// TODO: Re-do this quest!
 
 	/*
 	@Override
