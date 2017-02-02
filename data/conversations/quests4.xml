@@ -1,0 +1,18 @@
+<quest id="1">
+	<startedBy type="talkto" id="1" state="0"/>
+	<objective type="pickup" name="gem">
+		<end>
+			setState(1,2)
+		</end>
+	</objective>
+	<objective type="talkto" id="1"/>
+	<objective type="unlock" id="3">
+		<start>
+			setCamera(6, 1000)
+		</start>
+		<end>
+			setState(1,4)
+		</end>
+	</objective>
+	<objective type="talkto" id="1">
+</quest>

@@ -29,9 +29,8 @@ public class ConversationLoader {
 		lineNumber = 0;
 		fileName = name;
 
-		Map<Integer, ConversationSet> conversations = new HashMap<>();
-
-		File f = new File("data/conversations/" + name + ".xml");
+		Map<Integer, ConversationSet> conversations = null;
+		File f = new File("data/conversations/" + name + ".lucy");
 
 		if (!f.exists()) {
 			ErrorLogger.log("Attempted to load conversations for " + name
@@ -40,34 +39,57 @@ public class ConversationLoader {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(f));
 				String nextLine;
-				Pattern npcPattern = Pattern.compile("<npc.*>");
-				// Find the next NPC declaration line
+				Pattern conversationsPattern = Pattern.compile("<conversations>");
+				// Find the conversations declaration line
 				while ((nextLine = br.readLine()) != null) {
 					lineNumber++;
-					Matcher npcMatcher = npcPattern.matcher(nextLine);
-					if (npcMatcher.find()) {
-						// Find the NPC id
-						Pattern npcIdPattern = Pattern.compile(
-								"id\\s*=\\s*\"(\\d+)\"");
-						Matcher npcIdMatcher = npcIdPattern.matcher(nextLine);
-						int npcID = 0;
-						if (npcIdMatcher.find()) {
-							npcID = Integer.parseInt(npcIdMatcher.group(1));
-							// Extract the conversation and add to the file
-							ConversationSet cs = readConversationSet(br);
-							if (cs != null && cs.size() > 0) {
-								conversations.put(npcID, cs);
-							}
-						} else {
-							logError("No NPC ID specified", 1);
-						}
+					Matcher m = conversationsPattern.matcher(nextLine);
+					if (m.find()) {
+						// Read the conversations
+						conversations = loadConversations(br);
 					}
 				}
+				
 			} catch (IOException ioe) {
 				ErrorLogger.log(ioe, 4);
 			}
 		}
 
+		return conversations;
+	}
+	
+	private static Map<Integer, ConversationSet> loadConversations(BufferedReader br) throws IOException {
+		Map<Integer, ConversationSet> conversations = new HashMap<>();
+		String nextLine;
+		Pattern npcPattern = Pattern.compile("<npc.*>");
+		Pattern convEndPattern = Pattern.compile("</conversations>");
+		while ((nextLine = br.readLine()) != null) {
+			lineNumber++;
+			// Find the next NPC declaration line
+			Matcher m = npcPattern.matcher(nextLine);
+			if (m.find()) {
+				// Find the NPC id
+				Pattern npcIdPattern = Pattern.compile(
+						"id\\s*=\\s*\"(\\d+)\"");
+				Matcher npcIdMatcher = npcIdPattern.matcher(nextLine);
+				int npcID = 0;
+				if (npcIdMatcher.find()) {
+					npcID = Integer.parseInt(npcIdMatcher.group(1));
+					// Extract the conversation and add to the file
+					ConversationSet cs = readConversationSet(br);
+					if (cs != null && cs.size() > 0) {
+						conversations.put(npcID, cs);
+					}
+				} else {
+					logError("No NPC ID specified", 1);
+				}
+			}
+			// Check for end of conversations
+			m = convEndPattern.matcher(nextLine);
+			if (m.find()) {
+				break;
+			}
+		}
 		return conversations;
 	}
 
