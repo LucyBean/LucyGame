@@ -12,7 +12,10 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import helpers.Point;
 import objects.world.ItemType;
+import objects.world.ObjectMaker;
+import objects.world.WorldObject;
 import objects.world.characters.Conversation;
 import objects.world.characters.ConversationCharacter;
 import objects.world.characters.ConversationSet;
@@ -285,6 +288,26 @@ public class ConversationLoader {
 							}
 						});
 					}
+
+					Pattern addObjectPattern = Pattern.compile("addObject\\(([\\w_]+),(\\d+),(\\d+),(\\d+),(\\d+)\\)");
+					m = addObjectPattern.matcher(nextLine);
+					if (m.find()) {
+						String itemType = m.group(1).toUpperCase();
+						int x = Integer.parseInt(m.group(2));
+						int y = Integer.parseInt(m.group(3));
+						int lockID = Integer.parseInt(m.group(4));
+						int npcID = Integer.parseInt(m.group(5));
+						
+						try {
+							ItemType it = ItemType.valueOf(itemType);
+							addEffect.accept(cw -> {
+								WorldObject wo = ObjectMaker.makeFromType(it, new Point(x,y), lockID, npcID);
+								cw.addObject(wo);
+							});
+						} catch (IllegalArgumentException e) {
+							logError("Unknown item type: " + itemType, 2);
+						}
+					}
 				}
 			}
 		} while ((nextLine = getNextLine()) != null && !nextLine.matches("\\s*</objective>\\s*"));
@@ -362,6 +385,7 @@ public class ConversationLoader {
 					}
 					c.setEndState(end);
 					Conversation cold = cs.put(start, c);
+					c = null;
 					if (cold != null) {
 						logError("Duplicate conversations for start id " + start, 1);
 					}

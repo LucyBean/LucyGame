@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.ErrorLogger;
-import options.GlobalOptions;
 import worlds.World;
 
 public class Quest {
@@ -35,7 +34,7 @@ public class Quest {
 				world.questFinished(this);
 			}
 			System.out.println("Started quest " + id);
-		} else if (GlobalOptions.debug()) {
+		} else {
 			ErrorLogger.log("Attempting to start a quest with no objectives.", 1);
 		}
 	}

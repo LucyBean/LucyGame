@@ -44,8 +44,8 @@
 		</objective>
 		<objective type="talkto" id="1">
 			<effect loc="end">
-			# Add a new yellow_key to the position (16,19)
-			addObject(yellow_key,16,19)
+			# Add a new yellow_key to the position (16,19) with lockID 0, npcID 0
+			addObject(yellow_key,16,19,0,0)
 			# Remove 1 gem from the player's inventory
 			use("gem",1)
 			</effect>
