@@ -80,6 +80,10 @@ public class ConversationBlockSprite extends SingleSprite {
 		// Text square
 		getImage().setLayerPosition(3, new Point(border, border));
 	}
+	
+	public static int getImageHeight() {
+		return height;
+	}
 
 	public ConversationBlockSprite() {
 		super(makeImage(), 1);

@@ -14,9 +14,9 @@ import objects.world.characters.ConversationCharacter;
 import objects.world.characters.ConversationSet;
 
 public class ConversationLoader {
-
 	private static int lineNumber;
 	private static String fileName;
+	private static BufferedReader reader;
 
 	/**
 	 * 
@@ -37,16 +37,16 @@ public class ConversationLoader {
 					+ " but no file exists.", 2);
 		} else {
 			try {
-				BufferedReader br = new BufferedReader(new FileReader(f));
+				reader = new BufferedReader(new FileReader(f));
 				String nextLine;
 				Pattern conversationsPattern = Pattern.compile("<conversations>");
 				// Find the conversations declaration line
-				while ((nextLine = br.readLine()) != null) {
+				while ((nextLine = getNextLine()) != null) {
 					lineNumber++;
 					Matcher m = conversationsPattern.matcher(nextLine);
 					if (m.find()) {
 						// Read the conversations
-						conversations = loadConversations(br);
+						conversations = loadConversations();
 					}
 				}
 				
@@ -58,12 +58,24 @@ public class ConversationLoader {
 		return conversations;
 	}
 	
-	private static Map<Integer, ConversationSet> loadConversations(BufferedReader br) throws IOException {
+	private static String getNextLine() throws IOException {
+		String nextLine;
+		boolean getNext;
+		// Use this to skip over comment lines
+		do {
+			nextLine = reader.readLine();
+			getNext = nextLine != null && nextLine.matches("\\s*#.*");
+		}
+		while(getNext);
+		return nextLine;
+	}
+	
+	private static Map<Integer, ConversationSet> loadConversations() throws IOException {
 		Map<Integer, ConversationSet> conversations = new HashMap<>();
 		String nextLine;
 		Pattern npcPattern = Pattern.compile("<npc.*>");
 		Pattern convEndPattern = Pattern.compile("</conversations>");
-		while ((nextLine = br.readLine()) != null) {
+		while ((nextLine = getNextLine()) != null) {
 			lineNumber++;
 			// Find the next NPC declaration line
 			Matcher m = npcPattern.matcher(nextLine);
@@ -76,7 +88,7 @@ public class ConversationLoader {
 				if (npcIdMatcher.find()) {
 					npcID = Integer.parseInt(npcIdMatcher.group(1));
 					// Extract the conversation and add to the file
-					ConversationSet cs = readConversationSet(br);
+					ConversationSet cs = readConversationSet();
 					if (cs != null && cs.size() > 0) {
 						conversations.put(npcID, cs);
 					}
@@ -93,7 +105,7 @@ public class ConversationLoader {
 		return conversations;
 	}
 
-	private static ConversationSet readConversationSet(BufferedReader br)
+	private static ConversationSet readConversationSet()
 			throws IOException {
 		ConversationSet cs = new ConversationSet();
 
@@ -107,13 +119,13 @@ public class ConversationLoader {
 		Pattern convEndPattern = Pattern.compile("<\\/conv>");
 		Pattern convStartPattern = Pattern.compile("<conv.*>");
 		Pattern startStatePattern = Pattern.compile("start\\s*=\\s*\"(\\d+)\"");
-		Pattern endStatePattern = Pattern.compile("start\\s*=\\s*\"(\\d+)\"");
+		Pattern endStatePattern = Pattern.compile("end\\s*=\\s*\"(\\d+)\"");
 		Pattern scriptWithNamePattern = Pattern.compile(
 				"\\s*(\\w+)\\s*:\\s*(.+)\\s*");
 		Pattern scriptWithoutNamePattern = Pattern.compile("\\s*([^:<>]+)\\s*");
 
 		String nextLine;
-		while ((nextLine = br.readLine()) != null) {
+		while ((nextLine = getNextLine()) != null) {
 			lineNumber++;
 			// If reach a </npc> line then stop reading lines
 			Matcher m = breakPattern.matcher(nextLine);

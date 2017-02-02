@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.stream.Stream;
 
 import helpers.ObjectByter;
 import objects.world.WorldObject;
@@ -23,7 +22,7 @@ public class WorldMapImporterExporter {
 
 			writeHeader(out);
 
-			Stream<WorldObject> objects = wm.getObjects();
+			Collection<WorldObject> objects = wm.getObjects();
 			objects.forEach(o -> exportObject(o, out));
 
 			out.close();

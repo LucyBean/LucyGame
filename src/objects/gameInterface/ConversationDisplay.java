@@ -14,6 +14,7 @@ import objects.images.ImageBuilder;
 import objects.images.TextImage;
 import objects.world.characters.Conversation;
 import objects.world.characters.ConversationCharacter;
+import options.GlobalOptions;
 
 public class ConversationDisplay extends InterfaceElement {
 	Iterator<String> wordListIterator;
@@ -21,7 +22,8 @@ public class ConversationDisplay extends InterfaceElement {
 	Conversation current;
 
 	public ConversationDisplay() {
-		super(new Point(50, 350), new ConversationBlockSprite());
+		super(new Point(50, GlobalOptions.WINDOW_HEIGHT - ConversationBlockSprite.getImageHeight()),
+				new ConversationBlockSprite());
 	}
 
 	public void setConversation(Conversation c) {

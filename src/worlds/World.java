@@ -104,19 +104,18 @@ public class World {
 	}
 
 	/**
-	 * Loads conversations from the file and registers them with NPCs. This
-	 * should be done after all NPCs have been added to the map.
+	 * Loads conversations and quests from the file and registers them with
+	 * NPCs. This should be done after all NPCs have been added to the map.
 	 * 
 	 * @param name
-	 *            The name of the file that holds the conversations. It should
-	 *            not include the path or extension. E.g. to load the file
-	 *            "data/conversations/level4.conv" then name = "level4"
+	 *            The name of the file that holds the conversations and quests.
+	 *            It should not include the path or extension. E.g. to load the
+	 *            file "data/conversations/level4.lucy" then name = "level4"
 	 * 
 	 */
-	public void loadConversations(String name) {
+	public void loadScripts(String name) {
 		// Load the conversations and set them to the correct NPCs
-		Map<Integer, ConversationSet> conversations = ConversationLoader.load(
-				name);
+		Map<Integer, ConversationSet> conversations = ConversationLoader.load(name);
 		for (int npcID : conversations.keySet()) {
 			ConversationSet cs = conversations.get(npcID);
 			NPC npc = getMap().getNPC(npcID);
@@ -317,14 +316,14 @@ public class World {
 
 			if (!paused || stepFrame) {
 				switch (worldState) {
-					case PLAYING:
-						playingUpdate(gc, delta);
-						break;
-					case BUILDING:
-						buildingUpdate(gc, delta);
-						break;
-					default:
-						break;
+				case PLAYING:
+					playingUpdate(gc, delta);
+					break;
+				case BUILDING:
+					buildingUpdate(gc, delta);
+					break;
+				default:
+					break;
 				}
 				stepFrame = false;
 			}
@@ -347,11 +346,8 @@ public class World {
 			if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 				if (wo == null) {
 					int gridSize = GlobalOptions.GRID_SIZE;
-					Point worldCoOrds = mousePoint.scale(
-							1 / (camera.getScale() * gridSize)).move(
-									camera.getLocation().scale(
-											WorldLayer.WORLD.getParallaxX(),
-											WorldLayer.WORLD.getParallaxY()));
+					Point worldCoOrds = mousePoint.scale(1 / (camera.getScale() * gridSize)).move(camera.getLocation()
+							.scale(WorldLayer.WORLD.getParallaxX(), WorldLayer.WORLD.getParallaxY()));
 
 					// Need to ensure that the objects are snapped to the grid!
 					float snapX = (float) Math.floor(worldCoOrds.getX());
@@ -377,35 +373,35 @@ public class World {
 		}
 
 		switch (worldState) {
-			case PLAYING:
-				if (keycode == Input.KEY_ESCAPE) {
-					openMenu();
-				}
-				if (keycode == Controller.INVENTORY) {
-					openInventoryDisplay();
-				}
-				if (keycode == Controller.WORLD_PAUSE) {
-					setPaused(!isPaused());
-				}
-				break;
-			case MENU:
-			case BUILDING_MENU:
-				if (keycode == Input.KEY_ESCAPE) {
-					closeMenu();
-				}
-				break;
-			case WATCH_SELECT:
-				if (keycode == Input.KEY_ESCAPE) {
-					stopWatchSelect();
-				}
-				break;
-			case INVENTORY:
-				if (keycode == Controller.INVENTORY) {
-					closeInventoryDisplay();
-				}
-				break;
-			default:
-				break;
+		case PLAYING:
+			if (keycode == Input.KEY_ESCAPE) {
+				openMenu();
+			}
+			if (keycode == Controller.INVENTORY) {
+				openInventoryDisplay();
+			}
+			if (keycode == Controller.WORLD_PAUSE) {
+				setPaused(!isPaused());
+			}
+			break;
+		case MENU:
+		case BUILDING_MENU:
+			if (keycode == Input.KEY_ESCAPE) {
+				closeMenu();
+			}
+			break;
+		case WATCH_SELECT:
+			if (keycode == Input.KEY_ESCAPE) {
+				stopWatchSelect();
+			}
+			break;
+		case INVENTORY:
+			if (keycode == Controller.INVENTORY) {
+				closeInventoryDisplay();
+			}
+			break;
+		default:
+			break;
 		}
 
 		gameInterface.keyPressed(keycode, worldState);
@@ -426,7 +422,7 @@ public class World {
 	}
 
 	private void watchSelectMousePressed(int button, Point p) {
-		
+
 		// For each world object, check whether it was clicked by the mouse
 		WorldObject clicked = map.findObjectScreen(p);
 
@@ -473,12 +469,10 @@ public class World {
 		addObject(Wall.drawWall(Point.ZERO, Dir.EAST, width));
 		addObject(Wall.drawWall(new Point(0, height - 1), Dir.EAST, width));
 		addObject(Wall.drawWall(new Point(0, 1), Dir.SOUTH, height - 2));
-		addObject(
-				Wall.drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2));
+		addObject(Wall.drawWall(new Point(width - 1, 1), Dir.SOUTH, height - 2));
 	}
 
 	protected void drawWallBorder() {
-		drawWallBorder(GlobalOptions.WINDOW_WIDTH_GRID,
-				GlobalOptions.WINDOW_HEIGHT_GRID);
+		drawWallBorder(GlobalOptions.WINDOW_WIDTH_GRID, GlobalOptions.WINDOW_HEIGHT_GRID);
 	}
 }

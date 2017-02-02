@@ -32,7 +32,6 @@ public class WorldMap {
 	private Collection<WorldObject> objectsWithColliders;
 	private Collection<WorldObject> interactables;
 	private ObjectLayerSet<WorldObject> layers;
-	private Collection<WorldObject> allObjects;
 	private MapPainter mapPainter;
 	private World world;
 	private Map<Integer, Set<Lockable>> lockablesByID;
@@ -48,7 +47,6 @@ public class WorldMap {
 	public void reset() {
 		layers = new ObjectLayerSet<>();
 		actors = new HashSet<>();
-		allObjects = new HashSet<>();
 		activeActors = new HashSet<>();
 		objectsWithColliders = new HashSet<>();
 		interactables = new HashSet<>();
@@ -76,8 +74,6 @@ public class WorldMap {
 
 	public void addObject(WorldObject go) {
 		if (go != null) {
-			allObjects.add(go);
-
 			WorldLayer layer = go.getLayer();
 			layers.add(go, layer.ordinal());
 
@@ -182,8 +178,8 @@ public class WorldMap {
 		}
 	}
 
-	public Stream<WorldObject> getObjects() {
-		return allObjects.stream();
+	public Collection<WorldObject> getObjects() {
+		return layers.getAll();
 	}
 
 	public Stream<WorldObject> getActiveSolids() {
@@ -206,7 +202,7 @@ public class WorldMap {
 	}
 
 	public <T extends WorldObject> Stream<T> getAllObjectsOfType(Class<T> t) {
-		return getObjects().filter(a -> a.isEnabled()).filter(a -> t.isInstance(a)).map(a -> t.cast(a));
+		return getObjects().stream().filter(a -> a.isEnabled()).filter(a -> t.isInstance(a)).map(a -> t.cast(a));
 	}
 
 	/**

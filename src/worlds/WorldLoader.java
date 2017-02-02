@@ -1,8 +1,8 @@
 package worlds;
 
 import worlds.lib.ColliderDemoWorld;
+import worlds.lib.ConvDemoWorld;
 import worlds.lib.EnemyArena;
-import worlds.lib.HiddenObjectDemoWorld;
 import worlds.lib.LevelBuildingWorld;
 import worlds.lib.MenuDemoWorld;
 import worlds.lib.PlatformerDemoWorld;
@@ -26,11 +26,11 @@ public class WorldLoader {
 			case 1:
 				return new ColliderDemoWorld(game);
 			case 2:
-				return new HiddenObjectDemoWorld(game);
+				return new QuestDemoWorld(game);
 			case 3:
 				return new PlatformerDemoWorld(game);
 			case 4:
-				return new QuestDemoWorld(game);
+				return new ConvDemoWorld(game);
 			case 5:
 				return new LevelBuildingWorld(game);
 			default:
