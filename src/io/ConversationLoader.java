@@ -20,6 +20,7 @@ import objects.world.characters.Conversation;
 import objects.world.characters.ConversationCharacter;
 import objects.world.characters.ConversationSet;
 import objects.world.characters.NPC;
+import objects.world.characters.Player;
 import quests.Objective;
 import quests.PickUpObjective;
 import quests.Quest;
@@ -303,6 +304,25 @@ public class ConversationLoader {
 							addEffect.accept(cw -> {
 								WorldObject wo = ObjectMaker.makeFromType(it, new Point(x,y), lockID, npcID);
 								cw.addObject(wo);
+							});
+						} catch (IllegalArgumentException e) {
+							logError("Unknown item type: " + itemType, 2);
+						}
+					}
+					
+					Pattern useObjectPattern = Pattern.compile("use\\(([\\w_]+),(\\d+)\\)");
+					m = useObjectPattern.matcher(nextLine);
+					if (m.find()) {
+						String itemType = m.group(1).toUpperCase();
+						int quant = Integer.parseInt(m.group(2));
+						
+						try {
+							ItemType it = ItemType.valueOf(itemType);
+							addEffect.accept(cw -> {
+								if (cw != null && cw.getMap() != null && cw.getMap().getPlayer() != null) {
+									Player p = (Player) cw.getMap().getPlayer();
+									p.use(it, quant);
+								}
 							});
 						} catch (IllegalArgumentException e) {
 							logError("Unknown item type: " + itemType, 2);

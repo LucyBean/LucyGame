@@ -55,14 +55,19 @@ public class Quest {
 	 */
 	private boolean startNextObjective() {
 		// signal to do end effects to current
-		if (current != null) {
-			current.applyEndEffects();
-		}
-		// Go through objectives until an unsatisfied one is found
-		while (iterator.hasNext() && (current = iterator.next()).checkInitSatisfaction()) {
-			System.out.println("Starting quest " + current);
-		}
-		System.out.println("Next objective: " + current);
+		
+		do {
+			if (current != null) {
+				current.applyEndEffects();
+			}
+			if (iterator.hasNext()) {
+				current = iterator.next();
+				current.checkInitSatisfaction();
+			} else {
+				break;
+			}
+		} while (current.isSatisfied());
+		
 		return current.isSatisfied() && !iterator.hasNext();
 	}
 

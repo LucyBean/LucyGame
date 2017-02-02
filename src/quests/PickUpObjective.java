@@ -34,7 +34,6 @@ public class PickUpObjective extends Objective {
 	
 	public PickUpObjective(ItemType it) {
 		super("Obtain a " + it.toString(), genEventSatisfy(it), genInitSatisfy(it));
-		// TODO Auto-generated constructor stub
 	}
 
 }
