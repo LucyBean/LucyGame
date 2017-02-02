@@ -12,8 +12,8 @@ import objects.world.WorldObject;
 import objects.world.characters.NPC;
 
 class StatusWindow extends InterfaceElement {
-	WorldObject watching;
-	static Point textTopLeft = new Point(5,5);
+	private WorldObject watching;
+	private static Point textTopLeft = new Point(5,5);
 
 	public StatusWindow(Point origin) {
 		super(new Rectangle(origin, 200, 200));

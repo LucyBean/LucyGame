@@ -66,8 +66,7 @@ public class WorldMap {
 		if (objects != null) {
 			objects.stream().forEach(wo -> addObject(wo));
 		} else if (GlobalOptions.debug()) {
-			System.err.println(
-					"Attempting to add a null collection of objects.");
+			System.err.println("Attempting to add a null collection of objects.");
 		}
 	}
 
@@ -78,7 +77,7 @@ public class WorldMap {
 	public void addObject(WorldObject go) {
 		if (go != null) {
 			allObjects.add(go);
-			
+
 			WorldLayer layer = go.getLayer();
 			layers.add(go, layer.ordinal());
 
@@ -190,8 +189,7 @@ public class WorldMap {
 	public Stream<WorldObject> getActiveSolids() {
 		// Currently returns all solid objects in the world.
 		// TODO: Modify to keep track of on screen objects.
-		return objectsWithColliders.stream().filter(
-				wo -> wo.getCollider().isSolid());
+		return objectsWithColliders.stream().filter(wo -> wo.getCollider().isSolid());
 	}
 
 	public Stream<WorldObject> getAllInteractables() {
@@ -202,15 +200,13 @@ public class WorldMap {
 		lockablesByID.putIfAbsent(lockID, new HashSet<Lockable>());
 		return lockablesByID.get(lockID).stream();
 	}
-	
+
 	public NPC getNPC(int npcID) {
 		return npcsByID.get(npcID);
 	}
-	
-	public <T extends WorldObject> Stream<T> getAllObjectsOfType(
-			Class<T> t) {
-		return getObjects().filter(a -> a.isEnabled()).filter(
-				a -> t.isInstance(a)).map(a -> t.cast(a));
+
+	public <T extends WorldObject> Stream<T> getAllObjectsOfType(Class<T> t) {
+		return getObjects().filter(a -> a.isEnabled()).filter(a -> t.isInstance(a)).map(a -> t.cast(a));
 	}
 
 	/**
@@ -223,8 +219,7 @@ public class WorldMap {
 	 *            The type of objects that should be returned
 	 * @return
 	 */
-	public <T extends WorldObject> Stream<T> getOverlappingObjectsOfType(
-			Rectangle rectWorld, Class<T> t) {
+	public <T extends WorldObject> Stream<T> getOverlappingObjectsOfType(Rectangle rectWorld, Class<T> t) {
 		Stream<T> ts = getAllObjectsOfType(t);
 		return findOverlappingObjects(rectWorld, ts, t);
 	}
@@ -242,13 +237,11 @@ public class WorldMap {
 		return findOverlappingObjects(rectWorld, solids, WorldObject.class);
 	}
 
-	private <T extends WorldObject> Stream<T> findOverlappingObjects(
-			Rectangle rect, Stream<T> candidates, Class<T> t) {
+	private <T extends WorldObject> Stream<T> findOverlappingObjects(Rectangle rect, Stream<T> candidates, Class<T> t) {
 
 		return candidates.filter(go -> go.hasCollider()).filter(go -> {
 			Rectangle rectRel = go.getCollider().getRectangle();
-			Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(
-					rectRel);
+			Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(rectRel);
 			return rectWorld.overlaps(rect);
 		});
 	}
@@ -261,7 +254,14 @@ public class WorldMap {
 		layers.update(gc, delta);
 	}
 
-	public WorldObject findClickedObject(Point clickPoint) {
+	/**
+	 * Finds the object at the point (given in window co-ordinates)
+	 * 
+	 * @param clickPoint
+	 *            The point of the mouse click in window co-ordinates.
+	 * @return
+	 */
+	public WorldObject findObjectScreen(Point clickPoint) {
 		return layers.findClickedObject(clickPoint);
 	}
 

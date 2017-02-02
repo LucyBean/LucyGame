@@ -26,7 +26,8 @@ public enum ItemType {
 				GlobalOptions.GRID_SIZE)),
 		TRAMPOLINE(() -> SpriteBuilder.getTrampolineSprite()),
 		PUSHABLE_BLOCK(() -> SpriteBuilder.getColouredRectangle(2, 2, 5,
-				GlobalOptions.GRID_SIZE));
+				GlobalOptions.GRID_SIZE)),
+		NONE;
 
 	private boolean paintable = true;
 

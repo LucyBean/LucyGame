@@ -12,6 +12,7 @@ import worlds.World;
 import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
+	private static int WINDOW_WIDTH = GlobalOptions.WINDOW_WIDTH;
 	public DefaultGameInterface() {
 		Button openMenuButton = new Button(
 				new Rectangle(new Point(200, 0), 100, 32)) {
@@ -51,6 +52,9 @@ public class DefaultGameInterface extends GameInterface {
 		};
 		play.setTextCentered("Play!");
 		add(play, WorldState.BUILDING);
+		
+		BuildStatusWindow bsw = new BuildStatusWindow(new Point(WINDOW_WIDTH-200,0));
+		add(bsw, WorldState.BUILDING);
 
 		Button toolsButton = new Button(
 				new Rectangle(new Point(200, 0), 100, 32)) {

@@ -43,9 +43,9 @@ public class CoOrdTranslator {
 		}
 	}
 	
-	public Point screenToObjectCoOrds(Point point) {
+	public Point screenToWorldCoOrds(Point point) {
 		if (go instanceof InterfaceElement) {
-			return worldToObjectCoOrds(point);
+			return point;
 		} else if (go instanceof WorldObject) {
 			Camera camera = go.getWorld().getCamera();
 			WorldLayer layer = ((WorldObject) go).getLayer();
@@ -57,10 +57,15 @@ public class CoOrdTranslator {
 									layer.getParallaxX(),
 									layer.getParallaxY()));
 			
-			return worldToObjectCoOrds(worldCoOrds);
+			return worldCoOrds;
 		} else {
 			return null;
 		}
+	}
+	
+	public Point screenToObjectCoOrds(Point point) {
+		Point worldCoOrds = screenToWorldCoOrds(point);
+		return worldToObjectCoOrds(worldCoOrds);
 	}
 
 	public Rectangle objectToScreenCoOrds(Rectangle rect) {

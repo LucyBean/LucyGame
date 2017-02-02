@@ -339,7 +339,7 @@ public class World {
 	private void buildingUpdate(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		Point mousePoint = new Point(input.getMouseX(), input.getMouseY());
-		WorldObject wo = map.findClickedObject(mousePoint);
+		WorldObject wo = map.findObjectScreen(mousePoint);
 		boolean mouseOnMap = !gameInterface.mouseOver(mousePoint, getState())
 				& !worldInterface.mouseOver(mousePoint, getState());
 
@@ -426,8 +426,9 @@ public class World {
 	}
 
 	private void watchSelectMousePressed(int button, Point p) {
+		
 		// For each world object, check whether it was clicked by the mouse
-		WorldObject clicked = map.findClickedObject(p);
+		WorldObject clicked = map.findObjectScreen(p);
 
 		if (clicked != null) {
 			setWatchTarget(clicked);
