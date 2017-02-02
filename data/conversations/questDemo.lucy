@@ -43,13 +43,11 @@
 			</effect>
 		</objective>
 		<objective type="talkto" id="1">
-			<effect loc="start">
-				# Remove 1 gem from the player's inventory
-				use("gem",1)
-			</effect>
 			<effect loc="end">
 			# Add a new yellow_key to the position (16,19)
 			addObject(yellow_key,16,19)
+			# Remove 1 gem from the player's inventory
+			use("gem",1)
 			</effect>
 		</objective>
 	</quest>

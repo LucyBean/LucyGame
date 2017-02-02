@@ -11,7 +11,8 @@ public class Objective {
 	private String displayText;
 	private Function<EventInfo, Boolean> eventSatisfy;
 	private Function<World, Boolean> initSatisfy;
-	private List<Consumer<World>> endEffects;
+	private List<Consumer<World>> endEffects = new LinkedList<>();
+	private List<Consumer<World>> startEffects = new LinkedList<>();
 	private World world;
 	private boolean satisfied = false;
 
@@ -32,7 +33,6 @@ public class Objective {
 		this.displayText = displayText;
 		this.eventSatisfy = eventSatisfy;
 		this.initSatisfy = initSatisfy;
-		endEffects = new LinkedList<>();
 	}
 
 	/**
@@ -47,8 +47,16 @@ public class Objective {
 		endEffects.add(cw);
 	}
 	
+	public void addStartEffect(Consumer<World> cw) {
+		startEffects.add(cw);
+	}
+	
 	public void applyEndEffects() {
 		endEffects.forEach(cw -> cw.accept(world));
+	}
+	
+	public void applyStartEffects() {
+		startEffects.forEach(cw -> cw.accept(world));
 	}
 
 	public String getText() {

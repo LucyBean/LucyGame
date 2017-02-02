@@ -47,7 +47,6 @@ public class Quest {
 			if (finished) {
 				world.questFinished(this);
 			}
-			System.out.println("Finished: " + finished);
 		}
 	}
 
@@ -64,6 +63,7 @@ public class Quest {
 		while (iterator.hasNext() && (current = iterator.next()).checkInitSatisfaction()) {
 			System.out.println("Starting quest " + current);
 		}
+		System.out.println("Next objective: " + current);
 		return current.isSatisfied() && !iterator.hasNext();
 	}
 

@@ -28,7 +28,8 @@ public class World {
 	private GameInterface gameInterface;
 	private GameInterface worldInterface;
 	private WorldState worldState;
-	private Collection<Quest> activeQuests;
+	private Collection<Quest> activeQuests = new HashSet<>();
+	private Collection<Quest> newlyFinishedQuests;
 	private final LucyGame game;
 	private final String name;
 	private WorldMap map;
@@ -52,7 +53,6 @@ public class World {
 		try {
 			camera = new Camera();
 			worldState = WorldState.PLAYING;
-			activeQuests = new HashSet<>();
 			map.reset();
 
 			gameInterface = defaultInterface;
@@ -426,6 +426,10 @@ public class World {
 	//
 	public void signalEvent(EventInfo ei) {
 		activeQuests.stream().forEach(q -> q.signalEvent(ei));
+		if (newlyFinishedQuests != null) {
+			newlyFinishedQuests.forEach(q -> activeQuests.remove(q));
+			newlyFinishedQuests = null;
+		}
 	}
 
 	public void questStarted(Quest q) {
@@ -433,7 +437,10 @@ public class World {
 	}
 
 	public void questFinished(Quest q) {
-		activeQuests.remove(q);
+		if (newlyFinishedQuests == null) {
+			newlyFinishedQuests = new HashSet<>();
+		}
+		newlyFinishedQuests.add(q);
 	}
 
 	//

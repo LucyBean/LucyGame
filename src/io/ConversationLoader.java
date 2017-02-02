@@ -20,6 +20,7 @@ import objects.world.characters.NPC;
 import quests.Objective;
 import quests.PickUpObjective;
 import quests.Quest;
+import quests.TalkToObjective;
 import worlds.World;
 import worlds.WorldMap;
 
@@ -131,7 +132,6 @@ public class ConversationLoader {
 					Quest q = new Quest(questID);
 					List<Objective> objectives = loadObjectives();
 					objectives.forEach(o -> q.add(o));
-					q.add(new Objective("Test", ei -> false, w -> false));
 
 					NPC npc = map.getNPC(npcID);
 					if (npc == null) {
@@ -187,7 +187,7 @@ public class ConversationLoader {
 		Objective o = null;
 
 		if (m.find()) {
-			type = m.group(1);
+			type = m.group(1).toLowerCase();
 		} else {
 			logError("Objective with no type", 2);
 			return null;
@@ -212,6 +212,16 @@ public class ConversationLoader {
 				return null;
 			}
 			o = new PickUpObjective(it);
+		} else if (type.equals("talkto")) {
+			m = propertyExtractor("id", "\\d+").matcher(nextLine);
+			int npcID;
+			if (m.find()) {
+				npcID = Integer.parseInt(m.group(1));
+			} else {
+				logError("Talk to objective with no NPC specified", 2);
+				return null;
+			}
+			o = new TalkToObjective(npcID);
 		} else {
 			// TODO: Fill in other types
 			logError("Unknown type of objective: " + type, 2);
@@ -247,8 +257,16 @@ public class ConversationLoader {
 				if (m.find()) {
 					loc = m.group(1);
 				}
-				// Create a function that adds the function in the create place
-				Consumer<Consumer<World>> addEffect = (ccw -> o.addEndEffect(ccw));
+				// Create a function that adds the effect in the create place
+				Consumer<Consumer<World>> addEffect = null;
+				if (loc.equals("end")) {
+					addEffect = (ccw -> o.addEndEffect(ccw));
+				} else if (loc.equals("start")) {
+					addEffect = (ccw -> o.addStartEffect(ccw));
+				} else {
+					logError("Unknown effect location: " + loc, 2);
+					return;
+				}
 
 				while (!(nextLine = getNextLine()).matches("\\s*</effect>\\s*")) {
 					// Find all effects
