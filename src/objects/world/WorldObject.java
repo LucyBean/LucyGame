@@ -48,8 +48,8 @@ public abstract class WorldObject extends GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Collider collider, InteractBox interactBox) {
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite, Collider collider,
+			InteractBox interactBox) {
 		super(origin, sprite);
 		this.layer = layer;
 		this.itemType = itemType;
@@ -60,8 +60,7 @@ public abstract class WorldObject extends GameObject {
 		reset();
 	}
 
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite) {
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
 		this(origin, layer, itemType, sprite, null, null);
 	}
 
@@ -197,7 +196,7 @@ public abstract class WorldObject extends GameObject {
 	// Interaction and reactions
 	//
 	public void interactedBy(Actor a) {
-		
+
 	}
 
 	/**
@@ -231,8 +230,7 @@ public abstract class WorldObject extends GameObject {
 		// Draws collider and interact boxes
 		if (getCollider() != null) {
 			if (GlobalOptions.drawAllColliders()
-					|| GlobalOptions.drawInvisObjColliders()
-							&& (getSprite() == null || !isVisible())) {
+					|| GlobalOptions.drawInvisObjColliders() && (getSprite() == null || !isVisible())) {
 				getCollider().draw();
 			}
 		}
@@ -243,12 +241,10 @@ public abstract class WorldObject extends GameObject {
 			Collection<Sensor> sensors = attachments.getByType(Sensor.class);
 			sensors.stream().forEach(s -> s.draw());
 
-			Collection<AttackBox> activeAttacks = attachments.getByType(
-					AttackBox.class);
+			Collection<AttackBox> activeAttacks = attachments.getByType(AttackBox.class);
 			activeAttacks.stream().forEach(s -> s.draw());
 
-			Collection<ActorSticker> actorStickers = attachments.getByType(
-					ActorSticker.class);
+			Collection<ActorSticker> actorStickers = attachments.getByType(ActorSticker.class);
 			actorStickers.stream().forEach(s -> s.draw());
 		}
 	}
@@ -258,8 +254,27 @@ public abstract class WorldObject extends GameObject {
 		if (isEnabled()) {
 			return getClass().getSimpleName() + " at " + getPosition();
 		} else {
-			return getClass().getSimpleName();
+			return getClass().getSimpleName() + " DISABLED";
 		}
+	}
+
+	/**
+	 * Returns information about this object. Each bit of information will be on
+	 * a new line. This is for displaying on interfaces.
+	 * 
+	 * @return
+	 */
+	public String getInfo() {
+		String info = getClass().getSimpleName() + "\n";
+		if (isEnabled()) {
+			info += getPosition() + "\n";
+		} else {
+			info += "DISABLED\n";
+		}
+		if (this instanceof Lockable) {
+			info += "Lock ID: " + getLockID() + "\n";
+		}
+		return info;
 	}
 
 	public int getKeyID() {
@@ -282,7 +297,6 @@ public abstract class WorldObject extends GameObject {
 	@Override
 	public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
-		attachments.getByType(AttackBox.class).stream().forEach(
-				a -> a.checkAttack());
+		attachments.getByType(AttackBox.class).stream().forEach(a -> a.checkAttack());
 	}
 }

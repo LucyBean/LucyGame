@@ -1163,4 +1163,12 @@ public abstract class Actor extends WorldObject {
 			a.startPushing(this);
 		}
 	}
+	
+	@Override
+	public String getInfo() {
+		String info = super.getInfo();
+		info += "State: " + state + "\n";
+		info += "Push: " + pushTarget + "\n";
+		return info;
+	}
 }

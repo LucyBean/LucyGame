@@ -4,12 +4,7 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
 import helpers.Rectangle;
-import objects.world.Actor;
-import objects.world.ActorState;
-import objects.world.Lockable;
-import objects.world.Locker;
 import objects.world.WorldObject;
-import objects.world.characters.NPC;
 
 class StatusWindow extends InterfaceElement {
 	private WorldObject watching;
@@ -39,36 +34,7 @@ class StatusWindow extends InterfaceElement {
 		if (watching == null) {
 			setText("Watching nothing", textTopLeft);
 		} else {
-			String text = "Watching [" + watching.getClass().getSimpleName() + "]\n";
-			
-			if (watching.isEnabled()) {
-				text += "Pos: " + watching.getPosition() + "\n";
-			} else {
-				text += "Disabled\n";
-			}
-			
-			if (watching instanceof Actor) {
-				Actor a = (Actor) watching;
-				ActorState state = a.getState();
-				text += "State: " + state + "\n";
-				Actor pushTarget = a.getPushTarget();
-				text += "Pushing: " + pushTarget + "\n";
-			}
-			
-			if (watching instanceof NPC) {
-				int npcID = watching.getNPCID();
-				text += "NPC ID: " + npcID + "\n";
-			}
-			
-			if (watching instanceof Locker) {
-				int lockID = watching.getLockID();
-				text += "Lock ID: " + lockID + "\n";
-			}
-			
-			if (watching instanceof Lockable) {
-				int lockID = watching.getLockID();
-				text += "Lock ID: " + lockID + "\n";
-			}
+			String text = watching.getInfo();
 			
 			setText(text, textTopLeft);
 		}

@@ -144,4 +144,11 @@ public abstract class Locker extends Static {
 	 * image.
 	 */
 	protected abstract void unlockAction();
+	
+	@Override
+	public String getInfo() {
+		String info = super.getInfo();
+		info += "Lock ID: " + lockID + "\n";
+		return info;
+	}
 }

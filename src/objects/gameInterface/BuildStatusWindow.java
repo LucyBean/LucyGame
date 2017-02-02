@@ -37,9 +37,9 @@ public class BuildStatusWindow extends InterfaceElement {
 		Point mouseWorld = worldCOT.screenToWorldCoOrds(mouseScreen);
 		WorldObject hoverObject = getWorld().getMap().findObjectScreen(mouseScreen);
 		
-		String text = mouseWorld.toString();
+		String text = "MOUSE: " + mouseWorld.toString() + "\n";
 		if (hoverObject != null) {
-			text += "\n" + hoverObject.toString();
+			text += hoverObject.getInfo();
 		}
 		setText(text, textTopLeft);
 	}

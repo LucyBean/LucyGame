@@ -52,7 +52,6 @@ public class LucyGame extends BasicGame {
 			if (args.length >= 1) {
 				String dev = args[0];
 				if (dev.equals("dev")) {
-					app.setShowFPS(true);
 					app.setVerbose(true);
 					Controller.setDvorak();
 				}

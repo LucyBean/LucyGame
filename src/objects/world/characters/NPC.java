@@ -58,5 +58,12 @@ public abstract class NPC extends Actor {
 	public void setConversations(ConversationSet cs) {
 		conversations = cs;
 	}
+	
+	@Override
+	public String getInfo() {
+		String info = super.getInfo();
+		info += "NPC ID: " + npcID + "\n";
+		return info;
+	}
 
 }
