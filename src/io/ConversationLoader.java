@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +20,7 @@ import objects.world.characters.NPC;
 import quests.Objective;
 import quests.PickUpObjective;
 import quests.Quest;
+import worlds.World;
 import worlds.WorldMap;
 
 public class ConversationLoader {
@@ -245,15 +247,18 @@ public class ConversationLoader {
 				if (m.find()) {
 					loc = m.group(1);
 				}
-				while(!(nextLine = getNextLine()).matches("\\s*</effect>\\s*")) {
+				// Create a function that adds the function in the create place
+				Consumer<Consumer<World>> addEffect = (ccw -> o.addEndEffect(ccw));
+
+				while (!(nextLine = getNextLine()).matches("\\s*</effect>\\s*")) {
 					// Find all effects
 					Pattern setStatePattern = Pattern.compile("setState\\((\\d+),(\\d+)\\)");
 					m = setStatePattern.matcher(nextLine);
 					if (m.find()) {
 						int npcID = Integer.parseInt(m.group(1));
 						int newState = Integer.parseInt(m.group(2));
-						
-						o.addEndEffect(cw -> {
+
+						addEffect.accept(cw -> {
 							if (cw != null && cw.getMap() != null) {
 								NPC npc = cw.getMap().getNPC(npcID);
 								if (npc != null) {

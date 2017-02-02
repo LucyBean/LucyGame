@@ -2,7 +2,7 @@ package objects.images;
 
 import helpers.Dir;
 import helpers.Point;
-import objects.world.characters.InventoryItem;
+import objects.world.ItemType;
 
 public class InventoryDisplaySprite extends SingleSprite {
 	private static LayeredImage makeImage() {
@@ -12,8 +12,7 @@ public class InventoryDisplaySprite extends SingleSprite {
 		final int textBoxWidth = 70;
 		final int quantitySize = 20;
 
-		final int width = border * 2 + padding * 2 + iconSize + textBoxWidth
-				+ quantitySize;
+		final int width = border * 2 + padding * 2 + iconSize + textBoxWidth + quantitySize;
 		final int height = border * 2 + iconSize;
 
 		LayeredImage img = new LayeredImage(width, height, 5);
@@ -29,7 +28,7 @@ public class InventoryDisplaySprite extends SingleSprite {
 
 		// Text
 		// Middle align this
-		p.move(Dir.SOUTH, iconSize/2);
+		p.move(Dir.SOUTH, iconSize / 2);
 		TextImage name = new TextImage("Name");
 		name.setAlignment(0, 1);
 		img.setLayer(2, new PositionedImage(p, name));
@@ -37,7 +36,7 @@ public class InventoryDisplaySprite extends SingleSprite {
 
 		// Digits
 		TextImage digits = new TextImage("00");
-		digits.setAlignment(0,1);
+		digits.setAlignment(0, 1);
 		img.setLayer(3, new PositionedImage(p, digits));
 
 		return img;
@@ -54,6 +53,10 @@ public class InventoryDisplaySprite extends SingleSprite {
 	private void setIcon(LucyImage i) {
 		getImage().setLayer(1, i);
 	}
+	
+	private void clearIcon() {
+		getImage().clear(1);
+	}
 
 	private void setName(String name) {
 		getImage().setText(2, name);
@@ -62,17 +65,22 @@ public class InventoryDisplaySprite extends SingleSprite {
 	private void setQuantity(int quantity) {
 		getImage().setText(3, "" + quantity);
 	}
-	
-	public void setTo(InventoryItem ii, int quantity) {
-		LucyImage img = ii.getImage();
-		String name = ii.getName();
+
+	public void setTo(ItemType ii, int quantity) {
+		if (ii != null) {
+			LayeredImage limg = ii.getSprite().getImage();
+			LucyImage img = limg.getLayer(limg.getTopLayerNumber()).getImage();
+			setIcon(img);
+		} else {
+			clearIcon();
+		}
 		
+		String name = ii.toString();
 		setDeselectedBackground();
-		setIcon(img);
 		setName(name);
 		setQuantity(quantity);
 	}
-	
+
 	public void setBlank() {
 		setDeselectedBackground();
 		setIcon(null);

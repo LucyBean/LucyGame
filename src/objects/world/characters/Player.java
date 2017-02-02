@@ -98,7 +98,7 @@ public class Player extends Actor {
 		inventory = new Inventory();
 	}
 
-	public void addToInventory(InventoryItem ii) {
+	public void addToInventory(ItemType ii) {
 		if (ii != null) {
 			inventory.add(ii);
 		}
@@ -129,22 +129,20 @@ public class Player extends Actor {
 	 * @param ii
 	 * @return
 	 */
-	public boolean has(InventoryItem ii) {
+	public boolean has(ItemType ii) {
 		return inventory.has(ii);
 	}
 
-	public boolean has(InventoryItem ii, int quantity) {
+	public boolean has(ItemType ii, int quantity) {
 		return inventory.has(ii, quantity);
 	}
-
-	public boolean hasKey(int keyID) {
-		InventoryItem key = InventoryItem.getKeyByID(keyID);
-		return has(key);
+	
+	public void use(ItemType it) {
+		use(it, 1);
 	}
-
-	public void useKey(int keyID) {
-		InventoryItem key = InventoryItem.getKeyByID(keyID);
-		inventory.remove(key, 1);
+	
+	public void use(ItemType it, int quantity) {
+		inventory.remove(it, quantity);
 	}
 
 	public Inventory getInventory() {

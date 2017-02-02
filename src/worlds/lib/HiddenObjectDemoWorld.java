@@ -101,6 +101,6 @@ class HiddenSquare extends Static {
 class PickUpSquare extends PickUpItem {
 
 	public PickUpSquare(Point origin) {
-		super(origin, ItemType.GEM, null);
+		super(origin, ItemType.GEM);
 	}
 }

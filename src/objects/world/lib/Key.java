@@ -3,12 +3,11 @@ package objects.world.lib;
 import helpers.Point;
 import objects.world.ItemType;
 import objects.world.PickUpItem;
-import objects.world.characters.InventoryItem;
 
 public class Key extends PickUpItem {
 	int keyID;
 
-	private static ItemType keyIDtoItemType(int keyID) {
+	public static ItemType keyIDtoItemType(int keyID) {
 		if (keyID < 0) {
 			keyID = 1;
 		}
@@ -20,7 +19,7 @@ public class Key extends PickUpItem {
 	}
 
 	public Key(Point origin, int keyID) {
-		super(origin, keyIDtoItemType(keyID), InventoryItem.getKeyByID(keyID));
+		super(origin, keyIDtoItemType(keyID));
 		setInteractBoxFromSprite();
 	}
 

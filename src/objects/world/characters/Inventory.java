@@ -2,7 +2,9 @@ package objects.world.characters;
 
 import java.util.TreeMap;
 
-public class Inventory extends TreeMap<InventoryItem, Integer> {
+import objects.world.ItemType;
+
+public class Inventory extends TreeMap<ItemType, Integer> {
 	/**
 	 * 
 	 */
@@ -14,11 +16,11 @@ public class Inventory extends TreeMap<InventoryItem, Integer> {
 	 * @param ii
 	 * @return
 	 */
-	public boolean has(InventoryItem ii) {
+	public boolean has(ItemType ii) {
 		return has(ii, 1);
 	}
 	
-	public boolean has(InventoryItem ii, int quantity) {
+	public boolean has(ItemType ii, int quantity) {
 		Integer n = get(ii);
 		
 		return n != null && n >= quantity;
@@ -32,7 +34,7 @@ public class Inventory extends TreeMap<InventoryItem, Integer> {
 	 * @param quantity
 	 *            The amount to add.
 	 */
-	public void add(InventoryItem ii, int quantity) {
+	public void add(ItemType ii, int quantity) {
 		int newAmount = getOrDefault(ii, 0) + quantity;
 
 		if (newAmount <= 0) {
@@ -51,7 +53,7 @@ public class Inventory extends TreeMap<InventoryItem, Integer> {
 	 * @param ii
 	 *            The InventoryItem to add.
 	 */
-	public void add(InventoryItem ii) {
+	public void add(ItemType ii) {
 		add(ii, 1);
 	}
 
@@ -61,7 +63,7 @@ public class Inventory extends TreeMap<InventoryItem, Integer> {
 	 * 
 	 * @param ii
 	 */
-	public void remove(InventoryItem ii, int amount) {
+	public void remove(ItemType ii, int amount) {
 		Integer n = get(ii);
 
 		if (n != null && n > 0) {

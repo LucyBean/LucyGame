@@ -16,6 +16,7 @@ import objects.world.Actor;
 import objects.world.Lockable;
 import objects.world.Locker;
 import objects.world.WorldObject;
+import objects.world.characters.Inventory;
 import objects.world.characters.NPC;
 import objects.world.characters.Player;
 import options.GlobalOptions;
@@ -74,6 +75,15 @@ public class WorldMap {
 
 	public void addObject(WorldObject go) {
 		if (go != null) {
+
+			// If it is a Player, register their inventory with the inventory
+			// displayer
+			if (go instanceof Player) {
+				Inventory i = ((Player) go).getInventory();
+				world.setInventoryToDisplay(i);
+				world.getCamera().setTarget(go);
+			}
+			
 			WorldLayer layer = go.getLayer();
 			layers.add(go, layer.ordinal());
 

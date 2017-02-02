@@ -8,7 +8,8 @@ import objects.world.characters.Player;
 import worlds.WorldLayer;
 
 public class Lock extends Locker {
-	int keyID;
+	private int keyID;
+	private ItemType unlockKey;
 	
 	private static ItemType keyIDtoItemType(int keyID) {
 		if (keyID < 0 || keyID >= 4) {
@@ -21,6 +22,7 @@ public class Lock extends Locker {
 	public Lock(Point origin, int keyID, int lockID) {
 		super(lockID, origin, WorldLayer.WORLD, keyIDtoItemType(keyID));
 		this.keyID = keyID;
+		unlockKey = Key.keyIDtoItemType(keyID);
 	}
 	
 	@Override
@@ -42,8 +44,8 @@ public class Lock extends Locker {
 	protected boolean unlockCheck(Actor a) {
 		if (a instanceof Player) {
 			Player p = (Player) a;
-			if (p.hasKey(keyID)) {
-				p.useKey(keyID);
+			if (p.has(unlockKey)) {
+				p.use(unlockKey);
 				return true;
 			} else {
 				return false;

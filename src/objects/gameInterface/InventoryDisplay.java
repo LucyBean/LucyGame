@@ -6,14 +6,11 @@ import helpers.Point;
 import objects.images.InventoryDisplaySprite;
 import objects.images.SingleSprite;
 import objects.images.Sprite;
+import objects.world.ItemType;
 import objects.world.characters.Inventory;
-import objects.world.characters.InventoryItem;
 
 public class InventoryDisplay extends IEList {
 	Inventory inventory;
-
-	InventoryItem minItem;
-	InventoryItem maxItem;
 
 	public InventoryDisplay(Point firstPoint, Inventory i) {
 		super(firstPoint, 4, 1, 4, (s -> s.getImage().fillLayer(0, 2)));
@@ -45,11 +42,11 @@ public class InventoryDisplay extends IEList {
 				&& elementIndex < inventory.size()) {
 			// There is information to display
 			// Navigate to correct element
-			Iterator<InventoryItem> iie = inventory.navigableKeySet().iterator();
+			Iterator<ItemType> iie = inventory.navigableKeySet().iterator();
 			for (int i = 0; i < elementIndex; i++) {
 				iie.next();
 			}
-			InventoryItem ii = iie.next();
+			ItemType ii = iie.next();
 			int quantity = inventory.get(ii);
 
 			ids.setTo(ii, quantity);

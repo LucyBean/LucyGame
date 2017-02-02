@@ -18,7 +18,6 @@ import objects.gameInterface.InterfaceElement;
 import objects.world.WorldObject;
 import objects.world.characters.Conversation;
 import objects.world.characters.Inventory;
-import objects.world.characters.Player;
 import objects.world.lib.Wall;
 import options.GlobalOptions;
 import quests.EventInfo;
@@ -125,13 +124,10 @@ public class World {
 	 */
 	public void addObject(WorldObject go) {
 		map.addObject(go);
+	}
 
-		// If it is a Player, register their inventory with the inventory
-		// displayer
-		if (go instanceof Player) {
-			Inventory i = ((Player) go).getInventory();
-			gameInterface.setInventoryToDisplay(i);
-		}
+	public void setInventoryToDisplay(Inventory i) {
+		gameInterface.setInventoryToDisplay(i);
 	}
 
 	public void removeObject(WorldObject go) {
