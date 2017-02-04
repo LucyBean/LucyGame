@@ -2,7 +2,6 @@ package objects.images;
 
 import helpers.Point;
 import helpers.Rectangle;
-import options.GlobalOptions;
 
 public class PositionedImage {
 	Point origin;
@@ -11,12 +10,6 @@ public class PositionedImage {
 	public PositionedImage(Point origin, LucyImage image) {
 		this.origin = origin;
 		this.image = image;
-
-		if (GlobalOptions.debug() && (origin.getX() < 0 || origin.getY() < 0)) {
-			System.err.println(
-					"Warning: Trying to create a positioned image with "
-							+ "an origin with negative x- or y-co-ordinate.");
-		}
 	}
 
 	/**
@@ -81,5 +74,11 @@ public class PositionedImage {
 
 	public void setPosition(Point p) {
 		origin = p;
+	}
+
+	public void setAlpha(float alpha) {
+		if (getImage() != null) {
+			getImage().setAlpha(alpha);
+		}
 	}
 }

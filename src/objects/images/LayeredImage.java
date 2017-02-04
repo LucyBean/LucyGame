@@ -108,7 +108,8 @@ public class LayeredImage {
 							new StaticImage(width, height));
 					layers.add(z, img);
 				} catch (SlickException se) {
-					ErrorLogger.log(se, "Unable to create new layer on image.", 4);
+					ErrorLogger.log(se, "Unable to create new layer on image.",
+							4);
 				}
 			}
 			return img;
@@ -125,18 +126,14 @@ public class LayeredImage {
 	 */
 	public void setLayer(int layer, PositionedImage img) {
 		if (layer >= 0 && layer < numLayers) {
-			if (img.getWidth() > width || img.getHeight() > height) {
-				ErrorLogger.log("Incorrectly sized image " + img.getWidth()
-						+ "x" + img.getHeight() + " added to image of size "
-						+ width + "x" + height, 1);
-			}
 			if (layers.get(layer) != null) {
 				layers.remove(layer);
 			}
 			layers.add(layer, img);
 		} else {
 			ErrorLogger.log(
-					"Attempting to add an image to an invalid layer " + layer, 1);
+					"Attempting to add an image to an invalid layer " + layer,
+					1);
 		}
 	}
 
@@ -150,10 +147,6 @@ public class LayeredImage {
 	 */
 	public void setLayerPosition(int layer, Point p) {
 		if (layer >= 0 && layer < numLayers) {
-			if (p.getX() > width || p.getY() > height) {
-				ErrorLogger.log("Incorrect image position " + p
-						+ " on image of size " + width + "x" + height, 1);
-			}
 			PositionedImage pi = layers.get(layer);
 			if (pi != null) {
 				pi.setPosition(p);
@@ -162,7 +155,8 @@ public class LayeredImage {
 			}
 		} else {
 			ErrorLogger.log(
-					"Attempting to add an image to an invalid layer " + layer, 1);
+					"Attempting to add an image to an invalid layer " + layer,
+					1);
 		}
 	}
 
@@ -362,5 +356,17 @@ public class LayeredImage {
 	public void setLayers(LayeredImage limg) {
 		numLayers = limg.numLayers;
 		layers = limg.layers;
+	}
+
+	/**
+	 * Sets the alpha of all layers. Note that layers later added to this
+	 * LayeredImage will not inherit this alpha value.
+	 * 
+	 * @param alpha
+	 */
+	public void setAlpha(float alpha) {
+		for (PositionedImage pimg : layers) {
+			pimg.setAlpha(alpha);
+		}
 	}
 }

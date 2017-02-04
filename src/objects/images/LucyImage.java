@@ -5,4 +5,5 @@ public interface LucyImage {
 	public int getWidth();
 	public int getHeight();
 	public void setMirrored(boolean mirrored);
+	public void setAlpha(float alpha);
 }

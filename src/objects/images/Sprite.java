@@ -80,4 +80,6 @@ public abstract class Sprite extends Attachment {
 	public abstract void update(int delta);
 
 	public abstract void setMirrored(boolean mirrored);
+	
+	public abstract void setAlpha(float alpha);
 }

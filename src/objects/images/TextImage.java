@@ -10,6 +10,7 @@ public class TextImage implements LucyImage {
 	private int height = 0;
 	private int hAlign = 0;
 	private int vAlign = 0;
+	private float alpha = 1.0f;
 
 	public TextImage(String text) {
 		setText(text);
@@ -60,10 +61,13 @@ public class TextImage implements LucyImage {
 
 		x -= (w * hAlign) / 2;
 		y += (h * vAlign) / 2;
+		
+		Color c = Color.black;
+		c.a = 255 * alpha;
 
 		if (lines != null) {
 			for (int i = 0; i < lines.length; i++) {
-				f.drawString(x, y, lines[i], Color.black);
+				f.drawString(x, y, lines[i], c);
 				y += f.getHeight(lines[i]);
 			}
 		}
@@ -83,6 +87,11 @@ public class TextImage implements LucyImage {
 	public void setMirrored(boolean mirrored) {
 		// This cannot be done with text!
 		// It doesn't make sense!
+	}
+	
+	@Override
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
 	}
 
 }

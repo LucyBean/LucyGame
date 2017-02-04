@@ -48,4 +48,9 @@ public class TiledSprite extends Sprite {
 		return image;
 	}
 
+	@Override
+	public void setAlpha(float alpha) {
+		image.setAlpha(alpha);
+	}
+
 }

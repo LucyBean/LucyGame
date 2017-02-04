@@ -10,6 +10,7 @@ public class AnimatedImage implements LucyImage {
 	private int currentDisplayDuration = 0;
 	private boolean mirrored;
 	private boolean loop;
+	private float alpha = 1.0f;
 
 	public AnimatedImage(SpriteSheet sprites, int animationInterval, boolean loop) {
 		this.sprites = sprites;
@@ -50,6 +51,7 @@ public class AnimatedImage implements LucyImage {
 	@Override
 	public void draw(float x, float y, float scale) {
 		Image img = sprites.getSubImage(currentImage, 0);
+		img.setAlpha(alpha);
 		if (mirrored) {
 			img = img.getFlippedCopy(true, false);
 		}
@@ -64,6 +66,11 @@ public class AnimatedImage implements LucyImage {
 	@Override
 	public int getHeight() {
 		return sprites.getHeight() / sprites.getVerticalCount();
+	}
+	
+	@Override
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
 	}
 
 	public void resetAnimation() {

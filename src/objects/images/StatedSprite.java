@@ -12,6 +12,7 @@ public class StatedSprite extends Sprite {
 	private LayeredImage queuedImage;
 	private Map<Integer, LayeredImage> images;
 	private boolean mirrored;
+	private float alpha = 1.0f;
 
 	public StatedSprite(LayeredImage defaultImage, int defaultState,
 			int gridSize) {
@@ -47,6 +48,7 @@ public class StatedSprite extends Sprite {
 		currentImage = newImage;
 		setRectangle(getImage().getRectangle());
 		getImage().setMirrored(mirrored);
+		getImage().setAlpha(alpha);
 		if (getObject() != null) {
 			getObject().statedSpriteImageChange();
 		}
@@ -97,6 +99,12 @@ public class StatedSprite extends Sprite {
 		} else {
 			return defaultImage;
 		}
+	}
+
+	@Override
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+		getImage().setAlpha(alpha);
 	}
 
 }

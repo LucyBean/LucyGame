@@ -43,6 +43,11 @@ public class StaticImage implements LucyImage {
 		this.mirrored = mirrored;
 	}
 	
+	@Override
+	public void setAlpha(float alpha) {
+		myImage.setAlpha(alpha);
+	}
+	
 	public StaticImage getScaledCopy(int newWidth, int newHeight) {
 		return new StaticImage(myImage.getScaledCopy(newWidth, newHeight));
 	}

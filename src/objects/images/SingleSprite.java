@@ -87,4 +87,9 @@ public class SingleSprite extends Sprite {
 			setRectangle(image.getRectangle().translate(origin));
 		}
 	}
+
+	@Override
+	public void setAlpha(float alpha) {
+		image.setAlpha(alpha);
+	}
 }
