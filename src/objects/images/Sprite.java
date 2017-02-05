@@ -79,7 +79,25 @@ public abstract class Sprite extends Attachment {
 	 */
 	public abstract void update(int delta);
 
-	public abstract void setMirrored(boolean mirrored);
-	
+	/**
+	 * Sets the image to be mirrored. This will set the alpha correctly after
+	 * mirroring.
+	 * 
+	 * @param mirrored
+	 */
+	public void setMirrored(boolean mirrored) {
+		mirrorImage(mirrored);
+		setAlpha(getAlpha());
+	}
+
+	/**
+	 * Sets the imaged to be mirrored.
+	 * 
+	 * @param mirrored
+	 */
+	protected abstract void mirrorImage(boolean mirrored);
+
 	public abstract void setAlpha(float alpha);
+
+	public abstract float getAlpha();
 }

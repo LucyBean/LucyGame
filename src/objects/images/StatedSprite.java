@@ -87,7 +87,7 @@ public class StatedSprite extends Sprite {
 	}
 
 	@Override
-	public void setMirrored(boolean mirrored) {
+	protected void mirrorImage(boolean mirrored) {
 		this.mirrored = mirrored;
 		getImage().setMirrored(mirrored);
 	}
@@ -105,6 +105,10 @@ public class StatedSprite extends Sprite {
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 		getImage().setAlpha(alpha);
+	}
+	@Override
+	public float getAlpha() {
+		return alpha;
 	}
 
 }

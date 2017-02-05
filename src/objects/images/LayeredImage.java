@@ -333,9 +333,8 @@ public class LayeredImage {
 	 */
 	public void setMirrored(boolean mirrored) {
 		if (this.mirrored != mirrored) {
-			layers.stream().filter(i -> i != null).map(
-					i -> i.getImage()).filter(i -> i != null).forEach(
-							i -> i.setMirrored(mirrored));
+			layers.stream().filter(i -> i != null).forEach(
+					i -> i.setMirrored(mirrored));
 			this.mirrored = mirrored;
 		}
 	}
@@ -347,10 +346,7 @@ public class LayeredImage {
 	}
 
 	public void resetAnimations() {
-		layers.stream().filter(i -> i != null).map(i -> i.getImage()).filter(
-				i -> i != null && i instanceof AnimatedImage).map(
-						i -> (AnimatedImage) i).forEach(
-								i -> i.resetAnimation());
+		layers.stream().filter(i -> i != null).forEach(i -> i.resetAnimation());
 	}
 
 	public void setLayers(LayeredImage limg) {
@@ -365,8 +361,6 @@ public class LayeredImage {
 	 * @param alpha
 	 */
 	public void setAlpha(float alpha) {
-		for (PositionedImage pimg : layers) {
-			pimg.setAlpha(alpha);
-		}
+		layers.stream().filter(i -> i != null).forEach(i -> i.setAlpha(alpha));
 	}
 }

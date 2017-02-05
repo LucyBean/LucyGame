@@ -8,6 +8,7 @@ public class TiledSprite extends Sprite {
 	private LayeredImage image;
 	private int tileX;
 	private int tileY;
+	private float alpha = 1.0f;
 	
 	public TiledSprite(LayeredImage img, Point origin, int tileX, int tileY,
 			int gridSize) {
@@ -39,7 +40,7 @@ public class TiledSprite extends Sprite {
 	}
 
 	@Override
-	public void setMirrored(boolean mirrored) {
+	public void mirrorImage(boolean mirrored) {
 		image.setMirrored(mirrored);
 	}
 
@@ -51,6 +52,11 @@ public class TiledSprite extends Sprite {
 	@Override
 	public void setAlpha(float alpha) {
 		image.setAlpha(alpha);
+	}
+	
+	@Override
+	public float getAlpha() {
+		return alpha;
 	}
 
 }

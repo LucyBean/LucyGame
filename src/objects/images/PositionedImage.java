@@ -76,9 +76,36 @@ public class PositionedImage {
 		origin = p;
 	}
 
+	/**
+	 * Sets the alpha of the image.
+	 * 
+	 * @param alpha
+	 */
 	public void setAlpha(float alpha) {
 		if (getImage() != null) {
 			getImage().setAlpha(alpha);
 		}
 	}
+
+	/**
+	 * Sets the image to be mirrored. Does not affect the origin.
+	 * 
+	 * @param mirrored
+	 */
+	public void setMirrored(boolean mirrored) {
+		if (getImage() != null) {
+			getImage().setMirrored(mirrored);
+		}
+	}
+
+	/**
+	 * Resets the animation for the image. This has no effect if the image is
+	 * not an AnimatedImage.
+	 */
+	public void resetAnimation() {
+		if (getImage() != null && getImage() instanceof AnimatedImage) {
+			((AnimatedImage) getImage()).resetAnimation();
+		}
+	}
+
 }

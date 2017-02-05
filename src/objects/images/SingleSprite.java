@@ -12,6 +12,7 @@ import helpers.Rectangle;
  */
 public class SingleSprite extends Sprite {
 	private LayeredImage image;
+	private float alpha = 1.0f;
 
 	/**
 	 * 
@@ -61,7 +62,8 @@ public class SingleSprite extends Sprite {
 		super(r, gridSize);
 	}
 
-	public void setMirrored(boolean mirrored) {
+	@Override
+	public void mirrorImage(boolean mirrored) {
 		image.setMirrored(mirrored);
 	}
 
@@ -90,6 +92,12 @@ public class SingleSprite extends Sprite {
 
 	@Override
 	public void setAlpha(float alpha) {
+		this.alpha = alpha;
 		image.setAlpha(alpha);
+	}
+	
+	@Override
+	public float getAlpha() {
+		return alpha;
 	}
 }

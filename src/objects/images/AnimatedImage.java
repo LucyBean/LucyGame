@@ -51,10 +51,10 @@ public class AnimatedImage implements LucyImage {
 	@Override
 	public void draw(float x, float y, float scale) {
 		Image img = sprites.getSubImage(currentImage, 0);
-		img.setAlpha(alpha);
 		if (mirrored) {
 			img = img.getFlippedCopy(true, false);
 		}
+		img.setAlpha(alpha);
 		img.draw(x, y, scale);
 	}
 

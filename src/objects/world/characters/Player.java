@@ -38,6 +38,8 @@ public class Player extends Actor {
 				e.damage(1);
 			}
 		};
+		
+		getSprite().setAlpha(0.3f);
 	}
 
 	@Override
