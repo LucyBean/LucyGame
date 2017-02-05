@@ -16,7 +16,6 @@ import objects.CoOrdTranslator;
 import objects.gameInterface.DefaultGameInterface;
 import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
-import objects.gameInterface.TextPrompt;
 import objects.images.LayeredImage;
 import objects.world.ItemType;
 import objects.world.WorldObject;
@@ -78,9 +77,6 @@ public class World {
 			worldInterface.setWorld(this);
 			ignoringInput = false;
 			paused = false;
-			
-			// TODO: Remove
-			worldInterface.addToAll(new TextPrompt(new Point(40,40), 150));
 
 			init();
 
