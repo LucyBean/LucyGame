@@ -17,8 +17,6 @@ import objects.gameInterface.DefaultGameInterface;
 import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
 import objects.images.LayeredImage;
-import objects.images.SingleSprite;
-import objects.images.Sprite;
 import objects.world.ItemType;
 import objects.world.WorldObject;
 import objects.world.characters.Conversation;

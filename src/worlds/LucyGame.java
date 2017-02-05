@@ -31,7 +31,6 @@ public class LucyGame extends BasicGame {
 	private World world;
 	private WorldLoader worldLoader = new WorldLoader(this);
 	private boolean gameCrashed = false;
-	private static boolean devMode = false;
 
 	private static String version;
 
@@ -55,7 +54,6 @@ public class LucyGame extends BasicGame {
 				if (dev.equals("dev")) {
 					app.setVerbose(true);
 					Controller.setDvorak();
-					devMode = true;
 				}
 			}
 			app.start();
@@ -205,9 +203,6 @@ public class LucyGame extends BasicGame {
 	private void gameCrashed(Exception e) {
 		gameCrashed = true;
 		ErrorLogger.log(e, 5);
-		if (devMode) {
-			e.printStackTrace();
-		}
 	}
 
 	public void loadMainMenu() {

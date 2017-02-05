@@ -22,6 +22,14 @@ import quests.EventType;
 import worlds.World;
 import worlds.WorldLayer;
 
+/**
+ * An Actor class for representing objects that move through the world. Objects
+ * that stay in a fixed position and do not need to respond to gravity or
+ * collision checking should be implemented as Static.
+ * 
+ * @author Lucy
+ *
+ */
 public abstract class Actor extends WorldObject {
 	private Collection<WorldObject> activeInteractables;
 	private Dir facing;
@@ -600,7 +608,8 @@ public abstract class Actor extends WorldObject {
 			// their feet
 			if (!floorAheadSensor.isOverlappingSolid()) {
 				// Check if there is space to 'run off' this block. This
-				// requires a space as large as this object's collider to be free
+				// requires a space as large as this object's collider to be
+				// free
 				Rectangle runSpace = getCollider().getRectangle();
 				runSpace = runSpace.translate(d, runSpace.getWidth());
 				if (getOverlappingSolids(runSpace).isEmpty()) {
@@ -948,14 +957,20 @@ public abstract class Actor extends WorldObject {
 
 	private Collection<WorldObject> findInteractablesHere() {
 		// Check for any interactables that are at the Actor's current position
-		Rectangle thisArea = getCollider().getRectangle().translate(
-				getPosition());
-		Stream<WorldObject> interactables = getWorld().getMap().getAllInteractables();
+		Rectangle thisArea = getCoOrdTranslator().objectToWorldCoOrds(
+				getCollider().getRectangle());
+		Collection<WorldObject> interactables = getWorld().getMap().getAllInteractables();
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
-		interactables.filter(go -> go != this && go.isEnabled()).filter(
-				go -> go.getInteractBox().getRectangle().translate(
-						go.getPosition()).overlaps(thisArea)).forEach(
-								go -> nowActive.add(go));
+		for (WorldObject i : interactables) {
+			if (i != this && i.isEnabled()) {
+				Rectangle other = i.getCoOrdTranslator().objectToWorldCoOrds(
+						i.getInteractBox().getRectangle());
+				if (other.overlaps(thisArea)) {
+					nowActive.add(i);
+				}
+			}
+		}
+
 		return nowActive;
 	}
 
@@ -975,7 +990,7 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void checkForInteractions() {
-		if (getCollider() != null) {
+		if (getCollider() != null && isEnabled()) {
 			Collection<WorldObject> nowActive = findInteractablesHere();
 			Collection<WorldObject> prevActive = activeInteractables;
 			// Figure out the objects that are newly active/inactive
@@ -1026,6 +1041,10 @@ public abstract class Actor extends WorldObject {
 			checkPush();
 			jumpSustainThisFrame = false;
 			act(gc, delta);
+			// Check if the actor was disabled while acting
+			if (!isEnabled()) {
+				return;
+			}
 			checkForInteractions();
 			if (interactNextFrame) {
 				interactWithAll();
@@ -1163,7 +1182,7 @@ public abstract class Actor extends WorldObject {
 			a.startPushing(this);
 		}
 	}
-	
+
 	@Override
 	public String getInfo() {
 		String info = super.getInfo();

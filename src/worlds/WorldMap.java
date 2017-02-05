@@ -198,8 +198,8 @@ public class WorldMap {
 		return objectsWithColliders.stream().filter(wo -> wo.getCollider().isSolid());
 	}
 
-	public Stream<WorldObject> getAllInteractables() {
-		return interactables.stream();
+	public Collection<WorldObject> getAllInteractables() {
+		return interactables;
 	}
 
 	public Stream<Lockable> getLockablesByID(int lockID) {
