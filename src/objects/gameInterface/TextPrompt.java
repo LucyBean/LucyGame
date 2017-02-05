@@ -1,23 +1,28 @@
 package objects.gameInterface;
 
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 
 import helpers.Point;
 import helpers.Rectangle;
+import objects.images.ImageBuilder;
 import objects.images.Sprite;
 import objects.images.SpriteBuilder;
 import objects.images.TextImage;
 
 public class TextPrompt extends InterfaceElement {
 	private TextImage timg;
+	private int width;
 	private boolean focused = false;
 	private boolean cursorOn = false;
 	private int cursorTimerReset = 500;
 	private int cursorTimer = 0;
 	String s = "";
 
-	public TextPrompt(Point origin) {
-		super(origin, SpriteBuilder.makeTextPrompt(150, 10));
+	public TextPrompt(Point origin, int width) {
+		super(origin, SpriteBuilder.makeTextPrompt(width, 10));
+		this.width = width;
 		timg = (TextImage) getSprite().getImage().getLayer(2).getImage();
 	}
 
@@ -39,7 +44,7 @@ public class TextPrompt extends InterfaceElement {
 			}
 		}
 	}
-	
+
 	private void addCursor() {
 		if (!cursorOn) {
 			cursorOn = true;
@@ -47,7 +52,7 @@ public class TextPrompt extends InterfaceElement {
 			timg.setText(s);
 		}
 	}
-	
+
 	private void removeCursor() {
 		if (cursorOn) {
 			cursorOn = false;
@@ -70,9 +75,31 @@ public class TextPrompt extends InterfaceElement {
 			}
 		}
 	}
-	
+
 	@Override
 	public void keyPressed(int keycode) {
-		
+		if (focused) {
+			String input = Input.getKeyName(keycode);
+			// Check if it's a letter
+			if (input.matches("\\w")) {
+				removeCursor();
+				// Check if it is beyond the character limit
+				Font f = ImageBuilder.getFont();
+				if (f.getWidth(s + input + "_") <= width) {
+					s += input;
+					timg.setText(s);
+				}
+				addCursor();
+				cursorTimer = cursorTimerReset;
+			} else if (input.equals("BACK")) {
+				// Remove a character if there is one to remove
+				removeCursor();
+				if (s.length() > 0) {
+					s = s.substring(0, s.length() - 1);
+					timg.setText(s);
+				}
+				addCursor();
+			}
+		}
 	}
 }

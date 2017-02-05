@@ -117,7 +117,7 @@ public class SpriteBuilder {
 		Font f = ImageBuilder.getFont();
 		int height = f.getLineHeight();
 		StaticImage bg = ImageBuilder.getColouredRectangle(width+2*border, height+2*border, 2);
-		TextImage text = new TextImage("Test");
+		TextImage text = new TextImage("");
 		StaticImage textbg = ImageBuilder.getColouredRectangle(width, height, 3);
 		Point p = new Point(border, border);
 		LayeredImage limg = new LayeredImage(bg);

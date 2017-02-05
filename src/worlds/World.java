@@ -80,7 +80,7 @@ public class World {
 			paused = false;
 			
 			// TODO: Remove
-			worldInterface.addToAll(new TextPrompt(new Point(40,40)));
+			worldInterface.addToAll(new TextPrompt(new Point(40,40), 150));
 
 			init();
 
