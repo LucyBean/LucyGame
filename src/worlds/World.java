@@ -16,6 +16,9 @@ import objects.CoOrdTranslator;
 import objects.gameInterface.DefaultGameInterface;
 import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
+import objects.images.LayeredImage;
+import objects.images.SingleSprite;
+import objects.images.Sprite;
 import objects.world.ItemType;
 import objects.world.WorldObject;
 import objects.world.characters.Conversation;
@@ -301,9 +304,23 @@ public class World {
 	 */
 	public void render(GameContainer gc, Graphics g) {
 		map.render();
+		
+		if (worldState == WorldState.BUILDING) {
+			// Add a block at the position of the mouse
+			Input i = gc.getInput();
+			Point mouseScreen = new Point(i.getMouseX(), i.getMouseY());
+			Point mouseWorld = screenToWorldCoOrds(mouseScreen);
+			mouseWorld = new Point((int) mouseWorld.getX(), (int) mouseWorld.getY());
+			mouseScreen = worldToScreenCoOrds(mouseWorld);
+			ItemType current = getMap().getPainter().getItemType();
+			LayeredImage limg = current.getSprite().getImage();
+			limg.setAlpha(0.3f);
+			limg.draw(mouseScreen.getX(), mouseScreen.getY(), getCamera().getScale());
+		}
 
 		worldInterface.render(getState());
 		gameInterface.render(getState());
+		
 	}
 
 	public void update(GameContainer gc, int delta) {
@@ -424,6 +441,10 @@ public class World {
 	
 	public Point screenToWorldCoOrds(Point p) {
 		return worldCOT.screenToWorldCoOrds(p);
+	}
+	
+	public Point worldToScreenCoOrds(Point p) {
+		return worldCOT.objectToScreenCoOrds(p);
 	}
 
 	private void watchSelectMousePressed(int button, Point p) {

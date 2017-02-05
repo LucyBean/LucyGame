@@ -26,6 +26,10 @@ public class MapPainter {
 	public void setItem(ItemType it) {
 		item = it;
 	}
+	
+	public ItemType getItemType() {
+		return item;
+	}
 
 	private WorldObject makeObject(Point p) {
 		int lockID = PainterProperty.getLockID().getValue();
