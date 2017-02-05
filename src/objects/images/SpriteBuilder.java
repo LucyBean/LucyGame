@@ -1,5 +1,7 @@
 package objects.images;
 
+import org.newdawn.slick.Font;
+
 import helpers.Point;
 import helpers.Rectangle;
 import io.CharacterSpriteBuilder;
@@ -107,6 +109,21 @@ public class SpriteBuilder {
 		LayeredImage limg = new LayeredImage(32, 72, 2);
 		limg.setLayer(0, up);
 		limg.setLayer(1, new PositionedImage(new Point(0,40), dw));
+		
+		return new SingleSprite(limg, 1);
+	}
+	
+	public static Sprite makeTextPrompt(int width, int border) {
+		Font f = ImageBuilder.getFont();
+		int height = f.getLineHeight();
+		StaticImage bg = ImageBuilder.getColouredRectangle(width+2*border, height+2*border, 2);
+		TextImage text = new TextImage("Test");
+		StaticImage textbg = ImageBuilder.getColouredRectangle(width, height, 3);
+		Point p = new Point(border, border);
+		LayeredImage limg = new LayeredImage(bg);
+		limg.addLayers(2);
+		limg.setLayer(1, new PositionedImage(p, textbg));
+		limg.setLayer(2, new PositionedImage(p, text));
 		
 		return new SingleSprite(limg, 1);
 	}
