@@ -12,8 +12,8 @@ import worlds.WorldLayer;
 public class MovingPlatform extends Actor {
 	private Point center;
 	private Point amplitude;
-	private final int period;
-	private final double omega;
+	private int period;
+	private double omega;
 	private int t = 0;
 
 	public MovingPlatform(Point start, Point end, int period) {
@@ -24,8 +24,7 @@ public class MovingPlatform extends Actor {
 		amplitude = start.move(end.neg()).scale(0.5f); // amplitude = (end -
 														// start) / 2
 		center = end.move(amplitude);
-		this.period = period;
-		omega = 2 * Math.PI / period;
+		setPeriod(period);
 
 		ActorSticker as = new ActorSticker(new Point(0, -0.2f), 2, 0.2f);
 		attach(as);
@@ -51,6 +50,11 @@ public class MovingPlatform extends Actor {
 			float deltaY = newPosY - getPosition().getY();
 			move(Dir.SOUTH, deltaY);
 		}
+	}
+	
+	protected void setPeriod(int period) {
+		this.period = period;
+		omega = 2 * Math.PI / period;
 	}
 
 }

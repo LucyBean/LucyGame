@@ -1,5 +1,7 @@
 package objects.world;
 
+import java.util.List;
+
 import helpers.Point;
 import objects.world.characters.DogEnemy;
 import objects.world.characters.Matt;
@@ -8,12 +10,55 @@ import objects.world.lib.Door;
 import objects.world.lib.Gem;
 import objects.world.lib.Key;
 import objects.world.lib.Lock;
+import objects.world.lib.MovingPlatform;
 import objects.world.lib.PushableBlock;
 import objects.world.lib.Trampoline;
 import objects.world.lib.Wall;
+import worlds.World;
 
 public class ObjectMaker {
 	private ObjectMaker() {
+	}
+
+	/**
+	 * Creates an object that requires multiple points in its constructor
+	 * 
+	 * @param itemType
+	 * @param positions
+	 * @return
+	 */
+	public static WorldObject makeFromType(ItemType itemType,
+			List<Point> positions, int lockID, int npcID) {
+		WorldObject wo = null;
+		
+		switch (itemType) {
+			case MOVING_PLATFORM:
+				if (positions.size() >= 2) {
+					Point start = positions.remove(0);
+					Point end = positions.remove(0);
+					wo = new MovingPlatform(start, end, 3000){
+						// Prompt for the period
+						@Override
+						public void addedToWorld(World w) {
+							super.addedToWorld(w);
+							w.getInput(this, "Enter period (ms):");
+						}
+						
+						@Override
+						public void acceptInput(String s) {
+							if (s.matches("\\d+")) {
+								int period = Integer.parseInt(s);
+								setPeriod(period);
+							}
+						}
+					};
+				}
+				break;
+			default:
+				break;
+		}
+		
+		return wo;
 	}
 
 	public static WorldObject makeFromType(ItemType itemType, Point position,

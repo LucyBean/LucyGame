@@ -118,7 +118,7 @@ public class World {
 	 * @throws SlickException
 	 */
 	public void init() throws SlickException {
-		
+
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class World {
 		// Load the conversations and set them to the correct NPCs
 		ConversationLoader.load(name, this);
 	}
-	
+
 	public void setConversations(ConversationSet cs) {
 		worldConvs = cs;
 	}
@@ -408,13 +408,9 @@ public class World {
 
 		if (mouseOnMap) {
 			if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-				if (wo == null) {
-					int gridSize = GlobalOptions.GRID_SIZE;
-					Point worldCoOrds = mousePoint.scale(
-							1 / (camera.getScale() * gridSize)).move(
-									camera.getLocation().scale(
-											WorldLayer.WORLD.getParallaxX(),
-											WorldLayer.WORLD.getParallaxY()));
+				ItemType it = map.getPainter().getItemType();
+				if (wo == null && !it.isMultiClick()) {
+					Point worldCoOrds = screenToWorldCoOrds(mousePoint);
 
 					// Need to ensure that the objects are snapped to the grid!
 					float snapX = (float) Math.floor(worldCoOrds.getX());
@@ -480,12 +476,40 @@ public class World {
 	public void mousePressed(int button, int x, int y) {
 		Point clickPoint = new Point(x, y);
 
-		if (getWorldState() == WorldState.WATCH_SELECT) {
-			watchSelectMousePressed(button, clickPoint);
+		switch (getWorldState()) {
+			case WATCH_SELECT:
+				watchSelectMousePressed(button, clickPoint);
+				break;
+			case BUILDING:
+				buildingMousePressed(button, clickPoint);
+				break;
+			default:
+				break;
 		}
 
 		worldInterface.mousePressed(button, clickPoint, getState());
 		gameInterface.mousePressed(button, clickPoint, getState());
+	}
+
+	private void buildingMousePressed(int button, Point mousePoint) {
+		WorldObject wo = map.findObjectScreen(mousePoint);
+		boolean mouseOnMap = !gameInterface.mouseOver(mousePoint, getState())
+				& !worldInterface.mouseOver(mousePoint, getState());
+
+		if (mouseOnMap && button == Input.MOUSE_LEFT_BUTTON) {
+			ItemType it = map.getPainter().getItemType();
+			if (wo == null && it.isMultiClick()) {
+				Point worldCoOrds = screenToWorldCoOrds(mousePoint);
+
+				// Need to ensure that the objects are snapped to the grid!
+				float snapX = (float) Math.floor(worldCoOrds.getX());
+				float snapY = (float) Math.floor(worldCoOrds.getY());
+
+				worldCoOrds = new Point(snapX, snapY);
+
+				map.getPainter().paint(worldCoOrds);
+			}
+		}
 	}
 
 	public Point screenToWorldCoOrds(Point p) {

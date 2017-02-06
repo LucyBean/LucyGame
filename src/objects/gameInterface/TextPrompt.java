@@ -98,7 +98,7 @@ public class TextPrompt extends InterfaceElement {
 		if (focused) {
 			String input = Input.getKeyName(keycode);
 			// Check if it's a letter
-			if (input.matches("\\w")) {
+			if (input.matches("[\\w]")) {
 				removeCursor();
 				// Check if it is beyond the character limit
 				Font f = ImageBuilder.getFont();

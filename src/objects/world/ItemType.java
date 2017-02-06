@@ -23,20 +23,31 @@ public enum ItemType {
 		DOG_ENEMY(11),
 		CLIMBING_WALL_MARKER,
 		MOVING_PLATFORM(() -> SpriteBuilder.getColouredRectangle(2, 1, 4,
-				GlobalOptions.GRID_SIZE)),
+				GlobalOptions.GRID_SIZE), 2),
 		TRAMPOLINE(() -> SpriteBuilder.getTrampolineSprite()),
 		PUSHABLE_BLOCK(() -> SpriteBuilder.getColouredRectangle(2, 2, 5,
 				GlobalOptions.GRID_SIZE)),
 		NONE;
 
 	private boolean paintable = true;
+	private int numClicks = 1;
 
 	ItemType(int imageID) {
+		this(imageID, 1);
+	}
+
+	ItemType(int imageID, int numClicks) {
 		spriteMaker = () -> SpriteBuilder.getWorldItem(imageID);
+		this.numClicks = numClicks;
 	}
 
 	ItemType(Supplier<Sprite> spriteMaker) {
+		this(spriteMaker, 1);
+	}
+
+	ItemType(Supplier<Sprite> spriteMaker, int numClicks) {
 		this.spriteMaker = spriteMaker;
+		this.numClicks = numClicks;
 	}
 
 	ItemType() {
@@ -52,6 +63,16 @@ public enum ItemType {
 
 	public boolean isPaintable() {
 		return paintable;
+	}
+
+	/**
+	 * Indicates whether this object requires multiple clicks to be placed in
+	 * the map editor.
+	 * 
+	 * @return
+	 */
+	public boolean isMultiClick() {
+		return numClicks > 1;
 	}
 
 	public static ItemType byId(int id) {
