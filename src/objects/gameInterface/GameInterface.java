@@ -28,6 +28,7 @@ public class GameInterface {
 	private ConversationDisplay conversationDisplay;
 	private World world;
 	private List<MenuSet> menus;
+	private TextPrompt textPrompt;
 
 	public GameInterface() {
 		interfaces = new ObjectLayerSet<InterfaceElement>();
@@ -62,6 +63,9 @@ public class GameInterface {
 		if (ie instanceof MenuSet) {
 			menus.add((MenuSet) ie);
 		}
+		if (ie instanceof TextPrompt) {
+			textPrompt = (TextPrompt) ie;
+		}
 	}
 
 	/**
@@ -73,6 +77,9 @@ public class GameInterface {
 		allStateInterface.add(ie);
 		if (ie instanceof MenuSet) {
 			menus.add((MenuSet) ie);
+		}
+		if (ie instanceof TextPrompt) {
+			textPrompt = (TextPrompt) ie;
 		}
 		ie.setWorld(world);
 	}
@@ -103,6 +110,12 @@ public class GameInterface {
 		if (statusWindow == null) {
 			statusWindow = new StatusWindow(new Point(0, 0));
 			addToAll(statusWindow);
+		}
+	}
+	
+	public void focusTextPrompt() {
+		if (textPrompt != null) {
+			textPrompt.focus();
 		}
 	}
 

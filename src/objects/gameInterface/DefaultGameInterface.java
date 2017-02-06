@@ -13,6 +13,7 @@ import worlds.WorldState;
 
 public class DefaultGameInterface extends GameInterface {
 	private static int WINDOW_WIDTH = GlobalOptions.WINDOW_WIDTH;
+
 	public DefaultGameInterface() {
 		Button openMenuButton = new Button(
 				new Rectangle(new Point(200, 0), 100, 32)) {
@@ -52,8 +53,9 @@ public class DefaultGameInterface extends GameInterface {
 		};
 		play.setTextCentered("Play!");
 		add(play, WorldState.BUILDING);
-		
-		BuildStatusWindow bsw = new BuildStatusWindow(new Point(WINDOW_WIDTH-200,0));
+
+		BuildStatusWindow bsw = new BuildStatusWindow(
+				new Point(WINDOW_WIDTH - 200, 0));
 		add(bsw, WorldState.BUILDING);
 
 		Button toolsButton = new Button(
@@ -74,9 +76,15 @@ public class DefaultGameInterface extends GameInterface {
 
 		MenuSet buildingTools = new MenuSet();
 		buildingTools.add(() -> "Export map", s -> {
-			WorldMapImporterExporter.export(s.getWorld().getMap(), "test");
-			s.getWorld().closeBuildMenu();
-		});
+			s.getWorld().getInput(s);
+		}, pms -> {
+			Menu m = pms.getFirst();
+			String s = pms.getSecond();
+			if (s.length() > 0) {
+				WorldMapImporterExporter.export(m.getWorld().getMap(), s);
+				m.getWorld().closeBuildMenu();
+			}
+		}, 0);
 		buildingTools.add(() -> "Import map", s -> {
 			Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
 					"test");
@@ -134,9 +142,9 @@ public class DefaultGameInterface extends GameInterface {
 		add(p, WorldState.BUILDING);
 
 		UpDownControl udc = new UpDownControl(Point.ZERO, p);
-		udc.setPosition(new Point(
-				p.getPosition().getX() + p.getWidthPixels() + 8,
-				GlobalOptions.WINDOW_HEIGHT - udc.getHeightPixels()));
+		udc.setPosition(
+				new Point(p.getPosition().getX() + p.getWidthPixels() + 8,
+						GlobalOptions.WINDOW_HEIGHT - udc.getHeightPixels()));
 		add(udc, WorldState.BUILDING);
 
 		PropertyPanel pp = new PropertyPanel(Point.ZERO);
@@ -144,5 +152,8 @@ public class DefaultGameInterface extends GameInterface {
 				new Point(GlobalOptions.WINDOW_WIDTH - pp.getWidthPixels(),
 						GlobalOptions.WINDOW_HEIGHT - pp.getHeightPixels()));
 		add(pp, WorldState.BUILDING);
+
+		TextPrompt tp = new TextPrompt(new Point(100, 100), 200);
+		add(tp, WorldState.INPUT);
 	}
 }

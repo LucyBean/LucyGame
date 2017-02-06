@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import helpers.Pair;
 import helpers.Point;
 import objects.images.Sprite;
 import objects.images.SpriteBuilder;
@@ -75,7 +76,7 @@ public class MenuSet extends InterfaceElement {
 	 *            The sub-menu number to which the MenuButton should be added. 0
 	 *            is the default root menu.
 	 */
-	public void add(Supplier<String> text, Consumer<Menu> clickAction,
+	public void add(Supplier<String> text, Consumer<Menu> clickAction, Consumer<Pair<Menu, String>> receiveInput,
 			int state) {
 		Menu subMenu = menus.get(state);
 		if (subMenu == null) {
@@ -84,12 +85,21 @@ public class MenuSet extends InterfaceElement {
 				protected Sprite makeNewSprite() {
 					return SpriteBuilder.makeMenuButton("");
 				}
+				
+				@Override
+				public void acceptInput(String s) {
+					receiveInput.accept(new Pair<Menu, String>(this, s));
+				}
 			};
 
 			menus.put(state, subMenu);
 		}
 
 		subMenu.add(text, clickAction);
+	}
+	
+	public void add(Supplier<String> text, Consumer<Menu> clickAction, int state) {
+		this.add(text, clickAction, s -> {}, state);
 	}
 
 	public void add(Supplier<String> text, Consumer<Menu> clickAction) {

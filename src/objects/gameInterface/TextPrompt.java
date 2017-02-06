@@ -25,6 +25,10 @@ public class TextPrompt extends InterfaceElement {
 		this.width = width;
 		timg = (TextImage) getSprite().getImage().getLayer(2).getImage();
 	}
+	
+	public void focus() {
+		focused = true;
+	}
 
 	@Override
 	public void mousePressed(int button, Point clickPoint) {
@@ -59,6 +63,12 @@ public class TextPrompt extends InterfaceElement {
 			s = s.substring(0, s.length() - 1);
 			timg.setText(s);
 		}
+	}
+	
+	private void accept() {
+		removeCursor();
+		getWorld().acceptInput(s);
+		s = "";
 	}
 
 	@Override
@@ -99,6 +109,8 @@ public class TextPrompt extends InterfaceElement {
 					timg.setText(s);
 				}
 				addCursor();
+			} else if (input.equals("RETURN")) {
+				accept();
 			}
 		}
 	}

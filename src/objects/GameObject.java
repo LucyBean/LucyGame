@@ -189,4 +189,14 @@ public abstract class GameObject {
 	public void keyPressed(int keycode) {
 
 	}
+
+	/**
+	 * Accepts an input string. This will be called when input is accepted by
+	 * the World and this object is waiting for input.
+	 * 
+	 * @param s
+	 */
+	public void acceptInput(String s) {
+
+	}
 }

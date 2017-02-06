@@ -13,6 +13,7 @@ import helpers.Point;
 import io.ConversationLoader;
 import io.ErrorLogger;
 import objects.CoOrdTranslator;
+import objects.GameObject;
 import objects.gameInterface.DefaultGameInterface;
 import objects.gameInterface.GameInterface;
 import objects.gameInterface.InterfaceElement;
@@ -31,8 +32,10 @@ public class World {
 	private GameInterface gameInterface;
 	private GameInterface worldInterface;
 	private WorldState worldState;
+	private WorldState prevState;
 	private Collection<Quest> activeQuests = new HashSet<>();
 	private Collection<Quest> newlyFinishedQuests;
+	private Collection<GameObject> waitingForInput;
 	private final LucyGame game;
 	private final String name;
 	private WorldMap map;
@@ -48,7 +51,7 @@ public class World {
 		this.name = name;
 		map = new WorldMap(this);
 		reset();
-		
+
 		// This object is being added just to get its co-ord translator
 		// Hack hack hack
 		WorldObject wo = new WorldObject(Point.ZERO, WorldLayer.WORLD,
@@ -68,7 +71,8 @@ public class World {
 	private void reset() {
 		try {
 			camera = new Camera();
-			worldState = WorldState.PLAYING;
+			setWorldState(WorldState.PLAYING);
+			prevState = getWorldState();
 			map.reset();
 
 			gameInterface = defaultInterface;
@@ -159,7 +163,7 @@ public class World {
 	// Getters
 	//
 	public WorldState getState() {
-		return worldState;
+		return getWorldState();
 	}
 
 	public Camera getCamera() {
@@ -205,22 +209,38 @@ public class World {
 		map.addToActiveSets(go);
 	}
 
+	/**
+	 * @return the worldState
+	 */
+	private WorldState getWorldState() {
+		return worldState;
+	}
+
+	/**
+	 * @param worldState
+	 *            the worldState to set
+	 */
+	private void setWorldState(WorldState worldState) {
+		prevState = this.worldState;
+		this.worldState = worldState;
+	}
+
 	//
 	// State transitions
 	//
 	// TODO: Make these check for validity.
 	// TODO: Change to a single "set state" method?
 	public void openMenu() {
-		worldState = WorldState.MENU;
+		setWorldState(WorldState.MENU);
 	}
 
 	public void closeMenu() {
-		worldState = WorldState.PLAYING;
+		setWorldState(WorldState.PLAYING);
 		gameInterface.resetMenus();
 	}
 
 	public void startWatchSelect() {
-		worldState = WorldState.WATCH_SELECT;
+		setWorldState(WorldState.WATCH_SELECT);
 	}
 
 	public void stopWatchSelect() {
@@ -229,36 +249,52 @@ public class World {
 
 	public void openInventoryDisplay() {
 		gameInterface.refreshInventoryDisplay();
-		worldState = WorldState.INVENTORY;
+		setWorldState(WorldState.INVENTORY);
 	}
 
 	public void closeInventoryDisplay() {
-		worldState = WorldState.PLAYING;
+		setWorldState(WorldState.PLAYING);
 	}
 
 	public void conversationStarted() {
-		worldState = WorldState.CONVERSATION;
+		setWorldState(WorldState.CONVERSATION);
 	}
 
 	public void conversationFinished() {
-		worldState = WorldState.PLAYING;
+		setWorldState(WorldState.PLAYING);
 	}
 
 	public void startBuilding() {
-		worldState = WorldState.BUILDING;
+		setWorldState(WorldState.BUILDING);
 		ignoreInput(true);
 	}
 
 	public void stopBuilding() {
-		worldState = WorldState.PLAYING;
+		setWorldState(WorldState.PLAYING);
 	}
 
 	public void openBuildMenu() {
-		worldState = WorldState.BUILDING_MENU;
+		setWorldState(WorldState.BUILDING_MENU);
 	}
 
 	public void closeBuildMenu() {
 		startBuilding();
+	}
+
+	public void getInput(GameObject go) {
+		setWorldState(WorldState.INPUT);
+		gameInterface.focusTextPrompt();
+		if (waitingForInput == null) {
+			waitingForInput = new HashSet<>();
+			waitingForInput.add(go);
+		}
+	}
+
+	public void acceptInput(String s) {
+		setWorldState(prevState);
+		if (waitingForInput != null) {
+			waitingForInput.forEach(go -> go.acceptInput(s));
+		}
 	}
 
 	protected void ignoreInput(boolean ignore) {
@@ -302,34 +338,38 @@ public class World {
 	 */
 	public void render(GameContainer gc, Graphics g) {
 		map.render();
-		
-		if (worldState == WorldState.BUILDING) {
+
+		if (getWorldState() == WorldState.BUILDING) {
 			// Add a block at the position of the mouse
 			Input i = gc.getInput();
 			Point mouseScreen = new Point(i.getMouseX(), i.getMouseY());
 			Point mouseWorld = screenToWorldCoOrds(mouseScreen);
-			mouseWorld = new Point((int) mouseWorld.getX(), (int) mouseWorld.getY());
+			mouseWorld = new Point((int) mouseWorld.getX(),
+					(int) mouseWorld.getY());
 			mouseScreen = worldToScreenCoOrds(mouseWorld);
 			ItemType current = getMap().getPainter().getItemType();
 			LayeredImage limg = current.getSprite().getImage();
 			limg.setAlpha(0.3f);
-			limg.draw(mouseScreen.getX(), mouseScreen.getY(), getCamera().getScale());
+			limg.draw(mouseScreen.getX(), mouseScreen.getY(),
+					getCamera().getScale());
 		}
 
 		worldInterface.render(getState());
 		gameInterface.render(getState());
-		
+
 	}
 
 	public void update(GameContainer gc, int delta) {
 		if (!ignoringInput) {
 
-			camera.update(gc, delta);
+			if (getWorldState() != WorldState.INPUT) {
+				camera.update(gc, delta);
+			}
 			gameInterface.update(gc, delta, getState());
 			worldInterface.update(gc, delta, getState());
 
 			if (!paused || stepFrame) {
-				switch (worldState) {
+				switch (getWorldState()) {
 					case PLAYING:
 						playingUpdate(gc, delta);
 						break;
@@ -384,12 +424,13 @@ public class World {
 
 	public void keyPressed(int keycode) {
 		// Reset on D
-		if (keycode == Controller.WORLD_RESET) {
+		if (getWorldState() != WorldState.INPUT
+				&& keycode == Controller.WORLD_RESET) {
 			reset();
 			return;
 		}
 
-		switch (worldState) {
+		switch (getWorldState()) {
 			case PLAYING:
 				if (keycode == Input.KEY_ESCAPE) {
 					openMenu();
@@ -421,26 +462,26 @@ public class World {
 				break;
 		}
 
-		gameInterface.keyPressed(keycode, worldState);
-		worldInterface.keyPressed(keycode, worldState);
+		gameInterface.keyPressed(keycode, getWorldState());
+		worldInterface.keyPressed(keycode, getWorldState());
 		map.keyPressed(keycode);
 	}
 
 	public void mousePressed(int button, int x, int y) {
 		Point clickPoint = new Point(x, y);
 
-		if (worldState == WorldState.WATCH_SELECT) {
+		if (getWorldState() == WorldState.WATCH_SELECT) {
 			watchSelectMousePressed(button, clickPoint);
 		}
 
 		worldInterface.mousePressed(button, clickPoint, getState());
 		gameInterface.mousePressed(button, clickPoint, getState());
 	}
-	
+
 	public Point screenToWorldCoOrds(Point p) {
 		return worldCOT.screenToWorldCoOrds(p);
 	}
-	
+
 	public Point worldToScreenCoOrds(Point p) {
 		return worldCOT.objectToScreenCoOrds(p);
 	}
