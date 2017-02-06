@@ -3,7 +3,7 @@
 	<world>
 	# Conversations that are not tied to any NPC
 		<conv start="1">
-		LUCY:	Welcome to the game! Push any key to continue.
+		LUCY:	Use {Controller.LEFT} and {Controller.RIGHT} to move.
 		</conv>
 	</world>
 	<npc id="1">

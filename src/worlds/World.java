@@ -272,11 +272,13 @@ public class World {
 
 	public void startBuilding() {
 		setWorldState(WorldState.BUILDING);
+		getCamera().setTarget(null);
 		ignoreInput(true);
 	}
 
 	public void stopBuilding() {
 		setWorldState(WorldState.PLAYING);
+		getCamera().setTarget(getMap().getPlayer());
 	}
 
 	public void openBuildMenu() {
