@@ -289,8 +289,9 @@ public class World {
 		startBuilding();
 	}
 
-	public void getInput(GameObject go) {
+	public void getInput(GameObject go, String prompt) {
 		setWorldState(WorldState.INPUT);
+		gameInterface.setTextPrompt(prompt);
 		gameInterface.focusTextPrompt();
 		if (waitingForInput == null) {
 			waitingForInput = new HashSet<>();

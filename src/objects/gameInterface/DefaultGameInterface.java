@@ -76,7 +76,7 @@ public class DefaultGameInterface extends GameInterface {
 
 		MenuSet buildingTools = new MenuSet();
 		buildingTools.add(() -> "Export map", s -> {
-			s.getWorld().getInput(s);
+			s.getWorld().getInput(s, "Enter name of map");
 		}, pms -> {
 			Menu m = pms.getFirst();
 			String s = pms.getSecond();
@@ -85,7 +85,7 @@ public class DefaultGameInterface extends GameInterface {
 				m.getWorld().closeBuildMenu();
 			}
 		}, 0);
-		buildingTools.add(() -> "Import map", s -> s.getWorld().getInput(s), pms -> {
+		buildingTools.add(() -> "Import map", s -> s.getWorld().getInput(s, "Enter name of map"), pms -> {
 			Menu m = pms.getFirst();
 			String s = pms.getSecond();
 			Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
@@ -155,7 +155,7 @@ public class DefaultGameInterface extends GameInterface {
 						GlobalOptions.WINDOW_HEIGHT - pp.getHeightPixels()));
 		add(pp, WorldState.BUILDING);
 
-		TextPrompt tp = new TextPrompt(new Point(100, 100), 200);
+		TextPrompt tp = new TextPrompt(new Point(100, 100), 200, "");
 		add(tp, WorldState.INPUT);
 	}
 }

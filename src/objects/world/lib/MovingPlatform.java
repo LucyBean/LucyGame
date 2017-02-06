@@ -40,8 +40,7 @@ public class MovingPlatform extends Actor {
 	public void act(GameContainer gc, int delta) {
 		t = (t + delta) % period;
 		double cosT = Math.cos(omega * t);
-		// Ignore small amplitude oscillations as these will probably
-		//   lead to 
+		// Ignore small amplitude oscillations
 		if (Math.abs(amplitude.getX()) > 0.1f) {
 			float newPosX = (float) (amplitude.getX() * cosT) + center.getX();
 			float deltaX = newPosX - getPosition().getX();
@@ -52,12 +51,6 @@ public class MovingPlatform extends Actor {
 			float deltaY = newPosY - getPosition().getY();
 			move(Dir.SOUTH, deltaY);
 		}
-
-		// TODO: I think this probably suffers from rounding errors at low frame
-		// rates
-		// TODO: Definitely some odd behaviour
-		// might have to evaluate it from using a sine function rather than
-		// using acceleration/velocity
 	}
 
 }

@@ -220,4 +220,10 @@ public class GameInterface {
 	public void resetMenus() {
 		menus.stream().forEach(m -> m.reset());
 	}
+
+	public void setTextPrompt(String prompt) {
+		if (textPrompt != null) {
+			textPrompt.setPrompt(prompt);
+		}
+	}
 }

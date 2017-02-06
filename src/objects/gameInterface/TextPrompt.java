@@ -13,6 +13,7 @@ import objects.images.TextImage;
 
 public class TextPrompt extends InterfaceElement {
 	private TextImage timg;
+	private TextImage pimg;
 	private int width;
 	private boolean focused = false;
 	private boolean cursorOn = false;
@@ -20,10 +21,16 @@ public class TextPrompt extends InterfaceElement {
 	private int cursorTimer = 0;
 	String s = "";
 
-	public TextPrompt(Point origin, int width) {
-		super(origin, SpriteBuilder.makeTextPrompt(width, 10));
+	public TextPrompt(Point origin, int width, String prompt) {
+		super(origin, SpriteBuilder.makeTextPrompt(width, 10, 4));
 		this.width = width;
-		timg = (TextImage) getSprite().getImage().getLayer(2).getImage();
+		pimg = (TextImage) getSprite().getImage().getLayer(2).getImage();
+		pimg.setText(prompt);
+		timg = (TextImage) getSprite().getImage().getLayer(3).getImage();
+	}
+	
+	public void setPrompt(String prompt) {
+		pimg.setText(prompt);
 	}
 	
 	public void focus() {

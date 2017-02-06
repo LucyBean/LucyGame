@@ -16,12 +16,15 @@ import options.GlobalOptions;
  */
 public class SpriteBuilder {
 	private final static int GRID_SIZE = GlobalOptions.GRID_SIZE;
-	
-	public static Sprite getColouredRectangle(Rectangle rect, int uiColour, int gridSize) {
-		return getColouredRectangle(rect.getWidth(), rect.getHeight(), uiColour, gridSize);
+
+	public static Sprite getColouredRectangle(Rectangle rect, int uiColour,
+			int gridSize) {
+		return getColouredRectangle(rect.getWidth(), rect.getHeight(), uiColour,
+				gridSize);
 	}
-	
-	public static Sprite getColouredRectangle(float width, float height, int uiColour, int gridSize) {
+
+	public static Sprite getColouredRectangle(float width, float height,
+			int uiColour, int gridSize) {
 		int w = (int) (width * gridSize);
 		int h = (int) (height * gridSize);
 		LucyImage lui = ImageBuilder.getColouredRectangle(w, h, uiColour);
@@ -60,7 +63,7 @@ public class SpriteBuilder {
 		}
 		return new SingleSprite(ImageBuilder.getCharacterImg(id), GRID_SIZE);
 	}
-	
+
 	public static Sprite getWorldItem(int imageID) {
 		LayeredImage img = new LayeredImage(ImageBuilder.getItemImage(imageID));
 		return new SingleSprite(img, Point.ZERO, GRID_SIZE);
@@ -75,14 +78,14 @@ public class SpriteBuilder {
 
 		return new SingleSprite(limg, GRID_SIZE);
 	}
-	
+
 	public static Sprite getTrampolineSprite() {
 		LayeredImage limg = new LayeredImage(64, 32, 2);
 		LucyImage left = ImageBuilder.getItemImage(16);
 		LucyImage right = ImageBuilder.getItemImage(17);
 		limg.setLayer(0, left);
-		limg.setLayer(1, new PositionedImage(new Point(32,0), right));
-		
+		limg.setLayer(1, new PositionedImage(new Point(32, 0), right));
+
 		return new SingleSprite(limg, GRID_SIZE);
 	}
 
@@ -96,35 +99,39 @@ public class SpriteBuilder {
 	}
 
 	public static Sprite makePaletteBlock() {
-		LucyImage bg = ImageBuilder.getColouredRectangle(32,32,2);
+		LucyImage bg = ImageBuilder.getColouredRectangle(32, 32, 2);
 		LayeredImage limg = new LayeredImage(bg);
 		limg.addLayers(1);
 
 		return new SingleSprite(limg, 1);
 	}
-	
+
 	public static Sprite makeUpDownControl() {
 		LucyImage up = ImageBuilder.getItemImage(12);
 		LucyImage dw = ImageBuilder.getItemImage(13);
 		LayeredImage limg = new LayeredImage(32, 72, 2);
 		limg.setLayer(0, up);
-		limg.setLayer(1, new PositionedImage(new Point(0,40), dw));
-		
+		limg.setLayer(1, new PositionedImage(new Point(0, 40), dw));
+
 		return new SingleSprite(limg, 1);
 	}
-	
-	public static Sprite makeTextPrompt(int width, int border) {
+
+	public static Sprite makeTextPrompt(int width, int border, int padding) {
 		Font f = ImageBuilder.getFont();
 		int height = f.getLineHeight();
-		StaticImage bg = ImageBuilder.getColouredRectangle(width+2*border, height+2*border, 2);
+		StaticImage bg = ImageBuilder.getColouredRectangle(width + 2 * border,
+				2 * height + 2 * border + padding, 2);
+		TextImage prompt = new TextImage("");
 		TextImage text = new TextImage("");
-		StaticImage textbg = ImageBuilder.getColouredRectangle(width, height, 3);
-		Point p = new Point(border, border);
+		StaticImage textbg = ImageBuilder.getColouredRectangle(width, height,
+				3);
 		LayeredImage limg = new LayeredImage(bg);
-		limg.addLayers(2);
+		limg.addLayers(3);
+		Point p = new Point(border, border+height+padding);
 		limg.setLayer(1, new PositionedImage(p, textbg));
-		limg.setLayer(2, new PositionedImage(p, text));
-		
+		limg.setLayer(2, new PositionedImage(new Point(border, border), prompt));
+		limg.setLayer(3, new PositionedImage(p, text));
+
 		return new SingleSprite(limg, 1);
 	}
 }
