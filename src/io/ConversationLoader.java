@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,20 +40,21 @@ public class ConversationLoader {
 	 *            data/conversations/
 	 * @return A map of NPCid to ConversationSet
 	 */
-	public static void load(String name, WorldMap map) {
+	public static void load(String name, World w) {
 		lineNumber = 0;
 		fileName = name;
 
 		File f = new File("data/conversations/" + name + ".lucy");
 
 		if (!f.exists()) {
-			ErrorLogger.log("Attempted to load conversations for " + name + " but no file exists.", 2);
+			ErrorLogger.log("Attempted to load conversations for " + name
+					+ " but no file exists.", 2);
 		} else {
 			try {
 				reader = new BufferedReader(new FileReader(f));
-				loadConversations(map);
+				loadConversations(w);
 
-				loadQuests(map);
+				loadQuests(w);
 
 			} catch (IOException ioe) {
 				ErrorLogger.log(ioe, 4);
@@ -63,34 +62,58 @@ public class ConversationLoader {
 		}
 	}
 
-	private static void loadConversations(WorldMap map) throws IOException {
+	private static void loadConversations(World w) throws IOException {
 		String nextLine;
+		WorldMap map = w.getMap();
 
 		// Find the conversations
 		Pattern conversationsPattern = Pattern.compile("<conversations>");
-		Map<Integer, ConversationSet> conversations = null;
 		while ((nextLine = getNextLine()) != null) {
 			Matcher m = conversationsPattern.matcher(nextLine);
 			if (m.find()) {
 				// Read the conversations
-				conversations = loadConversations();
-				break;
-			}
-		}
-
-		// Assign conversations
-		for (int npcID : conversations.keySet()) {
-			ConversationSet cs = conversations.get(npcID);
-			NPC npc = map.getNPC(npcID);
-			if (npc == null) {
-				System.err.println("Loaded quest for unknown NPCid: " + npcID);
-			} else {
-				npc.setConversations(cs);
+				Pattern npcPattern = Pattern.compile("<npc.*>");
+				Pattern worldPattern = Pattern.compile("<world>");
+				Pattern convEndPattern = Pattern.compile("</conversations>");
+				while ((nextLine = getNextLine()) != null) {
+					// Find the next NPC declaration line
+					m = npcPattern.matcher(nextLine);
+					if (m.find()) {
+						// Find the NPC id
+						Pattern npcIdPattern = propertyExtractor("id", "\\d+");
+						Matcher npcIdMatcher = npcIdPattern.matcher(nextLine);
+						int npcID = 0;
+						if (npcIdMatcher.find()) {
+							npcID = Integer.parseInt(npcIdMatcher.group(1));
+							// Extract the conversation and add to the file
+							ConversationSet cs = readConversationSet();
+							NPC npc = map.getNPC(npcID);
+							if (npc == null) {
+								System.err.println("Loaded quest for unknown NPCid: " + npcID);
+							} else {
+								npc.setConversations(cs);
+							}
+						} else {
+							logError("No NPC ID specified", 1);
+						}
+					}
+					m = worldPattern.matcher(nextLine);
+					if (m.find()) {
+						ConversationSet cs = readConversationSet();
+						w.setConversations(cs);
+					}
+					// Check for end of conversations
+					m = convEndPattern.matcher(nextLine);
+					if (m.find()) {
+						return;
+					}
+				}
 			}
 		}
 	}
 
-	private static void loadQuests(WorldMap map) throws IOException {
+	private static void loadQuests(World w) throws IOException {
+		WorldMap map = w.getMap();
 		// Find the quests
 		String nextLine;
 		Pattern questsPattern = Pattern.compile("<quests>");
@@ -98,19 +121,23 @@ public class ConversationLoader {
 			Matcher m = questsPattern.matcher(nextLine);
 			if (m.find()) {
 				// Find the ID
-				Pattern questIDPattern = Pattern.compile("<quest\\s+id\\s*=\\s*\"(\\d+)\">");
+				Pattern questIDPattern = Pattern.compile(
+						"<quest\\s+id\\s*=\\s*\"(\\d+)\">");
 				while (!(m = questIDPattern.matcher(nextLine)).find()) {
 					nextLine = getNextLine();
-					if (nextLine == null || nextLine.matches("\\s*</quests>\\s*")) {
+					if (nextLine == null
+							|| nextLine.matches("\\s*</quests>\\s*")) {
 						return;
 					}
 				}
 				int questID = Integer.parseInt(m.group(1));
 				// Find the start condition
-				Pattern startPattern = Pattern.compile("<startedby\\s+type\\s*=\\s*\"([\\w_]+)\"");
+				Pattern startPattern = Pattern.compile(
+						"<startedby\\s+type\\s*=\\s*\"([\\w_]+)\"");
 				while (!(m = startPattern.matcher(nextLine)).find()) {
 					nextLine = getNextLine();
-					if (nextLine == null || nextLine.matches("\\s*</quests>\\s*")) {
+					if (nextLine == null
+							|| nextLine.matches("\\s*</quests>\\s*")) {
 						logError("Unfinished quest script", 1);
 						return;
 					}
@@ -121,12 +148,14 @@ public class ConversationLoader {
 					// Extract id and state
 					int npcID = 0;
 					int state = 0;
-					if ((m = propertyExtractor("id", "\\d+").matcher(nextLine)).find()) {
+					if ((m = propertyExtractor("id", "\\d+").matcher(
+							nextLine)).find()) {
 						npcID = Integer.parseInt(m.group(1));
 					} else {
 						logError("Unspecified NPC id", 2);
 					}
-					if ((m = propertyExtractor("state", "\\d+").matcher(nextLine)).find()) {
+					if ((m = propertyExtractor("state", "\\d+").matcher(
+							nextLine)).find()) {
 						state = Integer.parseInt(m.group(1));
 					} else {
 						logError("Unspecified NPC state", 2);
@@ -156,7 +185,8 @@ public class ConversationLoader {
 		do {
 			nextLine = reader.readLine();
 			lineNumber++;
-			getNext = nextLine != null && (nextLine.matches("\\s*#.*") || nextLine.matches("\\s*"));
+			getNext = nextLine != null && (nextLine.matches("\\s*#.*")
+					|| nextLine.matches("\\s*"));
 		} while (getNext);
 		return nextLine;
 	}
@@ -183,7 +213,8 @@ public class ConversationLoader {
 		return objectives;
 	}
 
-	private static Objective loadObjective(String firstLine) throws IOException {
+	private static Objective loadObjective(String firstLine)
+			throws IOException {
 		String nextLine = firstLine;
 		// Find the type
 		Matcher m = propertyExtractor("type", "\\w+").matcher(nextLine);
@@ -248,7 +279,8 @@ public class ConversationLoader {
 	 * @param o
 	 * @throws IOException
 	 */
-	private static void loadQuestEffects(Objective o, String thisLine) throws IOException {
+	private static void loadQuestEffects(Objective o, String thisLine)
+			throws IOException {
 		String nextLine = thisLine;
 		Matcher m;
 		// Find any effects
@@ -272,9 +304,11 @@ public class ConversationLoader {
 					return;
 				}
 
-				while (!(nextLine = getNextLine()).matches("\\s*</effect>\\s*")) {
+				while (!(nextLine = getNextLine()).matches(
+						"\\s*</effect>\\s*")) {
 					// Find all effects
-					Pattern setStatePattern = Pattern.compile("setState\\((\\d+),(\\d+)\\)");
+					Pattern setStatePattern = Pattern.compile(
+							"setState\\((\\d+),(\\d+)\\)");
 					m = setStatePattern.matcher(nextLine);
 					if (m.find()) {
 						int npcID = Integer.parseInt(m.group(1));
@@ -290,7 +324,8 @@ public class ConversationLoader {
 						});
 					}
 
-					Pattern addObjectPattern = Pattern.compile("addObject\\(([\\w_]+),(\\d+),(\\d+),(\\d+),(\\d+)\\)");
+					Pattern addObjectPattern = Pattern.compile(
+							"addObject\\(([\\w_]+),(\\d+),(\\d+),(\\d+),(\\d+)\\)");
 					m = addObjectPattern.matcher(nextLine);
 					if (m.find()) {
 						String itemType = m.group(1).toUpperCase();
@@ -298,28 +333,31 @@ public class ConversationLoader {
 						int y = Integer.parseInt(m.group(3));
 						int lockID = Integer.parseInt(m.group(4));
 						int npcID = Integer.parseInt(m.group(5));
-						
+
 						try {
 							ItemType it = ItemType.valueOf(itemType);
 							addEffect.accept(cw -> {
-								WorldObject wo = ObjectMaker.makeFromType(it, new Point(x,y), lockID, npcID);
+								WorldObject wo = ObjectMaker.makeFromType(it,
+										new Point(x, y), lockID, npcID);
 								cw.addObject(wo);
 							});
 						} catch (IllegalArgumentException e) {
 							logError("Unknown item type: " + itemType, 2);
 						}
 					}
-					
-					Pattern useObjectPattern = Pattern.compile("use\\(([\\w_]+),(\\d+)\\)");
+
+					Pattern useObjectPattern = Pattern.compile(
+							"use\\(([\\w_]+),(\\d+)\\)");
 					m = useObjectPattern.matcher(nextLine);
 					if (m.find()) {
 						String itemType = m.group(1).toUpperCase();
 						int quant = Integer.parseInt(m.group(2));
-						
+
 						try {
 							ItemType it = ItemType.valueOf(itemType);
 							addEffect.accept(cw -> {
-								if (cw != null && cw.getMap() != null && cw.getMap().getPlayer() != null) {
+								if (cw != null && cw.getMap() != null
+										&& cw.getMap().getPlayer() != null) {
 									Player p = (Player) cw.getMap().getPlayer();
 									p.use(it, quant);
 								}
@@ -330,41 +368,9 @@ public class ConversationLoader {
 					}
 				}
 			}
-		} while ((nextLine = getNextLine()) != null && !nextLine.matches("\\s*</objective>\\s*"));
+		} while ((nextLine = getNextLine()) != null
+				&& !nextLine.matches("\\s*</objective>\\s*"));
 
-	}
-
-	private static Map<Integer, ConversationSet> loadConversations() throws IOException {
-		Map<Integer, ConversationSet> conversations = new HashMap<>();
-		String nextLine;
-		Pattern npcPattern = Pattern.compile("<npc.*>");
-		Pattern convEndPattern = Pattern.compile("</conversations>");
-		while ((nextLine = getNextLine()) != null) {
-			// Find the next NPC declaration line
-			Matcher m = npcPattern.matcher(nextLine);
-			if (m.find()) {
-				// Find the NPC id
-				Pattern npcIdPattern = propertyExtractor("id", "\\d+");
-				Matcher npcIdMatcher = npcIdPattern.matcher(nextLine);
-				int npcID = 0;
-				if (npcIdMatcher.find()) {
-					npcID = Integer.parseInt(npcIdMatcher.group(1));
-					// Extract the conversation and add to the file
-					ConversationSet cs = readConversationSet();
-					if (cs != null && cs.size() > 0) {
-						conversations.put(npcID, cs);
-					}
-				} else {
-					logError("No NPC ID specified", 1);
-				}
-			}
-			// Check for end of conversations
-			m = convEndPattern.matcher(nextLine);
-			if (m.find()) {
-				break;
-			}
-		}
-		return conversations;
 	}
 
 	private static ConversationSet readConversationSet() throws IOException {
@@ -376,12 +382,13 @@ public class ConversationLoader {
 		ConversationCharacter prev = null;
 		String prevChat = null;
 
-		Pattern breakPattern = Pattern.compile("<\\/npc>");
+		Pattern breakPattern = Pattern.compile("(<\\/npc>)|(<\\/world>)");
 		Pattern convEndPattern = Pattern.compile("<\\/conv>");
 		Pattern convStartPattern = Pattern.compile("<conv.*>");
 		Pattern startStatePattern = propertyExtractor("start", "\\d+");
 		Pattern endStatePattern = propertyExtractor("end", "\\d+");
-		Pattern scriptWithNamePattern = Pattern.compile("\\s*(\\w+)\\s*:\\s*(.+)\\s*");
+		Pattern scriptWithNamePattern = Pattern.compile(
+				"\\s*(\\w+)\\s*:\\s*(.+)\\s*");
 		Pattern scriptWithoutNamePattern = Pattern.compile("\\s*([^:<>]+)\\s*");
 
 		String nextLine;
@@ -396,7 +403,8 @@ public class ConversationLoader {
 			m = convEndPattern.matcher(nextLine);
 			if (m.find()) {
 				if (c == null) {
-					logError("Badly formed conversation file: Too many </conv>", 1);
+					logError("Badly formed conversation file: Too many </conv>",
+							1);
 				} else {
 					// Add the previous conversation to the set
 					if (prevChat != null) {
@@ -407,7 +415,9 @@ public class ConversationLoader {
 					Conversation cold = cs.put(start, c);
 					c = null;
 					if (cold != null) {
-						logError("Duplicate conversations for start id " + start, 1);
+						logError(
+								"Duplicate conversations for start id " + start,
+								1);
 					}
 				}
 				start = null;
@@ -433,7 +443,9 @@ public class ConversationLoader {
 					end = start;
 				}
 				if (c != null) {
-					logError("Badly formatted conversation file: Conversation started before previous closed.", 1);
+					logError(
+							"Badly formatted conversation file: Conversation started before previous closed.",
+							1);
 				}
 
 				c = new Conversation();
@@ -446,7 +458,8 @@ public class ConversationLoader {
 				if (prevChat != null) {
 					if (c == null) {
 						logError("Badly formatted conversation file. "
-								+ "Conversation script given before valid conversation " + "declaration.", 1);
+								+ "Conversation script given before valid conversation "
+								+ "declaration.", 1);
 						return null;
 					}
 					c.add(prev, prevChat);
@@ -467,7 +480,9 @@ public class ConversationLoader {
 			m = scriptWithoutNamePattern.matcher(nextLine);
 			if (m.matches()) {
 				if (prev == null) {
-					logError("Badly formatted conversation file. First line " + "of script does not specify character.",
+					logError(
+							"Badly formatted conversation file. First line "
+									+ "of script does not specify character.",
 							1);
 				}
 				// This is a continuation of the previous chat
@@ -479,7 +494,8 @@ public class ConversationLoader {
 		if (prevChat != null) {
 			logError("Unterminated conversation tag", 1);
 			if (c == null) {
-				logError("Badly formatted conversation file. " + "Conversation script given before conversation "
+				logError("Badly formatted conversation file. "
+						+ "Conversation script given before conversation "
 						+ "state declaration.", 1);
 				return null;
 			}
@@ -496,6 +512,8 @@ public class ConversationLoader {
 	}
 
 	private static void logError(String message, int severity) {
-		ErrorLogger.log(message + " on line " + lineNumber + " for file " + fileName, severity);
+		ErrorLogger.log(
+				message + " on line " + lineNumber + " for file " + fileName,
+				severity);
 	}
 }

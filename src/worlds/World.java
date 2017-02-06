@@ -21,6 +21,7 @@ import objects.images.LayeredImage;
 import objects.world.ItemType;
 import objects.world.WorldObject;
 import objects.world.characters.Conversation;
+import objects.world.characters.ConversationSet;
 import objects.world.characters.Inventory;
 import objects.world.lib.Wall;
 import options.GlobalOptions;
@@ -43,6 +44,7 @@ public class World {
 	private boolean paused;
 	private boolean stepFrame;
 	private CoOrdTranslator worldCOT;
+	private ConversationSet worldConvs;
 
 	private static final GameInterface defaultInterface = new DefaultGameInterface();
 
@@ -116,7 +118,7 @@ public class World {
 	 * @throws SlickException
 	 */
 	public void init() throws SlickException {
-
+		
 	}
 
 	/**
@@ -131,7 +133,11 @@ public class World {
 	 */
 	public void loadScripts(String name) {
 		// Load the conversations and set them to the correct NPCs
-		ConversationLoader.load(name, map);
+		ConversationLoader.load(name, this);
+	}
+	
+	public void setConversations(ConversationSet cs) {
+		worldConvs = cs;
 	}
 
 	/**
@@ -256,7 +262,7 @@ public class World {
 		setWorldState(WorldState.PLAYING);
 	}
 
-	public void conversationStarted() {
+	private void conversationStarted() {
 		setWorldState(WorldState.CONVERSATION);
 	}
 
@@ -501,6 +507,16 @@ public class World {
 	public void showConversation(Conversation c) {
 		gameInterface.showConversation(c);
 		conversationStarted();
+	}
+
+	public void showWorldConversation(int state) {
+		if (worldConvs != null) {
+			Conversation c = worldConvs.get(state);
+			if (c != null) {
+				gameInterface.showConversation(c);
+				conversationStarted();
+			}
+		}
 	}
 
 	//

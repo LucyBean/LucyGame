@@ -20,5 +20,7 @@ public class QuestDemoWorld extends World {
 		getMap().addObjects(objects);
 		
 		loadScripts("questDemo");
+
+		showWorldConversation(1);
 	}
 }

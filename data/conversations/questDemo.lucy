@@ -1,5 +1,11 @@
 # Conversations block
 <conversations>
+	<world>
+	# Conversations that are not tied to any NPC
+		<conv start="1">
+		LUCY:	Welcome to the game! Push any key to continue.
+		</conv>
+	</world>
 	<npc id="1">
 	# The following conversations will be started when talking
 	# to the NPC with ID 1
