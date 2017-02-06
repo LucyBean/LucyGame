@@ -34,6 +34,9 @@ public class WorldMapImporterExporter {
 	public static Collection<WorldObject> importObjects(String filename) {
 		try {
 			File file = new File("data/maps/" + filename + ".map");
+			if (!file.exists()) {
+				return null;
+			}
 			FileInputStream in = new FileInputStream(file);
 			byte[] buffer = new byte[24];
 			in.read(buffer);

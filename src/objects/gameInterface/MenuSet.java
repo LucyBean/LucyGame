@@ -85,17 +85,12 @@ public class MenuSet extends InterfaceElement {
 				protected Sprite makeNewSprite() {
 					return SpriteBuilder.makeMenuButton("");
 				}
-				
-				@Override
-				public void acceptInput(String s) {
-					receiveInput.accept(new Pair<Menu, String>(this, s));
-				}
 			};
 
 			menus.put(state, subMenu);
 		}
 
-		subMenu.add(text, clickAction);
+		subMenu.add(text, clickAction, receiveInput);
 	}
 	
 	public void add(Supplier<String> text, Consumer<Menu> clickAction, int state) {

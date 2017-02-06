@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import helpers.Pair;
 import helpers.Point;
 import objects.images.ImageBuilder;
 import objects.images.LayeredImage;
@@ -12,15 +13,15 @@ import objects.images.LucyImage;
 import objects.images.Sprite;
 
 public abstract class Menu extends IEList {
-	private List<Supplier<String>> labels;
-	private List<Consumer<Menu>> clickActions;
+	private List<Supplier<String>> labels = new ArrayList<>();
+	private List<Consumer<Menu>> clickActions = new ArrayList<>();
+	private List<Consumer<Pair<Menu, String>>> inputAccepts = new ArrayList<>();
+	private Consumer<Pair<Menu, String>> receiveInput;
 	private MenuSet menuSet;
 
 	public Menu(Point firstPoint, int numDisplayElems, MenuSet menuSet, boolean useSelection) {
 		super(firstPoint, numDisplayElems, 1, 4, (useSelection) ? (s -> s.getImage().setLayer(0,
 				ImageBuilder.getColouredRectangle(240, 32, 1))) : null);
-		labels = new ArrayList<Supplier<String>>();
-		clickActions = new ArrayList<Consumer<Menu>>();
 		this.menuSet = menuSet;
 	}
 	
@@ -49,9 +50,10 @@ public abstract class Menu extends IEList {
 	 * @param clickAction
 	 *            The function that is run when the button is clicked.
 	 */
-	public void add(Supplier<String> text, Consumer<Menu> clickAction) {
+	public void add(Supplier<String> text, Consumer<Menu> clickAction, Consumer<Pair<Menu, String>> receiveInput) {
 		labels.add(text);
 		clickActions.add(clickAction);
+		inputAccepts.add(receiveInput);
 		updateSprites();
 	}
 
@@ -63,6 +65,7 @@ public abstract class Menu extends IEList {
 			if (ca != null) {
 				ca.accept(this);
 			}
+			receiveInput = inputAccepts.get(elementIndex);
 		}
 	}
 
@@ -89,6 +92,15 @@ public abstract class Menu extends IEList {
 		} else {
 			return labels.size();
 		}
+	}
+	
+	@Override
+	public void acceptInput(String s) {
+		// TODO: Run accept input method from last clicked element
+		if (receiveInput != null) {
+			receiveInput.accept(new Pair<Menu, String>(this,s));
+		}
+		receiveInput = i -> {};
 	}
 
 }

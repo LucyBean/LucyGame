@@ -295,6 +295,7 @@ public class World {
 		if (waitingForInput != null) {
 			waitingForInput.forEach(go -> go.acceptInput(s));
 		}
+		waitingForInput = null;
 	}
 
 	protected void ignoreInput(boolean ignore) {

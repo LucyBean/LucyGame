@@ -85,15 +85,17 @@ public class DefaultGameInterface extends GameInterface {
 				m.getWorld().closeBuildMenu();
 			}
 		}, 0);
-		buildingTools.add(() -> "Import map", s -> {
+		buildingTools.add(() -> "Import map", s -> s.getWorld().getInput(s), pms -> {
+			Menu m = pms.getFirst();
+			String s = pms.getSecond();
 			Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
-					"test");
+					s);
 			if (objects != null) {
-				s.getWorld().getMap().reset();
-				s.getWorld().getMap().addObjects(objects);
-				s.getWorld().closeBuildMenu();
+				m.getWorld().getMap().reset();
+				m.getWorld().getMap().addObjects(objects);
+				m.getWorld().closeBuildMenu();
 			}
-		});
+		}, 0);
 		add(buildingTools, WorldState.BUILDING_MENU);
 
 		MenuSet debugTools = new MenuSet(new Point(360, 0), false);
