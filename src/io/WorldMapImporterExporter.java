@@ -75,12 +75,14 @@ public class WorldMapImporterExporter {
 
 	private static WorldObject readItem(byte[] bytes) {
 		ObjectByter ob = new ObjectByter(bytes);
-		return ob.getAsWorldObject();
+		return ob.getAsWorldObject(version);
 	}
 
 	private static void exportObject(WorldObject object, FileOutputStream out) {
-		ObjectByter ob = new ObjectByter(object);
-		ob.writeToFile(out);
+		ObjectByter ob = ObjectByter.make(object, version);
+		if (ob != null) {
+			ob.writeToFile(out);
+		}
 	}
 
 }
