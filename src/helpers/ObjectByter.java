@@ -154,6 +154,7 @@ public class ObjectByter {
 						ob.byteBuffer.putFloat(y);
 						int npcID = object.getNPCID();
 						ob.byteBuffer.putInt(npcID);
+						break;
 					case 4: {
 						// Requires two positions and an int
 						INeedSpecialBuildInfo insbi = (INeedSpecialBuildInfo) object;

@@ -12,7 +12,7 @@ public class Lock extends Locker {
 	private ItemType unlockKey;
 	
 	private static ItemType keyIDtoItemType(int keyID) {
-		if (keyID < 0 || keyID >= 4) {
+		if (keyID < 0 || keyID > 4) {
 			keyID = 1;
 		}
 		int n = (keyID - 1) + ItemType.YELLOW_LOCK.ordinal();

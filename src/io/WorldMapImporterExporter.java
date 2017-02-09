@@ -12,7 +12,7 @@ import objects.world.WorldObject;
 import worlds.WorldMap;
 
 public class WorldMapImporterExporter {
-	private static final int version = 1;
+	private static final int version = 2;
 
 	public static void export(WorldMap wm, String filename) {
 		try {
@@ -42,15 +42,10 @@ public class WorldMapImporterExporter {
 			in.read(buffer);
 			int fileVersion = readHeader(buffer);
 
-			if (fileVersion != version) {
-				ErrorLogger.log(
-						"Map import/export version numbers do not match.", 3);
-			}
-
 			Collection<WorldObject> objects = new HashSet<WorldObject>();
 
 			while (in.read(buffer) != -1) {
-				WorldObject wo = readItem(buffer);
+				WorldObject wo = readItem(buffer, fileVersion);
 				objects.add(wo);
 			}
 			in.close();
@@ -73,9 +68,9 @@ public class WorldMapImporterExporter {
 		return version;
 	}
 
-	private static WorldObject readItem(byte[] bytes) {
+	private static WorldObject readItem(byte[] bytes, int fileVersion) {
 		ObjectByter ob = new ObjectByter(bytes);
-		return ob.getAsWorldObject(version);
+		return ob.getAsWorldObject(fileVersion);
 	}
 
 	private static void exportObject(WorldObject object, FileOutputStream out) {

@@ -6,15 +6,20 @@ import helpers.Dir;
 import helpers.Point;
 import objects.attachments.ActorSticker;
 import objects.world.Actor;
+import objects.world.INeedSpecialBuildInfo;
 import objects.world.ItemType;
 import worlds.WorldLayer;
 
-public class MovingPlatform extends Actor {
+public class MovingPlatform extends Actor implements INeedSpecialBuildInfo {
 	private Point center;
 	private Point amplitude;
 	private int period;
 	private double omega;
 	private int t = 0;
+	
+	// Needed for rebuilding
+	private Point start;
+	private Point end;
 
 	public MovingPlatform(Point start, Point end, int period) {
 		super(start, WorldLayer.WORLD, ItemType.MOVING_PLATFORM);
@@ -25,6 +30,8 @@ public class MovingPlatform extends Actor {
 														// start) / 2
 		center = end.move(amplitude);
 		setPeriod(period);
+		this.start = start;
+		this.end = end;
 
 		ActorSticker as = new ActorSticker(new Point(0, -0.2f), 2, 0.2f);
 		attach(as);
@@ -55,6 +62,21 @@ public class MovingPlatform extends Actor {
 	protected void setPeriod(int period) {
 		this.period = period;
 		omega = 2 * Math.PI / period;
+	}
+
+	@Override
+	public Point getFirstPoint() {
+		return start;
+	}
+	
+	@Override
+	public Point getSecondPoint() {
+		return end;
+	}
+	
+	@Override
+	public int getExtraInt() {
+		return period;
 	}
 
 }
