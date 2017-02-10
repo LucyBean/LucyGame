@@ -178,6 +178,9 @@ public class ObjectByter {
 						ob.byteBuffer.putFloat(valf);
 					}
 						break;
+					default:
+						assert false;
+						break;
 				}
 				return ob;
 			} else {

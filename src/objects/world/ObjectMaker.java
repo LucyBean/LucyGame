@@ -56,6 +56,7 @@ public class ObjectMaker {
 				}
 				break;
 			default:
+				assert false;
 				break;
 		}
 
@@ -97,6 +98,7 @@ public class ObjectMaker {
 				wo = new PushableBlock(position);
 				break;
 			default:
+				assert false;
 				break;
 		}
 
@@ -132,6 +134,7 @@ public class ObjectMaker {
 				wo = new Matt(position, someID);
 				break;
 			default:
+				assert false;
 				break;
 		}
 
@@ -152,6 +155,7 @@ public class ObjectMaker {
 				wo = new MovingPlatform(firstPoint, secondPoint, val);
 				break;
 			default:
+				assert false;
 				break;
 		}
 
@@ -171,6 +175,7 @@ public class ObjectMaker {
 				wo = new ClimbingWallMarker(point, val);
 				break;
 			default:
+				assert false;
 				break;
 		}
 

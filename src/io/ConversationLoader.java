@@ -266,6 +266,7 @@ public class ConversationLoader {
 		// Check for short objective
 		m = Pattern.compile("/>").matcher(nextLine);
 		if (m.find()) {
+			// This objective is complete
 			return o;
 		}
 
