@@ -2,6 +2,7 @@ package objects.gameInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.newdawn.slick.GameContainer;
 
@@ -176,13 +177,13 @@ public class GameInterface {
 	 * @return
 	 */
 	public boolean mouseOver(Point mousePoint, WorldState state) {
-		InterfaceElement t = interfaces.findClickedObject(mousePoint, state.ordinal());
-		if (t != null) {
+		Optional<InterfaceElement> t = interfaces.findClickedObject(mousePoint, state.ordinal());
+		if (t.isPresent()) {
 			return true;
 		}
 		
 		t = allStateInterface.findClickedObject(mousePoint);
-		if (t !=null) {
+		if (t.isPresent()) {
 			return true;
 		}
 		

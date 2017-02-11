@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -267,7 +268,7 @@ public class WorldMap {
 	 *            The point of the mouse click in window co-ordinates.
 	 * @return
 	 */
-	public WorldObject findObjectScreen(Point clickPoint) {
+	public Optional<WorldObject> findObjectScreen(Point clickPoint) {
 		return layers.findClickedObject(clickPoint);
 	}
 

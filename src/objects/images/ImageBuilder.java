@@ -15,6 +15,7 @@ import org.newdawn.slick.opengl.renderer.SGL;
 
 import helpers.Rectangle;
 import io.CharacterSpriteBuilder;
+import io.ErrorLogger;
 import objects.world.ItemType;
 import options.GlobalOptions;
 
@@ -121,12 +122,9 @@ public class ImageBuilder {
 			g.flush();
 			return img;
 		} catch (SlickException se) {
-			System.err.println("Error while creating image.");
-			if (GlobalOptions.debug()) {
-				se.printStackTrace();
-			}
+			ErrorLogger.log(se, 5);
 		}
-
+		assert false;
 		return null;
 	}
 
@@ -135,9 +133,9 @@ public class ImageBuilder {
 			Image img = new Image("data/splash.png");
 			return img;
 		} catch (SlickException e) {
-			System.out.println("Error loading splash");
-			e.printStackTrace();
+			ErrorLogger.log(e,"Error loading splash",5);
 		}
+		assert false;
 		return null;
 	}
 
@@ -157,7 +155,7 @@ public class ImageBuilder {
 			StaticImage simg = new StaticImage(uiColourPalette.getSprite(x, y));
 			return simg.getScaledCopy(width, height);
 		} else {
-			return null;
+			throw new IllegalArgumentException("Invalid uiColour " + uiColour);
 		}
 	}
 
@@ -181,7 +179,7 @@ public class ImageBuilder {
 		if (id >= 0 && id < 4) {
 			return new StaticImage(conversationCharacters.getSprite(id, 0));
 		} else {
-			return null;
+			throw new IllegalArgumentException("Invalid conversation character ID " + id);
 		}
 	}
 
@@ -190,7 +188,7 @@ public class ImageBuilder {
 			return new LayeredImage(
 					new StaticImage(characters.getSprite(id, 0)));
 		} else {
-			return null;
+			throw new IllegalArgumentException("Invalid conversation character ID " + id);
 		}
 	}
 

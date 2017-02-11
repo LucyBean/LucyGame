@@ -3,6 +3,7 @@ package objects.world.characters;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +23,7 @@ public class Conversation
 	private Iterator<Pair<ConversationCharacter, String>> iterator;
 	private int endState;
 
-	public Pair<ConversationCharacter, String> getNext() {
+	public Optional<Pair<ConversationCharacter, String>> getNext() {
 		// Need the iterator to persist between calls of getNext
 		if (iterator == null) {
 			iterator = iterator();
@@ -32,11 +33,11 @@ public class Conversation
 			Pair<ConversationCharacter, String> pcs = iterator.next();
 			String s = pcs.getSecond();
 			pcs.setSecond(parse(s));
-			return pcs;
+			return Optional.of(pcs);
 		} else {
 			// Setting the iterator to null will 'reset' the conversation
 			iterator = null;
-			return null;
+			return Optional.empty();
 		}
 	}
 

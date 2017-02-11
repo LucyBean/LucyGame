@@ -2,6 +2,7 @@ package objects;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
@@ -30,7 +31,7 @@ public class ObjectLayer<T extends GameObject> extends HashSet<T> {
 	 *            The current position of the Camera.
 	 * @return The first object in the layer (if any) which contains the point.
 	 */
-	public T findClickedObject(Point p) {
+	public Optional<T> findClickedObject(Point p) {
 		Iterator<T> io = iterator();
 
 		while (io.hasNext()) {
@@ -38,12 +39,12 @@ public class ObjectLayer<T extends GameObject> extends HashSet<T> {
 			if (wo.isEnabled()) {
 				Rectangle r = wo.getSpriteRectangleScreenCoOrds();
 				if (r != null && r.contains(p)) {
-					return wo;
+					return Optional.of(wo);
 				}
 			}
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	/**

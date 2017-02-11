@@ -2,6 +2,7 @@ package objects.gameInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
@@ -192,16 +193,27 @@ public abstract class IEList extends InterfaceElement {
 		}
 	}
 
+	protected boolean validButtonIndex(int buttonIndex) {
+		return buttonIndex >= 0 && buttonIndex < buttons.size();
+	}
+
 	protected int getMinItemDisplayed() {
 		return minItemDisplayed;
 	}
 
-	protected IEListItem getButton(int buttonIndex) {
-		if (buttons != null && buttonIndex >= 0
-				&& buttonIndex < buttons.size()) {
-			return buttons.get(buttonIndex);
+	/**
+	 * Gets the IEListItem corresponding to the buttonIndex.
+	 * 
+	 * @param buttonIndex
+	 * @return Optional indicating the IEListItem, if any, that is at that
+	 *         buttonIndex
+	 */
+	protected Optional<IEListItem> getButton(int buttonIndex) {
+		assert buttons != null;
+		if (validButtonIndex(buttonIndex)) {
+			return Optional.of(buttons.get(buttonIndex));
 		} else {
-			return null;
+			return Optional.empty();
 		}
 	}
 

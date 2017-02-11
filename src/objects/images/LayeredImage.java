@@ -114,7 +114,7 @@ public class LayeredImage {
 			}
 			return img;
 		} else {
-			return null;
+			throw new IllegalArgumentException("Invalid layer ID " + z);
 		}
 	}
 

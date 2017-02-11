@@ -3,6 +3,7 @@ package objects.gameInterface;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.newdawn.slick.Font;
 
@@ -32,9 +33,11 @@ public class ConversationDisplay extends InterfaceElement {
 	}
 
 	private void showNextSpeech() {
-		Pair<ConversationCharacter, String> next = current.getNext();
-
-		if (next != null) {
+		Optional<Pair<ConversationCharacter, String>> oNext = current.getNext();
+		
+		
+		if (oNext.isPresent()) {
+			Pair<ConversationCharacter, String> next = oNext.get();
 			setCharacter(next.getFirst());
 			setText(next.getSecond());
 			showNextTextLine();

@@ -17,20 +17,12 @@ public abstract class Attachment {
 			GameObject myObject) {
 		this(new Rectangle(topLeft, width, height), myObject);
 	}
-	
-	public Attachment(Point topLeft, float width, float height) {
-		this(topLeft, width, height, null);
-	}
 
 	public Attachment(Rectangle rect, GameObject myObject) {
 		this.rect = rect;
 		if (myObject != null) {
 			this.myObject = myObject;
 		}
-	}
-	
-	public Attachment(Rectangle rect) {
-		this(rect, null);
 	}
 
 	protected Attachment(GameObject myObject) {
@@ -98,20 +90,22 @@ public abstract class Attachment {
 	protected GameObject getObject() {
 		return myObject;
 	}
-	
+
 	@Override
 	public String toString() {
 		return rect.toString();
 	}
-	
-	public <T extends WorldObject> Stream<T> getOverlappingObjectsOfType(Class<T> t) {
+
+	public <T extends WorldObject> Stream<T> getOverlappingObjectsOfType(
+			Class<T> t) {
 		if (getObject() != null) {
 			Rectangle rect = getObject().getCoOrdTranslator().objectToWorldCoOrds(
 					getRectangle());
-			return getObject().getWorld().getMap().getOverlappingObjectsOfType(rect,
-					t);
+			return getObject().getWorld().getMap().getOverlappingObjectsOfType(
+					rect, t);
 		} else {
-			return null;
+			throw new IllegalStateException(
+					"Trying to get overlapping objects of attachment with no game object");
 		}
 	}
 }

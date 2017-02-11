@@ -39,7 +39,7 @@ public class CoOrdTranslator {
 									camera.getScale()
 											* GlobalOptions.GRID_SIZE);
 		} else {
-			return null;
+			throw new IllegalStateException("GameObject " + go + " is of incorrect type");
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class CoOrdTranslator {
 			
 			return worldCoOrds;
 		} else {
-			return null;
+			throw new IllegalStateException("GameObject " + go + " is of incorrect type");
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class CoOrdTranslator {
 					* GlobalOptions.GRID_SIZE;
 			return new Rectangle(origin, width, height);
 		} else {
-			return null;
+			throw new IllegalStateException("GameObject " + go + " is of incorrect type");
 		}
 	}
 	

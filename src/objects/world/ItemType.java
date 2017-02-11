@@ -79,7 +79,7 @@ public enum ItemType {
 		if (id >= 0 && id < ItemType.values().length) {
 			return ItemType.values()[id];
 		} else {
-			return null;
+			throw new IllegalArgumentException("Invalid ItemType id " + id);
 		}
 	}
 }

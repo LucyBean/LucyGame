@@ -1,5 +1,7 @@
 package objects.gameInterface;
 
+import java.util.Optional;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 
@@ -20,11 +22,11 @@ public class BuildStatusWindow extends InterfaceElement {
 		Input input = gc.getInput();
 		Point mouseScreen = new Point(input.getMouseX(), input.getMouseY());
 		Point mouseWorld = getWorld().screenToWorldCoOrds(mouseScreen);
-		WorldObject hoverObject = getWorld().getMap().findObjectScreen(mouseScreen);
+		Optional<WorldObject> hoverObject = getWorld().getMap().findObjectScreen(mouseScreen);
 		
 		String text = "MOUSE: " + mouseWorld.toString() + "\n";
-		if (hoverObject != null) {
-			text += hoverObject.getInfo();
+		if (hoverObject.isPresent()) {
+			text += hoverObject.get().getInfo();
 		}
 		setText(text, textTopLeft);
 	}

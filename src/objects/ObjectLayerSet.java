@@ -3,6 +3,7 @@ package objects;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
@@ -118,13 +119,13 @@ public class ObjectLayerSet<T extends GameObject>
 	 * @param p
 	 * @return
 	 */
-	public T findClickedObject(Point p) {
-		T clicked = null;
-
+	public Optional<T> findClickedObject(Point p) {
+		Optional<T> clicked = Optional.empty();
+		
 		for (int i : keySet()) {
 			ObjectLayer<T> ol = get(i);
-			T wo = ol.findClickedObject(p);
-			if (wo != null) {
+			Optional<T> wo = ol.findClickedObject(p);
+			if (wo.isPresent()) {
 				clicked = wo;
 			}
 		}
@@ -140,11 +141,11 @@ public class ObjectLayerSet<T extends GameObject>
 	 * @param index
 	 * @return
 	 */
-	public T findClickedObject(Point p, int index) {
+	public Optional<T> findClickedObject(Point p, int index) {
 		if (get(index) != null) {
 			return get(index).findClickedObject(p);
 		} else {
-			return null;
+			return Optional.empty();
 		}
 	}
 }

@@ -2,6 +2,7 @@ package worlds;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -402,14 +403,14 @@ public class World {
 	private void buildingUpdate(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		Point mousePoint = new Point(input.getMouseX(), input.getMouseY());
-		WorldObject wo = map.findObjectScreen(mousePoint);
+		Optional<WorldObject> wo = map.findObjectScreen(mousePoint);
 		boolean mouseOnMap = !gameInterface.mouseOver(mousePoint, getState())
 				& !worldInterface.mouseOver(mousePoint, getState());
 
 		if (mouseOnMap) {
 			if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 				ItemType it = map.getPainter().getItemType();
-				if (wo == null && !it.isMultiClick()) {
+				if (!wo.isPresent() && !it.isMultiClick()) {
 					Point worldCoOrds = screenToWorldCoOrds(mousePoint);
 
 					// Need to ensure that the objects are snapped to the grid!
@@ -421,9 +422,7 @@ public class World {
 					map.getPainter().paint(worldCoOrds);
 				}
 			} else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-				if (wo != null) {
-					removeObject(wo);
-				}
+				wo.ifPresent(w -> removeObject(w));
 			}
 		}
 	}
@@ -492,13 +491,13 @@ public class World {
 	}
 
 	private void buildingMousePressed(int button, Point mousePoint) {
-		WorldObject wo = map.findObjectScreen(mousePoint);
+		Optional<WorldObject> wo = map.findObjectScreen(mousePoint);
 		boolean mouseOnMap = !gameInterface.mouseOver(mousePoint, getState())
 				& !worldInterface.mouseOver(mousePoint, getState());
 
 		if (mouseOnMap && button == Input.MOUSE_LEFT_BUTTON) {
 			ItemType it = map.getPainter().getItemType();
-			if (wo == null && it.isMultiClick()) {
+			if (!wo.isPresent() && it.isMultiClick()) {
 				Point worldCoOrds = screenToWorldCoOrds(mousePoint);
 
 				// Need to ensure that the objects are snapped to the grid!
@@ -521,14 +520,13 @@ public class World {
 	}
 
 	private void watchSelectMousePressed(int button, Point p) {
-
 		// For each world object, check whether it was clicked by the mouse
-		WorldObject clicked = map.findObjectScreen(p);
+		Optional<WorldObject> clicked = map.findObjectScreen(p);
 
-		if (clicked != null) {
-			setWatchTarget(clicked);
+		clicked.ifPresent(wo -> {
+			setWatchTarget(wo);
 			stopWatchSelect();
-		}
+		});
 	}
 
 	public void showConversation(Conversation c) {
