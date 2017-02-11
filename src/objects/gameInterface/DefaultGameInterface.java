@@ -1,6 +1,7 @@
 package objects.gameInterface;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import helpers.Point;
 import helpers.Rectangle;
@@ -88,13 +89,16 @@ public class DefaultGameInterface extends GameInterface {
 		buildingTools.add(() -> "Import map", s -> s.getWorld().getInput(s, "Enter name of map"), pms -> {
 			Menu m = pms.getFirst();
 			String s = pms.getSecond();
-			Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
+			Optional<Collection<WorldObject>> oObjects = WorldMapImporterExporter.importObjects(
 					s);
-			if (objects != null) {
+			if (!oObjects.isPresent()) {
+				// TODO: Feedback that the file name was incorrect
+			}
+			oObjects.ifPresent(objects -> {
 				m.getWorld().getMap().reset();
 				m.getWorld().getMap().addObjects(objects);
 				m.getWorld().closeBuildMenu();
-			}
+			});
 		}, 0);
 		add(buildingTools, WorldState.BUILDING_MENU);
 

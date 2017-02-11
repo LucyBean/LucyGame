@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,11 +45,10 @@ public class CharacterSpriteBuilder {
 					Matcher m = animLine.matcher(nextLine);
 					// If this line represents an animation
 					if (m.find()) {
-						Pair<LayeredImage, ActorState> v = getImage(nextLine,
-								name);
-						if (v != null) {
-							LayeredImage limg = v.getFirst();
-							ActorState as = v.getSecond();
+						Optional<Pair<LayeredImage, ActorState>> op = getImage(nextLine, name);
+						op.ifPresent(p -> {
+							LayeredImage limg = p.getFirst();
+							ActorState as = p.getSecond();
 							if (limg != null) {
 								map.put(as.ordinal(), limg);
 							} else if (as == ActorState.IDLE) {
@@ -56,7 +56,7 @@ public class CharacterSpriteBuilder {
 										"Warning: No IDLE animation for "
 												+ name, 3);
 							}
-						}
+						});
 					}
 				}
 				br.close();
@@ -68,7 +68,7 @@ public class CharacterSpriteBuilder {
 		return map;
 	}
 
-	private static Pair<LayeredImage, ActorState> getImage(String description,
+	private static Optional<Pair<LayeredImage, ActorState>> getImage(String description,
 			String charName) throws IOException, SlickException {
 		// Try to convert this to an animation
 		ActorState state = null;
@@ -89,7 +89,7 @@ public class CharacterSpriteBuilder {
 			// No name specified
 			ErrorLogger.log("Warning: no animation name specified "
 					+ description + " for " + charName, 1);
-			return null;
+			return Optional.empty();
 		}
 
 		try {
@@ -105,7 +105,7 @@ public class CharacterSpriteBuilder {
 		if (!animFile.exists()) {
 			ErrorLogger.log("Properties specified for " + animName + " for "
 					+ charName + " but no matching image exists.", 1);
-			return null;
+			return Optional.empty();
 		}
 		Image img = new Image(animFile.getPath());
 
@@ -115,12 +115,12 @@ public class CharacterSpriteBuilder {
 			// No type specified
 			ErrorLogger.log(
 					"No type specified for " + animName + " for " + charName, 1);
-			return new Pair<>(null, state);
+			return Optional.of(new Pair<>(null, state));
 		} else if (type.equals("static")) {
 			// This is a static sprite
 			// No other properties need to be checked
 			LayeredImage limg = new LayeredImage(new StaticImage(img));
-			return new Pair<>(limg, state);
+			return Optional.of(new Pair<>(limg, state));
 		} else if (type.equals("animated")) {
 			// This is an animated sprite
 			// Check for FRAMES, DELAY, and LOOP properties
@@ -142,11 +142,11 @@ public class CharacterSpriteBuilder {
 			SpriteSheet s = new SpriteSheet(img, frameWidth, img.getHeight());
 			LayeredImage limg = new LayeredImage(
 					new AnimatedImage(s, delay, looping));
-			return new Pair<>(limg, state);
+			return Optional.of(new Pair<>(limg, state));
 		} else {
 			ErrorLogger.log("Unknown image type " + type + " for " + animName
 					+ " for " + charName, 1);
-			return new Pair<>(null, state);
+			return Optional.of(new Pair<>(null, state));
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -204,16 +205,14 @@ public class ConversationLoader {
 			}
 			m = objStartPattern.matcher(nextLine);
 			if (m.find()) {
-				Objective o = loadObjective(nextLine);
-				if (o != null) {
-					objectives.add(o);
-				}
+				Optional<Objective> oo = loadObjective(nextLine);
+				oo.ifPresent(o -> objectives.add(o));
 			}
 		}
 		return objectives;
 	}
 
-	private static Objective loadObjective(String firstLine)
+	private static Optional<Objective> loadObjective(String firstLine)
 			throws IOException {
 		String nextLine = firstLine;
 		// Find the type
@@ -225,7 +224,7 @@ public class ConversationLoader {
 			type = m.group(1).toLowerCase();
 		} else {
 			logError("Objective with no type", 2);
-			return null;
+			return Optional.empty();
 		}
 
 		// Create objective of correct type
@@ -237,14 +236,14 @@ public class ConversationLoader {
 				itemType = m.group(1);
 			} else {
 				logError("Pick up objective with no item specified", 2);
-				return null;
+				return Optional.empty();
 			}
 			ItemType it = null;
 			try {
 				it = ItemType.valueOf(itemType.toUpperCase());
 			} catch (IllegalArgumentException e) {
 				logError("Unknown object specified: " + itemType, 2);
-				return null;
+				return Optional.empty();
 			}
 			o = new PickUpObjective(it);
 		} else if (type.equals("talkto")) {
@@ -254,24 +253,24 @@ public class ConversationLoader {
 				npcID = Integer.parseInt(m.group(1));
 			} else {
 				logError("Talk to objective with no NPC specified", 2);
-				return null;
+				return Optional.empty();
 			}
 			o = new TalkToObjective(npcID);
 		} else {
 			// TODO: Fill in other types
 			logError("Unknown type of objective: " + type, 2);
-			return null;
+			return Optional.empty();
 		}
 
 		// Check for short objective
 		m = Pattern.compile("/>").matcher(nextLine);
 		if (m.find()) {
 			// This objective is complete
-			return o;
+			return Optional.of(o);
 		}
 
 		loadQuestEffects(o, nextLine);
-		return o;
+		return Optional.of(o);
 	}
 
 	/**

@@ -27,8 +27,10 @@ public enum Dir {
 				return WEST;
 			case WEST:
 				return EAST;
+			default:
+				assert false;
+				return null;
 		}
-		return null;
 	}
 
 	/**

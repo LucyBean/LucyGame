@@ -1,6 +1,7 @@
 package worlds.lib;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.newdawn.slick.SlickException;
 
@@ -16,9 +17,12 @@ public class QuestDemoWorld extends World {
 
 	@Override
 	public void init() throws SlickException {
-		Collection<WorldObject> objects = WorldMapImporterExporter.importObjects("questDemo");
-		getMap().addObjects(objects);
-		
+		Optional<Collection<WorldObject>> oObjects = WorldMapImporterExporter.importObjects(
+				"questDemo");
+
+		assert oObjects.isPresent();
+		oObjects.ifPresent(objects -> getMap().addObjects(objects));
+
 		loadScripts("questDemo");
 
 		showWorldConversation(1);

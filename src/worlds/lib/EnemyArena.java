@@ -1,6 +1,7 @@
 package worlds.lib;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.newdawn.slick.SlickException;
 
@@ -19,10 +20,11 @@ public class EnemyArena extends World {
 	@Override
 	public void init() throws SlickException {
 		// Import from file
-		Collection<WorldObject> objects = WorldMapImporterExporter.importObjects(
+		Optional<Collection<WorldObject>> oObjects = WorldMapImporterExporter.importObjects(
 				"arena");
-		getMap().addObjects(objects);
-		
+		assert oObjects.isPresent();
+		oObjects.ifPresent(objects -> getMap().addObjects(objects));
+
 		Player p = getMap().getPlayer();
 		if (p != null) {
 			getCamera().setTarget(p);

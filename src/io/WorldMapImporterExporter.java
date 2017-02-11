@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 
 import helpers.ObjectByter;
 import objects.world.WorldObject;
@@ -31,11 +32,11 @@ public class WorldMapImporterExporter {
 		}
 	}
 
-	public static Collection<WorldObject> importObjects(String filename) {
+	public static Optional<Collection<WorldObject>> importObjects(String filename) {
 		try {
 			File file = new File("data/maps/" + filename + ".map");
 			if (!file.exists()) {
-				return null;
+				return Optional.empty();
 			}
 			FileInputStream in = new FileInputStream(file);
 			byte[] buffer = new byte[24];
@@ -49,10 +50,10 @@ public class WorldMapImporterExporter {
 				objects.add(wo);
 			}
 			in.close();
-			return objects;
+			return Optional.of(objects);
 		} catch (IOException ioe) {
 			ErrorLogger.log(ioe, "Error importing map.", 4);
-			return null;
+			return Optional.empty();
 		}
 	}
 
