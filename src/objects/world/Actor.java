@@ -716,6 +716,7 @@ public abstract class Actor extends WorldObject {
 				// TODO: Animate climbing sprite
 			}
 			if (!wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)) {
+				setState(ActorState.CLIMB_TOP);
 				// This Actor has now climbed to the top of the this
 				// ClimbingWallMarker.
 				// Set them to the top of the wall by setting the bottom left of
@@ -727,7 +728,6 @@ public abstract class Actor extends WorldObject {
 				Point topLeft = btmLeft.move(Dir.NORTH,
 						getCollider().getHeight());
 				setPosition(topLeft);
-
 			}
 		}
 	}
@@ -1039,7 +1039,14 @@ public abstract class Actor extends WorldObject {
 		if (getSprite() != null && updateSprite()) {
 			getSprite().update(delta);
 		}
-		if (isEnabled()) {
+		if (getState() == ActorState.CLIMB_TOP) {
+			// Check if animation finished
+			LucyImage limg = getSprite().getImage().getLayer(0).getImage();
+			if (!(limg instanceof AnimatedImage) || ((AnimatedImage) limg).isFinished()) {
+				setState(ActorState.IDLE);
+			}
+		}
+		if (isEnabled() && getState() != ActorState.CLIMB_TOP) {
 			solidsToIgnoreThisFrame = new HashSet<>();
 			positionDelta = Point.ZERO;
 			setState(ActorState.IDLE);
