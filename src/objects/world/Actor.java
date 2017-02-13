@@ -15,6 +15,8 @@ import helpers.Rectangle;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
+import objects.images.AnimatedImage;
+import objects.images.LucyImage;
 import objects.images.Sprite;
 import objects.images.StatedSprite;
 import quests.EventInfo;
@@ -42,6 +44,7 @@ public abstract class Actor extends WorldObject {
 	private float velocityExp = 0.0f;
 	private float moveSpeed = 0.01f;
 	private float walkSpeed = 0.5f;
+	private float climbSpeed = 0.3f;
 	private float crouchSpeed = 0.7f;
 	private float pushSpeed = 0.4f;
 	private float defaultJumpStrength = 0.013f;
@@ -707,7 +710,7 @@ public abstract class Actor extends WorldObject {
 	 */
 	public void climb(Dir d, int delta) {
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
-			float moveAmount = moveSpeed * delta * walkSpeed;
+			float moveAmount = moveSpeed * delta * climbSpeed;
 			Point moved = move(d, moveAmount);
 			if (moved != Point.ZERO) {
 				// TODO: Animate climbing sprite
@@ -1033,7 +1036,9 @@ public abstract class Actor extends WorldObject {
 	// Update
 	//
 	final public void update(GameContainer gc, int delta) {
-		super.update(gc, delta);
+		if (getSprite() != null && updateSprite()) {
+			getSprite().update(delta);
+		}
 		if (isEnabled()) {
 			solidsToIgnoreThisFrame = new HashSet<>();
 			positionDelta = Point.ZERO;
@@ -1069,6 +1074,27 @@ public abstract class Actor extends WorldObject {
 		}
 
 		lastState = state;
+	}
+	
+	private boolean updateSprite() {
+		if (getState() != ActorState.CLIMB) {
+			return true;
+		} else if (positionDelta.getY() != 0){
+			assert getState() == ActorState.CLIMB;
+			if (getSprite() != null && getSprite() instanceof StatedSprite) {
+				StatedSprite sprite = (StatedSprite) getSprite();
+				if (sprite.getState() == ActorState.CLIMB.ordinal()) {
+					LucyImage limg = getSprite().getImage().getLayer(0).getImage();
+					if (limg instanceof AnimatedImage) {
+						AnimatedImage ai = (AnimatedImage) limg;
+						// Set reversed if moving downwards, otherwise not reversed
+						ai.setReversed(positionDelta.getY() > 0);
+					}
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 	private void jumpMovement(int delta) {

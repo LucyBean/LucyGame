@@ -8,8 +8,9 @@ public class AnimatedImage implements LucyImage {
 	private int animationInterval;
 	private int currentImage = 0;
 	private int currentDisplayDuration = 0;
-	private boolean mirrored;
-	private boolean loop;
+	private boolean mirrored = false;
+	private boolean loop = false;
+	private boolean reversed = false;
 	private float alpha = 1.0f;
 
 	public AnimatedImage(SpriteSheet sprites, int animationInterval, boolean loop) {
@@ -21,10 +22,12 @@ public class AnimatedImage implements LucyImage {
 	public void update(int delta) {
 		currentDisplayDuration += delta;
 		if (currentDisplayDuration > animationInterval) {
-			if (currentImage < sprites.getHorizontalCount() - 1) {
-				currentImage++;
+			if (!reversed && currentImage < sprites.getHorizontalCount() - 1 || reversed && currentImage > 0) {
+				currentImage += (reversed) ? -1 : 1;
 			} else if (loop && currentImage == sprites.getHorizontalCount() - 1) {
 				currentImage = 0;
+			} else if (reversed && loop && currentImage <= 0) {
+				currentImage = sprites.getHorizontalCount() - 1;
 			}
 			currentDisplayDuration -= animationInterval;
 		}
@@ -32,6 +35,10 @@ public class AnimatedImage implements LucyImage {
 	
 	public boolean isLooping() {
 		return loop;
+	}
+	
+	public void setReversed(boolean reversed) {
+		this.reversed = reversed;
 	}
 
 	/**

@@ -85,6 +85,10 @@ public class StatedSprite extends Sprite {
 			}
 		}
 	}
+	
+	public int getState() {
+		return currentState;
+	}
 
 	@Override
 	protected void mirrorImage(boolean mirrored) {
