@@ -2,7 +2,9 @@ package objects.images;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import helpers.Point;
 import objects.world.ActorState;
 
 public class StatedSprite extends Sprite {
@@ -13,6 +15,7 @@ public class StatedSprite extends Sprite {
 	private Map<Integer, LayeredImage> images;
 	private boolean mirrored;
 	private float alpha = 1.0f;
+	private Optional<Point> alignmentPoint = Optional.empty();
 
 	public StatedSprite(LayeredImage defaultImage, int defaultState,
 			int gridSize) {
@@ -22,6 +25,10 @@ public class StatedSprite extends Sprite {
 		currentState = defaultState;
 		images = new HashMap<>();
 		images.put(defaultState, defaultImage);
+	}
+	
+	public void setAlignmentPoint(Point p) {
+		alignmentPoint = Optional.of(p);
 	}
 
 	public void setImage(LayeredImage image, int state) {
@@ -44,9 +51,20 @@ public class StatedSprite extends Sprite {
 	}
 
 	private void changeImage(LayeredImage newImage) {
+		assert newImage != null;
 		getImage().resetAnimations();
 		currentImage = newImage;
 		setRectangle(getImage().getRectangle());
+		// Set alignment point
+		Optional<Point> imageAlign = newImage.getAlignmentPoint();
+		if (alignmentPoint.isPresent() && imageAlign.isPresent()) {
+			Point ap = alignmentPoint.get();
+			Point ia = imageAlign.get().scale(1/((float) getGridSize()));
+			Point newOrigin = ap.move(ia.neg());
+			setOrigin(newOrigin);
+		} else {
+			setOrigin(Point.ZERO);
+		}
 		getImage().setMirrored(mirrored);
 		getImage().setAlpha(alpha);
 		if (getObject() != null) {

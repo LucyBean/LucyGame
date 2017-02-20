@@ -12,6 +12,7 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
+import objects.attachments.Attachment;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
@@ -72,7 +73,6 @@ public abstract class Actor extends WorldObject {
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Collider collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
-		autoAlignSprite();
 		standingCollider = collider;
 		if (collider != null) {
 			Point ccOrigin = collider.getTopLeft().move(Dir.SOUTH,
@@ -93,25 +93,36 @@ public abstract class Actor extends WorldObject {
 	}
 
 	@Override
+	public void setSprite(Sprite s) {
+		super.setSprite(s);
+		setSpriteAlignment();
+	}
+	
+	@Override
+	public void attach(Attachment a) {
+		super.attach(a);
+		setSpriteAlignment();
+	}
+	
+	private void setSpriteAlignment() {
+		Sprite s = getSprite();
+		if (s != null && s instanceof StatedSprite && getCollider() != null) {
+			StatedSprite ss = (StatedSprite) s;
+			ss.setAlignmentPoint(new Point(getCollider().getWidth() / 2,
+					getCollider().getHeight()).move(getCollider().getTopLeft()));
+		}		
+	}
+
+	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
 		addSensors();
 	}
 
-	/**
-	 * Sets the bottom-middle point of this Actor's Sprite to coincide with the
-	 * bottom-middle point of its collider.
-	 */
-	private void autoAlignSprite() {
-		if (getSprite() != null && getCollider() != null) {
-			// Set position of Player's sprite such that bottom-middle points of
-			// sprite and collider coincide.
-			Point co = getCollider().getTopLeft();
-			float newX = (getCollider().getWidth()
-					- getSprite().getRectangle().getWidth()) / 2 + co.getX();
-			float newY = (getCollider().getHeight()
-					- getSprite().getRectangle().getHeight()) + co.getY();
-			getSprite().setOrigin(new Point(newX, newY));
+	@Override
+	public void statedSpriteImageChange() {
+		if (getState() == ActorState.CLIMB_TOP) {
+			setState(ActorState.IDLE);
 		}
 	}
 
@@ -1042,11 +1053,12 @@ public abstract class Actor extends WorldObject {
 		if (getState() == ActorState.CLIMB_TOP) {
 			// Check if animation finished
 			LucyImage limg = getSprite().getImage().getLayer(0).getImage();
-			if (!(limg instanceof AnimatedImage) || ((AnimatedImage) limg).isFinished()) {
+			if (!(limg instanceof AnimatedImage)
+					|| ((AnimatedImage) limg).isFinished()) {
 				setState(ActorState.IDLE);
 			}
 		}
-		if (isEnabled() && getState() != ActorState.CLIMB_TOP) {
+		if (isEnabled() && controlsEnabled()) {
 			solidsToIgnoreThisFrame = new HashSet<>();
 			positionDelta = Point.ZERO;
 			setState(ActorState.IDLE);
@@ -1083,18 +1095,24 @@ public abstract class Actor extends WorldObject {
 		lastState = state;
 	}
 	
+	private boolean controlsEnabled() {
+		return getState() != ActorState.CLIMB_TOP;
+	}
+
 	private boolean updateSprite() {
 		if (getState() != ActorState.CLIMB) {
 			return true;
-		} else if (positionDelta.getY() != 0){
+		} else if (positionDelta.getY() != 0) {
 			assert getState() == ActorState.CLIMB;
 			if (getSprite() != null && getSprite() instanceof StatedSprite) {
 				StatedSprite sprite = (StatedSprite) getSprite();
 				if (sprite.getState() == ActorState.CLIMB.ordinal()) {
-					LucyImage limg = getSprite().getImage().getLayer(0).getImage();
+					LucyImage limg = getSprite().getImage().getLayer(
+							0).getImage();
 					if (limg instanceof AnimatedImage) {
 						AnimatedImage ai = (AnimatedImage) limg;
-						// Set reversed if moving downwards, otherwise not reversed
+						// Set reversed if moving downwards, otherwise not
+						// reversed
 						ai.setReversed(positionDelta.getY() > 0);
 					}
 				}
@@ -1187,11 +1205,6 @@ public abstract class Actor extends WorldObject {
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
 		}
-	}
-
-	@Override
-	public void statedSpriteImageChange() {
-		autoAlignSprite();
 	}
 
 	private void interactWithAll() {

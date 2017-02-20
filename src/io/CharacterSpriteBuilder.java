@@ -15,6 +15,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import helpers.Pair;
+import helpers.Point;
 import objects.images.AnimatedImage;
 import objects.images.LayeredImage;
 import objects.images.Sprite;
@@ -139,9 +140,18 @@ public class CharacterSpriteBuilder {
 				looping = Boolean.parseBoolean(properties.get("loop"));
 			}
 			int frameWidth = img.getWidth() / numFrames;
+			int alignX = frameWidth / 2;
+			int alignY = img.getHeight();
+			if (properties.containsKey("alignx")) {
+				alignX = Integer.parseInt(properties.get("alignx"));
+			}
+			if (properties.containsKey("aligny")) {
+				alignY = Integer.parseInt(properties.get("aligny"));
+			}
 			SpriteSheet s = new SpriteSheet(img, frameWidth, img.getHeight());
 			LayeredImage limg = new LayeredImage(
 					new AnimatedImage(s, delay, looping));
+			limg.setAlignmentPoint(new Point(alignX, alignY));
 			return Optional.of(new Pair<>(limg, state));
 		} else {
 			ErrorLogger.log("Unknown image type " + type + " for " + animName

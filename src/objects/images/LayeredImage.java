@@ -17,7 +17,8 @@ import io.ErrorLogger;
  *
  */
 public class LayeredImage {
-	List<PositionedImage> layers;
+	private Optional<Point> alignmentPoint = Optional.empty();
+	private List<PositionedImage> layers;
 	private int width;
 	private int height;
 	private int numLayers = 0;
@@ -69,6 +70,14 @@ public class LayeredImage {
 
 	public int getTopLayerNumber() {
 		return numLayers - 1;
+	}
+	
+	public void setAlignmentPoint(Point p) {
+		alignmentPoint = Optional.of(p);
+	}
+	
+	public Optional<Point> getAlignmentPoint() {
+		return alignmentPoint;		
 	}
 
 	public void draw(float x, float y, float scale) {

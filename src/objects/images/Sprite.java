@@ -91,6 +91,16 @@ public abstract class Sprite extends Attachment {
 	}
 
 	/**
+	 * Returns the grid size of the image. Can be used to convert from image to
+	 * object co-ordinates.
+	 * 
+	 * @return
+	 */
+	protected int getGridSize() {
+		return gridSize;
+	}
+
+	/**
 	 * Sets the imaged to be mirrored.
 	 * 
 	 * @param mirrored
