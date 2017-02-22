@@ -92,7 +92,7 @@ public class WorldMap {
 			if (go instanceof Actor) {
 				actors.add((Actor) go);
 			}
-			if (go.hasCollider()) {
+			if (go.getCollider().isPresent()) {
 				objectsWithColliders.add(go);
 			}
 			if (go.isInteractable()) {
@@ -145,7 +145,7 @@ public class WorldMap {
 		if (go instanceof Actor) {
 			activeActors.add((Actor) go);
 		}
-		if (go.hasCollider()) {
+		if (go.getCollider().isPresent()) {
 			objectsWithColliders.add(go);
 		}
 	}
@@ -157,7 +157,7 @@ public class WorldMap {
 			actors.remove(go);
 		}
 
-		if (go.hasCollider()) {
+		if (go.getCollider().isPresent()) {
 			objectsWithColliders.remove(go);
 		}
 		if (go.isInteractable()) {
@@ -184,7 +184,7 @@ public class WorldMap {
 		if (go instanceof Actor) {
 			activeActors.remove((Actor) go);
 		}
-		if (go.hasCollider()) {
+		if (go.getCollider().isPresent()) {
 			objectsWithColliders.remove(go);
 		}
 	}
@@ -196,7 +196,7 @@ public class WorldMap {
 	public Stream<WorldObject> getActiveSolids() {
 		// Currently returns all solid objects in the world.
 		// TODO: Modify to keep track of on screen objects.
-		return objectsWithColliders.stream().filter(wo -> wo.getCollider().isSolid());
+		return objectsWithColliders.stream().filter(wo -> wo.getCollider().get().isSolid());
 	}
 
 	public Collection<WorldObject> getAllInteractables() {
@@ -245,9 +245,8 @@ public class WorldMap {
 	}
 
 	private <T extends WorldObject> Stream<T> findOverlappingObjects(Rectangle rect, Stream<T> candidates, Class<T> t) {
-
-		return candidates.filter(go -> go.hasCollider()).filter(go -> {
-			Rectangle rectRel = go.getCollider().getRectangle();
+		return candidates.filter(go -> go.getCollider().isPresent()).filter(go -> {
+			Rectangle rectRel = go.getCollider().get().getRectangle();
 			Rectangle rectWorld = go.getCoOrdTranslator().objectToWorldCoOrds(rectRel);
 			return rectWorld.overlaps(rect);
 		});

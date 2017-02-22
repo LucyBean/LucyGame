@@ -1,5 +1,6 @@
 package objects.world;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import helpers.Point;
@@ -29,7 +30,7 @@ public abstract class Locker extends Static {
 	 * @param interactBox
 	 */
 	public Locker(int lockID, Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Collider collider, InteractBox interactBox) {
+			Sprite sprite, Optional<Collider> collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 		this.lockID = lockID;
 	}
@@ -37,7 +38,7 @@ public abstract class Locker extends Static {
 	public Locker(int lockID, Point origin, WorldLayer layer,
 			ItemType itemType) {
 		this(lockID, origin, layer, itemType,
-				itemType.getSprite(), null, null);
+				itemType.getSprite(), Optional.empty(), null);
 		setInteractBoxFromSprite();
 	}
 

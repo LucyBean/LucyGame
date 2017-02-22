@@ -24,7 +24,7 @@ public class MovingPlatform extends Actor implements INeedSpecialBuildInfo {
 	public MovingPlatform(Point start, Point end, int period) {
 		super(start, WorldLayer.WORLD, ItemType.MOVING_PLATFORM);
 		setColliderFromSprite();
-		getCollider().setSolid(true);
+		getCollider().get().setSolid(true);
 		useGravity(false);
 		amplitude = start.move(end.neg()).scale(0.5f); // amplitude = (end -
 														// start) / 2

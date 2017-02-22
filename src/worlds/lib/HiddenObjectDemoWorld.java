@@ -73,7 +73,8 @@ class HiddenSquare extends Static {
 			new Rectangle(Point.ZERO, 2, 2), 4, gridSize);
 
 	public HiddenSquare(Point origin) {
-		super(origin, WorldLayer.WORLD, null, sprite);
+		super(origin, WorldLayer.WORLD, ItemType.NONE);
+		attach(sprite);
 		setInteractBoxFromSprite();
 	}
 

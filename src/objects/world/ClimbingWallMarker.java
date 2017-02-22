@@ -1,5 +1,7 @@
 package objects.world;
 
+import java.util.Optional;
+
 import helpers.Point;
 import objects.attachments.Collider;
 import worlds.WorldLayer;
@@ -10,7 +12,7 @@ public class ClimbingWallMarker extends Static implements INeedSpecialBuildInfo 
 
 	public ClimbingWallMarker(Point top, float length) {
 		super(top, WorldLayer.WORLD, ItemType.CLIMBING_WALL_MARKER, null,
-				new Collider(new Point(-width/2.0f, 0), width, length),
+				Optional.of(new Collider(new Point(-width/2.0f, 0), width, length)),
 				null);
 		this.height = length;
 	}

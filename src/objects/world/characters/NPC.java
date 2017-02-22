@@ -2,6 +2,7 @@ package objects.world.characters;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import helpers.Point;
 import objects.attachments.Collider;
@@ -25,7 +26,7 @@ public abstract class NPC extends Actor {
 		return c;
 	}
 
-	public NPC(Point origin, ItemType itemType, Sprite sprite, Collider collider, InteractBox interactBox, int npcID) {
+	public NPC(Point origin, ItemType itemType, Sprite sprite, Optional<Collider> collider, InteractBox interactBox, int npcID) {
 		super(origin, WorldLayer.WORLD, itemType, sprite, collider, interactBox);
 		this.npcID = npcID;
 		quests = new HashMap<>();

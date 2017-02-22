@@ -1,5 +1,7 @@
 package objects.world.lib;
 
+import java.util.Optional;
+
 import helpers.Dir;
 import helpers.Point;
 import objects.attachments.Collider;
@@ -14,11 +16,11 @@ public class Wall extends Static {
 
 	public Wall(Point origin, int width, int height) {
 		super(origin, WorldLayer.WORLD, ItemType.WALL, null,
-				new Collider(Point.ZERO, width, height), null);
+				Optional.of(new Collider(Point.ZERO, width, height)), null);
 		this.width = width;
 		this.height = height;
 		setSprite(SpriteBuilder.drawWall(width, height));
-		getCollider().setSolid(true);
+		getCollider().get().setSolid(true);
 	}
 	
 	public Wall(Point origin) {

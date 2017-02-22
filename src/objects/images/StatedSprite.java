@@ -42,7 +42,7 @@ public class StatedSprite extends Sprite {
 
 	public void setState(int newState) {
 		if (needToChangeSprite(newState)) {
-			LayeredImage newImage = images.get(newState);
+			LayeredImage newImage = images.getOrDefault(newState, defaultImage);
 			changeImage(newImage);
 		} else if (needToQueueSpriteChange(newState)) {
 			queuedImage = images.get(newState);

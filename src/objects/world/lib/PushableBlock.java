@@ -14,7 +14,7 @@ public class PushableBlock extends Actor {
 	public PushableBlock(Point origin) {
 		super(origin, WorldLayer.WORLD, ItemType.PUSHABLE_BLOCK);
 		setColliderFromSprite();
-		getCollider().setSolid(true);
+		getCollider().get().setSolid(true);
 		setPushable(true);
 		
 		InteractBox ib = new InteractBox(new Point(-0.3f, 0), 2.6f, 2);

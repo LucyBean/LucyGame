@@ -17,7 +17,7 @@ public class Door extends Static implements Lockable {
 		super(origin, WorldLayer.WORLD, ItemType.DOOR);
 		setColliderFromSprite();
 		this.lockID = lockID;
-		getCollider().setSolid(true);
+		getCollider().get().setSolid(true);
 	}
 
 	@Override

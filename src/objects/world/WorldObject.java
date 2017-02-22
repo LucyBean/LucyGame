@@ -1,6 +1,7 @@
 package objects.world;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.newdawn.slick.GameContainer;
 
@@ -27,7 +28,7 @@ public abstract class WorldObject extends GameObject {
 	// non-solids).
 	//
 	private ItemType itemType;
-	private Collider collider;
+	private Optional<Collider> collider = Optional.empty();
 	private InteractBox interactBox;
 	private WorldLayer layer;
 	private AttachmentSet attachments;
@@ -48,24 +49,29 @@ public abstract class WorldObject extends GameObject {
 	 * @param interactBox
 	 *            Rectangle used for interacting with the object.
 	 */
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite, Collider collider,
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite, Optional<Collider> collider,
 			InteractBox interactBox) {
 		super(origin, sprite);
 		this.layer = layer;
 		this.itemType = itemType;
 		attachments = new AttachmentSet();
-		attach(collider);
+		if (collider.isPresent()) {
+			attach(collider.get());
+		}
 		attach(interactBox);
 
 		reset();
 	}
 
-	public WorldObject(Point origin, WorldLayer layer, ItemType itemType, Sprite sprite) {
-		this(origin, layer, itemType, sprite, null, null);
+	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
+			Sprite sprite) {
+		this(origin, layer, itemType, sprite, Optional.empty(), null);
 	}
 
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, itemType.getSprite(), null, null);
+		this(origin, layer, itemType, itemType.getSprite(), Optional.empty(),
+				null);
 	}
 
 	protected void setColliderFromSprite() {
@@ -112,12 +118,12 @@ public abstract class WorldObject extends GameObject {
 	}
 
 	private void setCollider(Collider c) {
-		if (collider != null) {
-			attachments.remove(collider);
+		if (collider.isPresent()) {
+			attachments.remove(collider.get());
 		}
-		collider = c;
-		if (collider != null) {
-			attachments.add(collider);
+		collider = Optional.of(c);
+		if (collider.isPresent()) {
+			attachments.add(collider.get());
 		}
 	}
 
@@ -143,15 +149,12 @@ public abstract class WorldObject extends GameObject {
 	// TODO
 	// Getters
 	//
-	public boolean hasCollider() {
-		return getCollider() != null;
-	}
 
 	public boolean isInteractable() {
 		return getInteractBox() != null;
 	}
 
-	public Collider getCollider() {
+	public Optional<Collider> getCollider() {
 		return collider;
 	}
 
@@ -228,10 +231,11 @@ public abstract class WorldObject extends GameObject {
 		super.draw();
 
 		// Draws collider and interact boxes
-		if (getCollider() != null) {
+		if (getCollider().isPresent()) {
 			if (GlobalOptions.drawAllColliders()
-					|| GlobalOptions.drawInvisObjColliders() && (getSprite() == null || !isVisible())) {
-				getCollider().draw();
+					|| GlobalOptions.drawInvisObjColliders()
+							&& (getSprite() == null || !isVisible())) {
+				getCollider().get().draw();
 			}
 		}
 		if (getInteractBox() != null && GlobalOptions.drawInteractBoxes()) {
@@ -241,10 +245,12 @@ public abstract class WorldObject extends GameObject {
 			Collection<Sensor> sensors = attachments.getByType(Sensor.class);
 			sensors.stream().forEach(s -> s.draw());
 
-			Collection<AttackBox> activeAttacks = attachments.getByType(AttackBox.class);
+			Collection<AttackBox> activeAttacks = attachments.getByType(
+					AttackBox.class);
 			activeAttacks.stream().forEach(s -> s.draw());
 
-			Collection<ActorSticker> actorStickers = attachments.getByType(ActorSticker.class);
+			Collection<ActorSticker> actorStickers = attachments.getByType(
+					ActorSticker.class);
 			actorStickers.stream().forEach(s -> s.draw());
 		}
 	}
@@ -297,6 +303,7 @@ public abstract class WorldObject extends GameObject {
 	@Override
 	public void update(GameContainer gc, int delta) {
 		super.update(gc, delta);
-		attachments.getByType(AttackBox.class).stream().forEach(a -> a.checkAttack());
+		attachments.getByType(AttackBox.class).stream().forEach(
+				a -> a.checkAttack());
 	}
 }

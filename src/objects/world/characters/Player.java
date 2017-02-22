@@ -1,5 +1,6 @@
 package objects.world.characters;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.GameContainer;
@@ -24,9 +25,9 @@ public class Player extends Actor {
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
 				SpriteBuilder.getCharacterSprite(0),
-				new Collider(Point.ZERO, 0.8f, 1.90f), null);
+				Optional.of(new Collider(Point.ZERO, 0.8f, 1.90f)), null);
 
-		fallAttack = new AttackBox(getCollider().getBottomLeft(), getCollider().getWidth(), 0.5f) {
+		fallAttack = new AttackBox(getCollider().get().getBottomLeft(), getCollider().get().getWidth(), 0.5f) {
 			@Override
 			public void effectOnPlayer() {
 				resetMidAirJump();
@@ -44,7 +45,7 @@ public class Player extends Actor {
 	public void act(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		Consumer<Dir> moveFunction;
-		
+
 		if (input.isKeyDown(Controller.CROUCH)) {
 			startCrouch();
 		}
@@ -55,10 +56,12 @@ public class Player extends Actor {
 			moveFunction = (d -> run(d, delta));
 		}
 
-		if (input.isKeyDown(Controller.LEFT) && !input.isKeyDown(Controller.RIGHT)) {
+		if (input.isKeyDown(Controller.LEFT)
+				&& !input.isKeyDown(Controller.RIGHT)) {
 			moveFunction.accept(Dir.WEST);
 		}
-		if (input.isKeyDown(Controller.RIGHT) && !input.isKeyDown(Controller.LEFT)) {
+		if (input.isKeyDown(Controller.RIGHT)
+				&& !input.isKeyDown(Controller.LEFT)) {
 			moveFunction.accept(Dir.EAST);
 		}
 
@@ -82,9 +85,9 @@ public class Player extends Actor {
 			}
 		}
 	}
-	
+
 	@Override
-	public void keyPressed (int keycode) {
+	public void keyPressed(int keycode) {
 		if (gravityEnabled() && keycode == Controller.JUMP) {
 			signalJump();
 		}
@@ -107,12 +110,12 @@ public class Player extends Actor {
 	@Override
 	public void stateChanged(ActorState from, ActorState to) {
 		super.stateChanged(from, to);
-		
+
 		if (to == ActorState.FALL) {
 			// Add the fall attack box
 			attach(fallAttack);
 		}
-		
+
 		if (from == ActorState.FALL) {
 			detach(fallAttack);
 		}
@@ -136,11 +139,11 @@ public class Player extends Actor {
 	public boolean has(ItemType ii, int quantity) {
 		return inventory.has(ii, quantity);
 	}
-	
+
 	public void use(ItemType it) {
 		use(it, 1);
 	}
-	
+
 	public void use(ItemType it, int quantity) {
 		inventory.remove(it, quantity);
 	}

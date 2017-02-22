@@ -57,7 +57,7 @@ public class Camera {
 			// Get position of target on screen
 			// tsc = target in screen co-ordinates
 			Rectangle tsc = target.getCoOrdTranslator().objectToScreenCoOrds(
-					target.getCollider().getRectangle());
+					target.getSprite().getRectangle());
 
 			// Check if it the object is outside the noScrollRegion
 			if (!noScrollRegion.contains(tsc)) {

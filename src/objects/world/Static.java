@@ -1,5 +1,7 @@
 package objects.world;
 
+import java.util.Optional;
+
 import helpers.Point;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
@@ -8,18 +10,19 @@ import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {
 	public Static(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Collider collider, InteractBox interactBox) {
+			Sprite sprite, Optional<Collider> collider, InteractBox interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
-	public Static(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite) {
-		this(origin, layer, itemType, sprite, null, null);
-	}
-
+	/**
+	 * Create a new Static of the required ItemType without a Collider or InteractBox.
+	 * @param origin
+	 * @param layer
+	 * @param itemType
+	 */
 	public Static(Point origin, WorldLayer layer, ItemType itemType) {
 		this(origin, layer, itemType, itemType.getSprite(),
-				null, null);
+				Optional.empty(), null);
 	}
 
 	@Override

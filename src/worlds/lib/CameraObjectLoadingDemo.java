@@ -1,5 +1,7 @@
 package worlds.lib;
 
+import java.util.Optional;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -154,7 +156,7 @@ class CameraBox extends Actor {
 
 	public CameraBox(Point origin) {
 		super(origin, WorldLayer.PLAYER, null, sprite,
-				new Collider(Point.ZERO, 2, 1), null);
+				Optional.of(new Collider(Point.ZERO, 2, 1)), null);
 		// TODO Auto-generated constructor stub
 	}
 
