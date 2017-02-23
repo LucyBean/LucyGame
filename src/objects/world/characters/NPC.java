@@ -26,8 +26,11 @@ public abstract class NPC extends Actor {
 		return c;
 	}
 
-	public NPC(Point origin, ItemType itemType, Sprite sprite, Optional<Collider> collider, InteractBox interactBox, int npcID) {
-		super(origin, WorldLayer.WORLD, itemType, sprite, collider, interactBox);
+	public NPC(Point origin, ItemType itemType, Sprite sprite,
+			Optional<Collider> collider, Optional<InteractBox> interactBox,
+			int npcID) {
+		super(origin, WorldLayer.WORLD, itemType, sprite, collider,
+				interactBox);
 		this.npcID = npcID;
 		quests = new HashMap<>();
 	}
@@ -63,7 +66,7 @@ public abstract class NPC extends Actor {
 			q.start(getWorld());
 		}
 		talk();
-		
+
 	}
 
 	public void setConversations(ConversationSet cs) {

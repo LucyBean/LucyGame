@@ -30,7 +30,7 @@ public abstract class Locker extends Static {
 	 * @param interactBox
 	 */
 	public Locker(int lockID, Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Optional<Collider> collider, InteractBox interactBox) {
+			Sprite sprite, Optional<Collider> collider, Optional<InteractBox> interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 		this.lockID = lockID;
 	}
@@ -38,7 +38,7 @@ public abstract class Locker extends Static {
 	public Locker(int lockID, Point origin, WorldLayer layer,
 			ItemType itemType) {
 		this(lockID, origin, layer, itemType,
-				itemType.getSprite(), Optional.empty(), null);
+				itemType.getSprite(), Optional.empty(), Optional.empty());
 		setInteractBoxFromSprite();
 	}
 

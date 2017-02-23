@@ -13,7 +13,9 @@ import org.newdawn.slick.GameContainer;
 import helpers.Dir;
 import helpers.Point;
 import helpers.Rectangle;
+import objects.attachments.ActorSticker;
 import objects.attachments.Attachment;
+import objects.attachments.AttackBox;
 import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.attachments.Sensor;
@@ -73,7 +75,7 @@ public abstract class Actor extends WorldObject {
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider,
-			InteractBox interactBox) {
+			Optional<InteractBox> interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 		if (collider.isPresent()) {
 			Collider c = collider.get();
@@ -87,11 +89,11 @@ public abstract class Actor extends WorldObject {
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite) {
-		this(origin, layer, itemType, sprite, Optional.empty(), null);
+		this(origin, layer, itemType, sprite, Optional.empty(), Optional.empty());
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, itemType.getSprite(), Optional.empty(), null);
+		this(origin, layer, itemType, itemType.getSprite(), Optional.empty(), Optional.empty());
 	}
 
 	@Override
@@ -336,7 +338,7 @@ public abstract class Actor extends WorldObject {
 			// This object has no collider so moves immediately without
 			// collision checking
 			setPosition(getPosition().move(d, amount));
-			getActorStickers().stream().forEach(
+			getAttachments().getByType(ActorSticker.class).stream().forEach(
 					a -> a.moveStuckActors(d, amount));
 			delta = Point.ZERO.move(d, amount);
 			positionDelta = positionDelta.move(d, amount);
@@ -365,7 +367,7 @@ public abstract class Actor extends WorldObject {
 					moveAmount -= increase;
 				}
 				final float ma = moveAmount;
-				getActorStickers().stream().forEach(
+				getAttachments().getByType(ActorSticker.class).stream().forEach(
 						a -> a.moveStuckActors(d, ma));
 			}
 		}
@@ -995,8 +997,9 @@ public abstract class Actor extends WorldObject {
 		Collection<WorldObject> nowActive = new ArrayList<WorldObject>();
 		for (WorldObject i : interactables) {
 			if (i != this && i.isEnabled()) {
+				assert i.getInteractBox().isPresent();
 				Rectangle other = i.getCoOrdTranslator().objectToWorldCoOrds(
-						i.getInteractBox().getRectangle());
+						i.getInteractBox().get().getRectangle());
 				if (other.overlaps(thisArea)) {
 					nowActive.add(i);
 				}
@@ -1092,6 +1095,8 @@ public abstract class Actor extends WorldObject {
 				interactWithAll();
 				interactNextFrame = false;
 			}
+			getAttachments().getByType(AttackBox.class).stream().forEach(
+					a -> a.checkAttack());
 			if (jumpNextFrame) {
 				jump(delta);
 				jumpNextFrame = false;

@@ -16,7 +16,7 @@ public class Wall extends Static {
 
 	public Wall(Point origin, int width, int height) {
 		super(origin, WorldLayer.WORLD, ItemType.WALL, null,
-				Optional.of(new Collider(Point.ZERO, width, height)), null);
+				Optional.of(new Collider(Point.ZERO, width, height)), Optional.empty());
 		this.width = width;
 		this.height = height;
 		setSprite(SpriteBuilder.drawWall(width, height));

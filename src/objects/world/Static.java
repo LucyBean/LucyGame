@@ -10,7 +10,7 @@ import worlds.WorldLayer;
 
 public abstract class Static extends WorldObject {
 	public Static(Point origin, WorldLayer layer, ItemType itemType,
-			Sprite sprite, Optional<Collider> collider, InteractBox interactBox) {
+			Sprite sprite, Optional<Collider> collider, Optional<InteractBox> interactBox) {
 		super(origin, layer, itemType, sprite, collider, interactBox);
 	}
 
@@ -22,7 +22,7 @@ public abstract class Static extends WorldObject {
 	 */
 	public Static(Point origin, WorldLayer layer, ItemType itemType) {
 		this(origin, layer, itemType, itemType.getSprite(),
-				Optional.empty(), null);
+				Optional.empty(), Optional.empty());
 	}
 
 	@Override

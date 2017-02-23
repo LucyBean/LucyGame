@@ -25,7 +25,7 @@ public class Player extends Actor {
 	public Player(Point origin) {
 		super(origin, WorldLayer.PLAYER, ItemType.PLAYER,
 				SpriteBuilder.getCharacterSprite(0),
-				Optional.of(new Collider(Point.ZERO, 0.8f, 1.90f)), null);
+				Optional.of(new Collider(Point.ZERO, 0.8f, 1.90f)), Optional.empty());
 
 		fallAttack = new AttackBox(getCollider().get().getBottomLeft(), getCollider().get().getWidth(), 0.5f) {
 			@Override

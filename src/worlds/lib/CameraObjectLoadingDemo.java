@@ -195,7 +195,7 @@ class WorldSector extends Static {
 
 	public WorldSector(Point origin, int x, int y) {
 		super(origin, WorldLayer.WORLD, null, null, null,
-				new InteractBox(Point.ZERO, 3, 3));
+				Optional.of(new InteractBox(Point.ZERO, 3, 3)));
 		neighbours = new WorldSector[Dir.values().length];
 		this.x = x;
 		this.y = y;

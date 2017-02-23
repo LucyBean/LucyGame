@@ -95,7 +95,7 @@ public class WorldMap {
 			if (go.getCollider().isPresent()) {
 				objectsWithColliders.add(go);
 			}
-			if (go.isInteractable()) {
+			if (go.getInteractBox().isPresent()) {
 				interactables.add(go);
 			}
 			if (go.isEnabled()) {
@@ -160,7 +160,7 @@ public class WorldMap {
 		if (go.getCollider().isPresent()) {
 			objectsWithColliders.remove(go);
 		}
-		if (go.isInteractable()) {
+		if (go.getInteractBox().isPresent()) {
 			interactables.remove(go);
 		}
 		if (go instanceof Lockable) {

@@ -44,7 +44,7 @@ class ColliderBox extends Static {
 	public ColliderBox(Point origin) {
 		super(origin, WorldLayer.WORLD, null, null,
 				Optional.of(new Collider(Point.ZERO, 0.5f, 0.5f)),
-				new InteractBox(new Point(0.5f, 0), 0.5f, 0.5f));
+				Optional.of(new InteractBox(new Point(0.5f, 0), 0.5f, 0.5f)));
 	}
 
 	@Override

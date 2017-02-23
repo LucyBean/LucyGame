@@ -29,7 +29,7 @@ public abstract class WorldObject extends GameObject {
 	//
 	private ItemType itemType;
 	private Optional<Collider> collider = Optional.empty();
-	private InteractBox interactBox;
+	private Optional<InteractBox> interactBox = Optional.empty();
 	private WorldLayer layer;
 	private AttachmentSet attachments;
 
@@ -51,7 +51,7 @@ public abstract class WorldObject extends GameObject {
 	 */
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider,
-			InteractBox interactBox) {
+			Optional<InteractBox> interactBox) {
 		super(origin, sprite);
 		this.layer = layer;
 		this.itemType = itemType;
@@ -59,19 +59,21 @@ public abstract class WorldObject extends GameObject {
 		if (collider.isPresent()) {
 			attach(collider.get());
 		}
-		attach(interactBox);
+		if (interactBox.isPresent()) {
+			attach(interactBox.get());
+		}
 
 		reset();
 	}
 
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite) {
-		this(origin, layer, itemType, sprite, Optional.empty(), null);
+		this(origin, layer, itemType, sprite, Optional.empty(), Optional.empty());
 	}
 
 	public WorldObject(Point origin, WorldLayer layer, ItemType itemType) {
 		this(origin, layer, itemType, itemType.getSprite(), Optional.empty(),
-				null);
+				Optional.empty());
 	}
 
 	protected void setColliderFromSprite() {
@@ -121,19 +123,23 @@ public abstract class WorldObject extends GameObject {
 		if (collider.isPresent()) {
 			attachments.remove(collider.get());
 		}
-		collider = Optional.of(c);
-		if (collider.isPresent()) {
-			attachments.add(collider.get());
+		if (c != null) {
+			collider = Optional.of(c);
+			attachments.add(c);
+		} else {
+			collider = Optional.empty();
 		}
 	}
 
 	private void setInteractBox(InteractBox ib) {
-		if (interactBox != null) {
-			attachments.remove(interactBox);
+		if (interactBox.isPresent()) {
+			attachments.remove(interactBox.get());
 		}
-		interactBox = ib;
-		if (interactBox != null) {
-			attachments.add(interactBox);
+		if (ib != null) {
+			interactBox = Optional.of(ib);
+			attachments.add(ib);
+		} else {
+			interactBox = Optional.empty();
 		}
 	}
 
@@ -149,16 +155,11 @@ public abstract class WorldObject extends GameObject {
 	// TODO
 	// Getters
 	//
-
-	public boolean isInteractable() {
-		return getInteractBox() != null;
-	}
-
 	public Optional<Collider> getCollider() {
 		return collider;
 	}
 
-	public InteractBox getInteractBox() {
+	public Optional<InteractBox> getInteractBox() {
 		return interactBox;
 	}
 
@@ -169,9 +170,9 @@ public abstract class WorldObject extends GameObject {
 	public ItemType getType() {
 		return itemType;
 	}
-
-	protected Collection<ActorSticker> getActorStickers() {
-		return attachments.getByType(ActorSticker.class);
+	
+	protected AttachmentSet getAttachments() {
+		return attachments;
 	}
 
 	/**
@@ -238,8 +239,8 @@ public abstract class WorldObject extends GameObject {
 				getCollider().get().draw();
 			}
 		}
-		if (getInteractBox() != null && GlobalOptions.drawInteractBoxes()) {
-			getInteractBox().draw();
+		if (getInteractBox().isPresent() && GlobalOptions.drawInteractBoxes()) {
+			getInteractBox().get().draw();
 		}
 		if (GlobalOptions.drawAttachments()) {
 			Collection<Sensor> sensors = attachments.getByType(Sensor.class);

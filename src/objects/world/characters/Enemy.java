@@ -13,12 +13,12 @@ import worlds.WorldLayer;
 public abstract class Enemy extends Actor {
 
 	public Enemy(Point origin, ItemType itemType,
-			Sprite sprite, Optional<Collider> collider, InteractBox interactBox) {
+			Sprite sprite, Optional<Collider> collider, Optional<InteractBox> interactBox) {
 		super(origin, WorldLayer.WORLD, itemType, sprite, collider, interactBox);
 	}
 	
 	public Enemy(Point origin, ItemType itemType) {
-		this(origin, itemType, itemType.getSprite(), Optional.empty(), null);
+		this(origin, itemType, itemType.getSprite(), Optional.empty(), Optional.empty());
 		setColliderFromSprite();
 	}
 

@@ -13,7 +13,7 @@ public class ClimbingWallMarker extends Static implements INeedSpecialBuildInfo 
 	public ClimbingWallMarker(Point top, float length) {
 		super(top, WorldLayer.WORLD, ItemType.CLIMBING_WALL_MARKER, null,
 				Optional.of(new Collider(new Point(-width/2.0f, 0), width, length)),
-				null);
+				Optional.empty());
 		this.height = length;
 	}
 
