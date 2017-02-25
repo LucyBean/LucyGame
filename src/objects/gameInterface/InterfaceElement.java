@@ -15,13 +15,17 @@ public abstract class InterfaceElement extends GameObject {
 	}
 
 	public InterfaceElement(Rectangle rect) {
-		super(rect.getTopLeft(), null);
+		super(rect.getTopLeft());
 		Sprite sprite = SpriteBuilder.interfaceElement((int) rect.getWidth(),
 				(int) rect.getHeight());
 		setSprite(sprite);
 	}
+	
+	protected InterfaceElement(Point point) {
+		super(point);
+	}
 
-	protected InterfaceElement() {
+	private InterfaceElement() {
 		super(null, null);
 	}
 
@@ -33,8 +37,8 @@ public abstract class InterfaceElement extends GameObject {
 	 */
 	public void mousePressed(int button, Point clickPoint) {
 		if (isVisible()) {
-			Sprite sprite = getSprite();
-			if (sprite != null) {
+			if (getSprite().isPresent()) {
+				Sprite sprite = getSprite().get();
 				Rectangle rect = sprite.getRectangle();
 				clickPoint = getCoOrdTranslator().screenToObjectCoOrds(
 						clickPoint);
@@ -46,7 +50,7 @@ public abstract class InterfaceElement extends GameObject {
 	}
 
 	protected void setBackground(int uiColour) {
-		LayeredImage limg = getSprite().getImage();
+		LayeredImage limg = getSprite().get().getImage();
 		Rectangle rect = limg.getLayer(0).getRectangle();
 		LucyImage bg = ImageBuilder.getColouredRectangle(rect, uiColour);
 		limg.setLayer(0, bg);
@@ -60,7 +64,7 @@ public abstract class InterfaceElement extends GameObject {
 	 *            The String to show.
 	 */
 	public void setTextCentered(String text) {
-		LayeredImage limg = getSprite().getImage();
+		LayeredImage limg = getSprite().get().getImage();
 		limg.setTextCentered(limg.getTopLayerNumber(), text);
 	}
 
@@ -74,7 +78,7 @@ public abstract class InterfaceElement extends GameObject {
 	 *            The top-left position of the text.
 	 */
 	public void setText(String text, Point topLeft) {
-		LayeredImage limg = getSprite().getImage();
+		LayeredImage limg = getSprite().get().getImage();
 		limg.setText(limg.getTopLayerNumber(), text, topLeft);
 	}
 
@@ -95,8 +99,8 @@ public abstract class InterfaceElement extends GameObject {
 	 * @return
 	 */
 	public int getWidthPixels() {
-		if (getSprite() != null) {
-			return (int) getSprite().getWidth();
+		if (getSprite().isPresent()) {
+			return (int) getSprite().get().getWidth();
 		}
 		return 0;
 	}
@@ -106,8 +110,8 @@ public abstract class InterfaceElement extends GameObject {
 	 * @return
 	 */
 	public int getHeightPixels() {
-		if (getSprite() != null) {
-			return (int) getSprite().getHeight();
+		if (getSprite().isPresent()) {
+			return (int) getSprite().get().getHeight();
 		}
 		return 0;
 	}

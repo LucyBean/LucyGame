@@ -273,7 +273,7 @@ public class World {
 
 	public void startBuilding() {
 		setWorldState(WorldState.BUILDING);
-		getCamera().setTarget(null);
+		getCamera().stopFollowing();
 		ignoreInput(true);
 	}
 

@@ -1,5 +1,7 @@
 package worlds;
 
+import java.util.Optional;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 
@@ -34,12 +36,12 @@ public class Camera {
 			WINDOW_WIDTH - SCROLL_RECTANGLE_WIDTH * 2,
 			WINDOW_HEIGHT - SCROLL_RECTANGLE_WIDTH * 2);
 
-	WorldObject target;
+	Optional<WorldObject> target = Optional.empty();
 
 	public void update(GameContainer gc, int delta) {
 		Input input = gc.getInput();
-		// Manula control if there is no target or set to not following
-		if (target == null || !following) {
+		// Manual control if there is no target or set to not following
+		if (!target.isPresent() || !following) {
 			// Move the camera around the world.
 			if (input.isKeyDown(Controller.CAMERA_S)) {
 				move(Dir.SOUTH, getSpeed() * delta);
@@ -56,8 +58,21 @@ public class Camera {
 		} else {
 			// Get position of target on screen
 			// tsc = target in screen co-ordinates
-			Rectangle tsc = target.getCoOrdTranslator().objectToScreenCoOrds(
-					target.getSprite().getRectangle());
+			// toc = target in object co-ordinates
+			Rectangle tsc;
+			Rectangle toc;
+			WorldObject t = target.get();
+			if (t.getSprite().isPresent()) {
+				toc = t.getSprite().get().getRectangle();
+			} else if (t.getCollider().isPresent()) {
+				toc = t.getCollider().get().getRectangle();
+			} else if (t.getInteractBox().isPresent()) {
+				toc = t.getInteractBox().get().getRectangle();
+			} else {
+				throw new IllegalStateException(
+						"Attempting to track an object without an image, collider, or interact box");
+			}
+			tsc = t.getCoOrdTranslator().objectToScreenCoOrds(toc);
 
 			// Check if it the object is outside the noScrollRegion
 			if (!noScrollRegion.contains(tsc)) {
@@ -128,7 +143,11 @@ public class Camera {
 	 * Sets the target for the camera to follow.
 	 */
 	public void setTarget(WorldObject t) {
-		target = t;
+		target = Optional.of(t);
+	}
+	
+	public void clearTarget() {
+		target = Optional.empty();
 	}
 
 	/**

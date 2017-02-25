@@ -51,7 +51,7 @@ public class PropertyPanel extends IEList {
 		int elementIndex = buttonIndex + minItemDisplayed;
 		if (elementExists(elementIndex) && clickPoint != null) {
 			PainterProperty p = properties.get(elementIndex);
-			Sprite s = getButton(buttonIndex).get().getSprite();
+			Sprite s = getButton(buttonIndex).get().getSprite().get();
 			PropertyPanelSprite pps = (PropertyPanelSprite) s;
 			Rectangle plus = pps.getPlusBound();
 			Rectangle minus = pps.getMinusBound();

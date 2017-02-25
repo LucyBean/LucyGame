@@ -24,9 +24,9 @@ public class TextPrompt extends InterfaceElement {
 	public TextPrompt(Point origin, int width, String prompt) {
 		super(origin, SpriteBuilder.makeTextPrompt(width, 10, 4));
 		this.width = width;
-		pimg = (TextImage) getSprite().getImage().getLayer(2).getImage();
+		pimg = (TextImage) getSprite().get().getImage().getLayer(2).getImage();
 		pimg.setText(prompt);
-		timg = (TextImage) getSprite().getImage().getLayer(3).getImage();
+		timg = (TextImage) getSprite().get().getImage().getLayer(3).getImage();
 	}
 	
 	public void setPrompt(String prompt) {
@@ -40,8 +40,8 @@ public class TextPrompt extends InterfaceElement {
 	@Override
 	public void mousePressed(int button, Point clickPoint) {
 		if (isVisible()) {
-			Sprite sprite = getSprite();
-			if (sprite != null) {
+			if (getSprite().isPresent()) {
+				Sprite sprite = getSprite().get();
 				Rectangle rect = sprite.getRectangle();
 				clickPoint = getCoOrdTranslator().screenToObjectCoOrds(
 						clickPoint);

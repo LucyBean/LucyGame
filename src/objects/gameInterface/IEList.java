@@ -51,6 +51,7 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	public IEList(Point firstPoint, int height, int width, int padding,
 			Consumer<Sprite> setSelectedSprite) {
+		super(Point.ZERO);
 		nextPosition = firstPoint;
 		buttons = new ArrayList<IEListItem>();
 		minItemDisplayed = 0;
@@ -122,7 +123,7 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	public void setBackground(int uiColour) {
 		if (buttons.size() > 0) {
-			if (getSprite() == null) {
+			if (!getSprite().isPresent()) {
 				int w = getWidthPixels() + padding * 2;
 				int h = getHeightPixels() + padding * 2;
 				Point origin = new Point(-padding, -padding);
@@ -131,7 +132,7 @@ public abstract class IEList extends InterfaceElement {
 				setSprite(new SingleSprite(limg, origin, 1));
 			}
 
-			getSprite().getImage().fillLayer(0, uiColour);
+			getSprite().get().getImage().fillLayer(0, uiColour);
 		}
 	}
 
@@ -170,7 +171,7 @@ public abstract class IEList extends InterfaceElement {
 						if (oldButtonIndex >= 0
 								&& oldButtonIndex < buttons.size()) {
 							getElementSprite(oldElementIndex,
-									buttons.get(oldButtonIndex).getSprite());
+									buttons.get(oldButtonIndex).getSprite().get());
 						}
 					}
 
@@ -178,7 +179,7 @@ public abstract class IEList extends InterfaceElement {
 					if (newButtonIndex >= 0
 							&& newButtonIndex < buttons.size()) {
 						setSelectedSprite.accept(
-								buttons.get(newButtonIndex).getSprite());
+								buttons.get(newButtonIndex).getSprite().get());
 					}
 					selectedPoint = newButtonPoint;
 				}
@@ -223,7 +224,7 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	final public void updateSprites() {
 		for (int i = 0; i < buttons.size(); i++) {
-			Sprite s = buttons.get(i).getSprite();
+			Sprite s = buttons.get(i).getSprite().get();
 			getElementSprite(i + minItemDisplayed, s);
 		}
 		setSelectedButton(selectedPoint);
@@ -287,6 +288,7 @@ public abstract class IEList extends InterfaceElement {
 	 *            modified to show information for the correct element in its
 	 *            unselected state.
 	 */
+	// TODO: Change to return sprite?
 	protected abstract void getElementSprite(int elementIndex, Sprite sprite);
 
 	/**
@@ -335,8 +337,8 @@ public abstract class IEList extends InterfaceElement {
 
 	@Override
 	protected void draw() {
-		if (getSprite() != null) {
-			getSprite().draw();
+		if (getSprite().isPresent()) {
+			getSprite().get().draw();
 		}
 		buttons.stream().forEach(s -> s.render());
 	}
@@ -347,10 +349,10 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	@Override
 	public int getWidthPixels() {
-		if (getSprite() != null) {
-			return (int) getSprite().getRectangle().getWidth();
+		if (getSprite().isPresent()) {
+			return (int) getSprite().get().getRectangle().getWidth();
 		} else if (buttons != null && !buttons.isEmpty()) {
-			Rectangle spriteBound = buttons.get(0).getSprite().getRectangle();
+			Rectangle spriteBound = buttons.get(0).getSprite().get().getRectangle();
 			return (int) (spriteBound.getWidth() * width
 					+ padding * (width - 1));
 		}
@@ -363,10 +365,10 @@ public abstract class IEList extends InterfaceElement {
 	 */
 	@Override
 	public int getHeightPixels() {
-		if (getSprite() != null) {
-			return (int) getSprite().getRectangle().getHeight();
+		if (getSprite().isPresent()) {
+			return (int) getSprite().get().getRectangle().getHeight();
 		} else if (buttons != null && !buttons.isEmpty()) {
-			Rectangle spriteBound = buttons.get(0).getSprite().getRectangle();
+			Rectangle spriteBound = buttons.get(0).getSprite().get().getRectangle();
 			return (int) (spriteBound.getHeight() * height
 					+ padding * (height - 1));
 		}

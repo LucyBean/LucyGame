@@ -36,9 +36,10 @@ public class ObjectLayer<T extends GameObject> extends HashSet<T> {
 
 		while (io.hasNext()) {
 			T wo = io.next();
-			if (wo.isEnabled()) {
-				Rectangle r = wo.getSpriteRectangleScreenCoOrds();
-				if (r != null && r.contains(p)) {
+			if (wo.isEnabled() && wo.getSprite().isPresent()) {
+				Rectangle spriteRect = wo.getSprite().get().getRectangle();
+				Rectangle spriteWorld = wo.getCoOrdTranslator().objectToScreenCoOrds(spriteRect);
+				if (spriteWorld.contains(p)) {
 					return Optional.of(wo);
 				}
 			}

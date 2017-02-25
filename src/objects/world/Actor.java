@@ -89,11 +89,13 @@ public abstract class Actor extends WorldObject {
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite) {
-		this(origin, layer, itemType, sprite, Optional.empty(), Optional.empty());
+		this(origin, layer, itemType, sprite, Optional.empty(),
+				Optional.empty());
 	}
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType) {
-		this(origin, layer, itemType, itemType.getSprite(), Optional.empty(), Optional.empty());
+		this(origin, layer, itemType, itemType.getSprite(), Optional.empty(),
+				Optional.empty());
 	}
 
 	@Override
@@ -113,10 +115,9 @@ public abstract class Actor extends WorldObject {
 			// WorldObject has not been initialised yet
 			return;
 		}
-		Sprite s = getSprite();
-		if (s != null && s instanceof StatedSprite
+		if (getSprite().isPresent() && getSprite().get() instanceof StatedSprite
 				&& getCollider().isPresent()) {
-			StatedSprite ss = (StatedSprite) s;
+			StatedSprite ss = (StatedSprite) getSprite().get();
 			Collider c = getCollider().get();
 			ss.setAlignmentPoint(
 					new Point(c.getWidth() / 2, c.getHeight()).move(
@@ -260,10 +261,12 @@ public abstract class Actor extends WorldObject {
 		this.facing = facing;
 		setAheadSensorLocation(facing);
 
-		if (facing == Dir.EAST) {
-			getSprite().setMirrored(false);
-		} else if (facing == Dir.WEST) {
-			getSprite().setMirrored(true);
+		if (getSprite().isPresent()) {
+			if (facing == Dir.EAST) {
+				getSprite().get().setMirrored(false);
+			} else if (facing == Dir.WEST) {
+				getSprite().get().setMirrored(true);
+			}
 		}
 
 	}
@@ -1068,12 +1071,13 @@ public abstract class Actor extends WorldObject {
 	// Update
 	//
 	final public void update(GameContainer gc, int delta) {
-		if (getSprite() != null && updateSprite()) {
-			getSprite().update(delta);
+		if (getSprite().isPresent() && updateSprite()) {
+			getSprite().get().update(delta);
 		}
 		if (getState() == ActorState.CLIMB_TOP) {
 			// Check if animation finished
-			LucyImage limg = getSprite().getImage().getLayer(0).getImage();
+			LucyImage limg = getSprite().get().getImage().getLayer(
+					0).getImage();
 			if (!(limg instanceof AnimatedImage)
 					|| ((AnimatedImage) limg).isFinished()) {
 				setState(ActorState.IDLE);
@@ -1127,11 +1131,11 @@ public abstract class Actor extends WorldObject {
 			return true;
 		} else if (positionDelta.getY() != 0) {
 			assert getState() == ActorState.CLIMB;
-			if (getSprite() != null && getSprite() instanceof StatedSprite) {
-				StatedSprite sprite = (StatedSprite) getSprite();
+			if (getSprite().isPresent()
+					&& getSprite().get() instanceof StatedSprite) {
+				StatedSprite sprite = (StatedSprite) getSprite().get();
 				if (sprite.getState() == ActorState.CLIMB.ordinal()) {
-					LucyImage limg = getSprite().getImage().getLayer(
-							0).getImage();
+					LucyImage limg = sprite.getImage().getLayer(0).getImage();
 					if (limg instanceof AnimatedImage) {
 						AnimatedImage ai = (AnimatedImage) limg;
 						// Set reversed if moving downwards, otherwise not
@@ -1198,8 +1202,9 @@ public abstract class Actor extends WorldObject {
 
 	public void stateChanged(ActorState from, ActorState to) {
 		// Updated sprite according to Actor's state
-		if (getSprite() instanceof StatedSprite) {
-			((StatedSprite) getSprite()).setState(state.ordinal());
+		if (getSprite().isPresent()
+				&& getSprite().get() instanceof StatedSprite) {
+			((StatedSprite) getSprite().get()).setState(state.ordinal());
 		}
 
 		if (to == ActorState.CLIMB) {

@@ -23,6 +23,7 @@ public class MenuSet extends InterfaceElement {
 	}
 
 	public MenuSet(Point startPoint, boolean useSelection) {
+		super(Point.ZERO);
 		menus = new HashMap<Integer, Menu>();
 		this.useSelection = useSelection;
 		this.startPoint = startPoint;

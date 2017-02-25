@@ -77,14 +77,14 @@ public abstract class WorldObject extends GameObject {
 	}
 
 	protected void setColliderFromSprite() {
-		if (getSprite() != null) {
-			attach(new Collider(getSprite().getRectangle()));
+		if (getSprite().isPresent()) {
+			attach(new Collider(getSprite().get().getRectangle()));
 		}
 	}
 
 	protected void setInteractBoxFromSprite() {
-		if (getSprite() != null) {
-			attach(new InteractBox(getSprite().getRectangle()));
+		if (getSprite().isPresent()) {
+			attach(new InteractBox(getSprite().get().getRectangle()));
 		}
 	}
 

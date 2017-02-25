@@ -49,7 +49,7 @@ public class Door extends Static implements Lockable {
 			if (transparency <= 0) {
 				disable();
 			} else {
-				getSprite().setAlpha(transparency / 1000.0f);
+				getSprite().get().setAlpha(transparency / 1000.0f);
 			}
 		}
 	}

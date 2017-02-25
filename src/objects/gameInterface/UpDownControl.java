@@ -26,8 +26,8 @@ public class UpDownControl extends InterfaceElement {
 
 	@Override
 	public void onClick(int button, Point clickPoint) {
-		Rectangle upBound = getSprite().getImage().getLayer(0).getRectangle();
-		Rectangle downBound = getSprite().getImage().getLayer(1).getRectangle();
+		Rectangle upBound = getSprite().get().getImage().getLayer(0).getRectangle();
+		Rectangle downBound = getSprite().get().getImage().getLayer(1).getRectangle();
 
 		if (upBound.contains(clickPoint)) {
 			up();

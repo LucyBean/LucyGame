@@ -1,15 +1,16 @@
 package objects;
 
+import java.util.Optional;
+
 import org.newdawn.slick.GameContainer;
 
 import helpers.Point;
-import helpers.Rectangle;
 import objects.images.Sprite;
 import worlds.World;
 
 public abstract class GameObject {
 	private Point position;
-	private Sprite sprite;
+	private Optional<Sprite> sprite = Optional.empty();
 	private World world;
 	private final CoOrdTranslator cot;
 
@@ -17,8 +18,21 @@ public abstract class GameObject {
 	private boolean visible = true;
 
 	public GameObject(Point position, Sprite sprite) {
+		if (position == null) {
+			throw new IllegalStateException(
+					"Objects cannot be created without a position");
+		}
 		this.position = position;
 		setSprite(sprite);
+		cot = new CoOrdTranslator(this);
+	}
+
+	public GameObject(Point position) {
+		if (position == null) {
+			throw new IllegalStateException(
+					"Objects cannot be created without a position");
+		}
+		this.position = position;
 		cot = new CoOrdTranslator(this);
 	}
 
@@ -29,7 +43,7 @@ public abstract class GameObject {
 		return world;
 	}
 
-	public Sprite getSprite() {
+	public Optional<Sprite> getSprite() {
 		return sprite;
 	}
 
@@ -84,10 +98,13 @@ public abstract class GameObject {
 	}
 
 	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
-		if (sprite != null) {
+		if (sprite == null) {
+			this.sprite = Optional.empty();
+		} else {
+			this.sprite = Optional.of(sprite);
 			sprite.setObject(this);
 		}
+
 	}
 
 	/**
@@ -130,8 +147,8 @@ public abstract class GameObject {
 	 * This method will be called by render if the GameObject is enabled.
 	 */
 	protected void draw() {
-		if (isVisible() && sprite != null) {
-			sprite.draw();
+		if (isVisible() && sprite.isPresent()) {
+			sprite.get().draw();
 		}
 	}
 
@@ -143,24 +160,8 @@ public abstract class GameObject {
 	 *            The change in time.
 	 */
 	public void update(GameContainer gc, int delta) {
-		if (sprite != null) {
-			getSprite().update(delta);
-		}
-	}
-
-	/**
-	 * Gives this GameObject's Sprite's bounding rectangle in screen
-	 * co-ordinates.
-	 * 
-	 * @return The Sprite's bounding rectangle in screen co-ordinates.
-	 */
-	public Rectangle getSpriteRectangleScreenCoOrds() {
-		if (sprite != null) {
-			Rectangle r = getCoOrdTranslator().objectToScreenCoOrds(
-					getSprite().getRectangle());
-			return r;
-		} else {
-			return null;
+		if (sprite.isPresent()) {
+			getSprite().get().update(delta);
 		}
 	}
 

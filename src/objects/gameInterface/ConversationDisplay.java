@@ -48,7 +48,7 @@ public class ConversationDisplay extends InterfaceElement {
 	}
 
 	private void setCharacter(ConversationCharacter cc) {
-		ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
+		ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite().get();
 		cbs.setCharacter(cc);
 	}
 
@@ -75,7 +75,7 @@ public class ConversationDisplay extends InterfaceElement {
 	}
 
 	public void showNextTextLine() {
-		ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite();
+		ConversationBlockSprite cbs = (ConversationBlockSprite) getSprite().get();
 		Rectangle textBoxSize = cbs.getTextBoxSize();
 		Font f = ImageBuilder.getFont();
 		String nextLine = "";
