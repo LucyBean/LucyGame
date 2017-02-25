@@ -7,5 +7,7 @@
 <anim name="WALL_SLIDE" type="STATIC"/>
 <anim name="CROUCH" type="ANIMATED" delay="64" loop="TRUE"/>
 <anim name="CROUCH_WALK" type="ANIMATED" delay="32" loop="TRUE"/>
-<anim name="CLIMB" type="ANIMATED" delay="24" loop="TRUE"/>
+<anim name="CLIMB" type="ANIMATED" delay="24" loop="TRUE" alignx="11"/>
 <anim name="CLIMB_TOP" type="ANIMATED" delay="48" loop="FALSE" alignx="34" aligny="73"/>
+<anim name="KICK_BACK" type="ANIMATED" delay="24" loop="FALSE" frames="16" alignx="25"/>
+<anim name="KICK_FRONT" type="ANIMATED" delay="18" loop="FALSE" frames="16" alignx="19"/>

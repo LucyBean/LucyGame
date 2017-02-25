@@ -764,6 +764,12 @@ public abstract class Actor extends WorldObject {
 			}
 		}
 	}
+	
+	public void kick() {
+		if (getState() != ActorState.KICK_FRONT) {
+			setState(ActorState.KICK_FRONT);
+		}
+	}
 
 	/**
 	 * Sends a signal to the Actor to jump at the end of the next frame.
@@ -1074,7 +1080,7 @@ public abstract class Actor extends WorldObject {
 		if (getSprite().isPresent() && updateSprite()) {
 			getSprite().get().update(delta);
 		}
-		if (getState() == ActorState.CLIMB_TOP) {
+		if (getState() == ActorState.CLIMB_TOP || getState() == ActorState.KICK_FRONT) {
 			// Check if animation finished
 			LucyImage limg = getSprite().get().getImage().getLayer(
 					0).getImage();
@@ -1123,7 +1129,7 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private boolean controlsEnabled() {
-		return getState() != ActorState.CLIMB_TOP;
+		return getState() != ActorState.CLIMB_TOP && getState() != ActorState.KICK_FRONT;
 	}
 
 	private boolean updateSprite() {

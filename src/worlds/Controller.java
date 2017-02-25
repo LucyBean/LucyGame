@@ -20,6 +20,7 @@ public class Controller {
 	public static int WORLD_RESET = Input.KEY_T;
 	public static int WORLD_PAUSE = Input.KEY_R;
 	public static int INVENTORY = Input.KEY_G;
+	public static int KICK = Input.KEY_Q;
 	
 	public static void setDvorak() {
 		UP = Input.KEY_COMMA;
@@ -39,5 +40,6 @@ public class Controller {
 		WORLD_RESET = Input.KEY_Y;
 		WORLD_PAUSE = Input.KEY_P;
 		INVENTORY = Input.KEY_I;
+		KICK = Input.KEY_APOSTROPHE;
 	}
 }

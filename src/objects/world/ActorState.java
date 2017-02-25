@@ -13,5 +13,7 @@ public enum ActorState {
 		PUSH_PULL_IDLE,
 		PUSH,
 		PULL,
-		CLIMB_TOP;
+		CLIMB_TOP,
+		KICK_FRONT,
+		KICK_BACK;
 }

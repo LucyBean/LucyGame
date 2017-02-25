@@ -65,6 +65,10 @@ public class Player extends Actor {
 			moveFunction.accept(Dir.EAST);
 		}
 
+		if (input.isKeyDown(Controller.KICK)) {
+			kick();
+		}
+
 		if (!gravityEnabled()) {
 			if (input.isKeyDown(Controller.UP)) {
 				moveFunction.accept(Dir.NORTH);

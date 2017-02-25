@@ -60,6 +60,10 @@ public class StatedSprite extends Sprite {
 		if (alignmentPoint.isPresent() && imageAlign.isPresent()) {
 			Point ap = alignmentPoint.get();
 			Point ia = imageAlign.get().scale(1/((float) getGridSize()));
+			if (mirrored) {
+				float newX = -ia.getX() + ((float) getImage().getWidth()) / getGridSize();
+				ia = new Point(newX, ia.getY());
+			}
 			Point newOrigin = ap.move(ia.neg());
 			setOrigin(newOrigin);
 		} else {
