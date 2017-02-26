@@ -39,7 +39,7 @@ import worlds.WorldLayer;
  */
 public abstract class Actor extends WorldObject {
 	private Collection<WorldObject> activeInteractables;
-	private Dir facing;
+	private Dir facing = Dir.EAST;
 	private final static float GRAVITY = 0.00005f;
 	private final static float TERMINAL_FALL_VELOCITY = 0.5f;
 	private final static float TERMINAL_WALL_SLIDE_VELOCITY = 0.005f;
@@ -69,6 +69,7 @@ public abstract class Actor extends WorldObject {
 	private boolean interactNextFrame;
 	private Actor pushTarget;
 	private Collection<WorldObject> solidsToIgnoreThisFrame;
+	private AttackBox highFrontAttack;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider,
@@ -81,6 +82,9 @@ public abstract class Actor extends WorldObject {
 			float ccWidth = c.getWidth();
 			float ccHeight = c.getHeight() / 2;
 			crouchingCollider = new Collider(ccOrigin, ccWidth, ccHeight);
+			highFrontAttack = new AttackBox(
+					c.getTopRight().move(Dir.NORTH, c.getHeight() * 0.2f),
+					c.getWidth() * 1.4f, c.getHeight() * 0.7f);
 		}
 	}
 
@@ -760,6 +764,7 @@ public abstract class Actor extends WorldObject {
 	}
 
 	public void kick() {
+		assert getCollider().isPresent();
 		if (getState() != ActorState.KICK_FRONT) {
 			setState(ActorState.KICK_FRONT);
 		}
@@ -1241,6 +1246,25 @@ public abstract class Actor extends WorldObject {
 				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
+		}
+
+		if (to == ActorState.KICK_FRONT) {
+			assert getCollider().isPresent();
+			float x;
+			float y = highFrontAttack.getTopLeft().getY();
+			if (facing == Dir.EAST) {
+				x = getCollider().get().getTopRight().getX();
+			} else {
+				assert facing == Dir.WEST;
+				x = getCollider().get().getTopLeft().getX()
+						- highFrontAttack.getWidth();
+			}
+			highFrontAttack.setOrigin(new Point(x, y));
+			attach(highFrontAttack);
+		}
+
+		if (from == ActorState.KICK_FRONT) {
+			detach(highFrontAttack);
 		}
 	}
 
