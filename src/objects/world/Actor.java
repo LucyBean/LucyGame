@@ -2,6 +2,7 @@ package objects.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
@@ -57,11 +58,7 @@ public abstract class Actor extends WorldObject {
 	private boolean pushable = false;
 	private ActorState lastState;
 	private ActorState state;
-	private Sensor floorAheadSensor;
-	private Sensor floorSensor;
-	private Sensor ceilingSensor;
-	private Sensor wallAheadSensorTop;
-	private Sensor wallAheadSensorBtm;
+	private HashMap<ActorSensors, Sensor> sensors;
 	private boolean canMidAirJump = true;
 	private boolean jumpNextFrame = false;
 	private boolean canJumpSustain = false;
@@ -140,29 +137,27 @@ public abstract class Actor extends WorldObject {
 
 	private void addSensors() {
 		if (getCollider().isPresent()) {
+			sensors = new HashMap<>();
 			float sensorSize = 0.2f;
 			float wallSensorHeight = 0.05f;
 
 			Collider c = getCollider().get();
 
-			floorSensor = new Sensor(c.getBottomLeft(), c.getWidth(),
-					sensorSize / 5, this);
-			ceilingSensor = new Sensor(
-					c.getTopLeft().move(Dir.NORTH, sensorSize), c.getWidth(),
-					sensorSize, this);
-			floorAheadSensor = new Sensor(c.getBottomRight(), c.getWidth(),
-					sensorSize, this);
-			wallAheadSensorTop = new Sensor(c.getTopRight(), sensorSize,
-					wallSensorHeight, this);
-			wallAheadSensorBtm = new Sensor(
-					c.getBottomRight().move(Dir.NORTH, wallSensorHeight),
-					sensorSize, wallSensorHeight, this);
-
-			attach(floorSensor);
-			attach(ceilingSensor);
-			attach(floorAheadSensor);
-			attach(wallAheadSensorTop);
-			attach(wallAheadSensorBtm);
+			sensors.put(ActorSensors.FLOOR, new Sensor(c.getBottomLeft(),
+					c.getWidth(), sensorSize / 5, this));
+			sensors.put(ActorSensors.FLOOR_AHEAD, new Sensor(c.getBottomRight(),
+					c.getWidth(), sensorSize, this));
+			sensors.put(ActorSensors.CEILING,
+					new Sensor(c.getTopLeft().move(Dir.NORTH, sensorSize),
+							c.getWidth(), sensorSize, this));
+			sensors.put(ActorSensors.WALL_AHEAD_TOP, new Sensor(c.getTopRight(),
+					sensorSize, wallSensorHeight, this));
+			sensors.put(ActorSensors.WALL_AHEAD_BOTTOM,
+					new Sensor(
+							c.getBottomRight().move(Dir.NORTH,
+									wallSensorHeight),
+							sensorSize, wallSensorHeight, this));
+			sensors.values().forEach(s -> attach(s));
 		}
 	}
 
@@ -223,27 +218,28 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private void setAheadSensorLocation(Dir d) {
-		if (floorAheadSensor != null) {
+		if (sensors.containsKey(ActorSensors.FLOOR_AHEAD)) {
 			Collider c = getCollider().get();
+			Sensor fa = sensors.get(ActorSensors.FLOOR_AHEAD);
+			Sensor wat = sensors.get(ActorSensors.WALL_AHEAD_TOP);
+			Sensor wab = sensors.get(ActorSensors.WALL_AHEAD_BOTTOM);
 			if (d == Dir.EAST) {
-				floorAheadSensor.setOrigin(c.getBottomRight());
-				wallAheadSensorTop.setOrigin(c.getTopRight());
-				wallAheadSensorBtm.setOrigin(c.getBottomRight().move(Dir.NORTH,
-						wallAheadSensorBtm.getHeight()));
+				fa.setOrigin(c.getBottomRight());
+				wat.setOrigin(c.getTopRight());
+				wab.setOrigin(
+						c.getBottomRight().move(Dir.NORTH, wab.getHeight()));
 			} else if (d == Dir.WEST) {
-				floorAheadSensor.setOrigin(c.getBottomLeft().move(Dir.WEST,
-						floorAheadSensor.getWidth()));
-				wallAheadSensorTop.setOrigin(c.getTopLeft().move(Dir.WEST,
-						wallAheadSensorTop.getWidth()));
-				wallAheadSensorBtm.setOrigin(c.getTopLeft().move(Dir.WEST,
-						wallAheadSensorBtm.getWidth()).move(Dir.NORTH,
-								wallAheadSensorBtm.getHeight()));
+				fa.setOrigin(c.getBottomLeft().move(Dir.WEST, fa.getWidth()));
+				wat.setOrigin(c.getTopLeft().move(Dir.WEST, wat.getWidth()));
+				wab.setOrigin(
+						c.getTopLeft().move(Dir.WEST, wab.getWidth()).move(
+								Dir.NORTH, wab.getHeight()));
 			}
 		}
 	}
 
-	public Sensor getFloorSensor() {
-		return floorAheadSensor;
+	public Sensor getSensor(ActorSensors as) {
+		return sensors.get(as);
 	}
 
 	/**
@@ -602,7 +598,7 @@ public abstract class Actor extends WorldObject {
 			if (wasCrouching()) {
 				moveAmount *= crouchSpeed;
 			}
-			if (floorAheadSensor.isOverlappingSolid()) {
+			if (sensors.get(ActorSensors.FLOOR_AHEAD).isOverlappingSolid()) {
 				Point moved = move(d, moveAmount);
 				if (moved != Point.ZERO && isOnGround()) {
 					setState(ActorState.WALK);
@@ -642,15 +638,16 @@ public abstract class Actor extends WorldObject {
 			// If they're running 'off an edge' then make them fall through the
 			// block by ignoring all collisions with WorldObjects overlapping
 			// their feet
-			if (!floorAheadSensor.isOverlappingSolid()) {
+			if (!sensors.get(ActorSensors.FLOOR_AHEAD).isOverlappingSolid()) {
 				// Check if there is space to 'run off' this block. This
 				// requires a space as large as this object's collider to be
 				// free
 				Rectangle runSpace = getCollider().get().getRectangle();
 				runSpace = runSpace.translate(d, runSpace.getWidth());
 				if (getOverlappingSolids(runSpace).isEmpty()) {
-					Collection<WorldObject> groundBlocks = floorSensor.getOverlappingSolids().collect(
-							Collectors.toSet());
+					Collection<WorldObject> groundBlocks = sensors.get(
+							ActorSensors.FLOOR).getOverlappingSolids().collect(
+									Collectors.toSet());
 					groundBlocks.forEach(wo -> ignoreSolid(wo));
 					// Make them fall off the edge
 					// Set the hSpeed of the jump
@@ -677,13 +674,9 @@ public abstract class Actor extends WorldObject {
 	}
 
 	public Point bePushed(Dir d, float amount) {
-		// Objects cannot be pushed off edges
 		setAheadSensorLocation(d);
-		// if (floorAheadSensor.isOverlappingSolid()) {
 		Point moved = move(d, amount);
 		return moved;
-		// }
-		// return Point.ZERO;
 	}
 
 	/**
@@ -705,9 +698,12 @@ public abstract class Actor extends WorldObject {
 					|| (d == Dir.WEST && deltaX < 0);
 
 			// Can only pull if there is no wall in the way
-			if (pushing || (!wallAheadSensorTop.isOverlappingSolid()
-					&& !wallAheadSensorBtm.isOverlappingSolid()
-					&& floorAheadSensor.isOverlappingSolid())) {
+			if (pushing || (!sensors.get(
+					ActorSensors.WALL_AHEAD_TOP).isOverlappingSolid()
+					&& !sensors.get(
+							ActorSensors.WALL_AHEAD_BOTTOM).isOverlappingSolid()
+					&& sensors.get(
+							ActorSensors.FLOOR_AHEAD).isOverlappingSolid())) {
 				float moveAmount = moveSpeed * delta * pushSpeed;
 				Point posDelta = Point.ZERO;
 				if (pushing) {
@@ -744,27 +740,25 @@ public abstract class Actor extends WorldObject {
 	public void climb(Dir d, int delta) {
 		if (d == Dir.NORTH || d == Dir.SOUTH) {
 			float moveAmount = moveSpeed * delta * climbSpeed;
-			Point moved = move(d, moveAmount);
-			if (moved != Point.ZERO) {
-				// TODO: Animate climbing sprite
-			}
-			if (!wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)) {
+			move(d, moveAmount);
+			if (!sensors.get(ActorSensors.WALL_AHEAD_TOP).isOverlapping(
+					ClimbingWallMarker.class)) {
 				setState(ActorState.CLIMB_TOP);
 				// This Actor has now climbed to the top of the this
-				// ClimbingWallMarker.
-				// Set them to the top of the wall by setting the bottom left of
-				// the
-				// player's collider to the location of the wallAheadSensorTop's
-				// bottom left co-ordinate
+				// ClimbingWallMarker. Set them to the top of the wall by
+				// setting the bottom left of
+				// the player's collider to the location of the
+				// wallAheadSensorTop's bottom left co-ordinate
 				Point btmLeft = getCoOrdTranslator().objectToWorldCoOrds(
-						wallAheadSensorTop.getBottomLeft());
+						sensors.get(
+								ActorSensors.WALL_AHEAD_TOP).getBottomLeft());
 				Point topLeft = btmLeft.move(Dir.NORTH,
 						getCollider().get().getHeight());
 				setPosition(topLeft);
 			}
 		}
 	}
-	
+
 	public void kick() {
 		if (getState() != ActorState.KICK_FRONT) {
 			setState(ActorState.KICK_FRONT);
@@ -924,8 +918,9 @@ public abstract class Actor extends WorldObject {
 		} else {
 			// Find all solids that are not being ignored
 			Collection<WorldObject> solidsToIgnore = getIgnoredSolids();
-			Stream<WorldObject> floorSolids = floorSensor.getOverlappingSolids().filter(
-					s -> !solidsToIgnore.contains(s));
+			Stream<WorldObject> floorSolids = sensors.get(
+					ActorSensors.FLOOR).getOverlappingSolids().filter(
+							s -> !solidsToIgnore.contains(s));
 			long count = floorSolids.count();
 			return count != 0;
 		}
@@ -937,24 +932,28 @@ public abstract class Actor extends WorldObject {
 	 * @return
 	 */
 	protected boolean isOnCeiling() {
-		if (getCollider() == null) {
+		if (getCollider().isPresent()) {
 			return false;
 		} else {
-			return ceilingSensor.isOverlappingSolid();
+			assert sensors != null;
+			return sensors.get(ActorSensors.CEILING).isOverlappingSolid();
 		}
 	}
 
 	private boolean canWallSlide(Dir d) {
 		return getCollider() != null && vSpeed > 0
 				&& (d == Dir.EAST || d == Dir.WEST)
-				&& wallAheadSensorTop.isOverlappingSolid()
-				&& wallAheadSensorBtm.isOverlappingSolid();
+				&& sensors.get(ActorSensors.WALL_AHEAD_TOP).isOverlappingSolid()
+				&& sensors.get(
+						ActorSensors.WALL_AHEAD_BOTTOM).isOverlappingSolid();
 	}
 
 	private boolean canClimb(Dir d) {
 		return (getCollider() != null && d == Dir.EAST || d == Dir.WEST)
-				&& wallAheadSensorTop.isOverlapping(ClimbingWallMarker.class)
-				&& wallAheadSensorBtm.isOverlapping(ClimbingWallMarker.class);
+				&& sensors.get(ActorSensors.WALL_AHEAD_TOP).isOverlapping(
+						ClimbingWallMarker.class)
+				&& sensors.get(ActorSensors.WALL_AHEAD_BOTTOM).isOverlapping(
+						ClimbingWallMarker.class);
 	}
 
 	/**
@@ -1080,7 +1079,8 @@ public abstract class Actor extends WorldObject {
 		if (getSprite().isPresent() && updateSprite()) {
 			getSprite().get().update(delta);
 		}
-		if (getState() == ActorState.CLIMB_TOP || getState() == ActorState.KICK_FRONT) {
+		if (getState() == ActorState.CLIMB_TOP
+				|| getState() == ActorState.KICK_FRONT) {
 			// Check if animation finished
 			LucyImage limg = getSprite().get().getImage().getLayer(
 					0).getImage();
@@ -1129,7 +1129,8 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private boolean controlsEnabled() {
-		return getState() != ActorState.CLIMB_TOP && getState() != ActorState.KICK_FRONT;
+		return getState() != ActorState.CLIMB_TOP
+				&& getState() != ActorState.KICK_FRONT;
 	}
 
 	private boolean updateSprite() {
@@ -1169,8 +1170,10 @@ public abstract class Actor extends WorldObject {
 				move(Dir.EAST, moveAmount);
 				// If hit a wall then set to zero
 				if (getCollider() != null
-						&& wallAheadSensorTop.isOverlappingSolid()
-						|| wallAheadSensorBtm.isOverlappingSolid()) {
+						&& sensors.get(
+								ActorSensors.WALL_AHEAD_TOP).isOverlappingSolid()
+						|| sensors.get(
+								ActorSensors.WALL_AHEAD_BOTTOM).isOverlappingSolid()) {
 					jumpHSpeed = 0;
 				}
 			}

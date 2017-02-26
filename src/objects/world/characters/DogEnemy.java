@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 
 import helpers.Dir;
 import helpers.Point;
+import objects.world.ActorSensors;
 import objects.world.ItemType;
 
 public class DogEnemy extends Enemy {
@@ -24,7 +25,7 @@ public class DogEnemy extends Enemy {
 	public void act(GameContainer gc, int delta) {
 		walk(facing, delta);
 		
-		if (!getFloorSensor().isOverlappingSolid()) {
+		if (!getSensor(ActorSensors.FLOOR).isOverlappingSolid()) {
 			facing = facing.neg();
 		}
 	}
