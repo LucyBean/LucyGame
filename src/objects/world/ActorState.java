@@ -13,7 +13,21 @@ public enum ActorState {
 		PUSH_PULL_IDLE,
 		PUSH,
 		PULL,
-		CLIMB_TOP,
-		KICK_FRONT,
-		KICK_BACK;
+		CLIMB_TOP(false),
+		KICK_FRONT(false),
+		KICK_BACK(false);
+	
+	private boolean controlsEnabled;
+	
+	ActorState(boolean controlsEnabled) {
+		this.controlsEnabled = controlsEnabled;
+	}
+	
+	ActorState() {
+		this(true);
+	}
+	
+	public boolean controlsEnabled() {
+		return controlsEnabled;
+	}
 }

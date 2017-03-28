@@ -70,6 +70,7 @@ public abstract class Actor extends WorldObject {
 	private Actor pushTarget;
 	private Collection<WorldObject> solidsToIgnoreThisFrame;
 	private AttackBox highFrontAttack;
+	private boolean kickNextFrame;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider,
@@ -85,6 +86,7 @@ public abstract class Actor extends WorldObject {
 			highFrontAttack = new AttackBox(
 					c.getTopRight().move(Dir.NORTH, c.getHeight() * 0.2f),
 					c.getWidth() * 1.4f, c.getHeight() * 0.7f);
+			highFrontAttack.affectsNPCs(true);
 		}
 	}
 
@@ -763,11 +765,15 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
-	public void kick() {
+	private void kick() {
 		assert getCollider().isPresent();
 		if (getState() != ActorState.KICK_FRONT) {
 			setState(ActorState.KICK_FRONT);
 		}
+	}
+	
+	public void signalKick() {
+		kickNextFrame = true;
 	}
 
 	/**
@@ -1110,8 +1116,10 @@ public abstract class Actor extends WorldObject {
 				interactWithAll();
 				interactNextFrame = false;
 			}
-			getAttachments().getByType(AttackBox.class).stream().forEach(
-					a -> a.checkAttack());
+			if (kickNextFrame) {
+				kick();
+				kickNextFrame = false;
+			}
 			if (jumpNextFrame) {
 				jump(delta);
 				jumpNextFrame = false;
@@ -1125,6 +1133,8 @@ public abstract class Actor extends WorldObject {
 
 			jumpMovement(delta);
 		}
+		getAttachments().getByType(AttackBox.class).forEach(
+				a -> a.checkAttack());
 
 		if (lastState != state) {
 			stateChanged(lastState, state);
@@ -1134,8 +1144,7 @@ public abstract class Actor extends WorldObject {
 	}
 
 	private boolean controlsEnabled() {
-		return getState() != ActorState.CLIMB_TOP
-				&& getState() != ActorState.KICK_FRONT;
+		return getState().controlsEnabled();
 	}
 
 	private boolean updateSprite() {

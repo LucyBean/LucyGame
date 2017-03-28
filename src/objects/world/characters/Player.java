@@ -33,11 +33,6 @@ public class Player extends Actor {
 				resetMidAirJump();
 				signalJumpRelative(0.5f);
 			}
-			
-			@Override
-			public void effectOnEnemy(Enemy e) {
-				e.damage(1);
-			}
 		};
 	}
 
@@ -63,10 +58,6 @@ public class Player extends Actor {
 		if (input.isKeyDown(Controller.RIGHT)
 				&& !input.isKeyDown(Controller.LEFT)) {
 			moveFunction.accept(Dir.EAST);
-		}
-
-		if (input.isKeyDown(Controller.KICK)) {
-			kick();
 		}
 
 		if (!gravityEnabled()) {
@@ -97,6 +88,10 @@ public class Player extends Actor {
 		}
 		if (keycode == Controller.INTERACT) {
 			signalInteract();
+		}
+
+		if (keycode == Controller.KICK) {
+			signalKick();
 		}
 	}
 

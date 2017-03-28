@@ -84,11 +84,17 @@ public abstract class NPC extends Actor {
 		quests.put(state, q);
 	}
 
+	/**
+	 * Event fired when this NPC is overlapped by an AttackBox.
+	 */
+	public void oww() {
+		
+	}
+
 	@Override
 	public String getInfo() {
 		String info = super.getInfo();
 		info += "NPC ID: " + npcID + "\n";
 		return info;
 	}
-
 }

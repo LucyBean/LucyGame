@@ -23,6 +23,10 @@ public class AttachmentSet {
 	public Collection<Attachment> getAll() {
 		return all;
 	}
+	
+	public boolean contains(Attachment a) {
+		return all.contains(a);
+	}
 
 	@SuppressWarnings("unchecked")
 	private Collection<Attachment> getSet(Class<? extends Attachment> cls) {
