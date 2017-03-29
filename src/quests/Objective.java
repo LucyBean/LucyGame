@@ -3,14 +3,11 @@ package quests;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import worlds.World;
 
-public class Objective {
+public abstract class Objective {
 	private String displayText;
-	private Function<EventInfo, Boolean> eventSatisfy;
-	private Function<World, Boolean> initSatisfy;
 	private List<Consumer<World>> endEffects = new LinkedList<>();
 	private List<Consumer<World>> startEffects = new LinkedList<>();
 	private World world;
@@ -28,12 +25,12 @@ public class Objective {
 	 *            A function that determines satisfaction of this objective when
 	 *            starting the objective
 	 */
-	public Objective(String displayText, Function<EventInfo, Boolean> eventSatisfy,
-			Function<World, Boolean> initSatisfy) {
+	public Objective(String displayText) {
 		this.displayText = displayText;
-		this.eventSatisfy = eventSatisfy;
-		this.initSatisfy = initSatisfy;
 	}
+	
+	protected abstract boolean eventSatisfy(EventInfo ei);
+	protected abstract boolean initSatisfy(World w);
 
 	/**
 	 * Sets the World. This must be done before the objective is started.
@@ -69,12 +66,12 @@ public class Objective {
 	 * @return Whether this Objective is now satisfied
 	 */
 	public boolean checkInitSatisfaction() {
-		satisfied = satisfied || initSatisfy.apply(world);
+		satisfied = satisfied || initSatisfy(world);
 		return satisfied;
 	}
 
 	public void passEvent(EventInfo ei) {
-		satisfied = satisfied || eventSatisfy.apply(ei);
+		satisfied = satisfied || eventSatisfy(ei);
 	}
 
 	public boolean isSatisfied() {

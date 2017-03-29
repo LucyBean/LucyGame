@@ -1,5 +1,5 @@
 package quests;
 
 public enum EventType {
-	PICK_UP, INTERACT;
+	PICK_UP, INTERACT, UNLOCK;
 }

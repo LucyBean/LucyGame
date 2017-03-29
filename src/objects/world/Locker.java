@@ -8,6 +8,8 @@ import objects.attachments.Collider;
 import objects.attachments.InteractBox;
 import objects.images.Sprite;
 import objects.world.characters.Player;
+import quests.EventInfo;
+import quests.EventType;
 import worlds.World;
 import worlds.WorldLayer;
 
@@ -99,6 +101,8 @@ public abstract class Locker extends Static {
 	public final void unlock(Actor a) {
 		if (unlockCheck(a)) {
 			unlock();
+			EventInfo ei = new EventInfo(EventType.UNLOCK, a, this);
+			getWorld().signalEvent(ei);
 		}
 	}
 
