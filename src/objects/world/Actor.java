@@ -1076,6 +1076,7 @@ public abstract class Actor extends WorldObject {
 				persistentStateTimer -= delta;
 			}
 		}
+		actAlways(gc, delta);
 		if (isEnabled() && controlsEnabled()) {
 			solidsToIgnoreThisFrame = new HashSet<>();
 			positionDelta = Point.ZERO;
@@ -1166,7 +1167,21 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
+	/**
+	 * Called by update when controls are enabled
+	 * @param gc
+	 * @param delta
+	 */
 	public abstract void act(GameContainer gc, int delta);
+	
+	/**
+	 * Called by update every frame regardless of whether the controls are enabled.
+	 * @param gc
+	 * @param delta
+	 */
+	public void actAlways(GameContainer gc, int delta) {
+		
+	}
 
 	protected void setState(ActorState newState) {
 		if (newState == ActorState.CROUCH && state == ActorState.CROUCH_WALK) {

@@ -15,6 +15,8 @@ import worlds.WorldLayer;
 public abstract class Fighter extends Actor {
 	private AttackBox highFrontAttack;
 	private boolean kickNextFrame;
+	private int attachAttackBoxTimer;
+	private Optional<AttackBox> waitingAttackBox = Optional.empty();
 
 	public Fighter(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider, Optional<InteractBox> interactBox) {
@@ -35,6 +37,17 @@ public abstract class Fighter extends Actor {
 		if (kickNextFrame) {
 			kick();
 			kickNextFrame = false;
+		}
+	}
+	
+	@Override
+	public final void actAlways(GameContainer gc, int delta) {
+		if (waitingAttackBox.isPresent()) {
+			attachAttackBoxTimer -= delta;
+			if (attachAttackBoxTimer < 0) {
+				attach(waitingAttackBox.get());
+				waitingAttackBox = Optional.empty();
+			}
 		}
 	}
 
@@ -66,7 +79,8 @@ public abstract class Fighter extends Actor {
 						- highFrontAttack.getWidth();
 			}
 			highFrontAttack.setOrigin(new Point(x, y));
-			attach(highFrontAttack);
+			waitingAttackBox = Optional.of(highFrontAttack);
+			attachAttackBoxTimer = FighterState.KICK_FRONT.getDuration()/2;
 		}
 
 		if (from == FighterState.KICK_FRONT) {

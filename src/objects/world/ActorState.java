@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public class ActorState {
 	private static List<ActorState> states = new LinkedList<>();
-	
+
 	public static ActorState IDLE = new ActorState("IDLE");
 	public static ActorState WALK = new ActorState("WALK");
 	public static ActorState RUN = new ActorState("RUN");
@@ -20,56 +20,58 @@ public class ActorState {
 	public static ActorState PUSH = new ActorState("PUSH");
 	public static ActorState PULL = new ActorState("PULL");
 	public static ActorState CLIMB_TOP = new ActorState("CLIMB_TOP", 1152);
-	
+
 	private int duration;
 	private String name;
-	
+
 	protected ActorState(String name, int duration) {
 		this(name);
-		FighterState.init();
 		this.duration = duration;
 	}
-	
+
 	protected ActorState(String name) {
+		// This line doesn't do anything, it's just to ensure that the
+		// FighterState statics are initialised...
+		FighterState.init();
 		this.name = name;
 		states.add(this);
 	}
-	
+
 	public boolean controlsEnabled() {
 		return duration == 0;
 	}
-	
+
 	public int getDuration() {
 		return duration;
 	}
-	
+
 	public int ordinal() {
 		int ord = 0;
-		for(ActorState state : states) {
+		for (ActorState state : states) {
 			if (this == state) {
 				return ord;
 			} else {
 				ord++;
 			}
 		}
-		
+
 		throw new IllegalStateException("Disallowed value for ActorState.");
 	}
-	
+
 	private String getName() {
 		return name;
 	}
 
 	public static Optional<ActorState> valueOf(String name) {
-		for (ActorState state: states) {
+		for (ActorState state : states) {
 			if (name.equals(state.getName())) {
 				return Optional.of(state);
 			}
 		}
-		
+
 		return Optional.empty();
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
