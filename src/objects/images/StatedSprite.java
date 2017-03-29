@@ -71,9 +71,6 @@ public class StatedSprite extends Sprite {
 		}
 		getImage().setMirrored(mirrored);
 		getImage().setAlpha(alpha);
-		if (getObject() != null) {
-			getObject().statedSpriteImageChange();
-		}
 	}
 
 	private boolean needToChangeSprite(int newState) {

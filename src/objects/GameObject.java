@@ -175,13 +175,6 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * Called when this GameObject's Sprite has changed image.
-	 */
-	public void statedSpriteImageChange() {
-
-	}
-
-	/**
 	 * This is called for the object when a key is pressed.
 	 * 
 	 * @param keycode

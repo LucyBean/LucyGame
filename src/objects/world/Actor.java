@@ -71,6 +71,7 @@ public abstract class Actor extends WorldObject {
 	private Collection<WorldObject> solidsToIgnoreThisFrame;
 	private AttackBox highFrontAttack;
 	private boolean kickNextFrame;
+	private int persistentStateTimer;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider,
@@ -132,13 +133,6 @@ public abstract class Actor extends WorldObject {
 	public void setWorld(World world) {
 		super.setWorld(world);
 		addSensors();
-	}
-
-	@Override
-	public void statedSpriteImageChange() {
-		if (getState() == ActorState.CLIMB_TOP) {
-			setState(ActorState.IDLE);
-		}
 	}
 
 	private void addSensors() {
@@ -1090,14 +1084,13 @@ public abstract class Actor extends WorldObject {
 		if (getSprite().isPresent() && updateSprite()) {
 			getSprite().get().update(delta);
 		}
-		if (getState() == ActorState.CLIMB_TOP
-				|| getState() == ActorState.KICK_FRONT) {
-			// Check if animation finished
-			LucyImage limg = getSprite().get().getImage().getLayer(
-					0).getImage();
-			if (!(limg instanceof AnimatedImage)
-					|| ((AnimatedImage) limg).isFinished()) {
+		if (!getState().controlsEnabled()) {
+			if (persistentStateTimer <= 0) {
+				// Switch to IDLE if spent enough time in this state
 				setState(ActorState.IDLE);
+			} else {
+				// Wait in this state
+				persistentStateTimer -= delta;
 			}
 		}
 		if (isEnabled() && controlsEnabled()) {
@@ -1219,6 +1212,10 @@ public abstract class Actor extends WorldObject {
 					}
 				}
 			}
+		}
+		// Set timer for a persistent state
+		if (!newState.controlsEnabled()) {
+			persistentStateTimer = newState.getDuration();
 		}
 		state = newState;
 	}

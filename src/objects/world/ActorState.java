@@ -13,21 +13,27 @@ public enum ActorState {
 		PUSH_PULL_IDLE,
 		PUSH,
 		PULL,
-		CLIMB_TOP(false),
-		KICK_FRONT(false),
-		KICK_BACK(false);
+		CLIMB_TOP(1152),
+		KICK_FRONT(288),
+		KICK_BACK(384);
 	
-	private boolean controlsEnabled;
+	private int duration;
 	
-	ActorState(boolean controlsEnabled) {
-		this.controlsEnabled = controlsEnabled;
+	ActorState(int duration) {
+		this.duration = duration;
 	}
 	
 	ActorState() {
-		this(true);
+		
 	}
 	
 	public boolean controlsEnabled() {
-		return controlsEnabled;
+		return duration == 0;
 	}
+	
+	public int getDuration() {
+		return duration;
+	}
+	
+	
 }
