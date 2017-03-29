@@ -46,15 +46,15 @@ public abstract class Fighter extends Actor {
 
 	private void kick() {
 		assert getCollider().isPresent();
-		if (getState() != ActorState.KICK_FRONT) {
-			setState(ActorState.KICK_FRONT);
+		if (getState() != FighterState.KICK_FRONT) {
+			setState(FighterState.KICK_FRONT);
 		}
 	}
-
+	
 	@Override
 	public void stateChanged(ActorState from, ActorState to) {
 		super.stateChanged(from, to);
-		if (to == ActorState.KICK_FRONT) {
+		if (to == FighterState.KICK_FRONT) {
 			assert getCollider().isPresent();
 			float x;
 			float y = highFrontAttack.getTopLeft().getY();
@@ -69,7 +69,7 @@ public abstract class Fighter extends Actor {
 			attach(highFrontAttack);
 		}
 
-		if (from == ActorState.KICK_FRONT) {
+		if (from == FighterState.KICK_FRONT) {
 			detach(highFrontAttack);
 		}
 	}

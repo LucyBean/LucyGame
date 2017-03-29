@@ -92,13 +92,14 @@ public class CharacterSpriteBuilder {
 					+ description + " for " + charName, 1);
 			return Optional.empty();
 		}
-
-		try {
-			state = ActorState.valueOf(animName);
-		} catch (IllegalArgumentException iae) {
+		
+		Optional<ActorState> as = ActorState.valueOf(animName);
+		if (!as.isPresent()) {
 			ErrorLogger.log("Properties specified for " + charName
 					+ " for unknown animation " + animName, 1);
+			return Optional.empty();
 		}
+		state = as.get();
 
 		// Find the file and check it exists
 		File animFile = new File(
