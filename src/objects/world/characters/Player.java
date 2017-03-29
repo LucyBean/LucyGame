@@ -11,14 +11,14 @@ import helpers.Point;
 import objects.attachments.AttackBox;
 import objects.attachments.Collider;
 import objects.images.SpriteBuilder;
-import objects.world.Actor;
 import objects.world.ActorState;
+import objects.world.Fighter;
 import objects.world.ItemType;
 import objects.world.WorldObject;
 import worlds.Controller;
 import worlds.WorldLayer;
 
-public class Player extends Actor {
+public class Player extends Fighter {
 	private Inventory inventory;
 	private AttackBox fallAttack;
 
@@ -37,7 +37,7 @@ public class Player extends Actor {
 	}
 
 	@Override
-	public void act(GameContainer gc, int delta) {
+	public void fighterAct(GameContainer gc, int delta) {
 		Input input = gc.getInput();
 		Consumer<Dir> moveFunction;
 

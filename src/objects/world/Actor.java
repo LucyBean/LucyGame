@@ -69,8 +69,6 @@ public abstract class Actor extends WorldObject {
 	private boolean interactNextFrame;
 	private Actor pushTarget;
 	private Collection<WorldObject> solidsToIgnoreThisFrame;
-	private AttackBox highFrontAttack;
-	private boolean kickNextFrame;
 	private int persistentStateTimer;
 
 	public Actor(Point origin, WorldLayer layer, ItemType itemType,
@@ -84,10 +82,6 @@ public abstract class Actor extends WorldObject {
 			float ccWidth = c.getWidth();
 			float ccHeight = c.getHeight() / 2;
 			crouchingCollider = new Collider(ccOrigin, ccWidth, ccHeight);
-			highFrontAttack = new AttackBox(
-					c.getTopRight().move(Dir.NORTH, c.getHeight() * 0.2f),
-					c.getWidth() * 1.4f, c.getHeight() * 0.7f);
-			highFrontAttack.affectsNPCs(true);
 		}
 	}
 
@@ -245,7 +239,7 @@ public abstract class Actor extends WorldObject {
 	/**
 	 * @return the facing
 	 */
-	private Dir getFacing() {
+	protected Dir getFacing() {
 		return facing;
 	}
 
@@ -759,17 +753,6 @@ public abstract class Actor extends WorldObject {
 		}
 	}
 
-	private void kick() {
-		assert getCollider().isPresent();
-		if (getState() != ActorState.KICK_FRONT) {
-			setState(ActorState.KICK_FRONT);
-		}
-	}
-	
-	public void signalKick() {
-		kickNextFrame = true;
-	}
-
 	/**
 	 * Sends a signal to the Actor to jump at the end of the next frame.
 	 * 
@@ -1109,10 +1092,6 @@ public abstract class Actor extends WorldObject {
 				interactWithAll();
 				interactNextFrame = false;
 			}
-			if (kickNextFrame) {
-				kick();
-				kickNextFrame = false;
-			}
 			if (jumpNextFrame) {
 				jump(delta);
 				jumpNextFrame = false;
@@ -1189,7 +1168,7 @@ public abstract class Actor extends WorldObject {
 
 	public abstract void act(GameContainer gc, int delta);
 
-	private void setState(ActorState newState) {
+	protected void setState(ActorState newState) {
 		if (newState == ActorState.CROUCH && state == ActorState.CROUCH_WALK) {
 			// Do not let CROUCH overwrite CROUCH_WALK
 			return;
@@ -1252,25 +1231,6 @@ public abstract class Actor extends WorldObject {
 				|| to == ActorState.PUSH || to == ActorState.PULL;
 		if (wasPushing && !nextPushing) {
 			pushTarget = null;
-		}
-
-		if (to == ActorState.KICK_FRONT) {
-			assert getCollider().isPresent();
-			float x;
-			float y = highFrontAttack.getTopLeft().getY();
-			if (facing == Dir.EAST) {
-				x = getCollider().get().getTopRight().getX();
-			} else {
-				assert facing == Dir.WEST;
-				x = getCollider().get().getTopLeft().getX()
-						- highFrontAttack.getWidth();
-			}
-			highFrontAttack.setOrigin(new Point(x, y));
-			attach(highFrontAttack);
-		}
-
-		if (from == ActorState.KICK_FRONT) {
-			detach(highFrontAttack);
 		}
 	}
 
