@@ -5,6 +5,9 @@
 		<conv start="1">
 		LUCY:	Use {Controller.LEFT} and {Controller.RIGHT} to move.
 		</conv>
+		<conv start="2">
+		LUCY:	Yay! I opened the door!
+		</conv>
 	</world>
 	<npc id="1">
 	# The following conversations will be started when talking
@@ -54,6 +57,14 @@
 			addObject(yellow_key,16,19,0,0)
 			# Remove 1 gem from the player's inventory
 			use(gem,1)
+			</effect>
+		</objective>
+	</quest>
+	<quest id="2">
+		<startedby type="unlock" id="1"/>
+		<objective>
+			<effect loc="start">
+			worldConv(2)
 			</effect>
 		</objective>
 	</quest>

@@ -17,6 +17,7 @@ public abstract class Fighter extends Actor {
 	private boolean kickNextFrame;
 	private int attachAttackBoxTimer;
 	private Optional<AttackBox> waitingAttackBox = Optional.empty();
+	private Optional<FighterState> queuedAttack = Optional.empty();
 
 	public Fighter(Point origin, WorldLayer layer, ItemType itemType,
 			Sprite sprite, Optional<Collider> collider, Optional<InteractBox> interactBox) {
@@ -49,6 +50,10 @@ public abstract class Fighter extends Actor {
 				waitingAttackBox = Optional.empty();
 			}
 		}
+		if (kickNextFrame && getState() instanceof FighterState) {
+			kick();
+			kickNextFrame = false;
+		}
 	}
 
 	public abstract void fighterAct(GameContainer gc, int delta);
@@ -59,15 +64,19 @@ public abstract class Fighter extends Actor {
 
 	private void kick() {
 		assert getCollider().isPresent();
-		if (getState() != FighterState.KICK_FRONT) {
+		
+		if (!(getState() instanceof FighterState)) {
 			setState(FighterState.KICK_FRONT);
+		}
+		if (getState() == FighterState.KICK_FRONT) {
+			queuedAttack = Optional.of(FighterState.KICK_BACK);
 		}
 	}
 	
 	@Override
 	public void stateChanged(ActorState from, ActorState to) {
 		super.stateChanged(from, to);
-		if (to == FighterState.KICK_FRONT) {
+		if (to == FighterState.KICK_BACK || to == FighterState.KICK_FRONT) {
 			assert getCollider().isPresent();
 			float x;
 			float y = highFrontAttack.getTopLeft().getY();
@@ -80,11 +89,17 @@ public abstract class Fighter extends Actor {
 			}
 			highFrontAttack.setOrigin(new Point(x, y));
 			waitingAttackBox = Optional.of(highFrontAttack);
-			attachAttackBoxTimer = FighterState.KICK_FRONT.getDuration()/2;
+			attachAttackBoxTimer = to.getDuration()/2;
 		}
 
-		if (from == FighterState.KICK_FRONT) {
+		if (from == FighterState.KICK_BACK || from == FighterState.KICK_FRONT) {
 			detach(highFrontAttack);
+			if (queuedAttack.isPresent()) {
+				FighterState attack = queuedAttack.get();
+				queuedAttack = Optional.empty();
+				setState(attack);
+				stateChanged(from, attack);
+			}
 		}
 	}
 

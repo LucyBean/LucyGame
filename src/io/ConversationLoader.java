@@ -20,10 +20,12 @@ import objects.world.characters.ConversationCharacter;
 import objects.world.characters.ConversationSet;
 import objects.world.characters.NPC;
 import objects.world.characters.Player;
+import quests.EmptyObjective;
 import quests.Objective;
 import quests.PickUpObjective;
 import quests.Quest;
 import quests.TalkToObjective;
+import quests.UnlockObjective;
 import worlds.World;
 import worlds.WorldMap;
 
@@ -223,8 +225,8 @@ public class ConversationLoader {
 		if (m.find()) {
 			type = m.group(1).toLowerCase();
 		} else {
-			logError("Objective with no type", 2);
-			return Optional.empty();
+			o = new EmptyObjective();
+			return Optional.of(o);
 		}
 
 		// Create objective of correct type
@@ -256,6 +258,16 @@ public class ConversationLoader {
 				return Optional.empty();
 			}
 			o = new TalkToObjective(npcID);
+		} else if (type.equals("unlock")) {
+			m = propertyExtractor("id", "\\d+").matcher(nextLine);
+			int lockID;
+			if (m.find()) {
+				lockID = Integer.parseInt(m.group(1));
+			} else {
+				logError("Unlock objective with no lockID specified", 2);
+				return Optional.empty();
+			}
+			o = new UnlockObjective(lockID);
 		} else {
 			// TODO: Fill in other types
 			logError("Unknown type of objective: " + type, 2);
@@ -365,6 +377,13 @@ public class ConversationLoader {
 						} catch (IllegalArgumentException e) {
 							logError("Unknown item type: " + itemType, 2);
 						}
+					}
+					
+					Pattern worldConvPattern = Pattern.compile("worldConv\\((\\d+)\\)");
+					m = worldConvPattern.matcher(nextLine);
+					if (m.find()) {
+						int convID = Integer.parseInt(m.group(1));
+						addEffect.accept(cw -> cw.showWorldConversation(convID));
 					}
 				}
 			}

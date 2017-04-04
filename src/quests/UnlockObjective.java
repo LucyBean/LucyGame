@@ -8,8 +8,8 @@ import worlds.World;
 public class UnlockObjective extends Objective {
 	private int lockID;
 	
-	public UnlockObjective(String displayText, int lockID) {
-		super(displayText);
+	public UnlockObjective(int lockID) {
+		super("Unlock lock " + lockID);
 		this.lockID = lockID;
 	}
 
