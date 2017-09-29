@@ -41,7 +41,7 @@ public class Sensor extends Attachment {
 	public boolean isOverlappingSolid() {
 		Stream<WorldObject> solids = getOverlappingSolids();
 		Iterator<WorldObject> is = solids.iterator();
-		return solids == null || is.hasNext();
+		return is.hasNext();
 	}
 
 	public <T extends WorldObject> boolean isOverlapping(Class<T> t) {

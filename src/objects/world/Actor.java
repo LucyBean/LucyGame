@@ -360,7 +360,7 @@ public abstract class Actor extends WorldObject {
 					moveAmount -= increase;
 				}
 				final float ma = moveAmount;
-				getAttachments().getByType(ActorSticker.class).stream().forEach(
+				getAttachments().getByType(ActorSticker.class).forEach(
 						a -> a.moveStuckActors(d, ma));
 			}
 		}
